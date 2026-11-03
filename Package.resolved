@@ -5,8 +5,8 @@
         "package": "abseil-cpp-binary",
         "repositoryURL": "https://github.com/google/abseil-cpp-binary.git",
         "state": {
-          "revision": "bbe8b69694d7873315fd3a4ad41efe043e1c07c5",
-          "version": "1.2024072200.0"
+          "revision": "26509120768c4add61cc1a63059f15f4fb49edb4",
+          "version": "1.2025051202.0"
         }
       },
       {
@@ -21,16 +21,16 @@
         "package": "app-check",
         "repositoryURL": "https://github.com/google/app-check.git",
         "state": {
-          "revision": "bb4002485ff867768dec13bf904a2ddb050bd1b1",
-          "version": "11.3.0"
+          "revision": "c7eb17e5545f36e43dc50e70da09c2e999714e16",
+          "version": "12.0.0"
         }
       },
       {
         "package": "callbackurlkit",
         "repositoryURL": "https://github.com/phimage/CallbackURLKit.git",
         "state": {
-          "revision": "28664b3d4f37bb359d5ed729aa463cbedfba5d82",
-          "version": "2.3.2"
+          "revision": "5411bfc17cd0787ac80c46f312c7235783ff9421",
+          "version": "3.0.0"
         }
       },
       {
@@ -42,67 +42,59 @@
         }
       },
       {
-        "package": "debugswift",
-        "repositoryURL": "https://github.com/DebugSwift/DebugSwift.git",
-        "state": {
-          "revision": "a61ed10addb0d453a0b78798dff45bf02e74f17e",
-          "version": "1.16.0"
-        }
-      },
-      {
         "package": "firebase-ios-sdk",
         "repositoryURL": "https://github.com/firebase/firebase-ios-sdk.git",
         "state": {
-          "revision": "42e81d245e30e49ea6a5830cf2842d44a1591270",
-          "version": "12.15.0"
+          "revision": "dc6dfd442b1f3ec215ed62b8beb2623ffab010d6",
+          "version": "13.1.1"
         }
       },
       {
         "package": "google-ads-on-device-conversion-ios-sdk",
         "repositoryURL": "https://github.com/googleads/google-ads-on-device-conversion-ios-sdk",
         "state": {
-          "revision": "dc39082d8881109d35b94b1c122164c0e8d08a55",
-          "version": "3.6.1"
+          "revision": "0208e2681ec81f8a9c81084696f60fcce26cb7ee",
+          "version": "3.7.0"
         }
       },
       {
         "package": "googleappmeasurement",
         "repositoryURL": "https://github.com/google/GoogleAppMeasurement.git",
         "state": {
-          "revision": "144855f40d8668927f256a3045f7fdc4c3f4338b",
-          "version": "12.15.0"
+          "revision": "1a3546fb9189292e9d64db9e72add7a286c0f85a",
+          "version": "13.0.1"
         }
       },
       {
         "package": "googledatatransport",
         "repositoryURL": "https://github.com/google/GoogleDataTransport.git",
         "state": {
-          "revision": "617af071af9aa1d6a091d59a202910ac482128f9",
-          "version": "10.1.0"
+          "revision": "ba3358d3c3dbae8ef230b58a46b97ad65e84e974",
+          "version": "10.1.1"
         }
       },
       {
         "package": "googleutilities",
         "repositoryURL": "https://github.com/google/GoogleUtilities.git",
         "state": {
-          "revision": "9f183ae842be978784f2963a343682e0c46d8fb3",
-          "version": "8.1.2"
+          "revision": "5459ee5603def3db0fe14ca522185f42c48d978e",
+          "version": "8.1.5"
         }
       },
       {
         "package": "grdb.swift",
         "repositoryURL": "https://github.com/groue/GRDB.swift.git",
         "state": {
-          "revision": "18497b68fdbb3a09528d260a0a0e1e7e61c8c53d",
-          "version": "7.8.0"
+          "revision": "92a554cd0d5e8d67cb18993c6054e73fe42c066c",
+          "version": "7.12.0"
         }
       },
       {
         "package": "grpc-binary",
         "repositoryURL": "https://github.com/google/grpc-binary.git",
         "state": {
-          "revision": "75b31c842f664a0f46a2e590a570e370249fd8f6",
-          "version": "1.69.1"
+          "revision": "9d5e9f05670c9eab8d8c22731ddd5d4d9cf867a8",
+          "version": "1.83.1"
         }
       },
       {
@@ -173,8 +165,8 @@
         "package": "promisekit",
         "repositoryURL": "https://github.com/mxcl/PromiseKit/",
         "state": {
-          "revision": "cb70b070cde06837cd10a1febdf6105c1a3bb348",
-          "version": "8.1.1"
+          "revision": "2bc44395edb4f8391902a9ff7c220471882a4d07",
+          "version": "8.2.0"
         }
       },
       {
@@ -197,8 +189,8 @@
         "package": "sfsafesymbols",
         "repositoryURL": "https://github.com/SFSafeSymbols/SFSafeSymbols.git",
         "state": {
-          "revision": "e2e28f4e56e1769c2ec3c61c9355fc64eb7a535a",
-          "version": "5.3.0"
+          "revision": "e01b3d4f861412f8dcee8d93c417d2c2b0cdfd77",
+          "version": "7.0.0"
         }
       },
       {
@@ -244,8 +236,8 @@
         "package": "swift-snapshot-testing",
         "repositoryURL": "https://github.com/pointfreeco/swift-snapshot-testing",
         "state": {
-          "revision": "b2d4cb30735f4fbc3a01963a9c658336dd21e9ba",
-          "version": "1.18.1"
+          "revision": "1488390b0735e726564b948bf08b384398bdab5c",
+          "version": "1.19.7"
         }
       },
       {
@@ -268,8 +260,8 @@
         "package": "webrtc",
         "repositoryURL": "https://github.com/stasel/WebRTC.git",
         "state": {
-          "revision": "1d04692697cb642bfebf6ad2dd99fe52649c3d6d",
-          "version": "152.0.0"
+          "revision": "3cc466ea040e5dcd1344697bf211dc4c079d1a0c",
+          "version": "156.0.0"
         }
       },
       {

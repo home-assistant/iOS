@@ -48,10 +48,7 @@ struct PermissionRequestView: View {
                     }
                     .buttonStyle(.primaryButton)
                     if showSkipButton {
-                        Button {
-                            dismissAction?()
-                            dismiss()
-                        } label: {
+                        Button(action: dismissTapped) {
                             Text(verbatim: L10n.Permission.Screen.Bluetooth.secondaryButton)
                         }
                         .buttonStyle(.secondaryButton)
@@ -67,10 +64,7 @@ struct PermissionRequestView: View {
                 .padding()
             }
             if showCloseButton {
-                Button {
-                    dismissAction?()
-                    dismiss()
-                } label: {
+                Button(action: dismissTapped) {
                     Image(systemSymbol: .xmarkCircleFill)
                         .foregroundStyle(Color(uiColor: .tertiaryLabel))
                         .font(.title)
@@ -78,6 +72,12 @@ struct PermissionRequestView: View {
                 .padding()
             }
         }
+    }
+
+    /// What the skip and close buttons do.
+    func dismissTapped() {
+        dismissAction?()
+        dismiss()
     }
 
     private var reasonsList: some View {

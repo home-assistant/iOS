@@ -1,8 +1,9 @@
 import AVFoundation
 @testable import Shared
+import SharedTesting
 import Testing
 
-@Suite(.serialized)
+@Suite(.sharedState)
 struct CarPlayAssistDebugSettingsTests {
     init() {
         Self.removeStoredSettings()

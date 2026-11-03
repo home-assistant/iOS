@@ -1,10 +1,11 @@
 import Foundation
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Serialized because `ServerFixture.standard` is backed by shared mutable state, and these tests
 /// rewrite its configured URLs.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct WatchRelayRequestHandlerTests {
     private func url(_ string: String) -> URL {
         URL(string: string)!

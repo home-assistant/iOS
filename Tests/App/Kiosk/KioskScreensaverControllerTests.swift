@@ -88,6 +88,30 @@ final class KioskScreensaverControllerTests: XCTestCase {
         waitUntil("idle timer re-armed") { controller.isIdleTimerArmed }
     }
 
+    /// Activity restarts the idle timer while the screensaver is off and is ignored while it is on;
+    /// turning the screensaver off in settings hides it.
+    func testActivityAndDisablingTheScreensaver() throws {
+        let controller = try makeController(timeToStart: .seconds30)
+        waitUntil("idle timer armed") { controller.isIdleTimerArmed }
+        controller.recordActivity()
+        XCTAssertTrue(controller.isIdleTimerArmed)
+
+        kiosk.requestScreensaver(.show)
+        waitUntil("screensaver active") { controller.isActive }
+        controller.recordActivity()
+        XCTAssertTrue(controller.isActive)
+
+        // Motion clearing (the only state a simulator reports) restarts the idle timer.
+        controller.motionStateDidChange(for: Current.motionDetection)
+
+        try database.write { db in
+            var settings = try XCTUnwrap(KioskSettings.fetchOne(db))
+            settings.screensaver.enabled = false
+            try settings.update(db)
+        }
+        waitUntil("screensaver hidden") { !controller.isActive }
+    }
+
     // MARK: - Helpers
 
     /// Dimming goes through the environment's brightness hooks, so it never touches the main screen

@@ -2,11 +2,12 @@ import HAKit
 import HAKit_Mocks
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Covers the spoken open and close command: the service it picks per direction, the sentence it
 /// reads back, and the two ways it can refuse.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct OpenCloseEntityAppIntentTests {
     private static func cover(serverId: String, entityId: String = "cover.curtain") -> OpenableEntityAppEntity {
         OpenableEntityAppEntity(

@@ -13,6 +13,7 @@ final class WebViewControllerCatalystLayoutTests: XCTestCase {
     private static let titleBarInset: CGFloat = 28
 
     private var previousServers: ServerManager!
+    private var previousCachedApis: [Identifier<Server>: HomeAssistantAPI]!
     private var previousIsCatalyst: Bool!
     private var servers: FakeServerManager!
     private var server: Server!
@@ -20,6 +21,7 @@ final class WebViewControllerCatalystLayoutTests: XCTestCase {
 
     override func setUp() async throws {
         previousServers = Current.servers
+        previousCachedApis = Current.cachedApis
         previousIsCatalyst = Current.isCatalyst
         servers = FakeServerManager(initial: 0)
         server = servers.addFake()
@@ -29,6 +31,11 @@ final class WebViewControllerCatalystLayoutTests: XCTestCase {
 
     override func tearDown() async throws {
         Current.servers = previousServers
+        // The code under test caches an API for its server. XCTest keeps this test case alive for the
+        // whole run, and an API left in the cache stays registered with the app's sensor container,
+        // which every later sensor signal fans out to.
+        Current.cachedApis = previousCachedApis
+        previousCachedApis = nil
         Current.isCatalyst = previousIsCatalyst
         previousServers = nil
         previousIsCatalyst = nil

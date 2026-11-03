@@ -1,5 +1,6 @@
 import Foundation
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Records what a run asked of its fakes, from whichever task the reporter calls them on.
@@ -39,7 +40,7 @@ private final class ReporterCallLog {
 }
 
 // Serialized: the suites share `Current`, and the coalescing test measures timing.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct WatchDeviceReporterTests {
     private let server = Server.fake()
     private let store = FakeWatchDeviceRegistrationStore()

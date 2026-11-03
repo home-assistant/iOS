@@ -9,6 +9,7 @@ class SensorListViewModelHealthKitTests: XCTestCase {
     private var originalHealthKitService: HealthKitService!
     private var originalSensors: SensorContainer!
     private var originalServers: ServerManager!
+    private var previousCachedApis: [Identifier<Server>: HomeAssistantAPI]!
     private var server: Server!
     private var previousReported: Any?
 
@@ -18,6 +19,7 @@ class SensorListViewModelHealthKitTests: XCTestCase {
         originalHealthKitService = Current.healthKitService
         originalSensors = Current.sensors
         originalServers = Current.servers
+        previousCachedApis = Current.cachedApis
         previousReported = Current.settingsStore.prefs.object(forKey: Self.reportedKey)
 
         let servers = FakeServerManager()
@@ -41,6 +43,11 @@ class SensorListViewModelHealthKitTests: XCTestCase {
         Current.healthKitService = originalHealthKitService
         Current.sensors = originalSensors
         Current.servers = originalServers
+        // The code under test caches an API for its server. XCTest keeps this test case alive for the
+        // whole run, and an API left in the cache stays registered with the app's sensor container,
+        // which every later sensor signal fans out to.
+        Current.cachedApis = previousCachedApis
+        previousCachedApis = nil
         server = nil
         originalHealthKitService = nil
         originalSensors = nil

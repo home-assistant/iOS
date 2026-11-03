@@ -2,9 +2,10 @@ import Foundation
 import GRDB
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
-@Suite(.serialized)
+@Suite(.sharedState)
 struct NFCTagApprovalTests {
     private let legacyAllowedTagsKey = "allowedTags"
 

@@ -1,9 +1,14 @@
 import PromiseKit
 @testable import Shared
+import SharedTesting
 import XCTest
 
 #if os(iOS) && !targetEnvironment(macCatalyst)
 class CameraMotionSensorTests: XCTestCase {
+    /// The enablement this class resets lives in the app group defaults, which every test process
+    /// on the simulator shares; a suite of its own keeps another process's reset out of this one.
+    private var privateSettings: PrivateSettingsStore!
+
     private var request: SensorProviderRequest = .init(
         reason: .trigger("unit-test"),
         dependencies: .init(),
@@ -16,6 +21,7 @@ class CameraMotionSensorTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
+        privateSettings = PrivateSettingsStore()
 
         previousServers = Current.servers
         let servers = FakeServerManager()
@@ -33,6 +39,8 @@ class CameraMotionSensorTests: XCTestCase {
         Current.servers = previousServers
         Current.motionDetection = MotionDetectionManager()
         SensorEnablementStore.resetForTesting()
+        privateSettings.restore()
+        privateSettings = nil
     }
 
     func testNotAvailable() {

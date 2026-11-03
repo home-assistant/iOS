@@ -2,6 +2,7 @@ import Foundation
 @testable import HomeAssistant
 import PromiseKit
 @testable import Shared
+import SharedTesting
 import SwiftUI
 import Testing
 import UIKit
@@ -9,7 +10,7 @@ import UIKit
 /// Hosts a control carrying `.serverReauthentication` in a key window and checks that each step of
 /// a Re-authenticate is actually presented from it: the address picker, the client certificate
 /// import, the login page and the failure alert.
-@Suite(.serialized)
+@Suite(.sharedState)
 @MainActor
 struct ServerReauthenticationModifierTests {
     private func makeServer(internalURL: String? = nil) -> Server {

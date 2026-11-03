@@ -757,12 +757,18 @@ public class HomeAssistantAPI {
         return Mapper().toJSON(ident)
     }
 
+    /// - Parameters:
+    ///   - location: the fix to report, after any zone-event fuzzing.
+    ///   - rawLocation: the fix as CoreLocation delivered it, when `location` was changed to agree with a
+    ///     region event; `nil` means `location` is unchanged.
     public func SubmitLocation(
         updateType: LocationUpdateTrigger,
-        location rawLocation: CLLocation?,
+        location reportedLocation: CLLocation?,
+        rawLocation: CLLocation? = nil,
         zone: AppZone?
     ) -> Promise<Void> {
         let supportsInZones = server.info.version >= .inZonesOnLocationUpdate
+        let supportsRawLocation = server.info.version >= .rawLocationOnLocationUpdate
         let localMetadata = WebhookResponseLocation.localMetdata(
             trigger: updateType,
             zone: zone
@@ -777,13 +783,15 @@ public class HomeAssistantAPI {
             let update = WebhookUpdateLocation(
                 privacy: privacy,
                 trigger: updateType,
-                location: rawLocation,
+                location: reportedLocation,
+                rawLocation: rawLocation,
                 zone: zone,
                 supportsInZones: supportsInZones,
+                supportsRawLocation: supportsRawLocation,
                 currentSSID: currentSSID,
                 zonesContaining: { [server] in AppZone.zones(of: $0, in: server) }
             )
-            let location = privacy == .exact ? rawLocation : nil
+            let location = privacy == .exact ? reportedLocation : nil
 
             return firstly { () -> Promise<Void> in
                 let accuracyAuthorization: CLAccuracyAuthorization = CLLocationManager().accuracyAuthorization

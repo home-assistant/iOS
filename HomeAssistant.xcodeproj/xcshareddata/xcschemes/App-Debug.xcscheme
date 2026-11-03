@@ -97,10 +97,6 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-EnableDebugSwift"
-            isEnabled = "NO">
-         </CommandLineArgument>
-         <CommandLineArgument
             argument = "-FIRDebugDisabled"
             isEnabled = "NO">
          </CommandLineArgument>

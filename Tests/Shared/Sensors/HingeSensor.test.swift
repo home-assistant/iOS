@@ -1,9 +1,14 @@
 import PromiseKit
 @testable import Shared
+import SharedTesting
 import XCTest
 
 #if os(iOS) && !targetEnvironment(macCatalyst)
 class HingeSensorTests: XCTestCase {
+    /// The enablement this class resets lives in the app group defaults, which every test process
+    /// on the simulator shares; a suite of its own keeps another process's reset out of this one.
+    private var privateSettings: PrivateSettingsStore!
+
     private var originalSensors: SensorContainer!
     private var request: SensorProviderRequest = .init(
         reason: .trigger("unit-test"),
@@ -14,6 +19,7 @@ class HingeSensorTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
+        privateSettings = PrivateSettingsStore()
 
         originalSensors = Current.sensors
         Current.sensors = SensorContainer()
@@ -31,6 +37,8 @@ class HingeSensorTests: XCTestCase {
         Current.sensors = originalSensors
         originalSensors = nil
         SensorEnablementStore.resetForTesting()
+        privateSettings.restore()
+        privateSettings = nil
     }
 
     /// A device that answered and reported no hinge cannot ever produce these sensors, so they are

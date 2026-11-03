@@ -12,3 +12,13 @@ protocol CarPlayAlertPresenting: AnyObject {
 }
 
 extension CPInterfaceController: CarPlayAlertPresenting {}
+
+/// The slice of `CPInterfaceController` that pushing and popping templates needs, narrowed for the
+/// same reason as `CarPlayAlertPresenting`: tests drive the pushed screens through a double.
+protocol CarPlayNavigationPresenting: CarPlayAlertPresenting {
+    func pushTemplate(_ templateToPush: CPTemplate, animated: Bool, completion: ((Bool, Error?) -> Void)?)
+    func popTemplate(animated: Bool, completion: ((Bool, Error?) -> Void)?)
+    func popToRootTemplate(animated: Bool, completion: ((Bool, Error?) -> Void)?)
+}
+
+extension CPInterfaceController: CarPlayNavigationPresenting {}

@@ -1,5 +1,6 @@
 import Foundation
 @testable import Shared
+import SharedTesting
 import Testing
 import WatchConnectivity
 
@@ -102,6 +103,7 @@ private final class ValueBox<T>: @unchecked Sendable {
     }
 }
 
+@Suite(.sharedState)
 struct WatchConnectivityEnvelope_test {
     @Test func immediateMessageRoundTripPreservesDataPayload() throws {
         let payload: [String: Any] = ["config": Data([0x01, 0x02, 0x03]), "count": 4]
@@ -218,7 +220,8 @@ struct WatchConnectivitySend_test {
             errorHandler: { error = $0 }
         )
         #expect(fake.sentMessages.count == 1)
-        try await Task.sleep(nanoseconds: 400_000_000)
+        let reached1 = await waitUntil { error != nil }
+        #expect(reached1)
         #expect(error as? HAWatchConnectivity.ConnectivityError == .replyTimedOut)
     }
 
@@ -236,8 +239,11 @@ struct WatchConnectivitySend_test {
         fake.sentMessages[0].replyHandler?(
             HAWatchConnectivity.ImmediateMessage(identifier: "watchConfigResponse").jsonRepresentation()
         )
-        try await Task.sleep(nanoseconds: 400_000_000)
+        let reached2 = await waitUntil { receivedReply != nil }
+        #expect(reached2)
         #expect(receivedReply?.identifier == "watchConfigResponse")
+        // Past the timeout, which must not fire: a short wait only because this checks for nothing.
+        try await Task.sleep(nanoseconds: 400_000_000)
         #expect(error == nil)
     }
 
@@ -353,6 +359,17 @@ struct WatchConnectivitySend_test {
     }
 }
 
+/// Polls for work the manager hands to the main queue, which a busy runner can take far longer
+/// than a fixed sleep to get to.
+private func waitUntil(timeout: TimeInterval = 10, _ condition: () -> Bool) async -> Bool {
+    let deadline = Date().addingTimeInterval(timeout)
+    while !condition() {
+        guard Date() < deadline else { return false }
+        try? await Task.sleep(nanoseconds: 10_000_000)
+    }
+    return true
+}
+
 struct WatchConnectivityReceive_test {
     @Test func interactiveVsImmediateRouting() async throws {
         let manager = WatchConnectivityManager(session: FakeWCSession())
@@ -365,7 +382,9 @@ struct WatchConnectivityReceive_test {
         manager.receiveMessage(envelope, replyHandler: { _ in })
         manager.receiveMessage(HAWatchConnectivity.ImmediateMessage(identifier: "wakeup").jsonRepresentation())
 
-        try await Task.sleep(nanoseconds: 250_000_000)
+        let arrived = await waitUntil { interactiveBox.value != nil && immediateBox.value != nil }
+
+        #expect(arrived)
         #expect(interactiveBox.value?.identifier == "watchConfig")
         #expect(immediateBox.value?.identifier == "wakeup")
         #expect(interactiveBox.count == 1)
@@ -381,7 +400,9 @@ struct WatchConnectivityReceive_test {
         manager.receiveUserInfo(HAWatchConnectivity.ComplicationInfo(content: [:]).jsonRepresentation())
         manager.receiveUserInfo(HAWatchConnectivity.GuaranteedMessage(identifier: "sync").jsonRepresentation())
 
-        try await Task.sleep(nanoseconds: 250_000_000)
+        let arrived = await waitUntil { complicationBox.count > 0 && guaranteedBox.value != nil }
+
+        #expect(arrived)
         #expect(complicationBox.count == 1)
         #expect(guaranteedBox.value?.identifier == "sync")
     }
@@ -394,7 +415,8 @@ struct WatchConnectivityReceive_test {
         DispatchQueue.global().async {
             manager.receiveMessage(HAWatchConnectivity.ImmediateMessage(identifier: "wakeup").jsonRepresentation())
         }
-        try await Task.sleep(nanoseconds: 250_000_000)
+        let arrived = await waitUntil { box.value != nil }
+        #expect(arrived)
         #expect(box.value?.identifier == "wakeup")
         #expect(box.wasOnMain == true)
     }
@@ -417,7 +439,8 @@ struct WatchConnectivityReceive_test {
         manager.immediateMessage.store[observation] = { box.set($0) }
 
         manager.receiveMessage(HAWatchConnectivity.ImmediateMessage(identifier: "wakeup").jsonRepresentation())
-        try await Task.sleep(nanoseconds: 250_000_000)
+        let arrived = await waitUntil { box.value != nil }
+        #expect(arrived)
         #expect(box.value?.identifier == "wakeup")
         #expect(box.wasOnMain == true)
 
@@ -432,10 +455,10 @@ struct WatchConnectivityReceive_test {
         let interactiveBox = ValueBox<HAWatchConnectivity.InteractiveImmediateMessage>()
         manager.interactiveImmediateMessage.observe { interactiveBox.set($0) }
 
-        var replied = false
-        manager.receiveMessage(["identifier": "x"], replyHandler: { _ in replied = true })
-        try await Task.sleep(nanoseconds: 150_000_000)
-        #expect(replied == true)
+        let replied = ValueBox<Bool>()
+        manager.receiveMessage(["identifier": "x"], replyHandler: { _ in replied.set(true) })
+        let arrived = await waitUntil { replied.value == true }
+        #expect(arrived)
         #expect(interactiveBox.count == 0)
     }
 
@@ -453,7 +476,9 @@ struct WatchConnectivityReceive_test {
         fake.isReachableProxy = true
         manager.refreshConnectivityState()
 
-        try await Task.sleep(nanoseconds: 250_000_000)
+        let arrived = await waitUntil { box.value == .immediatelyReachable }
+
+        #expect(arrived)
         #expect(box.value == .immediatelyReachable)
         #expect(manager.currentReachability == .immediatelyReachable)
     }
@@ -641,7 +666,8 @@ struct WatchConnectivityQueue_test {
         manager.send(interactive("two"))
         var error: Error?
         let queued = manager.send(interactive("expired"), timeout: 0.05, errorHandler: { error = $0 })
-        try await Task.sleep(nanoseconds: 200_000_000)
+        let reached3 = await waitUntil { error != nil }
+        #expect(reached3)
 
         #expect(error as? HAWatchConnectivity.ConnectivityError == .notSentInTime)
         #expect(manager.cancelQueuedInteractiveSend(queued) == false)
@@ -670,6 +696,10 @@ struct WatchConnectivityQueue_test {
         } else {
             DispatchQueue.main.sync(execute: freeASlotAfterTheDeadline)
         }
+        let reached4 = await waitUntil { !errors.isEmpty }
+        #expect(reached4)
+        // The queued send's own expiry is due by now too, and must not report a second time: a short
+        // wait only because this checks for nothing.
         try await Task.sleep(nanoseconds: 100_000_000)
 
         #expect(sentIdentifiers(fake) == ["one", "two"])
@@ -680,23 +710,37 @@ struct WatchConnectivityQueue_test {
         #expect(sentIdentifiers(fake) == ["one", "two", "next"])
     }
 
+    /// The reply timeout runs from when the send was asked for, not from when it left the queue: it
+    /// fires `timeout` after queueing, well before `timeout` after the send went out.
     @Test func timeSpentQueuedCountsAgainstTheReplyTimeout() async throws {
         let fake = FakeWCSession()
         let manager = WatchConnectivityManager(session: fake)
 
         manager.send(interactive("one"))
         manager.send(interactive("two"))
+        let timeout: TimeInterval = 3
         var error: Error?
-        manager.send(interactive("waited"), timeout: 0.4, errorHandler: { error = $0 })
-        try await Task.sleep(nanoseconds: 300_000_000)
+        var errorDate: Date?
+        let queuedAt = Date()
+        manager.send(interactive("waited"), timeout: timeout, errorHandler: {
+            error = $0
+            errorDate = Date()
+        })
+        // Time spent in the queue is what this is about, so it is spent on purpose rather than
+        // waited out for something to happen.
+        try await Task.sleep(nanoseconds: 1_500_000_000)
 
         let reply = HAWatchConnectivity.ImmediateMessage(identifier: "r").jsonRepresentation()
         fake.sentMessages[0].replyHandler?(reply)
+        let sentAt = Date()
         #expect(sentIdentifiers(fake) == ["one", "two", "waited"])
         #expect(error == nil)
 
-        try await Task.sleep(nanoseconds: 300_000_000)
+        let reached5 = await waitUntil { error != nil }
+        #expect(reached5)
         #expect(error as? HAWatchConnectivity.ConnectivityError == .replyTimedOut)
+        let firedAfter = try #require(errorDate).timeIntervalSince(queuedAt)
+        #expect(firedAfter < sentAt.timeIntervalSince(queuedAt) + timeout)
     }
 
     @Test func aSendDroppedFromTheQueueDescribesItselfAsNeverSent() {

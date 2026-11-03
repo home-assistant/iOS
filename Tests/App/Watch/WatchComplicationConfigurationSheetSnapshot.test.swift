@@ -1,5 +1,6 @@
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import SwiftUI
 import Testing
 
@@ -8,7 +9,7 @@ import Testing
 /// The builder-flow snapshot (`WatchComplicationBuilderEditViewSnapshotTests`) stops before this sheet,
 /// and the on-face rendering is covered by the corner content-view snapshots; this guards the editor UI.
 @MainActor
-@Suite(.serialized)
+@Suite(.sharedState)
 struct WatchComplicationConfigurationSheetSnapshotTests {
     @Test func templateEndpointControls() {
         let previousServers = Current.servers

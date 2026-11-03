@@ -18,6 +18,7 @@ final class AssistEntryPointsTests: XCTestCase {
 
     private var delegate: SessionDelegate!
     private var previousServers: ServerManager!
+    private var previousCachedApis: [Identifier<Server>: HomeAssistantAPI]!
     private var servers: FakeServerManager!
     private var server: Server!
 
@@ -28,6 +29,7 @@ final class AssistEntryPointsTests: XCTestCase {
         AssistSession.shared.inProgress = true
 
         previousServers = Current.servers
+        previousCachedApis = Current.cachedApis
         servers = FakeServerManager(initial: 0)
         server = servers.addFake()
         Current.servers = servers
@@ -47,6 +49,11 @@ final class AssistEntryPointsTests: XCTestCase {
         AssistSession.shared.delegate = nil
         AssistSession.shared.inProgress = false
         Current.servers = previousServers
+        // The code under test caches an API for its server. XCTest keeps this test case alive for the
+        // whole run, and an API left in the cache stays registered with the app's sensor container,
+        // which every later sensor signal fans out to.
+        Current.cachedApis = previousCachedApis
+        previousCachedApis = nil
         previousServers = nil
         servers = nil
         server = nil

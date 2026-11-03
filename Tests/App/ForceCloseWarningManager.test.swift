@@ -1,11 +1,12 @@
 import CoreLocation
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 import UserNotifications
 
 // Serialized: the tests mutate process-wide app-group defaults and shared `Current` dependencies.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct ForceCloseWarningManagerTests {
     @Test func settingsStoreDefaultsToDisabled() {
         withForceCloseWorld {
@@ -112,7 +113,7 @@ private func withForceCloseWorld(
 // `AppDelegate.applicationWillTerminate` is the only caller of `ForceCloseWarningManager.postImmediateWarning`,
 // and it is the wiring this feature ships to production. Stub the manager through `Current` and assert the
 // delegate hands off when iOS terminates the app.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct AppDelegateForceCloseTerminationTests {
     @Test func applicationWillTerminateHandsOffToTheWarningManager() {
         withForceCloseWorld(toggle: true, permission: .authorizedAlways) {

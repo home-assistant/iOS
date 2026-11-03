@@ -128,6 +128,17 @@ final class NotificationHistoryStore: NotificationHistoryStoreProtocol {
     static let entriesCacheLimit = 500
 
     private let queue = DispatchQueue(label: "io.home-assistant.notification-history-store")
+    private let fileURL: URL?
+
+    /// - Parameter fileURL: where the history is kept; the app group's file when `nil`. Tests pass a
+    ///   file of their own, because every process on a simulator shares the app group container.
+    init(fileURL: URL? = nil) {
+        self.fileURL = fileURL
+    }
+
+    private var historyFile: URL {
+        fileURL ?? AppConstants.notificationHistoryFile
+    }
 
     func record(_ entry: NotificationHistoryEntry) {
         queue.sync {
@@ -154,7 +165,7 @@ final class NotificationHistoryStore: NotificationHistoryStoreProtocol {
         var result: [NotificationHistoryEntry] = []
         var coordinationError: NSError?
         NSFileCoordinator().coordinate(
-            readingItemAt: AppConstants.notificationHistoryFile,
+            readingItemAt: historyFile,
             options: .withoutChanges,
             error: &coordinationError
         ) { url in
@@ -169,7 +180,7 @@ final class NotificationHistoryStore: NotificationHistoryStoreProtocol {
     private func coordinatedWrite(_ transform: ([NotificationHistoryEntry]) -> [NotificationHistoryEntry]) {
         var coordinationError: NSError?
         NSFileCoordinator().coordinate(
-            writingItemAt: AppConstants.notificationHistoryFile,
+            writingItemAt: historyFile,
             options: [],
             error: &coordinationError
         ) { url in

@@ -42,6 +42,13 @@ final class OnboardingAuthStepDeviceNamingTests: XCTestCase {
 
     override func tearDown() {
         super.tearDown()
+        // A request the test never answers holds the step's promise chain, and through it the step
+        // and the API: an API left alive stays registered with the app's sensor container.
+        connection?.pendingRequests.removeAll()
+        connection?.pendingSubscriptions.removeAll()
+        // A device name request left on the path holds the step, and so the presenter and the API.
+        presenter?.path.removeAll()
+        cancellables.removeAll()
         step = nil
         api = nil
         connection = nil

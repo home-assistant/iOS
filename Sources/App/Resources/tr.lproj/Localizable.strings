@@ -689,6 +689,7 @@
 "connection.active_url_type.toast.internal" = "Dahili URL'yi kullanarak.";
 "connection.active_url_type.toast.none" = "Şu anda bu sunucu için aktif bir URL bulunmamaktadır.";
 "connection.active_url_type.toast.remote_ui" = "Bulut Uzaktan Kullanıcı Arayüzü URL’sini kullan.";
+"connection.active_url_type.toast.remote_ui_link" = "Using %@ Remote UI URL.";
 "connection.active_url_type.toast.title" = "Bağlantı türü";
 "connection.error.details.button.clipboard" = "Panoya kopyala";
 "connection.error.details.button.discord" = "Discord'da sor";
@@ -701,6 +702,8 @@
 "connection.error.details.title" = "Bağlantı hatası";
 "connection.error.failed_connect.cloud.title" = "Home Assistant Bulut aboneliğinizin aktif olduğundan ve sunucunuza bağlı olduğundan emin olun, bunu [Nabu Casa](https://account.nabucasa.com) adresinden doğrulayabilirsiniz.";
 "connection.error.failed_connect.cloud_inactive.title" = "Uygulamada Home Assistant Bulut kullanımını devre dışı bıraktınız, uzaktan erişim için ihtiyacınız varsa lütfen yardımcı uygulama ayarlarını açın ve etkinleştirin.";
+"connection.error.failed_connect.cloud_inactive_link.title" = "You have disabled %@ use in the app, if you need it for remote access please open companion app settings and enable it.";
+"connection.error.failed_connect.cloud_link.title" = "Make sure your %@ subscription is active and connected to your server, you can verify that at [Nabu Casa](https://account.nabucasa.com)";
 "connection.error.failed_connect.subtitle" = "Bağlantınızı kontrol edin ve tekrar deneyin. Evde değilseniz uzaktan erişimi yapılandırdığınızdan emin olun.";
 "connection.error.failed_connect.title" = "Home Assistant'a bağlanamadık";
 "connection.error.failed_connect.url" = "Uygulama şu anda bağlanıyor";
@@ -1657,6 +1660,7 @@ Ev Asistanı açık kaynaklıdır, gizliliği savunur ve evinizde yerel olarak �
 "settings.connection_section.client_certificate.remove_confirmation.message" = "Sertifika cihazdan kaldırılacaktır. mTLS kimlik doğrulamasını kullanmak için sertifikayı tekrar içe aktarmanız gerekecektir.";
 "settings.connection_section.client_certificate.remove_confirmation.remove" = "Kaldır";
 "settings.connection_section.client_certificate.remove_confirmation.title" = "Sertifikayı kaldır?";
+"settings.connection_section.cloud_link_overrides_external" = "When connecting via %@, the External URL will not be used. You do not need to configure one unless you want to disable it.";
 "settings.connection_section.cloud_overrides_external" = "Bulut yoluyla bağlanırken, Harici URL kullanılmayacaktır. Bulutu devre dışı bırakmak istemediğiniz sürece bir tane yapılandırmanıza gerek yoktur.";
 "settings.connection_section.cloudhook.check_reachability.reachable" = "Ulaşılabilir";
 "settings.connection_section.cloudhook.check_reachability.reachable_status_code" = "Erişilebilir (HTTP) %li)";
@@ -1744,6 +1748,7 @@ Ev Asistanı açık kaynaklıdır, gizliliği savunur ve evinizde yerel olarak �
 "settings.connection_section.urls_how_it_works.active.header" = "Şu anda kullanımda";
 "settings.connection_section.urls_how_it_works.active.none" = "Mevcut ayarlarla hiçbir URL kullanılamaz";
 "settings.connection_section.urls_how_it_works.away.body" = "Listelenen ağlardan hiçbiri eşleşmediğinde, bulut özelliği açıksa Home Assistant Bulut URL'si, açık değilse harici URL kullanılır.";
+"settings.connection_section.urls_how_it_works.away.body_link" = "When no listed network matches, the %@ URL is used if it is turned on, and the external URL otherwise.";
 "settings.connection_section.urls_how_it_works.away.title" = "Başka herhangi bir yer";
 "settings.connection_section.urls_how_it_works.background.body" = "Uygulama kapalıyken bile sensör güncellemeleri, bildirim işlemleri ve yerel push bildirimleri çalışmaya devam eder. Arka planda iOS, konum erişimi \"Uygulamayı Kullanırken\" yerine \"Her Zaman\" olarak ayarlandığında yalnızca ağ adını paylaşır; bu nedenle, bu ayar olmadan ev ağınız tanınmaz ve bunlar siz uzaktayken olduğu gibi aynı şekilde bağlanır.";
 "settings.connection_section.urls_how_it_works.background.title" = "Uygulama arka planda çalışırken";
@@ -1771,6 +1776,7 @@ Ev Asistanı açık kaynaklıdır, gizliliği savunur ve evinizde yerel olarak �
 "settings.connection_section.webhook.active.unavailable" = "URL mevcut değil";
 "settings.connection_section.webhook.endpoints.footer" = "Bu URL'leri hassas bilgiler olarak değerlendirin. Bu URL'lere sahip olan herkes bu mobil uygulama web kancasına istek gönderebilir.";
 "settings.connection_section.webhook.footer" = "Uygulama, sensör, konum ve diğer güncellemeleri bu webhook'a gönderir. Home Assistant Cloud, evden uzakta olduğunuzda kullanılan bir cloudhook sağlar. Bu olmadan, uygulama webhook URL'sini bu sunucunun dahili, uzaktan veya harici URL'sinden oluşturur.";
+"settings.connection_section.webhook.footer_link" = "The app sends sensor, location and other updates to this webhook. %@ provides a cloudhook, which is used whenever you are away from home. Without it, the app builds the webhook URL from the internal, remote or external URL of this server instead.";
 "settings.connection_section.webhook.in_use" = "Kullanımda";
 "settings.connection_section.webhook.title" = "Webhook";
 "settings.connection_section.websocket.status.authenticating" = "Doğrulanıyor";
@@ -3066,6 +3072,7 @@ Hiçbir URL güvenli kabul edilmese de, bu sunucunun verileri saate senkronize e
 "watch.settings.client_events.title" = "Günlükler";
 "watch.settings.complications.empty" = "Henüz herhangi bir komplikasyon yapılandırılmadı.";
 "watch.settings.complications.footer" = "Her bir komplikasyonun mevcut değerini doğrudan Home Assistant'tan alır. Bunun için erişilebilir bir sunucu URL'sine (yerel ağ veya uzak/bulut URL'si) ihtiyaç vardır.";
+"watch.settings.complications.footer_link" = "Fetches each complication's current value directly from Home Assistant. This needs a reachable server URL (local network or a remote/%@ URL).";
 "watch.settings.complications.last_attempt" = "Son deneme: %@";
 "watch.settings.complications.list_footer" = "Bir komplikasyona dokunarak en son ne zaman güncellendiğini görebilir ve yeniden deneyebilirsiniz.";
 "watch.settings.complications.never" = "Henüz güncellenmedi";
@@ -3145,6 +3152,7 @@ Hiçbir URL güvenli kabul edilmese de, bu sunucunun verileri saate senkronize e
 "web_view.add_to.option.Deeplink.title" = "Derin bağlantı";
 "web_view.add_to.option.MacToolbar.title" = "Mac Araç Çubuğu";
 "web_view.add_to.option.NfcTag.title" = "NFC Etiketi";
+"web_view.add_to.option.WatchComplication.title" = "Watch Complication";
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Lütfen bağlantınızı kontrol edin veya daha sonra tekrar deneyin. Home Assistant yeniden başlatılıyorsa, tekrar çevrimiçi olduktan sonra yeniden bağlanacaktır.";
 "web_view.empty_state.clean_cache_and_reload_button" = "Önbelleği temizle ve yeniden yükle";

@@ -1,14 +1,25 @@
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import XCTest
 
 final class LocalPushRetryDiagnosticsTests: XCTestCase {
+    /// Puts back the fake servers and other `Current` members this class swaps in, which would
+    /// otherwise receive sensor updates for the rest of the run.
+    private var currentSnapshot: CurrentSnapshot!
+
     private var servers: FakeServerManager!
 
     override func setUp() {
         super.setUp()
+        currentSnapshot = CurrentSnapshot()
         servers = FakeServerManager(initial: 0)
         Current.servers = servers
+    }
+
+    override func tearDown() {
+        currentSnapshot.restore()
+        super.tearDown()
     }
 
     func testRetryEligibleWhenLocalPushEnabledAndCurrentSSIDMatches() {

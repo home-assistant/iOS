@@ -4,15 +4,22 @@ import XCTest
 
 class NotificationHistoryStoreTests: XCTestCase {
     var store: NotificationHistoryStore!
+    /// The app group container is shared by every process on the simulator, and `Tests-Unit` runs
+    /// classes in several of them at once, some recording into the real history
+    /// (`LocalPushManager`). Each test keeps its history in a file nothing else writes to.
+    private var historyFile: URL!
 
     override func setUp() {
         super.setUp()
-        store = NotificationHistoryStore()
-        store.clearAllEntries()
+        historyFile = FileManager.default.temporaryDirectory
+            .appendingPathComponent("notificationHistory-\(UUID().uuidString).json")
+        store = NotificationHistoryStore(fileURL: historyFile)
     }
 
     override func tearDown() {
-        store.clearAllEntries()
+        try? FileManager.default.removeItem(at: historyFile)
+        store = nil
+        historyFile = nil
         super.tearDown()
     }
 

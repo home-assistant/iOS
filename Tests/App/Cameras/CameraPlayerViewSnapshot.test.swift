@@ -43,6 +43,11 @@ final class CameraPlayerViewSnapshotTests: XCTestCase {
     }
 
     override func tearDown() {
+        // A request or subscription the test never answers holds the code under test, and through it
+        // the API: XCTest keeps this test case alive for the whole run, and an API left alive stays
+        // registered with the app's sensor container, which every later sensor signal fans out to.
+        connection?.pendingRequests.removeAll()
+        connection?.pendingSubscriptions.removeAll()
         Current.cachedApis = [:]
         Current.servers = previousServers
         Current.database = previousDatabase

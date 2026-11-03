@@ -2,12 +2,13 @@ import Combine
 import GRDB
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 import UserNotifications
 
 // Serialized: the toast assertions read `ToastPresenter.shared`, which is a singleton these tests
 // would otherwise race each other over.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct KioskPushPresentationTests {
     @MainActor
     @Test func ignoresMessagesThatAreNotKioskCommands() throws {

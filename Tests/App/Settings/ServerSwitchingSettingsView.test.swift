@@ -1,8 +1,11 @@
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import SwiftUI
 import Testing
+import UIKit
 
+@Suite(.sharedState)
 struct ServerSwitchingSettingsViewTests {
     @MainActor
     @Test func searchIndexesNothingWithASingleServer() {
@@ -66,5 +69,25 @@ struct ServerSwitchingSettingsViewTests {
             },
             drawHierarchyInKeyWindow: true
         )
+    }
+
+    /// Turning location-based switching off stores it without asking for location permission.
+    @MainActor
+    @Test func turningLocationSwitchingOffStoresIt() async throws {
+        let previousServers = Current.servers
+        let previousSwitching = Current.settingsStore.locationBasedServerSwitching
+        defer {
+            Current.servers = previousServers
+            Current.settingsStore.locationBasedServerSwitching = previousSwitching
+        }
+        Current.servers = FakeServerManager(initial: 2)
+        Current.settingsStore.locationBasedServerSwitching = true
+
+        let driver = await SwiftUIScreenDriver.show(ServerSwitchingSettingsView())
+        defer { driver.close() }
+        #expect(driver.views(of: UISwitch.self).count == 1)
+
+        await driver.toggleSwitches()
+        #expect(!Current.settingsStore.locationBasedServerSwitching)
     }
 }

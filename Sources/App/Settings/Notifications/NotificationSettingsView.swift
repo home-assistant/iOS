@@ -211,7 +211,7 @@ final class NotificationSettingsViewModel: ObservableObject {
         }
     }
 
-    private static func permissionText(for status: UNAuthorizationStatus) -> String {
+    static func permissionText(for status: UNAuthorizationStatus) -> String {
         switch status {
         case .ephemeral, .authorized, .provisional:
             return L10n.SettingsDetails.Notifications.Permission.enabled

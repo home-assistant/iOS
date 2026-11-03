@@ -5,6 +5,7 @@ import SwiftUI
 import Testing
 import UIKit
 
+@Suite(.sharedState)
 struct WebViewEmptyStateHeaderTests {
     @MainActor @Test func serverSelectionOffsetLeavesTheAccessoriesInPlace() async throws {
         guard #available(iOS 18.0, *) else { return }

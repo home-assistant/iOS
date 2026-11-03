@@ -1,5 +1,6 @@
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import SwiftUI
 import Testing
 import UIKit
@@ -7,7 +8,7 @@ import UIKit
 /// Lays the frontend screen out with the App Labs native tab bar on, which is the only thing that
 /// evaluates that branch of the body.
 @MainActor
-@Suite(.serialized)
+@Suite(.sharedState)
 struct HomeAssistantViewRenderTests {
     /// Renders in a window of its own, which is what makes SwiftUI evaluate the body.
     ///

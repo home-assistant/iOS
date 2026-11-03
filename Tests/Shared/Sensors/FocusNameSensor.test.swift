@@ -2,6 +2,7 @@ import GRDB
 import Intents
 import PromiseKit
 @testable import Shared
+import SharedTesting
 import XCTest
 
 class FocusNameSensorTests: XCTestCase {
@@ -61,8 +62,29 @@ class FocusNameSensorTests: XCTestCase {
         }
     }
 
+    /// Every Focus answer and the enablement the signalers need live in the app group defaults,
+    /// which other test processes on the simulator reset and write while this class runs.
+    private var settingsStore: PrivateSettingsStore!
+    private var previousSensors: SensorContainer!
+    private var previousFocusFilter: FocusFilterWrapper!
+    private var previousFocusStatus: FocusStatusWrapper!
+    private var previousDate: (() -> Date)!
+    private var previousIsAppExtension: Bool!
+
     override func setUpWithError() throws {
         try super.setUpWithError()
+        settingsStore = PrivateSettingsStore()
+        previousSensors = Current.sensors
+        previousFocusFilter = Current.focusFilter
+        previousFocusStatus = Current.focusStatus
+        previousDate = Current.date
+        previousIsAppExtension = Current.isAppExtension
+        // The signalers start observing once the container has produced a Focus sensor a server
+        // wants, so the container is this class's own rather than whatever an earlier one left.
+        let sensors = SensorContainer()
+        sensors.register(provider: FocusSensor.self)
+        sensors.register(provider: FocusNameSensor.self)
+        Current.sensors = sensors
         try clearFocusNames()
         resetFocusState()
         Current.date = { [now] in now }
@@ -74,9 +96,18 @@ class FocusNameSensorTests: XCTestCase {
 
     override func tearDownWithError() throws {
         try clearFocusNames()
-        resetFocusState()
-        Current.isAppExtension = false
-        Current.date = Date.init
+        Current.isAppExtension = previousIsAppExtension
+        Current.date = previousDate
+        Current.focusStatus = previousFocusStatus
+        Current.focusFilter = previousFocusFilter
+        Current.sensors = previousSensors
+        previousIsAppExtension = nil
+        previousDate = nil
+        previousFocusStatus = nil
+        previousFocusFilter = nil
+        previousSensors = nil
+        settingsStore?.restore()
+        settingsStore = nil
         try super.tearDownWithError()
     }
 

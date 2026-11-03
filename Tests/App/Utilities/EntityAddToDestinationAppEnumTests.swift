@@ -1,8 +1,10 @@
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 import UIKit
 
+@Suite(.sharedState)
 struct EntityAddToDestinationAppEnumTests {
     @Test("The watch takes the domains its home screen can render")
     func watchSupportsWatchAddableDomains() {

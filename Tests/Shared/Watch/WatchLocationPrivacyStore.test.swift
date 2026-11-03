@@ -1,9 +1,10 @@
 import Foundation
 @testable import Shared
+import SharedTesting
 import Testing
 
 // Serialized: every test works on the same defaults suite, which each one starts from empty.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct WatchLocationPrivacyStoreTests {
     private static let suiteName = "WatchLocationPrivacyStoreTests"
 

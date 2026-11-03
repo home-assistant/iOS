@@ -25,6 +25,18 @@ final class ClientEventStore: ClientEventStoreProtocol {
     private static let encoder = JSONEncoder()
     private static let decoder = JSONDecoder()
 
+    private let fileURL: URL?
+
+    /// - Parameter fileURL: where the events are kept; the app group's file when `nil`. Tests pass a
+    ///   file of their own, because every process on a simulator shares the app group container.
+    init(fileURL: URL? = nil) {
+        self.fileURL = fileURL
+    }
+
+    private var eventsFile: URL {
+        fileURL ?? AppConstants.clientEventsFile
+    }
+
     public func addEvent(_ event: ClientEvent) {
         Current.Log.verbose("Adding event: \(event.text), \(event.jsonPayload)")
         Self.ioQueue.async { [self] in
@@ -57,13 +69,17 @@ final class ClientEventStore: ClientEventStoreProtocol {
 
     /// Unsynchronized read; callers must be on `ioQueue`.
     private func readEvents() -> [ClientEvent] {
-        guard let containerURL = FileManager.default
-            .containerURL(forSecurityApplicationGroupIdentifier: AppConstants.AppGroupID) else {
-            Current.Log.error("Failed to get container URL for get client events")
-            return []
+        let fileURL: URL
+        if let customFileURL = self.fileURL {
+            fileURL = customFileURL
+        } else {
+            guard let containerURL = FileManager.default
+                .containerURL(forSecurityApplicationGroupIdentifier: AppConstants.AppGroupID) else {
+                Current.Log.error("Failed to get container URL for get client events")
+                return []
+            }
+            fileURL = containerURL.appendingPathComponent(ClientEventStore.jsonCacheName)
         }
-
-        let fileURL = containerURL.appendingPathComponent(ClientEventStore.jsonCacheName)
 
         guard FileManager.default.fileExists(atPath: fileURL.path) else {
             // Expected until the first event is recorded after a fresh install or a cache clear.
@@ -99,7 +115,7 @@ final class ClientEventStore: ClientEventStoreProtocol {
         guard !Self.didConvertLegacyFile else { return }
         Self.didConvertLegacyFile = true
 
-        let fileURL = AppConstants.clientEventsFile
+        let fileURL = eventsFile
         guard let data = FileManager.default.contents(atPath: fileURL.path), Self.isLegacyArray(data) else {
             return
         }
@@ -124,7 +140,7 @@ final class ClientEventStore: ClientEventStoreProtocol {
     /// Unsynchronized append; callers must be on `ioQueue`. `O_APPEND` keeps a write from another
     /// process in the app group from overwriting ours.
     private func appendLine(_ line: Data) {
-        let fileURL = AppConstants.clientEventsFile
+        let fileURL = eventsFile
         let descriptor = open(fileURL.path, O_WRONLY | O_APPEND | O_CREAT, 0o644)
         guard descriptor >= 0 else {
             Current.Log.error("Error opening client events file for append, errno \(errno)")
@@ -145,7 +161,7 @@ final class ClientEventStore: ClientEventStoreProtocol {
 
     /// Unsynchronized write; callers must be on `ioQueue`.
     private func writeEvents(_ events: [ClientEvent]) {
-        let fileURL = AppConstants.clientEventsFile
+        let fileURL = eventsFile
         var data = Data()
         for event in events {
             guard let line = encodedLine(for: event) else { continue }

@@ -1,9 +1,10 @@
 import Foundation
 @testable import Shared
+import SharedTesting
 import Testing
 
 // Serialized: several tests swap `Current` dependencies.
-@Suite(.serialized)
+@Suite(.sharedState)
 struct WatchDeviceRegistrarTests {
     private let identity = WatchDeviceIdentity(
         appID: "io.robbie.HomeAssistant.watchkitapp",

@@ -689,6 +689,7 @@
 "connection.active_url_type.toast.internal" = "Using the internal URL.";
 "connection.active_url_type.toast.none" = "No active URL is currently available for this server.";
 "connection.active_url_type.toast.remote_ui" = "Using Cloud Remote UI URL.";
+"connection.active_url_type.toast.remote_ui_link" = "Using %@ Remote UI URL.";
 "connection.active_url_type.toast.title" = "Connection type";
 "connection.error.details.button.clipboard" = "复制到剪贴板";
 "connection.error.details.button.discord" = "在 Discord 中询问";
@@ -701,6 +702,8 @@
 "connection.error.details.title" = "连接错误";
 "connection.error.failed_connect.cloud.title" = "确保您的 Home Assistant Cloud 订阅处于活动状态并已连接到您的服务器，您可以在【Nabu Casa】(https://account.nabucasa.com) 上进行验证";
 "connection.error.failed_connect.cloud_inactive.title" = "您已在应用中禁用了 Home Assistant Cloud ，如果您需要它进行远程访问，请打开配套应用设置并启用它。";
+"connection.error.failed_connect.cloud_inactive_link.title" = "You have disabled %@ use in the app, if you need it for remote access please open companion app settings and enable it.";
+"connection.error.failed_connect.cloud_link.title" = "Make sure your %@ subscription is active and connected to your server, you can verify that at [Nabu Casa](https://account.nabucasa.com)";
 "connection.error.failed_connect.subtitle" = "检查您的连接并重试。如果您不在家，请确保您已配置了远程访问。";
 "connection.error.failed_connect.title" = "我们无法连接到 Home Assistant";
 "connection.error.failed_connect.url" = "此应用目前正在连接到";
@@ -1654,6 +1657,7 @@ Home Assistant 是开源的，倡导隐私保护，并在您的家中本地运�
 "settings.connection_section.client_certificate.remove_confirmation.message" = "将从设备中移除证书。您需要重新导入该证书才能使用 mTLS 身份验证。";
 "settings.connection_section.client_certificate.remove_confirmation.remove" = "移除";
 "settings.connection_section.client_certificate.remove_confirmation.title" = "移除证书 ？";
+"settings.connection_section.cloud_link_overrides_external" = "When connecting via %@, the External URL will not be used. You do not need to configure one unless you want to disable it.";
 "settings.connection_section.cloud_overrides_external" = "通过云连接时，不会使用外部 URL。除非您想禁用云，否则您不需要配置一个。";
 "settings.connection_section.cloudhook.check_reachability.reachable" = "可连接";
 "settings.connection_section.cloudhook.check_reachability.reachable_status_code" = "可连接 (HTTP %li)";
@@ -1741,6 +1745,7 @@ Home Assistant 是开源的，倡导隐私保护，并在您的家中本地运�
 "settings.connection_section.urls_how_it_works.active.header" = "正在使用中";
 "settings.connection_section.urls_how_it_works.active.none" = "No URL can be used with the current settings";
 "settings.connection_section.urls_how_it_works.away.body" = "When no listed network matches, the Home Assistant Cloud URL is used if cloud is turned on, and the external URL otherwise.";
+"settings.connection_section.urls_how_it_works.away.body_link" = "When no listed network matches, the %@ URL is used if it is turned on, and the external URL otherwise.";
 "settings.connection_section.urls_how_it_works.away.title" = "Anywhere else";
 "settings.connection_section.urls_how_it_works.background.body" = "Sensor updates, notification actions and local push keep running with the app closed. In the background iOS only shares the network name when location access is set to Always rather than While Using the App, so without it your home network goes unrecognised and these connect the same way they do when you are away.";
 "settings.connection_section.urls_how_it_works.background.title" = "While the app is in the background";
@@ -1768,6 +1773,7 @@ Home Assistant 是开源的，倡导隐私保护，并在您的家中本地运�
 "settings.connection_section.webhook.active.unavailable" = "暂无可用网址";
 "settings.connection_section.webhook.endpoints.footer" = "Treat these URLs as sensitive. Anyone with them can send requests to this mobile app webhook.";
 "settings.connection_section.webhook.footer" = "The app sends sensor, location and other updates to this webhook. Home Assistant Cloud provides a cloudhook, which is used whenever you are away from home. Without it, the app builds the webhook URL from the internal, remote or external URL of this server instead.";
+"settings.connection_section.webhook.footer_link" = "The app sends sensor, location and other updates to this webhook. %@ provides a cloudhook, which is used whenever you are away from home. Without it, the app builds the webhook URL from the internal, remote or external URL of this server instead.";
 "settings.connection_section.webhook.in_use" = "使用中";
 "settings.connection_section.webhook.title" = "Webhook";
 "settings.connection_section.websocket.status.authenticating" = "正在验证身份";
@@ -3065,6 +3071,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "watch.settings.client_events.title" = "日志";
 "watch.settings.complications.empty" = "No complications configured yet.";
 "watch.settings.complications.footer" = "Fetches each complication's current value directly from Home Assistant. This needs a reachable server URL (local network or a remote/Cloud URL).";
+"watch.settings.complications.footer_link" = "Fetches each complication's current value directly from Home Assistant. This needs a reachable server URL (local network or a remote/%@ URL).";
 "watch.settings.complications.last_attempt" = "Last attempt: %@";
 "watch.settings.complications.list_footer" = "Tap a complication to see when it last updated and to retry.";
 "watch.settings.complications.never" = "Not yet updated";
@@ -3144,6 +3151,7 @@ While no URL is considered safe, this server's data won't sync to the watch and 
 "web_view.add_to.option.Deeplink.title" = "Deeplink";
 "web_view.add_to.option.MacToolbar.title" = "Mac 工具栏";
 "web_view.add_to.option.NfcTag.title" = "NFC 标签";
+"web_view.add_to.option.WatchComplication.title" = "Watch Complication";
 "web_view.add_to.option.Widget.title" = "小部件";
 "web_view.empty_state.body" = "请检查您的连接或稍后重试。如果 Home Assistant 正在重启，它将在恢复在线后重新连接。";
 "web_view.empty_state.clean_cache_and_reload_button" = "清除缓存并重新加载";

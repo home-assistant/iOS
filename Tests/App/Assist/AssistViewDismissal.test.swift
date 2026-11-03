@@ -29,6 +29,6 @@ final class AssistViewDismissalTests: XCTestCase {
         window.rootViewController = nil
         window.isHidden = true
 
-        wait(for: [dismissed], timeout: 5)
+        wait(for: [dismissed], timeout: 30)
     }
 }

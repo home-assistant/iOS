@@ -4,13 +4,29 @@ import Foundation
 import XCTest
 
 class TokenManagerAccessTokenRejectionTests: XCTestCase {
+    /// Token expirations are measured against `Current.date`, which a class that ran earlier in the
+    /// process may have left pinned to any date, so the class sets its own.
+    private var previousDate: (() -> Date)!
+
+    override func setUp() {
+        super.setUp()
+        previousDate = Current.date
+        let now = Date()
+        Current.date = { now }
+    }
+
+    override func tearDown() {
+        Current.date = previousDate
+        super.tearDown()
+    }
+
     /// A 401 for the currently stored token must expire it, so no later request re-sends a token the
     /// server already rejected (repeats get logged as invalid auth and eventually IP-banned).
     func testRejectingCurrentTokenExpiresIt() {
         let server = Server.fake()
         let tokenManager = TokenManager(server: server)
 
-        XCTAssertGreaterThan(server.info.token.expiration, Date())
+        XCTAssertGreaterThan(server.info.token.expiration, Current.date())
         tokenManager.handleAccessTokenRejected(server.info.token.accessToken)
 
         XCTAssertEqual(server.info.token.expiration, .distantPast)

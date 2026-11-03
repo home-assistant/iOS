@@ -1,10 +1,11 @@
 import Foundation
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import Testing
 
 /// Covers the detail rows built straight from a `Server` for the servers list's long-press preview.
-@Suite(.serialized)
+@Suite(.sharedState)
 @MainActor
 struct ServerDetailsRowViewDetailsTests {
     private func makeServer(
@@ -83,7 +84,7 @@ struct ServerDetailsRowViewDetailsTests {
             useCloud: true
         ))
 
-        #expect(details[2].value == L10n.Settings.ConnectionSection.HomeAssistantCloud.title)
+        #expect(details[2].value == AppConstants.homeAssistantLinkName)
         #expect(details[2].isActive)
         #expect(details[2].symbol == .icloud)
         #expect(details[2].copyValue == "https://example.ui.nabu.casa")

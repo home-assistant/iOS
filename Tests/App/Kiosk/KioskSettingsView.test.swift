@@ -5,6 +5,7 @@ import SharedTesting
 import SwiftUI
 import Testing
 
+@Suite(.sharedState)
 struct KioskSettingsViewTests {
     @MainActor
     @Test func kioskSettingsScreenShowsCommandConfirmationToggle() throws {

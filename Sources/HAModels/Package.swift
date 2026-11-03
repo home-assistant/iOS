@@ -13,7 +13,7 @@ let package = Package(
     dependencies: [
         // Pinned to the exact version the app resolves so Xcode's package graph unifies both into a
         // single GRDB instance (a second copy of a static product would crash at runtime).
-        .package(url: "https://github.com/groue/GRDB.swift.git", exact: "7.8.0"),
+        .package(url: "https://github.com/groue/GRDB.swift.git", exact: "7.12.0"),
     ],
     targets: [
         .target(
