@@ -186,7 +186,7 @@ public struct WidgetTodoListContentView: View {
         // one shrunk to fit, which a shared baseline would leave sitting low.
         HStack(alignment: Self.capCenter) {
             completeControl(item, AnyView(
-                Text(Image(systemSymbol: .circle))
+                WidgetTodoCheckboxView()
                     .font(sizeStyle.summaryFont)
                     .imageScale(.large)
                     .foregroundStyle(.haPrimary)

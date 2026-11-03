@@ -47,6 +47,21 @@ struct WidgetTileRenderingTests {
         ]
         models += intents.map { Self.model(interaction: .appIntent($0)) }
         models += intents.map { Self.model(interaction: .appIntent($0), requiresConfirmation: true) }
+        for isSplit in [false, true] {
+            var optimistic = Self.model(
+                interaction: isSplit ? .widgetURL(moreInfo) : .appIntent(intents[0]),
+                icon: isSplit ? .appIntent(intents[0]) : nil
+            )
+            optimistic.optimisticToggle = .init(domain: .light, state: .init(
+                value: "Off",
+                domainState: .off,
+                rawState: "off",
+                deviceClass: nil,
+                liveColorHex: nil,
+                groupMemberDomain: nil
+            ))
+            models.append(optimistic)
+        }
 
         for model in models {
             render(WidgetBasicContainerView(
@@ -66,6 +81,20 @@ struct WidgetTileRenderingTests {
             widgetKind: .custom
         ))
         render(WidgetRefreshButton(kind: .custom, date: Date()))
+    }
+
+    @available(iOS 17, *)
+    @Test @MainActor func refreshControlsDrawWhileWaitingForTheirIntents() {
+        let date = Date(timeIntervalSince1970: 0)
+        render(WidgetCalendarRefreshButton(date: date))
+        render(WidgetEnergyControls.period("Today")(AnyView(Text(verbatim: "Today"))))
+        render(WidgetEnergyControls.refresh(date)(AnyView(Text(verbatim: "Updated"))))
+        for entry in [
+            WidgetEnergyEntry(isConfigured: true, loadFailed: true),
+            WidgetEnergyEntry(isConfigured: false, noConnection: true),
+        ] {
+            render(WidgetEnergyView(entry: entry))
+        }
     }
 
     // MARK: - Custom widget models

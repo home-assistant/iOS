@@ -7,6 +7,7 @@ import HAKit
 import SharedTesting
 import SwiftUI
 import Testing
+import UserNotifications
 import WidgetKit
 
 /// The to-do list widget: which list its timeline shows, the items it keeps, how each item's due
@@ -19,13 +20,75 @@ struct WidgetTodoListTimelineTests {
     @available(iOS 17, *)
     private var provider: WidgetTodoListAppIntentTimelineProvider { .init() }
 
+    private struct TimelineContext: WidgetTimelineContext {
+        var family: WidgetFamily = .systemMedium
+        var isPreview = false
+    }
+
     // MARK: - Timeline
+
+    @available(iOS 17, *)
+    @Test func anUnconfiguredListDoesNotReportALoadFailure() async throws {
+        _ = try install(entities: []) { _ in .failure(widgetStubUnexpected) }
+        let timeline = await provider.timeline(for: .init(), in: TimelineContext())
+        let entry = try #require(timeline.entries.first)
+        #expect(entry.listId.isEmpty)
+        #expect(entry.items.isEmpty)
+        #expect(!entry.loadFailed)
+        #expect(WidgetTodoListView(entry: entry).isEmpty)
+    }
+
+    @available(iOS 17, *)
+    @Test func aGalleryPreviewDoesNotFetchRealItems() async throws {
+        let (_, connection) = try install(entities: []) { _ in .failure(widgetStubUnexpected) }
+        let timeline = await provider.timeline(for: .init(), in: TimelineContext(isPreview: true))
+        let entry = try #require(timeline.entries.first)
+        #expect(entry.listId == "todo.preview")
+        #expect(entry.items.count == 3)
+        #expect(!entry.loadFailed)
+        #expect(connection.sent.isEmpty)
+    }
+
+    @available(iOS 17, *)
+    @Test func aFailedRefreshIsNotAnEmptyCompletedList() async throws {
+        let (server, _) = try install(entities: []) { _ in .failure(widgetStubUnexpected) }
+        let configuration = WidgetTodoListAppIntent()
+        configuration.list = .init(
+            id: "list",
+            entityId: "todo.shopping",
+            serverId: server.identifier.rawValue,
+            displayString: "Shopping",
+            iconName: "checklist"
+        )
+        let failed = await provider.timeline(for: configuration, in: TimelineContext())
+        #expect(failed.entries.first?.loadFailed == true)
+        let failedView = try WidgetTodoListView(entry: #require(failed.entries.first))
+        #expect(failedView.loadFailed)
+        #expect(!failedView.isEmpty)
+        #expect(failedView.listId == "todo.shopping")
+
+        Current.api(for: server)?.connection = WidgetStubConnection { _ in
+            .success(HAData(value: [
+                "changed_states": [String](),
+                "service_response": ["todo.shopping": ["items": [[String: String]]()]],
+            ]))
+        }
+        let empty = await provider.timeline(for: configuration, in: TimelineContext())
+        #expect(empty.entries.first?.loadFailed == false)
+        #expect(empty.entries.first?.items.isEmpty == true)
+
+        Current.servers = FakeServerManager()
+        let missing = await provider.timeline(for: configuration, in: TimelineContext())
+        #expect(missing.entries.first?.loadFailed == true)
+    }
 
     // MARK: - Completing an item
 
     @available(iOS 17, *)
     @Test func completingAnItemSendsTheService() async throws {
         let (server, connection) = try install(entities: []) { _ in .success(.empty) }
+        let notifications = RecordingDispatcher()
+        Current.notificationDispatcher = notifications
         let intent = TodoItemCompleteAppIntent(
             serverId: server.identifier.rawValue,
             listId: "todo.shopping",
@@ -35,11 +98,13 @@ struct WidgetTodoListTimelineTests {
         _ = try await intent.perform()
         #expect(connection.sentCommands == ["services/todo/update_item"])
         #expect(connection.sent.first?.data["status"] as? String == "completed")
+        #expect(notifications.ids.isEmpty)
 
         let failing = WidgetStubConnection { _ in .failure(widgetStubUnexpected) }
         Current.api(for: server)?.connection = failing
         _ = try await intent.perform()
         #expect(failing.sent.count == 1)
+        #expect(notifications.ids == [.intentPerformActionFailed])
 
         let unknown = TodoItemCompleteAppIntent()
         _ = try await unknown.perform()
@@ -121,6 +186,25 @@ struct WidgetTodoListTimelineTests {
     }
 
     // MARK: - Helpers
+
+    private final class RecordingDispatcher: LocalNotificationDispatcherProtocol, @unchecked Sendable {
+        private let lock = NSLock()
+        private var sent: [NotificationIdentifier] = []
+
+        var ids: [NotificationIdentifier] {
+            lock.lock()
+            defer { lock.unlock() }
+            return sent
+        }
+
+        func send(_ notification: LocalNotificationDispatcher.Notification) {
+            lock.lock()
+            sent.append(notification.id)
+            lock.unlock()
+        }
+
+        func reschedule(_ content: UNNotificationContent, after delay: TimeInterval) {}
+    }
 
     /// Registers one server whose API answers through `respond`, with `entities` (server id,
     /// entity id, name) stored as to-do lists in a fresh in-memory database.

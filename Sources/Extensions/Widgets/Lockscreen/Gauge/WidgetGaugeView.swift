@@ -14,20 +14,23 @@ struct WidgetGaugeView: View {
     var body: some View {
         // A mirrored complication renders through the very same content view the watch and the
         // complication editor use, so it carries its own gauge style, colors and slots.
-        if let model = entry.complicationModel {
-            complication(model)
-        } else {
-            WidgetGaugeContentView(
-                gaugeType: entry.gaugeType.designSystemType,
-                value: entry.value,
-                valueLabel: entry.valueLabel,
-                label: entry.label,
-                min: entry.min,
-                max: entry.max,
-                family: family,
-                logo: Image(.logo)
-            )
+        Group {
+            if let model = entry.complicationModel {
+                complication(model)
+            } else {
+                WidgetGaugeContentView(
+                    gaugeType: entry.gaugeType.designSystemType,
+                    value: entry.value,
+                    valueLabel: entry.valueLabel,
+                    label: entry.label,
+                    min: entry.min,
+                    max: entry.max,
+                    family: family,
+                    logo: Image(.logo)
+                )
+            }
         }
+        .invalidatableContent()
     }
 
     /// The complication content view. The lock screen renders it bare, the way the watch face does.

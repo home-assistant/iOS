@@ -25,7 +25,8 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
         confirmsTapAction: Bool = false,
         requiresConfirmation: Bool = false,
         widgetId: String? = nil,
-        disabled: Bool = false
+        disabled: Bool = false,
+        optimisticToggle: WidgetOptimisticToggle? = nil
     ) {
         self.id = id
         self.title = title
@@ -44,6 +45,7 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
         self.requiresConfirmation = requiresConfirmation
         self.widgetId = widgetId
         self.disabled = disabled
+        self.optimisticToggle = optimisticToggle
     }
 
     var id: String
@@ -80,6 +82,7 @@ struct WidgetBasicViewModel: Identifiable, Hashable, Encodable {
     var widgetId: String?
     /// When one item confirmation is pending, the rest of the items should be blurred
     var disabled: Bool
+    var optimisticToggle: WidgetOptimisticToggle?
 }
 
 extension WidgetBasicViewModel: WidgetTileRepresentable {

@@ -10,6 +10,7 @@ struct WidgetTodoListEntry: TimelineEntry {
     let listTitle: String
     let items: [TodoListItem]
     let family: WidgetFamily
+    var loadFailed = false
 }
 
 enum WidgetTodoListAppIntentTimelineProviderError: Error {
@@ -82,10 +83,11 @@ struct WidgetTodoListAppIntentTimelineProvider: AppIntentTimelineProvider {
         return placeholder(in: context)
     }
 
-    func timeline(for configuration: Intent, in context: Context) async -> Timeline<Entry> {
+    func timeline(for configuration: Intent, in context: some WidgetTimelineContext) async -> Timeline<Entry> {
         if context.isPreview {
             return Timeline(entries: [placeholder(in: context)], policy: .never)
         }
+        let family = context.family
         guard let selectedList = selectedList(for: configuration) else {
             return Timeline(
                 entries: [.init(
@@ -94,7 +96,7 @@ struct WidgetTodoListAppIntentTimelineProvider: AppIntentTimelineProvider {
                     listId: "",
                     listTitle: "",
                     items: [],
-                    family: context.family
+                    family: family
                 )],
                 policy: .atEnd
             )
@@ -110,29 +112,22 @@ struct WidgetTodoListAppIntentTimelineProvider: AppIntentTimelineProvider {
                     listId: selectedList.entityId,
                     listTitle: selectedList.displayString,
                     items: [],
-                    family: context.family
+                    family: family,
+                    loadFailed: true
                 )],
                 policy: .atEnd
             )
         }
 
         do {
-            let rawItems = try await withCheckedThrowingContinuation { continuation in
-                api.connection.send(.getItemFromTodoList(listId: selectedList.entityId)).promise.pipe { result in
-                    switch result {
-                    case let .fulfilled(todoListRawResponse):
-                        continuation.resume(returning: todoListRawResponse.serviceResponse.first?.value.items ?? [])
-                    case let .rejected(error):
-                        Current.Log.error("Failed to fetch todo items for list \(selectedList.entityId): \(error)")
-                        continuation.resume(throwing: WidgetTodoListAppIntentTimelineProviderError.failedToFetchItems)
-                    }
-                }
-            }
+            let response = try await api.connection.send(.getItemFromTodoList(listId: selectedList.entityId))
+                .promise.asyncValue(timeout: 10)
+            let rawItems = response.serviceResponse.first?.value.items ?? []
 
             // Filter only items that need action and limit based on widget size
             let activeItems = rawItems
                 .filter { $0.status == "needs_action" }
-                .prefix(WidgetFamilySizes.todoListSize(for: context.family))
+                .prefix(WidgetFamilySizes.todoListSize(for: family))
 
             return Timeline(
                 entries: [.init(
@@ -141,7 +136,7 @@ struct WidgetTodoListAppIntentTimelineProvider: AppIntentTimelineProvider {
                     listId: selectedList.entityId,
                     listTitle: selectedList.displayString,
                     items: Array(activeItems),
-                    family: context.family
+                    family: family
                 )],
                 policy: .atEnd
             )
@@ -154,14 +149,15 @@ struct WidgetTodoListAppIntentTimelineProvider: AppIntentTimelineProvider {
                     listId: selectedList.entityId,
                     listTitle: selectedList.displayString,
                     items: [],
-                    family: context.family
+                    family: family,
+                    loadFailed: true
                 )],
                 policy: .atEnd
             )
         }
     }
 
-    func placeholder(in context: Context) -> Entry {
+    func placeholder(in context: some WidgetTimelineContext) -> Entry {
         .init(
             date: Date(),
             serverId: WidgetPreviewSample.serverId,
