@@ -40,9 +40,12 @@ final class OnboardingStateObservable: ObservableObject {
     init(themeMode: FrontendThemeModeObserver? = nil) {
         self.themeMode = themeMode ?? FrontendThemeModeObserver()
         self.screen = Self.initialScreen()
-        self.themeMode.observe(server: currentServer)
         Current.onboardingObservation.register(observer: self)
         observeKioskTarget()
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            self.themeMode.observe(server: currentServer)
+        }
     }
 
     /// Switches the displayed screen to `server`'s web view. Called by the app coordinator's `open(server:)`.

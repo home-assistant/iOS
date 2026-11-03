@@ -26,15 +26,7 @@ struct ContainerView: View {
         }
         .navigationTitle(" ") // Remove default macOS title
         .onAppear {
-            coordinator.onOpenServer = { state.showWebView(for: $0) }
-            coordinator.onSetup = { state.reevaluate() }
-            coordinator.settingsPresenter = appSettings
-            appSettings.appCoordinator = coordinator
-            coordinator.onShowSettings = { appSettings.presentSettings() }
-            coordinator.onShowAssistSettings = { viewModel.presentAssistSettings() }
-            coordinator.onShowDownloadManager = { viewModel.presentDownloadManager($0) }
-            coordinator.onShowOnboardingPermissions = { viewModel.presentOnboardingPermissions(server: $0, steps: $1) }
-            Current.sceneManager.registerAppCoordinator(coordinator)
+            bindCoordinator()
             fadeOutLaunchSplashIfNeeded(for: state.screen)
         }
         .onChange(of: state.screen) { screen in
@@ -84,10 +76,23 @@ struct ContainerView: View {
     /// fills, on the outer edge of its Split View pane.
     private func frontend(server: Server, initialPath: String?) -> some View {
         HomeAssistantView(server: server, initialPath: initialPath, appCoordinator: coordinator) { webViewController in
+            bindCoordinator()
             coordinator.setFrontend(webViewController)
             Current.sceneManager.setWebViewController(webViewController)
         }
         .id(server.identifier.rawValue)
+    }
+
+    private func bindCoordinator() {
+        coordinator.onOpenServer = { state.showWebView(for: $0) }
+        coordinator.onSetup = { state.reevaluate() }
+        coordinator.settingsPresenter = appSettings
+        appSettings.appCoordinator = coordinator
+        coordinator.onShowSettings = { appSettings.presentSettings() }
+        coordinator.onShowAssistSettings = { viewModel.presentAssistSettings() }
+        coordinator.onShowDownloadManager = { viewModel.presentDownloadManager($0) }
+        coordinator.onShowOnboardingPermissions = { viewModel.presentOnboardingPermissions(server: $0, steps: $1) }
+        Current.sceneManager.registerAppCoordinator(coordinator)
     }
 
     /// The recovered-server screens have no Home Assistant logo for the launch splash to morph into, so
