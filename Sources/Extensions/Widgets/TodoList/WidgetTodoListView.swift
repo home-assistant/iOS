@@ -32,6 +32,7 @@ struct WidgetTodoListView: View {
     let title: String
     let items: [TodoListItem]
     let isEmpty: Bool
+    var loadFailed = false
 
     var body: some View {
         WidgetTodoListContentView(
@@ -42,13 +43,13 @@ struct WidgetTodoListView: View {
             strings: .init(
                 title: L10n.Widgets.TodoList.title,
                 selectList: L10n.Widgets.TodoList.selectList,
-                allDone: L10n.Widgets.TodoList.allDone
+                allDone: loadFailed ? L10n.Widgets.TodoList.loadFailed : L10n.Widgets.TodoList.allDone
             ),
             logo: Image(.logo),
             refreshControl: { label in
                 AnyView(
                     Button(intent: TodoListRefreshAppIntent()) {
-                        label
+                        label.invalidatableContent()
                     }
                     .buttonStyle(.plain)
                 )
@@ -61,14 +62,15 @@ struct WidgetTodoListView: View {
             },
             completeControl: { item, control in
                 AnyView(
-                    Button(intent: TodoItemCompleteAppIntent(
+                    Toggle(isOn: false, intent: TodoItemCompleteAppIntent(
                         serverId: serverId,
                         listId: listId,
                         itemId: item.id
                     )) {
                         control
                     }
-                    .buttonStyle(.plain)
+                    .toggleStyle(WidgetTodoToggleStyle())
+                    .accessibilityLabel(Text(verbatim: item.summary))
                 )
             },
             itemContent: { _, content in

@@ -10923,6 +10923,8 @@ public enum L10n {
       public static var completeItemTitle: String { return L10n.tr("Localizable", "widgets.todo_list.complete_item_title") }
       /// Check your lists and add items
       public static var description: String { return L10n.tr("Localizable", "widgets.todo_list.description") }
+      /// Couldn't update. Tap refresh.
+      public static var loadFailed: String { return L10n.tr("Localizable", "widgets.todo_list.load_failed") }
       /// Refresh To-do List
       public static var refreshTitle: String { return L10n.tr("Localizable", "widgets.todo_list.refresh_title") }
       /// Edit widget to select list.

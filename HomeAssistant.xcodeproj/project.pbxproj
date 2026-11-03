@@ -863,6 +863,7 @@
 				Widgets/Common/WidgetDomainAppEntityQuery.swift,
 				"Widgets/Common/WidgetFamily+AppPreview.swift",
 				Widgets/Common/WidgetFamilySizes.swift,
+				Widgets/Common/WidgetOptimisticToggle.swift,
 				Widgets/Common/WidgetPreviewMagicItemProvider.swift,
 				Widgets/Common/WidgetPreviewSample.swift,
 				Widgets/Common/WidgetPreviewSampleEntity.swift,

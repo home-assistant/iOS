@@ -29,10 +29,20 @@ struct WidgetTileInteraction {
                 } else {
                     return AnyView(legacyLinkContent(model: model, sizeStyle: sizeStyle, tile: tile))
                 }
+            } else if let toggle = model.optimisticToggle,
+                      let intent = optimisticIntent(for: model.interactionType, model: model) {
+                return AnyView(
+                    Toggle(isOn: toggle.isOn, intent: intent) { tile }
+                        .toggleStyle(WidgetEntityToggleStyle(
+                            initialIsOn: toggle.isOn,
+                            onColor: toggle.onColor,
+                            offColor: toggle.offColor
+                        ))
+                )
             } else if let intent = intent(for: model, isConfirmationDone: false) {
                 return AnyView(
                     Button(intent: intent) {
-                        tile
+                        tile.invalidatableContent()
                     }
                     .buttonStyle(.plain)
                 )
@@ -88,7 +98,7 @@ struct WidgetTileInteraction {
     ) -> some View {
         if model.requiresConfirmation, !interactionType.opensEntityInApp {
             Button(intent: confirmationStateIntent(for: model, confirmsTapAction: !isIcon)) {
-                content
+                content.invalidatableContent()
             }
             .buttonStyle(.plain)
         } else if case let .widgetURL(url) = interactionType {
@@ -97,14 +107,42 @@ struct WidgetTileInteraction {
             Link(destination: url.withWidgetAuthenticity()) {
                 content
             }
+        } else if let toggle = model.optimisticToggle,
+                  let intent = optimisticIntent(for: interactionType, model: model) {
+            Toggle(isOn: toggle.isOn, intent: intent) { content }
+                .toggleStyle(WidgetEntityToggleStyle(
+                    initialIsOn: toggle.isOn,
+                    onColor: toggle.onColor,
+                    offColor: toggle.offColor
+                ))
         } else if let intent = intent(for: interactionType, model: model) {
             Button(intent: intent) {
-                content
+                content.invalidatableContent()
             }
             .buttonStyle(.plain)
         } else {
             content
         }
+    }
+
+    @available(iOS 17.0, *)
+    func optimisticIntent(
+        for interactionType: WidgetInteractionType,
+        model: WidgetBasicViewModel
+    ) -> CustomWidgetToggleAppIntent? {
+        guard !family.isLockScreenAccessory, !model.requiresConfirmation, !model.showConfirmation, !model.disabled,
+              let toggle = model.optimisticToggle,
+              case let .appIntent(.toggle(entityId, domain, serverId)) = interactionType,
+              let entityDomain = Domain(rawValue: domain), WidgetOptimisticToggle.supports(entityDomain) else {
+            return nil
+        }
+        let intent = CustomWidgetToggleAppIntent()
+        intent.domain = domain
+        intent.entityId = entityId
+        intent.serverId = serverId
+        intent.widgetShowingStates = model.subtitle != nil
+        intent.targetValue = !toggle.isOn
+        return intent
     }
 
     /// The tile a link shows: as drawn, except on the versions of iOS that only tinted buttons and
@@ -234,7 +272,7 @@ struct WidgetTileInteraction {
                     // `server` parameter and opens server selection instead of the widget's server.
                     return AnyView(Link(destination: confirmationURL.withWidgetAuthenticity()) { label })
                 } else if let confirmationIntent {
-                    return AnyView(Button(intent: confirmationIntent) { label })
+                    return AnyView(Button(intent: confirmationIntent) { label.invalidatableContent() })
                 } else {
                     return AnyView(EmptyView())
                 }
@@ -252,6 +290,7 @@ struct WidgetTileInteraction {
     ) -> some View {
         Button(intent: confirmationStateIntent(for: model)) {
             linkTile(model: model, sizeStyle: sizeStyle, tile: tile)
+                .invalidatableContent()
         }
         .buttonStyle(.plain)
     }

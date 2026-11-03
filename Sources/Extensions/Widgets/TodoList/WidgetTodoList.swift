@@ -16,7 +16,8 @@ struct WidgetTodoList: Widget {
                 listId: timelineEntry.listId,
                 title: timelineEntry.listTitle,
                 items: timelineEntry.items,
-                isEmpty: timelineEntry.listId.isEmpty
+                isEmpty: timelineEntry.listId.isEmpty,
+                loadFailed: timelineEntry.loadFailed
             )
             .widgetBackground(.primaryBackground)
         }

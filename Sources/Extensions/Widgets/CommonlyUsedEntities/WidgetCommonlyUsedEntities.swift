@@ -109,7 +109,8 @@ struct WidgetCommonlyUsedEntities: Widget {
                 backgroundColor: Color.tileBackground,
                 useCustomColors: false,
                 showConfirmation: false,
-                requiresConfirmation: false
+                requiresConfirmation: false,
+                optimisticToggle: .init(domain: magicItem.domain, state: showStates ? state : nil)
             )
         }
     }

@@ -47,6 +47,21 @@ struct WidgetTileRenderingTests {
         ]
         models += intents.map { Self.model(interaction: .appIntent($0)) }
         models += intents.map { Self.model(interaction: .appIntent($0), requiresConfirmation: true) }
+        for isSplit in [false, true] {
+            var optimistic = Self.model(
+                interaction: isSplit ? .widgetURL(moreInfo) : .appIntent(intents[0]),
+                icon: isSplit ? .appIntent(intents[0]) : nil
+            )
+            optimistic.optimisticToggle = .init(domain: .light, state: .init(
+                value: "Off",
+                domainState: .off,
+                rawState: "off",
+                deviceClass: nil,
+                liveColorHex: nil,
+                groupMemberDomain: nil
+            ))
+            models.append(optimistic)
+        }
 
         for model in models {
             render(WidgetBasicContainerView(

@@ -53,6 +53,38 @@ struct CustomWidgetIntentsTests {
         #expect(notifications.ids == [.intentToggleFailed])
     }
 
+    @Test(arguments: [true, false])
+    func optimisticTapsSetAnExplicitStateWithoutReadingOrReversingIt(target: Bool) async throws {
+        let (_, connection, notifications) = try install { _ in .success(.empty) }
+        let intent = toggle(serverId: "custom-server", domain: "light", entityId: "light.a")
+        intent.targetValue = target
+
+        _ = try await intent.perform()
+        _ = try await intent.perform()
+
+        #expect(connection.sentCommands == ["call_service", "call_service"])
+        #expect(connection.sent.allSatisfy {
+            $0.data["service"] as? String == (target ? "turn_on" : "turn_off")
+                && $0.data["domain"] as? String == "light"
+                && ($0.data["service_data"] as? [String: String])?["entity_id"] == "light.a"
+        })
+        #expect(notifications.ids.isEmpty)
+    }
+
+    @Test func optimisticFailuresAndUnsupportedTargetsAreReported() async throws {
+        let (_, connection, notifications) = try install { _ in .failure(widgetStubUnexpected) }
+        let light = toggle(serverId: "custom-server", domain: "light", entityId: "light.a")
+        light.targetValue = true
+        _ = try await light.perform()
+        #expect(notifications.ids == [.intentToggleFailed])
+
+        let lock = toggle(serverId: "custom-server", domain: "lock", entityId: "lock.a")
+        lock.targetValue = true
+        _ = try await lock.perform()
+        #expect(connection.sentCommands == ["call_service"])
+        #expect(notifications.ids == [.intentToggleFailed, .intentToggleFailed])
+    }
+
     /// A server with no usable URL can't be reached, and the tap says so instead of doing nothing.
     @Test func anUnreachableServerTellsTheUser() async throws {
         let (_, connection, notifications) = try install(offline: true)
