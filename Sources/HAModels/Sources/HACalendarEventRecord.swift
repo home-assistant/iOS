@@ -55,19 +55,27 @@ public struct HACalendarEventRecord: Codable, Identifiable, FetchableRecord, Per
         self.rrule = rrule
     }
 
+    /// Without a `uid` two events can share a start, so the summary and end are folded in to keep
+    /// them apart; with a `uid` the start alone distinguishes the occurrences of a recurring event.
     public static func uniqueId(
         serverId: String,
         calendarEntityId: String,
         uid: String?,
         recurrenceId: String?,
-        start: Date
+        start: Date,
+        end: Date,
+        summary: String
     ) -> String {
-        [
+        var components = [
             serverId,
             calendarEntityId,
             uid ?? "",
             recurrenceId ?? "",
             String(start.timeIntervalSince1970),
-        ].joined(separator: "|")
+        ]
+        if uid == nil {
+            components += [String(end.timeIntervalSince1970), summary]
+        }
+        return components.joined(separator: "|")
     }
 }
