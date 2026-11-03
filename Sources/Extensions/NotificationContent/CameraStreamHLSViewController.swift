@@ -38,7 +38,11 @@ class CameraStreamHLSViewController: UIViewController, CameraStreamHandler {
     init(api: HomeAssistantAPI, url: URL) {
         self.api = api
         self.url = url
-        self.playerViewController = AVPlayerViewController()
+        self.playerViewController = with(AVPlayerViewController()) {
+            // Playback inside a notification has its own inline controls; publishing to Now Playing
+            // would also bring up the system media controls for the app.
+            $0.updatesNowPlayingInfoCenter = false
+        }
         (self.promise, self.seal) = Promise<Void>.pending()
         super.init(nibName: nil, bundle: nil)
 
