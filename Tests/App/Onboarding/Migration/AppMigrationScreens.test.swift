@@ -1,11 +1,13 @@
 @testable import HomeAssistant
 import Shared
+import SharedTesting
 import SnapshotTesting
 import SwiftUI
 import Testing
 import UIKit
 
 /// Every screen of the transfer, on both sides of the handoff, in every state it can land in.
+@Suite(.sharedState)
 struct AppMigrationScreensTests {
     private static let failure = "Your existing app sent an incomplete transfer."
 

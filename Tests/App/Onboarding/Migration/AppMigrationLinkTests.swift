@@ -1,11 +1,13 @@
 import CryptoKit
 import Foundation
 @testable import HomeAssistant
+import SharedTesting
 import Testing
 
 /// The contract between the two apps: every link survives its own URL, nothing without a session gets
 /// in, the key survives the URL alphabet, a payload opens only with its key, and the previous app's
 /// phase survives a relaunch.
+@Suite(.sharedState)
 struct AppMigrationLinkTests {
     private let session = AppMigrationSession.make()
 
