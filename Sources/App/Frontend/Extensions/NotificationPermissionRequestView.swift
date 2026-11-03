@@ -46,6 +46,10 @@ struct NotificationPermissionRequestView: View {
         .padding(.horizontal, DesignSystem.Spaces.three)
         .padding(.top, DesignSystem.Spaces.four)
         .padding(.bottom, DesignSystem.Spaces.one)
+        // The sheet only ever sits at the medium detent, well below the iPhone Duo camera and vertical
+        // bar, so the horizontal safe area would just squeeze the content to one side. Only a sheet at
+        // the large detent reaches them and would need to keep the horizontal inset.
+        .ignoresSafeArea(.container, edges: .horizontal)
     }
 
     private func triggerNativePopup() {

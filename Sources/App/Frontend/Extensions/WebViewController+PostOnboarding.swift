@@ -18,8 +18,8 @@ extension WebViewController {
         }
     }
 
-    /// A system sheet, so it stays clear of the vertical bar and the safe area the way any other
-    /// sheet does.
+    /// A system sheet fixed to the medium detent, so it stays clear of the bottom safe area the way
+    /// any other sheet does, and its content spans the full width on iPhone Duo.
     func showNotificationPermissionRequest() {
         let controller = NotificationPermissionRequestView().embeddedInHostingController()
 
