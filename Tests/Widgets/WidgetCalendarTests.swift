@@ -286,4 +286,36 @@ struct WidgetCalendarTests {
         #expect(event.isUpcoming(at: Self.now))
         #expect(!event.isUpcoming(at: Self.now.addingTimeInterval(7200)))
     }
+
+    /// Integrations that send no `uid` can have two events at the same time; each still needs its
+    /// own id or the widget draws one of them twice and drops the other.
+    @Test func eventsWithoutUidAtTheSameTimeKeepDistinctIds() {
+        let haCalendar = HACalendar(
+            id: "server-calendar.household",
+            serverId: "server",
+            entityId: "calendar.household",
+            name: "Household",
+            backgroundColor: "#f4bd4a",
+            supportedFeatures: 0,
+            sortOrder: 1
+        )
+        let trash = HACalendarEvent(
+            summary: "Take out trash",
+            start: Self.now,
+            end: Self.now.addingTimeInterval(3600),
+            isAllDay: false
+        )
+        let yard = HACalendarEvent(
+            summary: "Put check out for yard guys",
+            start: Self.now,
+            end: Self.now.addingTimeInterval(3600),
+            isAllDay: false
+        )
+
+        let first = WidgetCalendarEvent(event: trash, calendar: haCalendar)
+        let second = WidgetCalendarEvent(event: yard, calendar: haCalendar)
+
+        #expect(first.id != second.id)
+        #expect(WidgetCalendarEvent(event: trash, calendar: haCalendar).id == first.id)
+    }
 }

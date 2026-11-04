@@ -1546,6 +1546,9 @@ O Home Assistant é de código aberto, defende a privacidade e funciona localmen
 "reminders_sync.settings.access_denied.body" = "Permita acesso total aos Lembretes no aplicativo Configurações do sistema para sincronizar suas listas.";
 "reminders_sync.settings.access_denied.title" = "Acesso aos Lembretes necessário";
 "reminders_sync.settings.add_list" = "Adicionar";
+"reminders_sync.settings.completed.footer" = "Items that were already completed before syncing started normally stay where they are. Turn this on to copy them to the other list as completed, so checked-off items are known on both sides. A list with a long history can gain many completed items on the first sync.";
+"reminders_sync.settings.completed.header" = "Completed items";
+"reminders_sync.settings.completed.title" = "Include completed items";
 "reminders_sync.settings.conflicts.footer" = "Isso só importa para sincronizações bidirecionais. Se o mesmo item foi editado em ambos os aplicativos desde a última sincronização, a versão do lado que você escolher aqui é mantida.";
 "reminders_sync.settings.conflicts.header" = "Conflitos";
 "reminders_sync.settings.conflicts.title" = "Manter alterações de";
@@ -3409,6 +3412,7 @@ Enquanto nenhuma URL for considerada segura, os dados deste servidor não serão
 "widgets.todo_list.due_date.in_format" = "Em %@";
 "widgets.todo_list.due_date.now" = "Agora";
 "widgets.todo_list.due_date.today" = "Hoje";
+"widgets.todo_list.load_failed" = "Couldn't update. Tap refresh.";
 "widgets.todo_list.parameter.item_id" = "ID do item";
 "widgets.todo_list.parameter.list" = "Lista";
 "widgets.todo_list.parameter.list_id" = "ID da lista";

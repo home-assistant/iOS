@@ -1546,6 +1546,9 @@ Home Assistant — это приложение с открытым исходн�
 "reminders_sync.settings.access_denied.body" = "Разрешите полный доступ к «Напоминания» в приложении Настройки, чтобы синхронизировать свои списки.";
 "reminders_sync.settings.access_denied.title" = "Требуется доступ к Напоминания";
 "reminders_sync.settings.add_list" = "Добавить";
+"reminders_sync.settings.completed.footer" = "Items that were already completed before syncing started normally stay where they are. Turn this on to copy them to the other list as completed, so checked-off items are known on both sides. A list with a long history can gain many completed items on the first sync.";
+"reminders_sync.settings.completed.header" = "Completed items";
+"reminders_sync.settings.completed.title" = "Include completed items";
 "reminders_sync.settings.conflicts.footer" = "Это важно только для двусторонней синхронизации. Если с момента последней синхронизации один и тот же элемент редактировался в обоих приложениях, будет сохранена версия из того приложения, которое вы выбрали.";
 "reminders_sync.settings.conflicts.header" = "Конфликты";
 "reminders_sync.settings.conflicts.title" = "Сохранить изменения из";
@@ -3407,6 +3410,7 @@ Home Assistant — это приложение с открытым исходн�
 "widgets.todo_list.due_date.in_format" = "В %@";
 "widgets.todo_list.due_date.now" = "Сейчас";
 "widgets.todo_list.due_date.today" = "Сегодня";
+"widgets.todo_list.load_failed" = "Couldn't update. Tap refresh.";
 "widgets.todo_list.parameter.item_id" = "Item ID";
 "widgets.todo_list.parameter.list" = "Список";
 "widgets.todo_list.parameter.list_id" = "Список ID";
