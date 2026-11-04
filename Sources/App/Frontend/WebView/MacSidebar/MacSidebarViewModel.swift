@@ -43,6 +43,8 @@ final class MacSidebarViewModel: ObservableObject {
     private var userName: String?
     private var notificationIds: Set<String> = []
     private var tokens: [HACancellable] = []
+    /// Set between `start()` and `stop()`, so a start that found no API yet can subscribe once one connects.
+    private var isStarted = false
     private var cancellables = Set<AnyCancellable>()
     private let snapshotStore: MacSidebarSnapshotStore
 
@@ -59,6 +61,7 @@ final class MacSidebarViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 self?.readLegacyPreferences()
+                self?.subscribeIfNeeded()
             }
             .store(in: &cancellables)
 
@@ -66,6 +69,16 @@ final class MacSidebarViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 self?.updateAccentColor()
+            }
+            .store(in: &cancellables)
+
+        // At a cold launch the server's URL is not evaluated yet when the sidebar first appears, so there is
+        // no API to subscribe through. The frontend connecting (above) means the URL resolved since; the API
+        // finishing its own connection is the other moment to try again.
+        NotificationCenter.default.publisher(for: HomeAssistantAPI.didConnectNotification)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.subscribeIfNeeded()
             }
             .store(in: &cancellables)
 
@@ -79,7 +92,18 @@ final class MacSidebarViewModel: ObservableObject {
     }
 
     func start() {
-        guard tokens.isEmpty, let connection = Current.api(for: server)?.connection else { return }
+        isStarted = true
+        subscribeIfNeeded()
+    }
+
+    func stop() {
+        isStarted = false
+        tokens.forEach { $0.cancel() }
+        tokens = []
+    }
+
+    private func subscribeIfNeeded() {
+        guard isStarted, tokens.isEmpty, let connection = Current.api(for: server)?.connection else { return }
 
         tokens.append(connection.caches.panels.subscribe { [weak self] _, panels in
             Task { @MainActor [weak self] in
@@ -147,11 +171,6 @@ final class MacSidebarViewModel: ObservableObject {
                 }
             }
         ))
-    }
-
-    func stop() {
-        tokens.forEach { $0.cancel() }
-        tokens = []
     }
 
     func select(itemId: String) {

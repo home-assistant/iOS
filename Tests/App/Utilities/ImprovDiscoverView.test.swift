@@ -47,19 +47,51 @@ struct ImprovDiscoverViewTests {
         )
     }
 
-    @Test func scansOnceBluetoothIsOnAndStopsWhenDismissed() {
+    /// The flow lives in a sheet, whose updates reach it through the main queue, so this one drives
+    /// the screen asynchronously.
+    @Test func scansOnceBluetoothIsOnAndStopsWhenDismissed() async {
         let manager = FakeImprovManager()
         manager.bluetoothState = .poweredOn
         let driver = makeDriver(manager)
-        #expect(driver.waitUntil { manager.scans >= 1 })
+        defer { driver.close() }
+        await #expect(driver.waitUntil { manager.scans >= 1 })
 
         manager.bluetoothState = .poweredOff
-        driver.settle()
+        await driver.settle()
         manager.bluetoothState = .poweredOn
-        #expect(driver.waitUntil { manager.scans >= 2 })
+        await #expect(driver.waitUntil { manager.scans >= 2 })
 
-        driver.close()
-        driver.settle()
+        await driver.dismissPresented()
+        await #expect(driver.waitUntil { manager.stops >= 1 })
+    }
+
+    /// The flow is a system sheet over a transparent full-screen host: closing the sheet has to take the
+    /// host down with it, or an invisible controller would keep blocking the frontend.
+    @Test func closingTheSheetDismissesTheHostAndStopsScanning() async {
+        let manager = FakeImprovManager()
+        manager.bluetoothState = .poweredOn
+        let driver = await SwiftUIScreenDriver.show(
+            Color.clear,
+            size: CGSize(width: 390, height: 844),
+            inNavigationStack: false
+        )
+        defer { driver.close() }
+
+        let host = UIHostingController(rootView: ImprovDiscoverView<FakeImprovManager>(
+            improvManager: manager,
+            deviceName: nil,
+            redirectRequest: { _ in }
+        ))
+        host.modalPresentationStyle = .overFullScreen
+        driver.host.present(host, animated: false)
+        await #expect(driver.waitUntil { host.presentedViewController != nil })
+        await #expect(driver.waitUntil { manager.scans >= 1 })
+
+        // The close control is the only bar button; on iOS 26 it is a close-role button with no title.
+        #expect(driver.barButtons.count == 1)
+        await driver.tapBarButton(0)
+        await #expect(driver.waitUntil { host.presentingViewController == nil })
+        #expect(driver.presented == nil)
         #expect(manager.stops >= 1)
     }
 
