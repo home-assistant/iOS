@@ -53,6 +53,11 @@ struct CircularComplicationSnapshotTests {
             // "no-min-max" above is the same layout with a name captioning the icon.
             ("icon-led-value-at-bottom", .sample(title: nil, showMinMax: false)),
             ("capacity-ring", .sample(capacity: true)),
+            // Icon alone inside a gauge: the glyph owns the inner circle, so it renders enlarged — full
+            // size when there are no min/max labels, a bit smaller when it has to clear them.
+            ("icon-only-open-no-min-max", .sample(value: "", showValue: false, title: nil, showMinMax: false)),
+            ("icon-only-open-min-max", .sample(value: "", showValue: false, title: nil)),
+            ("icon-only-capacity-ring", .sample(value: "", showValue: false, title: nil, capacity: true)),
             ("no-gauge", .sample(fraction: nil)),
             ("icon-only-no-gauge", .sample(value: "", showValue: false, title: nil, fraction: nil)),
             ("zero-fraction", .sample(value: "0%", fraction: 0)),
