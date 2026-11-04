@@ -10,6 +10,7 @@ by the app before any UI test is pointed at it, and to fail loudly with the reas
 
 import argparse
 import json
+import ssl
 import sys
 import time
 import urllib.error
@@ -19,6 +20,9 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 POLL_INTERVAL = 5
+
+# Set up once from the command line; `None` leaves urllib's default verification in place.
+SSL_CONTEXT: Optional[ssl.SSLContext] = None
 
 
 class AuthError(Exception):
@@ -33,7 +37,7 @@ def request(url: str, *, data: Optional[bytes] = None, headers: Optional[Dict[st
         req.add_header('Content-Type', content_type)
 
     try:
-        with urllib.request.urlopen(req, timeout=30) as response:
+        with urllib.request.urlopen(req, timeout=30, context=SSL_CONTEXT) as response:
             body = response.read().decode('utf-8', errors='replace')
     except urllib.error.HTTPError as error:
         detail = error.read().decode('utf-8', errors='replace').strip()
@@ -142,6 +146,12 @@ def main():
     parser.add_argument('--password', required=True, help="password seeded into .storage/auth")
     parser.add_argument('--require-component', action='append', default=[], metavar='NAME',
                         help="fail unless this component is loaded; repeatable")
+    parser.add_argument('--ca-certificate', type=Path, metavar='PEM',
+                        help="trust this CA for the instance's certificate instead of the system roots")
+    parser.add_argument('--client-certificate', type=Path, metavar='PEM',
+                        help="present this client certificate, for an instance behind an mTLS proxy")
+    parser.add_argument('--client-key', type=Path, metavar='PEM',
+                        help="private key of --client-certificate; defaults to the same file")
     parser.add_argument('--timeout', type=int, default=0, metavar='SECONDS',
                         help="keep retrying for this long before giving up; default is one attempt")
     parser.add_argument('--output', type=Path, help="write the fetched /api/config here")
@@ -150,6 +160,12 @@ def main():
 
     base_url = args.url.rstrip('/')
     deadline = time.monotonic() + args.timeout
+
+    global SSL_CONTEXT
+    if args.ca_certificate or args.client_certificate:
+        SSL_CONTEXT = ssl.create_default_context(cafile=args.ca_certificate)
+        if args.client_certificate:
+            SSL_CONTEXT.load_cert_chain(args.client_certificate, args.client_key)
 
     while True:
         config, failure = check(base_url, args.username, args.password, args.require_component)

@@ -149,13 +149,24 @@ lane :e2e do |options|
   username = options[:username] || 'citest'
   password = options[:password] || 'h7jk99&U'
   model = options[:device] || 'iPhone 17'
+  # The directory `.github/e2e/mtls/generate-certs.sh` wrote, when `url` goes through the mTLS
+  # proxy: its CA is trusted by the simulator and its `client.p12` is handed to the flow.
+  mtls = options[:mtls_certificates] && File.expand_path(options[:mtls_certificates])
+  p12_password = options[:client_certificate_password] || 'e2ep12pass'
 
   # Fail here rather than three minutes into a build if the instance is not usable: this walks the
   # same login exchange the app performs during onboarding.
   verify = File.expand_path('../../Tools/home_assistant_e2e_auth.py', __dir__)
+  verify_tls = if mtls
+                 "--ca-certificate #{Shellwords.escape("#{mtls}/ca.pem")} " \
+                 "--client-certificate #{Shellwords.escape("#{mtls}/client.pem")} " \
+                 "--client-key #{Shellwords.escape("#{mtls}/client.key")} "
+               else
+                 ''
+               end
   sh("python3 #{Shellwords.escape(verify)} --url #{Shellwords.escape(url)} " \
      "--username #{Shellwords.escape(username)} --password #{Shellwords.escape(password)} " \
-     '--timeout 300 --require-component mobile_app')
+     "#{verify_tls}--timeout 300 --require-component mobile_app")
 
   # The test starts from the welcome screen, so the app must not already have a server. Erasing is
   # also what puts the location and notification prompts back, which the flow answers on its way
@@ -164,11 +175,24 @@ lane :e2e do |options|
   sh("xcrun simctl shutdown #{udid} || true")
   sh("xcrun simctl erase #{udid}")
 
+  # Erasing also drops the keychain, so the CA goes in afterwards. Trusting it here keeps the flow
+  # on the same path as a server with a public certificate: no security exception to accept, only
+  # the client certificate to import.
+  if mtls
+    sh("xcrun simctl boot #{udid}")
+    sh("xcrun simctl bootstatus #{udid} -b")
+    sh("xcrun simctl keychain #{udid} add-root-cert #{Shellwords.escape("#{mtls}/ca.pem")}")
+  end
+
   # `xcodebuild` forwards TEST_RUNNER_-prefixed variables into the test process with the prefix
   # stripped, which is how the flow learns where to point the app.
   ENV['TEST_RUNNER_E2E_HOME_ASSISTANT_URL'] = url
   ENV['TEST_RUNNER_E2E_HOME_ASSISTANT_USERNAME'] = username
   ENV['TEST_RUNNER_E2E_HOME_ASSISTANT_PASSWORD'] = password
+  if mtls
+    ENV['TEST_RUNNER_E2E_CLIENT_CERTIFICATE_FILE'] = "#{mtls}/client.p12"
+    ENV['TEST_RUNNER_E2E_CLIENT_CERTIFICATE_PASSWORD'] = p12_password
+  end
 
   # Unlike the unit test lanes, this one builds: a UI test bundle is run against a separate app,
   # and the bare `test` action cannot resolve `UITargetAppPath` for an app that was never built.
