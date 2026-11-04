@@ -65,6 +65,8 @@ struct AppMigrationFlowView: View {
                 state: state,
                 openPreviousAppAction: coordinator.openPreviousApp,
                 retryAction: coordinator.startImport,
+                replaceAction: coordinator.replaceExistingSetup,
+                keepAction: coordinator.keepExistingSetup,
                 cancelAction: {
                     coordinator.cancelImport()
                     skipAction()

@@ -2055,6 +2055,8 @@
 				"Migration/__Snapshots__/AppMigrationScreens.test/exportProgress.old-02-progress-light.png",
 				"Migration/__Snapshots__/AppMigrationScreens.test/exportRequested.old-01-request-dark.png",
 				"Migration/__Snapshots__/AppMigrationScreens.test/exportRequested.old-01-request-light.png",
+				"Migration/__Snapshots__/AppMigrationScreens.test/importConfirmingReplacement.new-04b-replace-check-dark.png",
+				"Migration/__Snapshots__/AppMigrationScreens.test/importConfirmingReplacement.new-04b-replace-check-light.png",
 				"Migration/__Snapshots__/AppMigrationScreens.test/importFailed.new-06-failed-dark.png",
 				"Migration/__Snapshots__/AppMigrationScreens.test/importFailed.new-06-failed-light.png",
 				"Migration/__Snapshots__/AppMigrationScreens.test/importProgress.new-05-progress-dark.png",
