@@ -127,6 +127,11 @@ struct ClientCertificateOnboardingView: View {
         errorMessage = nil
 
         let isSecurityScoped = fileURL.startAccessingSecurityScopedResource()
+        guard isSecurityScoped || fileURL == Current.e2eClientCertificateFile else {
+            errorMessage = L10n.Onboarding.ClientCertificate.Error.fileAccess
+            isImporting = false
+            return
+        }
         defer {
             if isSecurityScoped {
                 fileURL.stopAccessingSecurityScopedResource()
