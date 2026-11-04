@@ -25,7 +25,9 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
     /// Device which is currently selected for connection and wifi operations
     @State private var selectedPeripheral: CBPeripheral?
     @State private var readyToSendWifiCredentials = false
-    @State private var bottomSheetState: AppleLikeBottomSheetViewState?
+    /// The flow lives in a system sheet over a transparent host; closing the sheet closes the host.
+    @State private var isSheetPresented = false
+    @Environment(\.dismiss) private var dismiss
 
     /// Redirect user to integrations page based on urlPath received from Improv
     private let redirectRequest: (_ urlPath: String) -> Void
@@ -42,13 +44,30 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
     }
 
     var body: some View {
-        AppleLikeBottomSheet(
-            content: {
-                content
-            },
-            showCloseButton: true,
-            state: $bottomSheetState
-        )
+        Color.clear
+            .onAppear {
+                isSheetPresented = true
+            }
+            .sheet(isPresented: $isSheetPresented, onDismiss: dismiss.callAsFunction) {
+                sheetContent
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
+            }
+    }
+
+    private var sheetContent: some View {
+        NavigationStack {
+            content
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        CloseButton(size: .medium) {
+                            closeSheet()
+                        }
+                    }
+                }
+        }
         .animation(.default, value: state)
         .onAppear {
             if improvManager.bluetoothState == .poweredOn {
@@ -57,6 +76,7 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
         }
         .onDisappear {
             improvManager.stopScan()
+            disconnectSelectedPeripheral()
         }
         .onChange(of: improvManager.bluetoothState) { newValue in
             if newValue == .poweredOn {
@@ -151,6 +171,8 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
                         state = .list
                     }
                 }
+                .padding(.horizontal, DesignSystem.Spaces.two)
+                .padding(.bottom, DesignSystem.Spaces.four)
             }
         }
     }
@@ -208,13 +230,7 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
                 }
             })
         }
-        .modify {
-            if #available(iOS 16, *) {
-                $0.scrollContentBackground(.hidden)
-            } else {
-                $0
-            }
-        }
+        .scrollContentBackground(.hidden)
     }
 
     private func connectToDevice() {
@@ -254,16 +270,23 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
             let improvResultDomain = URL(string: improvManager.lastResult?.first ?? "")?.queryItems?["domain"] ?? ""
             let redirectPath = "/config/integrations/dashboard/add?domain=" + improvResultDomain
             redirectRequest(redirectPath)
-            bottomSheetState = .dismiss
+            closeSheet()
         }
     }
 
     private func cancelWifiInput() {
-        if let selectedPeripheral {
-            improvManager.disconnectFromDevice(selectedPeripheral)
-            self.selectedPeripheral = nil
-        }
-        bottomSheetState = .dismiss
+        disconnectSelectedPeripheral()
+        closeSheet()
+    }
+
+    private func closeSheet() {
+        isSheetPresented = false
+    }
+
+    private func disconnectSelectedPeripheral() {
+        guard let selectedPeripheral else { return }
+        improvManager.disconnectFromDevice(selectedPeripheral)
+        self.selectedPeripheral = nil
     }
 }
 
