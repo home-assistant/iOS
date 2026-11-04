@@ -118,6 +118,42 @@ struct FrontendThemeProviderTests {
         }
     }
 
+    @Test("A theme-only property overrides its fallback per appearance")
+    func resolvesThemeOnlyPropertiesPerAppearance() throws {
+        try withThemeEnvironment { provider, serverId in
+            let stock = provider.color(of: "--text-accent-color", fallback: .textPrimaryColor, for: serverId)
+            #expect(components(stock, style: .light) == RGBA(red: 255, green: 255, blue: 255, alpha: 255))
+
+            provider.store(
+                [
+                    variable(
+                        serverId: serverId,
+                        appearance: .light,
+                        name: "--text-accent-color",
+                        color: "rgb(1, 2, 3)"
+                    ),
+                    variable(
+                        serverId: serverId,
+                        appearance: .light,
+                        name: "--text-primary-color",
+                        color: "rgb(9, 9, 9)"
+                    ),
+                ],
+                for: serverId,
+                appearance: .light
+            )
+            provider.store(
+                [variable(serverId: serverId, appearance: .dark, name: "--text-primary-color", color: "rgb(4, 5, 6)")],
+                for: serverId,
+                appearance: .dark
+            )
+
+            let color = provider.color(of: "--text-accent-color", fallback: .textPrimaryColor, for: serverId)
+            #expect(components(color, style: .light) == RGBA(red: 1, green: 2, blue: 3, alpha: 255))
+            #expect(components(color, style: .dark) == RGBA(red: 4, green: 5, blue: 6, alpha: 255))
+        }
+    }
+
     @Test("Storing notifies observers")
     func notifiesOnStore() throws {
         try withThemeEnvironment { provider, serverId in

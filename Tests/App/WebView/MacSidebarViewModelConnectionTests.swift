@@ -168,6 +168,84 @@ struct MacSidebarViewModelConnectionTests {
         #expect(connection.pendingRequests.count == requestCount)
     }
 
+    @Test("Notification changes apply in delivery order, so a dismissal is never outlived by its addition")
+    func notificationChangesApplyInOrder() async throws {
+        try await withViewModel { context in
+            context.viewModel.start()
+            let subscription = try #require(context.connection.pendingSubscriptions.first {
+                $0.request.type.command == "persistent_notification/subscribe"
+            })
+            func send(_ type: String, _ ids: [String]) {
+                subscription.handler(subscription.cancellable, .dictionary([
+                    "type": type,
+                    "notifications": Dictionary(uniqueKeysWithValues: ids.map { ($0, [String: Any]()) }),
+                ]))
+            }
+            @MainActor func badge() -> Int? {
+                context.viewModel.fixedItems.first { $0.kind == .notifications }?.badge
+            }
+
+            send("current", ["a", "b"])
+            #expect(badge() == 2)
+            send("added", ["c"])
+            send("removed", ["c"])
+            send("updated", ["a"])
+            send("removed", ["a", "b"])
+            #expect(badge() == 0)
+            send("current", ["d"])
+            #expect(badge() == 1)
+            send("bogus", ["e"])
+            #expect(badge() == 1)
+        }
+    }
+
+    @Test("A change delivered off the main thread still reaches the badge")
+    func notificationChangesFromABackgroundThreadReachTheBadge() async throws {
+        try await withViewModel { context in
+            context.viewModel.start()
+            let subscription = try #require(context.connection.pendingSubscriptions.first {
+                $0.request.type.command == "persistent_notification/subscribe"
+            })
+            DispatchQueue.global().async {
+                subscription.handler(subscription.cancellable, .dictionary([
+                    "type": "current",
+                    "notifications": ["a": [String: Any](), "b": [String: Any]()],
+                ]))
+            }
+            let badged = await waitUntil {
+                context.viewModel.fixedItems.first { $0.kind == .notifications }?.badge == 2
+            }
+            #expect(badged)
+        }
+    }
+
+    @Test("A replaced API connection gets fresh subscriptions, so the badge follows the new one")
+    func replacedConnectionResubscribes() async throws {
+        try await withViewModel { context in
+            context.viewModel.start()
+            let firstCount = context.connection.pendingSubscriptions.count
+            #expect(firstCount > 0)
+
+            let replacement = HAMockConnection()
+            defer {
+                replacement.pendingRequests.removeAll()
+                replacement.pendingSubscriptions.removeAll()
+            }
+            let api = try #require(Current.api(for: context.viewModel.server))
+            api.connection = replacement
+            NotificationCenter.default.post(name: HomeAssistantAPI.didConnectNotification, object: nil)
+
+            let resubscribed = await waitUntil { replacement.pendingSubscriptions.count == firstCount }
+            #expect(resubscribed)
+            let previousCancelled = context.connection.pendingSubscriptions.allSatisfy(\.cancellable.wasCancelled)
+            #expect(previousCancelled)
+
+            NotificationCenter.default.post(name: HomeAssistantAPI.didConnectNotification, object: nil)
+            try await Task.sleep(for: .milliseconds(50))
+            #expect(replacement.pendingSubscriptions.count == firstCount)
+        }
+    }
+
     @Test func editsAreSavedBackToTheServer() async throws {
         try await withViewModel { context in
             context.viewModel.start()
