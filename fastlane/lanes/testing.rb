@@ -159,8 +159,8 @@ lane :e2e do |options|
   verify = File.expand_path('../../Tools/home_assistant_e2e_auth.py', __dir__)
   verify_tls = if mtls
                  "--ca-certificate #{Shellwords.escape("#{mtls}/ca.pem")} " \
-                 "--client-certificate #{Shellwords.escape("#{mtls}/client.pem")} " \
-                 "--client-key #{Shellwords.escape("#{mtls}/client.key")} "
+                   "--client-certificate #{Shellwords.escape("#{mtls}/client.pem")} " \
+                   "--client-key #{Shellwords.escape("#{mtls}/client.key")} "
                else
                  ''
                end
