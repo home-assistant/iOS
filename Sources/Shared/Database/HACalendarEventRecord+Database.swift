@@ -29,8 +29,9 @@ public extension HACalendarEventRecord {
 
     /// Replaces the cached events for a calendar's `[start, end)` window with `events`.
     ///
-    /// Rows are keyed deterministically, so the insert is idempotent; the window delete is what
-    /// removes events that have since been deleted server-side. Cached events that ended long ago
+    /// Rows are keyed deterministically, so the insert is idempotent; the delete of every row
+    /// overlapping the window (the same rows `events` would read) is what removes events that
+    /// have since been deleted server-side or whose key changed. Cached events that ended long ago
     /// are dropped in the same transaction so the table can't grow without bound.
     static func replace(
         _ events: [HACalendarEventRecord],
@@ -47,8 +48,8 @@ public extension HACalendarEventRecord {
                     .filter(Column(DatabaseTables.HACalendarEvent.calendarEntityId.rawValue) == calendarEntityId)
 
                 try calendarRows
-                    .filter(Column(DatabaseTables.HACalendarEvent.start.rawValue) >= start)
                     .filter(Column(DatabaseTables.HACalendarEvent.start.rawValue) < end)
+                    .filter(Column(DatabaseTables.HACalendarEvent.end.rawValue) > start)
                     .deleteAll(db)
                 try calendarRows
                     .filter(Column(DatabaseTables.HACalendarEvent.end.rawValue) < staleBefore)

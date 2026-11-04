@@ -161,6 +161,7 @@
 		42A1F0B72E000000000000B7 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 42A1F0A72E000000000000A7 /* Alamofire */; };
 		42A7F1012FBC000100BEEF01 /* Database/AllowedTag.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A7F1002FBC000100BEEF01 /* Database/AllowedTag.test.swift */; };
 		42A7F1012FBC000100BEEF02 /* Database/FrontendThemeVariable.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A7F1002FBC000100BEEF02 /* Database/FrontendThemeVariable.test.swift */; };
+		42A7F1012FBC000100BEEF03 /* Database/HACalendarEventRecord.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A7F1002FBC000100BEEF03 /* Database/HACalendarEventRecord.test.swift */; };
 		42AA0002300100010001AAA1 /* EntityStateActive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AA0001300100010001AAA1 /* EntityStateActive.swift */; };
 		42AA0003300100010001AAA1 /* EntityStateActive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AA0001300100010001AAA1 /* EntityStateActive.swift */; };
 		42AA0005300100010001AAA1 /* EntityStateColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AA0004300100010001AAA1 /* EntityStateColor.swift */; };
@@ -658,6 +659,7 @@
 		42A47D4A2C9AEF10003C597D /* DataWidgetsUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataWidgetsUpdater.swift; sourceTree = "<group>"; };
 		42A7F1002FBC000100BEEF01 /* Database/AllowedTag.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database/AllowedTag.test.swift; sourceTree = "<group>"; };
 		42A7F1002FBC000100BEEF02 /* Database/FrontendThemeVariable.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database/FrontendThemeVariable.test.swift; sourceTree = "<group>"; };
+		42A7F1002FBC000100BEEF03 /* Database/HACalendarEventRecord.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database/HACalendarEventRecord.test.swift; sourceTree = "<group>"; };
 		42AA0001300100010001AAA1 /* EntityStateActive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityStateActive.swift; sourceTree = "<group>"; };
 		42AA0004300100010001AAA1 /* EntityStateColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityStateColor.swift; sourceTree = "<group>"; };
 		42AA0007300100010001AAA1 /* EntityIconColorProvider.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityIconColorProvider.test.swift; sourceTree = "<group>"; };
@@ -3322,6 +3324,7 @@
 				11883CC624C131EE0036A6C6 /* AppZone.test.swift */,
 				42A7F1002FBC000100BEEF01 /* Database/AllowedTag.test.swift */,
 				42A7F1002FBC000100BEEF02 /* Database/FrontendThemeVariable.test.swift */,
+				42A7F1002FBC000100BEEF03 /* Database/HACalendarEventRecord.test.swift */,
 				892F0EF22A0B9F20AAEE4CCA /* Database/DatabaseMigration.test.swift */,
 				BC31518EE9DC9E065AC508D9 /* Database/DatabaseTableProtocol.test.swift */,
 				5C50FA39BF16AD0BD782D0D7 /* Database/GRDB+Initialization.test.swift */,
@@ -4832,6 +4835,7 @@
 				42B7A1D1310A00000000A001 /* PeriodicUpdateManager.test.swift in Sources */,
 				42A7F1012FBC000100BEEF01 /* Database/AllowedTag.test.swift in Sources */,
 				42A7F1012FBC000100BEEF02 /* Database/FrontendThemeVariable.test.swift in Sources */,
+				42A7F1012FBC000100BEEF03 /* Database/HACalendarEventRecord.test.swift in Sources */,
 				A2F3A140CDD1EF1AEA6DFAB9 /* Database/DatabaseTableProtocol.test.swift in Sources */,
 				692BCBBA4EEEABCC76DBBECA /* Database/GRDB+Initialization.test.swift in Sources */,
 				BECCC152A4E3F69A8EF5A6F3 /* Database/TableSchemaTests.test.swift in Sources */,

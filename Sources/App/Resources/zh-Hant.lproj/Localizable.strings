@@ -689,7 +689,7 @@
 "connection.active_url_type.toast.internal" = "使用內部網址。";
 "connection.active_url_type.toast.none" = "目前此伺服器沒有可用的有效網址。";
 "connection.active_url_type.toast.remote_ui" = "使用 Cloud Remote 介面網址。";
-"connection.active_url_type.toast.remote_ui_link" = "Using %@ Remote UI URL.";
+"connection.active_url_type.toast.remote_ui_link" = "使用 %@ 遠端 UI 網址。";
 "connection.active_url_type.toast.title" = "連線類型";
 "connection.error.details.button.clipboard" = "複製至剪貼簿";
 "connection.error.details.button.discord" = "於 Discord 上詢問";
@@ -702,8 +702,8 @@
 "connection.error.details.title" = "連線錯誤";
 "connection.error.failed_connect.cloud.title" = "請確定 Home Assistant Cloud 雲服務訂閱為啟用狀態並連線至您的伺服器，可以於 [Nabu Casa](https://account.nabucasa.com) 網站進行驗證";
 "connection.error.failed_connect.cloud_inactive.title" = "已經於應用程式中停用 Home Assistant Cloud 雲服務使用。如果需要進行遠端存取、請開啟 Companion 應用程式設定並進行啟用。";
-"connection.error.failed_connect.cloud_inactive_link.title" = "You have disabled %@ use in the app, if you need it for remote access please open companion app settings and enable it.";
-"connection.error.failed_connect.cloud_link.title" = "Make sure your %@ subscription is active and connected to your server, you can verify that at [Nabu Casa](https://account.nabucasa.com)";
+"connection.error.failed_connect.cloud_inactive_link.title" = "已在應用程式中停用 %@，若需要用於遠端存取，請開啟 Companion 應用程式設定、並進行啟用。";
+"connection.error.failed_connect.cloud_link.title" = "請確定 %@  訂閱為啟用狀態並連線至您的伺服器，可以於 [Nabu Casa](https://account.nabucasa.com) 網站進行驗證";
 "connection.error.failed_connect.subtitle" = "檢查您的連線並再試一次。如果目前不在家，請確認已經設定遠端存取。";
 "connection.error.failed_connect.title" = "無法連線至 Home Assistant";
 "connection.error.failed_connect.url" = "應用程式目前正連線至";
@@ -1546,6 +1546,9 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "reminders_sync.settings.access_denied.body" = "在系統設定 App 中允許完整存取提醒事項，以同步列表。";
 "reminders_sync.settings.access_denied.title" = "需要提醒事項存取權限";
 "reminders_sync.settings.add_list" = "新增";
+"reminders_sync.settings.completed.footer" = "Items that were already completed before syncing started normally stay where they are. Turn this on to copy them to the other list as completed, so checked-off items are known on both sides. A list with a long history can gain many completed items on the first sync.";
+"reminders_sync.settings.completed.header" = "Completed items";
+"reminders_sync.settings.completed.title" = "Include completed items";
 "reminders_sync.settings.conflicts.footer" = "僅影響雙向同步。如果同一個項目在上次同步後在兩個應用程式中都編輯過，將會保留此處選擇的版本。";
 "reminders_sync.settings.conflicts.header" = "衝突";
 "reminders_sync.settings.conflicts.title" = "保留更改";
@@ -1660,7 +1663,7 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "settings.connection_section.client_certificate.remove_confirmation.message" = "憑證將從裝置中移除。需要重新匯入憑證才能使用 mTLS 驗證。";
 "settings.connection_section.client_certificate.remove_confirmation.remove" = "移除";
 "settings.connection_section.client_certificate.remove_confirmation.title" = "移除憑證？";
-"settings.connection_section.cloud_link_overrides_external" = "When connecting via %@, the External URL will not be used. You do not need to configure one unless you want to disable it.";
+"settings.connection_section.cloud_link_overrides_external" = "當透過 %@ 連線時，將不使用外部 URL。不需要進行設定，除非您想停用該服務。";
 "settings.connection_section.cloud_overrides_external" = "當透過 Cloud 連線時，將不使用外部 URL。不需要進行設定，除非您想停用 Cloud 服務。";
 "settings.connection_section.cloudhook.check_reachability.reachable" = "可達性";
 "settings.connection_section.cloudhook.check_reachability.reachable_status_code" = "可達性（HTTP） %li）";
@@ -1748,7 +1751,7 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "settings.connection_section.urls_how_it_works.active.header" = "目前使用中";
 "settings.connection_section.urls_how_it_works.active.none" = "目前的設定無法使用任何網址";
 "settings.connection_section.urls_how_it_works.away.body" = "當沒有符合的網路時，若雲端已開啟，則使用 Home Assistant Cloud 網址；否則使用外部網址。";
-"settings.connection_section.urls_how_it_works.away.body_link" = "When no listed network matches, the %@ URL is used if it is turned on, and the external URL otherwise.";
+"settings.connection_section.urls_how_it_works.away.body_link" = "當沒有符合的網路時，若雲端已開啟，則使用 %@ 網址；否則使用外部網址。";
 "settings.connection_section.urls_how_it_works.away.title" = "其他地方";
 "settings.connection_section.urls_how_it_works.background.body" = "感測器更新、通知動作和本地推播在應用程式關閉後仍會持續運作。在背景模式下，iOS 只有在位置存取設定為永遠允許而非使用 App 期間時，才會共享網路名稱，因此若未進行此設定，家庭網路將無法被識別，這些功能將以外出時的相同方式進行連線。";
 "settings.connection_section.urls_how_it_works.background.title" = "當應用程式在背景執行時";
@@ -1776,7 +1779,7 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "settings.connection_section.webhook.active.unavailable" = "無可用網址";
 "settings.connection_section.webhook.endpoints.footer" = "將此些網址視為敏感資訊。任何擁有這些網址的人都可以向此行動應用程式 Webhook 發送請求。";
 "settings.connection_section.webhook.footer" = "此應用程式會透過 Webhook 傳送感測器、位置及其他更新資料。Home Assistant Cloud 提供 cloudhook，讓您不在家時也能使用。若未啟用，應用程式將改以此伺服器的內部、遠端或外部網址以建立 Webhook 網址。";
-"settings.connection_section.webhook.footer_link" = "The app sends sensor, location and other updates to this webhook. %@ provides a cloudhook, which is used whenever you are away from home. Without it, the app builds the webhook URL from the internal, remote or external URL of this server instead.";
+"settings.connection_section.webhook.footer_link" = "此應用程式會透過 Webhook 傳送感測器、位置及其他更新資料。%@ 提供 cloudhook，讓您不在家時也能使用。若未啟用，應用程式將改以此伺服器的內部、遠端或外部網址以建立 Webhook 網址。";
 "settings.connection_section.webhook.in_use" = "使用中";
 "settings.connection_section.webhook.title" = "Webhook";
 "settings.connection_section.websocket.status.authenticating" = "認證中";
@@ -3072,7 +3075,7 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "watch.settings.client_events.title" = "日誌";
 "watch.settings.complications.empty" = "尚未設定任何複雜功能。";
 "watch.settings.complications.footer" = "直接從 Home Assistant 取得每個複雜功能目前數值。這需要一個可連線的伺服器網址（區域網路或遠端/雲端網址）。";
-"watch.settings.complications.footer_link" = "Fetches each complication's current value directly from Home Assistant. This needs a reachable server URL (local network or a remote/%@ URL).";
+"watch.settings.complications.footer_link" = "直接從 Home Assistant 取得每個複雜功能目前數值。這需要一個可連線的伺服器網址（區域網路或遠端/%@ 網址）。";
 "watch.settings.complications.last_attempt" = "最後嘗試：%@";
 "watch.settings.complications.list_footer" = "點一下複雜功能，查看上次更新時間並重試。";
 "watch.settings.complications.never" = "尚未更新";
@@ -3152,7 +3155,7 @@ Home Assistant 為開源軟體、倡導隱私保護並於您的家中進行本�
 "web_view.add_to.option.Deeplink.title" = "深度連結";
 "web_view.add_to.option.MacToolbar.title" = "Mac 工具列";
 "web_view.add_to.option.NfcTag.title" = "NFC 標籤";
-"web_view.add_to.option.WatchComplication.title" = "Watch Complication";
+"web_view.add_to.option.WatchComplication.title" = "錶盤複雜功能";
 "web_view.add_to.option.Widget.title" = "小工具";
 "web_view.empty_state.body" = "請檢查連線或稍後再試。如果 Home Assistant 正在重新啟動，恢復線上後將重新連線。";
 "web_view.empty_state.clean_cache_and_reload_button" = "清除暫存並重新載入";
@@ -3410,6 +3413,7 @@ Companion 應用程式相關資料以獲得更詳細資訊。";
 "widgets.todo_list.due_date.in_format" = "於 %@";
 "widgets.todo_list.due_date.now" = "目前";
 "widgets.todo_list.due_date.today" = "今日";
+"widgets.todo_list.load_failed" = "Couldn't update. Tap refresh.";
 "widgets.todo_list.parameter.item_id" = "項目 ID";
 "widgets.todo_list.parameter.list" = "列表";
 "widgets.todo_list.parameter.list_id" = "列表 ID";
