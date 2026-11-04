@@ -61,7 +61,7 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
+                    ToolbarItem(placement: .topBarLeading) {
                         CloseButton(size: .medium) {
                             closeSheet()
                         }
@@ -162,8 +162,10 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
                 devicesList
             case let .loading(message):
                 loadingView(message)
+                    .padding(.horizontal, DesignSystem.Spaces.two)
             case .success:
                 successView
+                    .padding(.horizontal, DesignSystem.Spaces.two)
             case let .failure(message):
                 ImprovFailureView(message: message) {
                     if let selectedPeripheral {
@@ -172,7 +174,6 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
                     }
                 }
                 .padding(.horizontal, DesignSystem.Spaces.two)
-                .padding(.bottom, DesignSystem.Spaces.four)
             }
         }
     }
