@@ -140,7 +140,9 @@ change what a pull request says it updates to.
 
 Boots the newest available simulator of a model in the background, so that a first boot on a
 CI runner (five minutes or more) overlaps the build instead of holding up the test run. The CI
-test jobs call it for the devices the fastlane lanes target.
+test jobs call it for the devices the fastlane lanes target. It mounts the platform's runtime
+first (`EnsureSimulatorRuntime.sh`) and only warns when no device can be found, since the test
+lane boots the device itself anyway.
 
 **Usage:**
 ```bash

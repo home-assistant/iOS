@@ -46,7 +46,9 @@ runs:
         xcrun simctl runtime list
 
     # A simulator's first boot on the runner takes five minutes or more, during which the test
-    # action sits waiting. Started here, the boot overlaps the cache restores and the build.
+    # action sits waiting. Started here, the boot overlaps the cache restores and the build. It is
+    # only a head start: the script warns instead of failing when the device cannot be found, and
+    # the test lane still resolves and boots the device on its own.
     - name: Boot simulators
       shell: bash
       env:
