@@ -12,6 +12,8 @@ struct NativeTabBarNotificationsToolbarItem: ToolbarContent {
 
     let viewModel: NativeTabBarViewModel
     let notifications: MacSidebarItem
+    let badgeColor: Color
+    let badgeTextColor: Color
 
     var body: some ToolbarContent {
         ToolbarItem(placement: .topBarTrailing) {
@@ -42,11 +44,12 @@ struct NativeTabBarNotificationsToolbarItem: ToolbarContent {
         Text(badgeText)
             .font(.caption2.weight(.semibold))
             .monospacedDigit()
-            .foregroundStyle(viewModel.badgeTextColor)
+            .foregroundStyle(badgeTextColor)
             .padding(.horizontal, DesignSystem.Spaces.half)
             .frame(minWidth: Constants.badgeHeight)
             .frame(height: Constants.badgeHeight)
-            .background(viewModel.badgeColor, in: Capsule())
+            .fixedSize()
+            .background(badgeColor, in: Capsule())
             .offset(x: Constants.badgeOffset.width, y: Constants.badgeOffset.height)
             .allowsHitTesting(false)
             .accessibilityHidden(true)
@@ -61,7 +64,12 @@ struct NativeTabBarNotificationsToolbarItem: ToolbarContent {
         Color.clear
             .toolbar {
                 if let notifications {
-                    NativeTabBarNotificationsToolbarItem(viewModel: viewModel, notifications: notifications)
+                    NativeTabBarNotificationsToolbarItem(
+                        viewModel: viewModel,
+                        notifications: notifications,
+                        badgeColor: viewModel.badgeColor,
+                        badgeTextColor: viewModel.badgeTextColor
+                    )
                 }
             }
     }

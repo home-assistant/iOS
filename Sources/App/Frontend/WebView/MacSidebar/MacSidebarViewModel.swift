@@ -391,8 +391,7 @@ final class MacSidebarViewModel: ObservableObject {
         let serverId = server.identifier.rawValue
         accentColor = theme.color(of: FrontendColors.primaryColor.rawValue, for: serverId) ?? .haPrimary
         badgeColor = theme.color(FrontendColors.accentColor, for: serverId)
-        badgeTextColor = theme.color(of: Self.textAccentColorName, for: serverId)
-            ?? theme.color(FrontendColors.textPrimaryColor, for: serverId)
+        badgeTextColor = theme.color(of: Self.textAccentColorName, fallback: .textPrimaryColor, for: serverId)
     }
 
     private static let textAccentColorName = "--text-accent-color"

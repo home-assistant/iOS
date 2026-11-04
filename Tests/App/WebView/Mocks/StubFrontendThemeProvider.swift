@@ -28,6 +28,10 @@ final class StubFrontendThemeProvider: FrontendThemeProviderProtocol {
         colorsByName[frontendColor.rawValue] ?? .clear
     }
 
+    func color(of name: String, fallback: FrontendColors, for serverId: String?) -> Color {
+        colorsByName[name] ?? colorsByName[fallback.rawValue] ?? .clear
+    }
+
     func store(_ variables: [FrontendThemeVariable], for serverId: String, appearance: FrontendThemeAppearance) {}
 
     func reload() {}

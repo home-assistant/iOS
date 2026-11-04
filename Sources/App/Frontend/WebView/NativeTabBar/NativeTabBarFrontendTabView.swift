@@ -23,7 +23,12 @@ struct NativeTabBarFrontendTabView: View {
                                 NativeTabBarProfileToolbarItem(viewModel: viewModel, profile: profile, avatar: avatar)
                             }
                             if let notifications = viewModel.notificationsItem {
-                                NativeTabBarNotificationsToolbarItem(viewModel: viewModel, notifications: notifications)
+                                NativeTabBarNotificationsToolbarItem(
+                                    viewModel: viewModel,
+                                    notifications: notifications,
+                                    badgeColor: viewModel.badgeColor,
+                                    badgeTextColor: viewModel.badgeTextColor
+                                )
                             }
                         }
                         .toolbarBackground(.hidden, for: .navigationBar)
