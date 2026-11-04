@@ -6,8 +6,6 @@ import SwiftUI
 struct NativeTabBarNotificationsToolbarItem: ToolbarContent {
     private enum Constants {
         static let iconSize = CGSize(width: 24, height: 24)
-        static let badgeHeight = DesignSystem.Spaces.two
-        static let badgeOffset = CGSize(width: DesignSystem.Spaces.one, height: -DesignSystem.Spaces.half)
     }
 
     let viewModel: NativeTabBarViewModel
@@ -26,33 +24,16 @@ struct NativeTabBarNotificationsToolbarItem: ToolbarContent {
                     Image(uiImage: notifications.icon.image(ofSize: Constants.iconSize, color: .label))
                         .renderingMode(.template)
                         .overlay(alignment: .topTrailing) {
-                            if notifications.badge > 0 {
-                                badge
-                            }
+                            NativeTabBarNotificationsBadge(
+                                count: notifications.badge,
+                                color: badgeColor,
+                                textColor: badgeTextColor
+                            )
                         }
                 }
             }
-            .accessibilityValue(notifications.badge > 0 ? badgeText : "")
+            .accessibilityValue(NativeTabBarNotificationsBadge.text(for: notifications.badge))
         }
-    }
-
-    private var badgeText: String {
-        NumberFormatter.localizedString(from: NSNumber(value: notifications.badge), number: .decimal)
-    }
-
-    private var badge: some View {
-        Text(badgeText)
-            .font(.caption2.weight(.semibold))
-            .monospacedDigit()
-            .foregroundStyle(badgeTextColor)
-            .padding(.horizontal, DesignSystem.Spaces.half)
-            .frame(minWidth: Constants.badgeHeight)
-            .frame(height: Constants.badgeHeight)
-            .fixedSize()
-            .background(badgeColor, in: Capsule())
-            .offset(x: Constants.badgeOffset.width, y: Constants.badgeOffset.height)
-            .allowsHitTesting(false)
-            .accessibilityHidden(true)
     }
 }
 

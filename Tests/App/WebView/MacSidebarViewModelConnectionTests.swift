@@ -199,6 +199,26 @@ struct MacSidebarViewModelConnectionTests {
         }
     }
 
+    @Test("A change delivered off the main thread still reaches the badge")
+    func notificationChangesFromABackgroundThreadReachTheBadge() async throws {
+        try await withViewModel { context in
+            context.viewModel.start()
+            let subscription = try #require(context.connection.pendingSubscriptions.first {
+                $0.request.type.command == "persistent_notification/subscribe"
+            })
+            DispatchQueue.global().async {
+                subscription.handler(subscription.cancellable, .dictionary([
+                    "type": "current",
+                    "notifications": ["a": [String: Any](), "b": [String: Any]()],
+                ]))
+            }
+            let badged = await waitUntil {
+                context.viewModel.fixedItems.first { $0.kind == .notifications }?.badge == 2
+            }
+            #expect(badged)
+        }
+    }
+
     @Test("A replaced API connection gets fresh subscriptions, so the badge follows the new one")
     func replacedConnectionResubscribes() async throws {
         try await withViewModel { context in
