@@ -28,11 +28,21 @@ public class FocusFilterWrapper {
 
     /// Every time iOS performed the filter. Observed by the Focus sensors, because a run is a
     /// Focus change.
-    private(set) lazy var runs = UserDefaultsValueSync<FocusFilterState>(settingsKey: "FocusFilterStateKey")
+    var runs: UserDefaultsValueSync<FocusFilterState> {
+        .lazily(in: runsStorage, settingsKey: "FocusFilterStateKey")
+    }
 
     /// The app's last reading of the filter's current values. Not observed: every sensor read
     /// writes it, so observing it would make each read start the next one.
-    private(set) lazy var readings = UserDefaultsValueSync<FocusFilterState>(settingsKey: "FocusFilterReadingKey")
+    var readings: UserDefaultsValueSync<FocusFilterState> {
+        .lazily(in: readingsStorage, settingsKey: "FocusFilterReadingKey")
+    }
+
+    // Built on first use (`init` runs while `Current` is still being set up) but not as `lazy var`:
+    // both Focus sensors read from the cooperative pool at once, and two threads racing a `lazy var`
+    // left one writing through a sync the other had freed (field crash in `value.setter`).
+    private let runsStorage = HAProtected<UserDefaultsValueSync<FocusFilterState>?>(value: nil)
+    private let readingsStorage = HAProtected<UserDefaultsValueSync<FocusFilterState>?>(value: nil)
 
     /// How the app asks iOS for the name the filter currently has, `nil` when no Focus with a name
     /// picked is on.
