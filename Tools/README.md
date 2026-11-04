@@ -82,6 +82,23 @@ python3 Tools/diff_coverage.py fastlane/test_output/coverage.lcov --base origin/
 - `0`: Coverage of the changed lines is at or above `--threshold` (default 90%)
 - `1`: Coverage is below the threshold, or the tracefile is missing
 
+### source_timestamps.py
+
+Keeps a restored DerivedData cache incremental in CI. Xcode rebuilds a file whose modification
+time differs from the one in its build database, and a fresh checkout gives every file the time
+of the checkout, so a restored cache used to rebuild the whole project. `snapshot` records,
+inside DerivedData, the commit that was built and every tracked file's timestamp; `restore`
+puts those timestamps back on the files the current commit left unchanged, so only what
+differs from the snapshot (and what depends on it) is compiled again. The CI `test` job takes
+the snapshot on `main` before saving the cache, and every test job restores it after the cache
+comes back. Without a snapshot both do nothing.
+
+**Usage:**
+```bash
+python3 Tools/source_timestamps.py snapshot ~/Library/Developer/Xcode/DerivedData
+python3 Tools/source_timestamps.py restore ~/Library/Developer/Xcode/DerivedData
+```
+
 ### UpdateSwiftPackages.py
 
 Finds and applies updates for the Swift packages `HomeAssistant.xcodeproj` depends on.
@@ -118,6 +135,20 @@ change what a pull request says it updates to.
 - `1`: Unknown package name, or the resolved pin does not match the requested version
 
 ## Shell Scripts
+
+### BootSimulator.sh
+
+Boots the newest available simulator of a model in the background, so that a first boot on a
+CI runner (five minutes or more) overlaps the build instead of holding up the test run. The CI
+test jobs call it for the devices the fastlane lanes target. It mounts the platform's runtime
+first (`EnsureSimulatorRuntime.sh`) and only warns when no device can be found, since the test
+lane boots the device itself anyway.
+
+**Usage:**
+```bash
+Tools/BootSimulator.sh iOS "iPhone 17"
+Tools/BootSimulator.sh watchOS "Apple Watch Series 12 (46mm)"
+```
 
 ### BuildMaterialDesignIconsFont.sh
 
