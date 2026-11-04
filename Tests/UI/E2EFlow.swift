@@ -53,7 +53,7 @@ final class E2EFlow {
     /// allow the debug one, and it reads only the first 10 KB of that page, which no longer reaches
     /// the `redirect_uri` link tag. The debug pair is rejected with "Invalid redirect URI", so the
     /// flow could never log in.
-    static let launchArguments = ["-FASTLANE_SNAPSHOT", "YES"]
+    static let launchArguments = ["-FASTLANE_SNAPSHOT", "YES", "-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
 
     /// Hands the flow's `client.p12` to onboarding in place of the file picker, which a UI test
     /// cannot drive: the picker runs in another process whose elements are not exposed.
