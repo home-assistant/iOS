@@ -151,7 +151,8 @@ struct MacSidebarViewModelConnectionTests {
         Current.setCachedApi(api, for: server.identifier)
         NotificationCenter.default.post(name: HomeAssistantAPI.didConnectNotification, object: nil)
 
-        #expectawait (waitUntil { !connection.pendingRequests.isEmpty })
+        let subscribed = await waitUntil { !connection.pendingRequests.isEmpty }
+        #expect(subscribed)
 
         // A second connect must not double the subscriptions.
         let requestCount = connection.pendingRequests.count
