@@ -177,11 +177,14 @@ lane :e2e do |options|
 
   # Erasing also drops the keychain, so the CA goes in afterwards. Trusting it here keeps the flow
   # on the same path as a server with a public certificate: no security exception to accept, only
-  # the client certificate to import.
+  # the client certificate to import. The simulator is shut down again straight away: left booted
+  # it competes with the build for the runner's few cores and makes it four times slower, while
+  # the trust store survives the shutdown and `xcodebuild` boots the simulator again for the test.
   if mtls
     sh("xcrun simctl boot #{udid}")
     sh("xcrun simctl bootstatus #{udid} -b")
     sh("xcrun simctl keychain #{udid} add-root-cert #{Shellwords.escape("#{mtls}/ca.pem")}")
+    sh("xcrun simctl shutdown #{udid}")
   end
 
   # `xcodebuild` forwards TEST_RUNNER_-prefixed variables into the test process with the prefix
