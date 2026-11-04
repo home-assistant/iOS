@@ -32,6 +32,16 @@ struct AppMigrationScreensTests {
         assertLightDarkSnapshots(of: importView(.openingPreviousApp), named: "new-04-open-check")
     }
 
+    @MainActor @Test func importConfirmingReplacement() {
+        assertLightDarkSnapshots(
+            of: importView(.confirmingReplacement(
+                existingServerNames: ["Home"],
+                incomingServerNames: ["Home", "Cabin"]
+            )),
+            named: "new-04b-replace-check"
+        )
+    }
+
     @MainActor @Test func importProgress() {
         assertLightDarkSnapshots(of: importView(.applying), named: "new-05-progress")
     }
@@ -132,7 +142,7 @@ struct AppMigrationScreensTests {
 
     // MARK: - Containers
 
-    @MainActor @Test func flowStartsWithTheIntroAndThenAsksThePreviousApp() async {
+    @MainActor @Test func flowStartsWithTheIntroAndThenAsksThePreviousApp() {
         var dependencies = AppMigrationCoordinatorDependencies()
         dependencies.role = .newApp
         dependencies.open = { _ in true }
@@ -212,7 +222,14 @@ struct AppMigrationScreensTests {
     // MARK: - Helpers
 
     private func importView(_ state: AppMigrationImportState) -> AppMigrationImportView {
-        AppMigrationImportView(state: state, openPreviousAppAction: {}, retryAction: {}, cancelAction: {})
+        AppMigrationImportView(
+            state: state,
+            openPreviousAppAction: {},
+            retryAction: {},
+            replaceAction: {},
+            keepAction: {},
+            cancelAction: {}
+        )
     }
 
     private func exportView(_ state: AppMigrationExportState) -> AppMigrationExportView {

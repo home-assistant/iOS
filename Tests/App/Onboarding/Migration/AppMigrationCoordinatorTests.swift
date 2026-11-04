@@ -32,7 +32,8 @@ struct AppMigrationCoordinatorTests {
         opener: Opener,
         canOpen: Bool = true,
         pacing: TimeInterval = 0,
-        releasedPush: (() -> Void)? = nil
+        releasedPush: (() -> Void)? = nil,
+        restoredPush: (() -> Void)? = nil
     ) -> AppMigrationCoordinator {
         var dependencies = AppMigrationCoordinatorDependencies()
         dependencies.role = role
@@ -42,6 +43,7 @@ struct AppMigrationCoordinatorTests {
         dependencies.erasedReadDuration = 0
         dependencies.adoptPushRegistration = {}
         dependencies.releasePushRegistration = { releasedPush?() }
+        dependencies.restorePushRegistration = { restoredPush?() }
         dependencies.refreshLocalPushManagers = {}
         return AppMigrationCoordinator(dependencies: dependencies)
     }
@@ -50,7 +52,9 @@ struct AppMigrationCoordinatorTests {
         let clock = ContinuousClock()
         let start = clock.now
         while clock.now - start < timeout {
-            if condition() { return true }
+            if condition() {
+                return true
+            }
             try? await Task.sleep(for: .milliseconds(50))
         }
         return condition()
@@ -130,7 +134,7 @@ struct AppMigrationCoordinatorTests {
         await expectEventually { newApp.importState == expected }
     }
 
-    @Test func declinesAndStrayLinksAreMatchedToTheSession() async throws {
+    @Test func declinesAndStrayLinksAreMatchedToTheSession() throws {
         reset()
         defer { reset() }
         let opener = Opener()
@@ -152,7 +156,7 @@ struct AppMigrationCoordinatorTests {
         #expect(newApp.importState == .failed(message: AppMigrationError.wrongSession.localizedDescription))
         #expect(newApp.handle(url: AppMigrationLink.payloadReady(sessionID: UUID(), key: "short").url(to: .newApp)))
         #expect(newApp.importState == .failed(message: AppMigrationError.wrongSession.localizedDescription))
-        #expect(!newApp.handle(url: URL(string: "homeassistant-ohf-dev://settings")!))
+        #expect(try !newApp.handle(url: #require(URL(string: "homeassistant-ohf-dev://settings"))))
         #expect(!newApp.handle(url: AppMigrationLink.request(session).url(to: .previousApp)))
 
         let completed = UUID()
@@ -187,7 +191,9 @@ struct AppMigrationCoordinatorTests {
         #expect(newApp.handle(url: AppMigrationLink.payloadReady(sessionID: session.id, key: nil).url(to: .newApp)))
         #expect(newApp.importState == .receiving)
         await expectEventually {
-            if case .failed = newApp.importState { return true }
+            if case .failed = newApp.importState {
+                return true
+            }
             return false
         }
         #expect(AppMigrationPasteboard.take() == nil)
@@ -213,7 +219,9 @@ struct AppMigrationCoordinatorTests {
         #expect(previousApp.beginTransferFromThisApp())
         previousApp.transfer()
         await expectEventually {
-            if case .failed = previousApp.exportState { return true }
+            if case .failed = previousApp.exportState {
+                return true
+            }
             return false
         }
         #expect(opener.opened.isEmpty)
@@ -301,6 +309,73 @@ struct AppMigrationCoordinatorTests {
         #expect(!erased.keepsScreenOn)
     }
 
+    @Test func aConfiguredNewAppAsksBeforeItsSetupIsReplaced() async throws {
+        reset()
+        defer { reset() }
+        let previousServers = Current.servers
+        Current.servers = FakeServerManager(initial: 1)
+        defer { Current.servers = previousServers }
+        let serversService = AppMigrationKeychainStore.servers.service
+        for server in Current.servers.all {
+            try Self.store(
+                JSONEncoder().encode(server.info),
+                service: serversService,
+                account: server.identifier.rawValue
+            )
+        }
+        defer { Self.wipe(service: serversService) }
+        let existingName = try #require(Current.servers.all.first?.info.name)
+
+        let previousOpener = Opener()
+        let newOpener = Opener()
+        var restored = 0
+        let previousApp = Self.make(role: .previousApp, opener: previousOpener, restoredPush: { restored += 1 })
+        let newApp = Self.make(role: .newApp, opener: newOpener)
+        previousOpener.answer = { url in newApp.handle(url: url) }
+        newOpener.answer = { url in previousApp.handle(url: url) }
+
+        #expect(previousApp.beginTransferFromThisApp())
+        let request = try #require(previousApp.exportRequest)
+        previousApp.transfer()
+        await expectEventually { newApp.importState?.isConfirmingReplacement == true }
+        #expect(newApp.importState == .confirmingReplacement(
+            existingServerNames: [existingName],
+            incomingServerNames: [existingName]
+        ))
+        #expect(previousApp.exportState == .handedOff)
+        #expect(Current.servers.all.count == 1)
+        #expect(newApp.keepsScreenOn)
+
+        // A stray decline reaches neither side: the previous app only takes it for the session it handed off.
+        #expect(!previousApp
+            .handle(url: AppMigrationLink.declined(sessionID: UUID(), reason: nil).url(to: .previousApp)))
+        #expect(previousApp.handoffPhase == .handedOff(sessionID: request.id))
+
+        newApp.keepExistingSetup()
+        await expectEventually { previousApp.handoffPhase == nil }
+        #expect(newOpener.links.contains(.declined(sessionID: request.id, reason: nil)))
+        #expect(newApp.importState == nil)
+        #expect(!newApp.keepsScreenOn)
+        #expect(AppMigrationSessionStore.load() == nil)
+        #expect(previousApp.exportState == .idle)
+        #expect(previousApp.exportRequest == nil)
+        #expect(!HomeAssistantAPI.connectionsSuspended)
+        #expect(restored == 1)
+        #expect(Current.servers.all.count == 1)
+        newApp.replaceExistingSetup()
+        #expect(newApp.importState == nil)
+
+        #expect(previousApp.beginTransferFromThisApp())
+        previousApp.transfer()
+        await expectEventually { newApp.importState?.isConfirmingReplacement == true }
+        newApp.replaceExistingSetup()
+        await expectEventually { newApp.completedSummary != nil }
+        #expect(newApp.completedSummary?.serverNames == [existingName])
+        #expect(Current.servers.all.count == 1)
+        #expect(previousApp.exportState == .handedOff)
+        newApp.finishImport()
+    }
+
     @Test func theWholeHandoffRoundTripsIncludingRestartAndErase() async throws {
         reset()
         defer { reset() }
@@ -368,6 +443,9 @@ struct AppMigrationCoordinatorTests {
         #expect(previousApp.handoffPhase == .requested(request, startedHere: true))
 
         previousApp.transfer()
+        // The test process already holds the servers, so the new app asks before replacing them.
+        await expectEventually { newApp.importState?.isConfirmingReplacement == true }
+        newApp.replaceExistingSetup()
         await expectEventually { newApp.completedSummary != nil }
         #expect(newApp.completedSummary?.serverNames.count == 2)
         for server in Current.servers.all {

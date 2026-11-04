@@ -59,4 +59,6 @@ enum AccessibilityIdentifier: String {
     case migrationNoServersPrimary = "migration.noServers.primary"
     case migrationImportRetry = "migration.import.retry"
     case migrationImportManual = "migration.import.manual"
+    case migrationImportReplace = "migration.import.replace"
+    case migrationImportKeep = "migration.import.keep"
 }

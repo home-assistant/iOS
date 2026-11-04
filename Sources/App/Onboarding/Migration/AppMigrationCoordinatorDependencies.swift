@@ -54,6 +54,12 @@ struct AppMigrationCoordinatorDependencies {
         }
     }
 
+    /// The new app kept its own setup, so this one is back in service: register for push again and let
+    /// the refreshed token reach every server through the usual delegate path.
+    var restorePushRegistration: @MainActor () -> Void = {
+        AppDelegate.shared?.notificationManager.setupFirebase()
+    }
+
     /// The local push extension reads its servers from the managers it was configured with, so they
     /// have to be rebuilt whenever this app suspends or resumes: suspended, none may stay.
     var refreshLocalPushManagers: @MainActor () -> Void = {
