@@ -41,6 +41,17 @@ struct CircularComplicationSnapshotTests {
         return model
     }
 
+    /// Populates the min/max label slots regardless of gauge style, as the watch does before the
+    /// style decides whether to draw them.
+    private static func withMinMaxLabels(
+        _ model: CircularComplicationRenderModel
+    ) -> CircularComplicationRenderModel {
+        var model = model
+        model.minLabel = "0"
+        model.maxLabel = "100"
+        return model
+    }
+
     private static var variants: [(String, CircularComplicationRenderModel)] {
         [
             ("icon-value-name-open", .sample()),
@@ -58,6 +69,11 @@ struct CircularComplicationSnapshotTests {
             ("icon-only-open-no-min-max", .sample(value: "", showValue: false, title: nil, showMinMax: false)),
             ("icon-only-open-min-max", .sample(value: "", showValue: false, title: nil)),
             ("icon-only-capacity-ring", .sample(value: "", showValue: false, title: nil, capacity: true)),
+            // The ring never draws min/max labels, so ones left in the model must not shrink the icon.
+            (
+                "icon-only-capacity-ring-with-labels",
+                withMinMaxLabels(.sample(value: "", showValue: false, title: nil, capacity: true))
+            ),
             ("no-gauge", .sample(fraction: nil)),
             ("icon-only-no-gauge", .sample(value: "", showValue: false, title: nil, fraction: nil)),
             ("zero-fraction", .sample(value: "0%", fraction: 0)),

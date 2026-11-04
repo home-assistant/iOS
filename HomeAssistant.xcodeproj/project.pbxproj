@@ -2542,6 +2542,7 @@
 				"__Snapshots__/CircularComplicationSnapshot.test/circularComplicationVariants.full-fraction.png",
 				"__Snapshots__/CircularComplicationSnapshot.test/circularComplicationVariants.icon-and-value-no-name.png",
 				"__Snapshots__/CircularComplicationSnapshot.test/circularComplicationVariants.icon-only-capacity-ring.png",
+				"__Snapshots__/CircularComplicationSnapshot.test/circularComplicationVariants.icon-only-capacity-ring-with-labels.png",
 				"__Snapshots__/CircularComplicationSnapshot.test/circularComplicationVariants.icon-only-no-gauge.png",
 				"__Snapshots__/CircularComplicationSnapshot.test/circularComplicationVariants.icon-only-open-min-max.png",
 				"__Snapshots__/CircularComplicationSnapshot.test/circularComplicationVariants.icon-only-open-no-min-max.png",

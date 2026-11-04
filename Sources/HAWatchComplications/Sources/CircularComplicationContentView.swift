@@ -151,7 +151,8 @@ public struct CircularComplicationContentView: View {
     private var centerIconSize: CGFloat {
         guard hasGauge else { return Layout.iconSizeNoGauge }
         guard model.isIconOnly else { return Layout.iconSize }
-        let hasMinMax = model.minLabel != nil || model.maxLabel != nil
+        // Only the open gauge draws min/max labels; the capacity ring ignores any it carries.
+        let hasMinMax = !model.isCapacityGauge && (model.minLabel != nil || model.maxLabel != nil)
         return hasMinMax ? Layout.iconSizeIconOnlyWithMinMax : Layout.iconSizeIconOnly
     }
 
