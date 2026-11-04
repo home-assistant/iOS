@@ -49,107 +49,103 @@ struct ImprovDiscoverView<Manager>: View where Manager: ImprovManagerProtocol {
                 isSheetPresented = true
             }
             .sheet(isPresented: $isSheetPresented, onDismiss: dismiss.callAsFunction) {
-                sheetContent
-                    .presentationDetents([.medium, .large])
-                    .presentationDragIndicator(.visible)
-            }
-    }
-
-    private var sheetContent: some View {
-        NavigationStack {
-            content
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        CloseButton(size: .medium) {
-                            closeSheet()
+                NavigationStack {
+                    content
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .navigationBarTitleDisplayMode(.inline)
+                        .toolbar {
+                            ToolbarItem(placement: .topBarLeading) {
+                                CloseButton(size: .medium) {
+                                    closeSheet()
+                                }
+                            }
                         }
+                }
+                .animation(.default, value: state)
+                .onAppear {
+                    if improvManager.bluetoothState == .poweredOn {
+                        improvManager.scan()
                     }
                 }
-        }
-        .animation(.default, value: state)
-        .onAppear {
-            if improvManager.bluetoothState == .poweredOn {
-                improvManager.scan()
+                .onDisappear {
+                    improvManager.stopScan()
+                    disconnectSelectedPeripheral()
+                }
+                .onChange(of: improvManager.bluetoothState) { newValue in
+                    if newValue == .poweredOn {
+                        improvManager.scan()
+                    }
+                }
+                .onChange(of: state) { _ in
+                    if state == .success {
+                        notifyFrontend()
+                    }
+                }
+                .onChange(of: improvManager.deviceState) { newValue in
+                    switch newValue {
+                    case .authorizationRequired:
+                        state = .loading(CoreStrings.componentImprovBleConfigProgressAuthorize)
+                    case .authorized:
+                        guard readyToSendWifiCredentials else { return }
+                        state = .loading(L10n.Improv.ConnectionState.authorized)
+                        // Sending wifi credentials to device
+                        authenticate()
+                    case .provisioned:
+                        state = .success
+                    case .provisioning:
+                        state = .loading(L10n.Improv.ConnectionState.provisioning)
+                    case .none:
+                        break
+                    }
+                }
+                .onChange(of: improvManager.errorState) { newValue in
+                    switch newValue {
+                    case .noError:
+                        break
+                    case .invalidRPCPacket:
+                        state = .failure(L10n.Improv.ErrorState.invalidRpcPacket)
+                    case .unknownCommand:
+                        state = .failure(L10n.Improv.ErrorState.unknownCommand)
+                    case .unableToConnect:
+                        state = .failure(L10n.Improv.ErrorState.unableToConnect)
+                        readyToSendWifiCredentials = false
+                    case .notAuthorized:
+                        state = .failure(L10n.Improv.ErrorState.notAuthorized)
+                    case .unknown:
+                        state = .failure(L10n.Improv.ErrorState.unknown)
+                    case .none:
+                        break
+                    }
+                }
+                .onChange(of: improvManager.connectedDevice) { newValue in
+                    if newValue == nil || selectedPeripheral == nil {
+                        state = .list
+                    } else if newValue?.identifier == selectedPeripheral?.identifier {
+                        state = .loading(L10n.Improv.State.connected)
+                    }
+                }
+                .onChange(of: improvManager.foundDevices) { newValue in
+                    guard let deviceName, selectedPeripheral == nil else { return }
+                    if let device = newValue.first(where: { $0.value.name == deviceName })?.value {
+                        selectPeripheral(device)
+                    } else if state == .empty {
+                        state = .list
+                    }
+                }
+                .alert(L10n.Improv.Wifi.Alert.title, isPresented: $showWifiAlert) {
+                    TextField(L10n.Improv.Wifi.Alert.ssidPlaceholder, text: $ssid)
+                        .textInputAutocapitalization(.never)
+                    SecureField(L10n.Improv.Wifi.Alert.passwordPlaceholder, text: $password)
+                    Button(L10n.Improv.Wifi.Alert.connectButton, action: connectToDevice)
+                    Button(L10n.Improv.Wifi.Alert.cancelButton, role: .cancel) {
+                        cancelWifiInput()
+                    }
+                } message: {
+                    Text(verbatim: L10n.Improv.Wifi.Alert.description)
+                }
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
             }
-        }
-        .onDisappear {
-            improvManager.stopScan()
-            disconnectSelectedPeripheral()
-        }
-        .onChange(of: improvManager.bluetoothState) { newValue in
-            if newValue == .poweredOn {
-                improvManager.scan()
-            }
-        }
-        .onChange(of: state) { _ in
-            if state == .success {
-                notifyFrontend()
-            }
-        }
-        .onChange(of: improvManager.deviceState) { newValue in
-            switch newValue {
-            case .authorizationRequired:
-                state = .loading(CoreStrings.componentImprovBleConfigProgressAuthorize)
-            case .authorized:
-                guard readyToSendWifiCredentials else { return }
-                state = .loading(L10n.Improv.ConnectionState.authorized)
-                // Sending wifi credentials to device
-                authenticate()
-            case .provisioned:
-                state = .success
-            case .provisioning:
-                state = .loading(L10n.Improv.ConnectionState.provisioning)
-            case .none:
-                break
-            }
-        }
-        .onChange(of: improvManager.errorState) { newValue in
-            switch newValue {
-            case .noError:
-                break
-            case .invalidRPCPacket:
-                state = .failure(L10n.Improv.ErrorState.invalidRpcPacket)
-            case .unknownCommand:
-                state = .failure(L10n.Improv.ErrorState.unknownCommand)
-            case .unableToConnect:
-                state = .failure(L10n.Improv.ErrorState.unableToConnect)
-                readyToSendWifiCredentials = false
-            case .notAuthorized:
-                state = .failure(L10n.Improv.ErrorState.notAuthorized)
-            case .unknown:
-                state = .failure(L10n.Improv.ErrorState.unknown)
-            case .none:
-                break
-            }
-        }
-        .onChange(of: improvManager.connectedDevice) { newValue in
-            if newValue == nil || selectedPeripheral == nil {
-                state = .list
-            } else if newValue?.identifier == selectedPeripheral?.identifier {
-                state = .loading(L10n.Improv.State.connected)
-            }
-        }
-        .onChange(of: improvManager.foundDevices) { newValue in
-            guard let deviceName, selectedPeripheral == nil else { return }
-            if let device = newValue.first(where: { $0.value.name == deviceName })?.value {
-                selectPeripheral(device)
-            } else if state == .empty {
-                state = .list
-            }
-        }
-        .alert(L10n.Improv.Wifi.Alert.title, isPresented: $showWifiAlert) {
-            TextField(L10n.Improv.Wifi.Alert.ssidPlaceholder, text: $ssid)
-                .textInputAutocapitalization(.never)
-            SecureField(L10n.Improv.Wifi.Alert.passwordPlaceholder, text: $password)
-            Button(L10n.Improv.Wifi.Alert.connectButton, action: connectToDevice)
-            Button(L10n.Improv.Wifi.Alert.cancelButton, role: .cancel) {
-                cancelWifiInput()
-            }
-        } message: {
-            Text(verbatim: L10n.Improv.Wifi.Alert.description)
-        }
     }
 
     private var content: some View {
