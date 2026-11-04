@@ -24,6 +24,7 @@ enum AccessibilityIdentifier: String {
     case onboardingLocalAccessNext = "onboarding.localAccess.next"
     case onboardingHomeNetworkNext = "onboarding.homeNetwork.next"
     case onboardingHomeNetworkBack = "onboarding.homeNetwork.back"
+    case onboardingClientCertificateSelectFile = "onboarding.clientCertificate.selectFile"
     case onboardingServerIdentityAddSeparate = "onboarding.serverIdentity.addSeparate"
     case onboardingServerIdentityReplace = "onboarding.serverIdentity.replace"
     case onboardingServerIdentityWhy = "onboarding.serverIdentity.why"

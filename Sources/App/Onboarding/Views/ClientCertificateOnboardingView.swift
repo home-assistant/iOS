@@ -64,7 +64,7 @@ struct ClientCertificateOnboardingView: View {
     private var buttons: some View {
         VStack(spacing: DesignSystem.Spaces.oneAndHalf) {
             Button {
-                showFilePicker = true
+                selectFile()
             } label: {
                 HStack {
                     Image(systemSymbol: .docBadgePlus)
@@ -74,6 +74,7 @@ struct ClientCertificateOnboardingView: View {
             }
             .buttonStyle(.primaryButton)
             .disabled(isImporting)
+            .accessibilityIdentifier(AccessibilityIdentifier.onboardingClientCertificateSelectFile.rawValue)
 
             Button(L10n.cancelLabel, role: .cancel) {
                 onCancel()
@@ -110,21 +111,26 @@ struct ClientCertificateOnboardingView: View {
         }
     }
 
+    private func selectFile() {
+        if let fileURL = Current.e2eClientCertificateFile {
+            pendingFileURL = fileURL
+            showPasswordPrompt = true
+        } else {
+            showFilePicker = true
+        }
+    }
+
     private func importCertificate() {
         guard let fileURL = pendingFileURL else { return }
 
         isImporting = true
         errorMessage = nil
 
-        // Access security-scoped resource
-        guard fileURL.startAccessingSecurityScopedResource() else {
-            errorMessage = L10n.Onboarding.ClientCertificate.Error.fileAccess
-            isImporting = false
-            return
-        }
-
+        let isSecurityScoped = fileURL.startAccessingSecurityScopedResource()
         defer {
-            fileURL.stopAccessingSecurityScopedResource()
+            if isSecurityScoped {
+                fileURL.stopAccessingSecurityScopedResource()
+            }
         }
 
         do {

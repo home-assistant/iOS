@@ -15,6 +15,8 @@ final class E2EFlow {
         static let secondURL = value(for: "E2E_HOME_ASSISTANT_SECOND_URL", default: "http://localhost:8124")
         static let username = value(for: "E2E_HOME_ASSISTANT_USERNAME", default: "citest")
         static let password = value(for: "E2E_HOME_ASSISTANT_PASSWORD", default: "h7jk99&U")
+        static let clientCertificateFile = value(for: "E2E_CLIENT_CERTIFICATE_FILE", default: "")
+        static let clientCertificatePassword = value(for: "E2E_CLIENT_CERTIFICATE_PASSWORD", default: "e2ep12pass")
 
         private static func value(for key: String, default fallback: String) -> String {
             let value = ProcessInfo.processInfo.environment[key] ?? ""
@@ -49,8 +51,17 @@ final class E2EFlow {
     /// flow could never log in.
     static let launchArguments = ["-FASTLANE_SNAPSHOT", "YES"]
 
-    func onboard() {
+    /// Hands the flow's `client.p12` to onboarding in place of the file picker, which a UI test
+    /// cannot drive: the picker runs in another process whose elements are not exposed.
+    static var clientCertificateLaunchArguments: [String] {
+        launchArguments + ["-E2E_CLIENT_CERTIFICATE_FILE", Instance.clientCertificateFile]
+    }
+
+    func onboard(importingClientCertificate: Bool = false) {
         connectToInstance()
+        if importingClientCertificate {
+            importClientCertificate()
+        }
         logIn()
         nameDevice()
         answerPermissions()
@@ -176,6 +187,19 @@ final class E2EFlow {
         type(Instance.url, into: urlField, "manual URL entry field")
 
         tap(app.buttons[.onboardingManualEntryConnect], timeout: Timeout.screen, "connect button")
+    }
+
+    func importClientCertificate() {
+        let selectFile = app.buttons[.onboardingClientCertificateSelectFile]
+        tap(selectFile, timeout: Timeout.frontend, "client certificate screen")
+
+        let prompt = app.alerts.firstMatch
+        wait(for: prompt, timeout: Timeout.screen, "certificate password prompt")
+        type(Instance.clientCertificatePassword, into: prompt.secureTextFields.firstMatch, "certificate password field")
+        let importButton = prompt.buttons.matching(NSPredicate(format: "label CONTAINS[c] 'Import'")).firstMatch
+        tap(importButton, timeout: Timeout.screen, "certificate import button")
+
+        waitUntilGone(selectFile, timeout: Timeout.frontend, "client certificate screen")
     }
 
     func logIn(in loginWebView: XCUIElement? = nil) {
