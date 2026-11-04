@@ -11,7 +11,7 @@ description: The end-to-end change workflow, TestFlight feature gating, companio
 2. **Make your changes** in the appropriate `Sources/` directory
 3. **Add strings** to `en.lproj/Localizable.strings` if needed (SwiftGen generates accessors on build; see the `ha-ios-localization` skill)
 4. **Run autocorrect**: `bundle exec fastlane autocorrect` (see the `ha-ios-code-style` skill)
-5. **Run tests**: `bundle exec fastlane test` (see the `ha-ios-testing` skill)
+5. **Run tests**: `bundle exec fastlane test` (see the `ha-ios-testing` skill); `bundle exec fastlane test_watch` covers the watchOS complication tests, which CI runs in a separate `test-watch` job
 6. **Commit** your changes
 7. **Open the documentation draft PR** if the change is user-facing (see [Documentation PRs](#documentation-prs))
 
