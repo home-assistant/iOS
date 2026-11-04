@@ -1543,6 +1543,9 @@ Home Assistant 是开源的，倡导隐私保护，并在您的家中本地运�
 "reminders_sync.settings.access_denied.body" = "Allow full access to Reminders in the system Settings app to sync your lists.";
 "reminders_sync.settings.access_denied.title" = "Reminders access needed";
 "reminders_sync.settings.add_list" = "Add";
+"reminders_sync.settings.completed.footer" = "Items that were already completed before syncing started normally stay where they are. Turn this on to copy them to the other list as completed, so checked-off items are known on both sides. A list with a long history can gain many completed items on the first sync.";
+"reminders_sync.settings.completed.header" = "Completed items";
+"reminders_sync.settings.completed.title" = "Include completed items";
 "reminders_sync.settings.conflicts.footer" = "This only matters for two-way syncs. If the same item was edited in both apps since the last sync, the version from the side you pick here is kept.";
 "reminders_sync.settings.conflicts.header" = "Conflicts";
 "reminders_sync.settings.conflicts.title" = "Keep changes from";
@@ -3428,6 +3431,7 @@ Right-click your desktop, choose Edit Widgets, search for Home Assistant, and ch
 "widgets.todo_list.due_date.in_format" = "于 %@";
 "widgets.todo_list.due_date.now" = "现在";
 "widgets.todo_list.due_date.today" = "今天";
+"widgets.todo_list.load_failed" = "Couldn't update. Tap refresh.";
 "widgets.todo_list.parameter.item_id" = "事项标识符";
 "widgets.todo_list.parameter.list" = "清单";
 "widgets.todo_list.parameter.list_id" = "清单标识符";
