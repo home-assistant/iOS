@@ -21,12 +21,9 @@ struct ImprovFailureView: View {
             action()
         } label: {
             Text(verbatim: L10n.Improv.Button.continue)
-                .padding()
-                .foregroundColor(Color(uiColor: .secondaryLabel))
         }
-        .frame(maxWidth: .infinity)
-        .background(Color(uiColor: .systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.two))
+        .buttonStyle(.primaryButton)
+        .padding(.bottom, DesignSystem.Spaces.two)
     }
 }
 
