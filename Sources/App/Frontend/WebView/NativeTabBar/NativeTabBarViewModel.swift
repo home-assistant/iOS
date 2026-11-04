@@ -24,6 +24,8 @@ final class NativeTabBarViewModel: ObservableObject {
     @Published var showsCustomize = false
     private(set) var customizeZoomsFromButton = true
     @Published private(set) var accentColor: Color = .haPrimary
+    @Published private(set) var badgeColor: Color = .haPrimary
+    @Published private(set) var badgeTextColor: Color = .white
 
     let sidebar: MacSidebarViewModel
     /// Opens the frontend's own quick search; the Search tab is an action, never a selected tab.
@@ -66,6 +68,8 @@ final class NativeTabBarViewModel: ObservableObject {
         self.fixedItems = sidebar.fixedItems
         self.hiddenSidebarItems = sidebar.hiddenItems
         self.accentColor = sidebar.accentColor
+        self.badgeColor = sidebar.badgeColor
+        self.badgeTextColor = sidebar.badgeTextColor
         rebuild()
         self.selection = tabItems.first?.sidebarItem.map { .panel(id: $0.id) } ?? .more
         self.lastFrontendTab = selection
@@ -85,6 +89,15 @@ final class NativeTabBarViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] accentColor in
                 self?.accentColor = accentColor
+            }
+            .store(in: &cancellables)
+
+        sidebar.$badgeColor
+            .combineLatest(sidebar.$badgeTextColor)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] badgeColor, badgeTextColor in
+                self?.badgeColor = badgeColor
+                self?.badgeTextColor = badgeTextColor
             }
             .store(in: &cancellables)
 

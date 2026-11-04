@@ -29,4 +29,32 @@ struct MacSidebarViewModelTests {
 
         #expect(viewModel.accentColor == .purple)
     }
+
+    @Test func badgeColorsFollowTheFrontendAccentColor() async {
+        let previousProvider = Current.frontendTheme
+        defer { Current.frontendTheme = previousProvider }
+        let stub = StubFrontendThemeProvider()
+        Current.frontendTheme = { stub }
+
+        let suiteName = "MacSidebarViewModelTests.badgeColor"
+        let userDefaults = UserDefaults(suiteName: suiteName) ?? .standard
+        userDefaults.removePersistentDomain(forName: suiteName)
+        let viewModel = MacSidebarViewModel(
+            server: ServerFixture.standard,
+            overlayState: WebFrontendOverlayState(),
+            snapshotStore: MacSidebarSnapshotStore(userDefaults: userDefaults)
+        )
+
+        stub.set(.orange, for: .accentColor)
+        stub.set(.black, for: .textPrimaryColor)
+        NotificationCenter.default.post(name: FrontendThemeProvider.didChangeNotification, object: nil)
+        try? await Task.sleep(nanoseconds: 100_000_000)
+        #expect(viewModel.badgeColor == .orange)
+        #expect(viewModel.badgeTextColor == .black)
+
+        stub.set(.white, for: "--text-accent-color")
+        NotificationCenter.default.post(name: FrontendThemeProvider.didChangeNotification, object: nil)
+        try? await Task.sleep(nanoseconds: 100_000_000)
+        #expect(viewModel.badgeTextColor == .white)
+    }
 }
