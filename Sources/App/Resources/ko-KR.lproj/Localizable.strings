@@ -689,7 +689,7 @@
 "connection.active_url_type.toast.internal" = "내부 URL을 사용 중입니다.";
 "connection.active_url_type.toast.none" = "현재 이 서버에 사용할 수 있는 활성 URL이 없습니다.";
 "connection.active_url_type.toast.remote_ui" = "Cloud Remote UI URL을 사용 중입니다.";
-"connection.active_url_type.toast.remote_ui_link" = "Using %@ Remote UI URL.";
+"connection.active_url_type.toast.remote_ui_link" = "%@ 원격 UI URL을 사용 중입니다.";
 "connection.active_url_type.toast.title" = "연결 유형";
 "connection.error.details.button.clipboard" = "클립보드에 복사";
 "connection.error.details.button.discord" = "Discord에서 질문하기";
@@ -702,8 +702,8 @@
 "connection.error.details.title" = "연결 오류";
 "connection.error.failed_connect.cloud.title" = "Home Assistant Cloud 구독이 활성화되어 있고 서버에 연결되어 있는지 확인하세요. [Nabu Casa](https://account.nabucasa.com)에서 확인할 수 있습니다.";
 "connection.error.failed_connect.cloud_inactive.title" = "앱에서 Home Assistant Cloud 사용을 비활성화했습니다. 원격 접근에 필요한 경우 Companion 앱 설정을 열고 활성화하세요.";
-"connection.error.failed_connect.cloud_inactive_link.title" = "You have disabled %@ use in the app, if you need it for remote access please open companion app settings and enable it.";
-"connection.error.failed_connect.cloud_link.title" = "Make sure your %@ subscription is active and connected to your server, you can verify that at [Nabu Casa](https://account.nabucasa.com)";
+"connection.error.failed_connect.cloud_inactive_link.title" = "앱에서 %@ 사용을 비활성화했습니다. 원격 접근에 필요하다면 컴패니언 앱 설정을 열어 활성화하세요.";
+"connection.error.failed_connect.cloud_link.title" = "%@ 구독이 활성 상태이고 서버에 연결되어 있는지 확인하세요. [Nabu Casa](https://account.nabucasa.com)에서 확인할 수 있습니다";
 "connection.error.failed_connect.subtitle" = "연결 상태를 확인한 후 다시 시도하세요. 집에 없는 경우 원격 접근을 구성했는지 확인하세요.";
 "connection.error.failed_connect.title" = "Home Assistant에 연결할 수 없습니다.";
 "connection.error.failed_connect.url" = "앱이 현재 연결 중입니다.";
@@ -1546,6 +1546,9 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "reminders_sync.settings.access_denied.body" = "목록을 동기화하려면 시스템 설정 앱에서 미리 알림에 대한 전체 접근을 허용하세요.";
 "reminders_sync.settings.access_denied.title" = "미리 알림 접근 권한 필요";
 "reminders_sync.settings.add_list" = "추가";
+"reminders_sync.settings.completed.footer" = "Items that were already completed before syncing started normally stay where they are. Turn this on to copy them to the other list as completed, so checked-off items are known on both sides. A list with a long history can gain many completed items on the first sync.";
+"reminders_sync.settings.completed.header" = "Completed items";
+"reminders_sync.settings.completed.title" = "Include completed items";
 "reminders_sync.settings.conflicts.footer" = "이 설정은 양방향 동기화에만 적용됩니다. 마지막 동기화 이후 두 앱에서 같은 항목이 모두 편집된 경우, 여기에서 선택한 쪽의 버전이 유지됩니다.";
 "reminders_sync.settings.conflicts.header" = "충돌";
 "reminders_sync.settings.conflicts.title" = "변경 사항 유지 기준";
@@ -1660,7 +1663,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "settings.connection_section.client_certificate.remove_confirmation.message" = "인증서가 기기에서 제거됩니다. mTLS 인증을 사용하려면 다시 가져와야 합니다.";
 "settings.connection_section.client_certificate.remove_confirmation.remove" = "제거";
 "settings.connection_section.client_certificate.remove_confirmation.title" = "인증서를 제거하시겠습니까?";
-"settings.connection_section.cloud_link_overrides_external" = "When connecting via %@, the External URL will not be used. You do not need to configure one unless you want to disable it.";
+"settings.connection_section.cloud_link_overrides_external" = "%@를 통해 연결할 때는 외부 URL을 사용하지 않습니다. 이 기능을 비활성화하려는 경우가 아니라면 외부 URL을 설정할 필요가 없습니다.";
 "settings.connection_section.cloud_overrides_external" = "Cloud를 통해 연결할 때 외부 URL은 사용되지 않습니다. Cloud를 비활성화하려는 경우가 아니면 구성할 필요가 없습니다.";
 "settings.connection_section.cloudhook.check_reachability.reachable" = "도달 가능";
 "settings.connection_section.cloudhook.check_reachability.reachable_status_code" = "연결 가능(HTTP %li)";
@@ -1748,7 +1751,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "settings.connection_section.urls_how_it_works.active.header" = "현재 사용 중";
 "settings.connection_section.urls_how_it_works.active.none" = "현재 설정으로 사용할 수 있는 URL이 없습니다.";
 "settings.connection_section.urls_how_it_works.away.body" = "목록에 있는 네트워크와 일치하지 않으면, 클라우드가 켜져 있을 때는 Home Assistant Cloud URL을 사용하고 그렇지 않으면 외부 URL을 사용합니다.";
-"settings.connection_section.urls_how_it_works.away.body_link" = "When no listed network matches, the %@ URL is used if it is turned on, and the external URL otherwise.";
+"settings.connection_section.urls_how_it_works.away.body_link" = "목록에 있는 네트워크와 일치하지 않으면 %@가 켜져 있을 때는 해당 URL을 사용하고, 그렇지 않으면 외부 URL을 사용합니다.";
 "settings.connection_section.urls_how_it_works.away.title" = "그 외의 장소";
 "settings.connection_section.urls_how_it_works.background.body" = "앱을 닫아도 센서 업데이트, 알림 액션 및 로컬 푸시는 계속 작동합니다. 백그라운드에서는 위치 접근 권한이 앱을 사용하는 동안이 아닌 항상으로 설정되어 있어야 iOS가 네트워크 이름을 제공합니다. 이 권한이 없으면 홈 네트워크를 인식하지 못해 집 밖에 있을 때와 같은 방식으로 연결됩니다.";
 "settings.connection_section.urls_how_it_works.background.title" = "앱이 백그라운드에 있을 때";
@@ -1776,7 +1779,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "settings.connection_section.webhook.active.unavailable" = "사용 가능한 URL 없음";
 "settings.connection_section.webhook.endpoints.footer" = "이 URL은 민감한 정보로 취급하세요. URL을 아는 사람은 누구나 이 모바일 앱의 웹훅으로 요청을 보낼 수 있습니다.";
 "settings.connection_section.webhook.footer" = "앱은 센서, 위치 및 기타 업데이트를 이 웹훅으로 보냅니다. Home Assistant Cloud는 집 밖에 있을 때 사용하는 클라우드훅을 제공합니다. 클라우드훅이 없으면 앱에서 이 서버의 내부, 원격 또는 외부 URL을 이용해 웹훅 URL을 생성합니다.";
-"settings.connection_section.webhook.footer_link" = "The app sends sensor, location and other updates to this webhook. %@ provides a cloudhook, which is used whenever you are away from home. Without it, the app builds the webhook URL from the internal, remote or external URL of this server instead.";
+"settings.connection_section.webhook.footer_link" = "앱은 센서, 위치 및 기타 업데이트를 이 웹훅으로 보냅니다. %@는 집 밖에 있을 때마다 사용하는 클라우드훅을 제공합니다. 클라우드훅이 없으면 앱은 대신 이 서버의 내부, 원격 또는 외부 URL로 웹훅 URL을 구성합니다.";
 "settings.connection_section.webhook.in_use" = "사용 중";
 "settings.connection_section.webhook.title" = "웹훅";
 "settings.connection_section.websocket.status.authenticating" = "인증하는 중";
@@ -3070,7 +3073,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "watch.settings.client_events.title" = "로그";
 "watch.settings.complications.empty" = "아직 구성된 컴플리케이션이 없습니다.";
 "watch.settings.complications.footer" = "각 컴플리케이션의 현재 값을 Home Assistant에서 직접 가져옵니다. 연결할 수 있는 서버 URL(로컬 네트워크 또는 원격/Cloud URL)이 필요합니다.";
-"watch.settings.complications.footer_link" = "Fetches each complication's current value directly from Home Assistant. This needs a reachable server URL (local network or a remote/%@ URL).";
+"watch.settings.complications.footer_link" = "각 컴플리케이션의 현재 값을 Home Assistant에서 직접 가져옵니다. 접근 가능한 서버 URL이 필요합니다 (로컬 네트워크 또는 원격/%@ URL).";
 "watch.settings.complications.last_attempt" = "마지막 시도: %@";
 "watch.settings.complications.list_footer" = "컴플리케이션을 탭하여 마지막 업데이트 시간을 확인하고 다시 시도하세요.";
 "watch.settings.complications.never" = "아직 업데이트되지 않음";
@@ -3150,7 +3153,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "web_view.add_to.option.Deeplink.title" = "딥링크";
 "web_view.add_to.option.MacToolbar.title" = "Mac 도구 모음";
 "web_view.add_to.option.NfcTag.title" = "NFC 태그";
-"web_view.add_to.option.WatchComplication.title" = "Watch Complication";
+"web_view.add_to.option.WatchComplication.title" = "Apple Watch 컴플리케이션";
 "web_view.add_to.option.Widget.title" = "위젯";
 "web_view.empty_state.body" = "연결 상태를 확인하거나 나중에 다시 시도해 주세요. Home Assistant가 다시 시작되는 경우, 온라인 상태가 되면 다시 연결됩니다.";
 "web_view.empty_state.clean_cache_and_reload_button" = "캐시 정리 후 다시 로드";
@@ -3428,6 +3431,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "widgets.todo_list.due_date.in_format" = "%@ 후";
 "widgets.todo_list.due_date.now" = "지금";
 "widgets.todo_list.due_date.today" = "오늘";
+"widgets.todo_list.load_failed" = "Couldn't update. Tap refresh.";
 "widgets.todo_list.parameter.item_id" = "항목 ID";
 "widgets.todo_list.parameter.list" = "목록";
 "widgets.todo_list.parameter.list_id" = "목록 ID";
