@@ -133,7 +133,9 @@ extension HACalendarEvent {
                 calendarEntityId: calendar.entityId,
                 uid: uid,
                 recurrenceId: recurrenceId,
-                start: start
+                start: start,
+                end: end,
+                summary: summary
             ),
             serverId: calendar.serverId,
             calendarEntityId: calendar.entityId,
