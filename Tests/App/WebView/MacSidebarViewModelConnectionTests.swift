@@ -118,7 +118,7 @@ struct MacSidebarViewModelConnectionTests {
         }
     }
 
-    @Test("A sidebar started before its API exists subscribes once the API connects")
+    @Test("A sidebar started before its API exists subscribes once the frontend connects")
     func startBeforeTheAPIExistsSubscribesOnConnect() async throws {
         let previousCachedApis = Current.cachedApis
         defer { Current.cachedApis = previousCachedApis }
@@ -132,31 +132,38 @@ struct MacSidebarViewModelConnectionTests {
             info.connection.set(address: nil, for: .external)
             info.connection.set(address: nil, for: .remoteUI)
         }
+        let overlayState = WebFrontendOverlayState()
         let viewModel = MacSidebarViewModel(
             server: server,
-            overlayState: WebFrontendOverlayState(),
+            overlayState: overlayState,
             snapshotStore: MacSidebarSnapshotStore(userDefaults: userDefaults)
         )
-        defer { viewModel.stop() }
+        let connection = HAMockConnection()
+        defer {
+            viewModel.stop()
+            // The requests are never answered; left pending they would keep the connection and view model alive.
+            connection.pendingRequests.removeAll()
+            connection.pendingSubscriptions.removeAll()
+        }
 
         viewModel.start()
         #expect(Current.api(for: server) == nil)
 
         let api = HomeAssistantAPI(server: server)
-        let connection = HAMockConnection()
         api.connection = connection
         server.update { info in
             info.connection.set(address: URL(string: "https://example.com"), for: .external)
         }
         Current.setCachedApi(api, for: server.identifier)
-        NotificationCenter.default.post(name: HomeAssistantAPI.didConnectNotification, object: nil)
+        overlayState.connectionState = .connected
 
         let subscribed = await waitUntil { !connection.pendingRequests.isEmpty }
         #expect(subscribed)
 
-        // A second connect must not double the subscriptions.
+        // Neither the API connecting nor the frontend reconnecting doubles the subscriptions.
         let requestCount = connection.pendingRequests.count
         NotificationCenter.default.post(name: HomeAssistantAPI.didConnectNotification, object: nil)
+        overlayState.connectionState = .loaded
         try await Task.sleep(for: .milliseconds(50))
         #expect(connection.pendingRequests.count == requestCount)
     }

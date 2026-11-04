@@ -17,6 +17,8 @@ struct NativeTabBarAvatarLoader<Content: View>: View {
             .onAppear { loadProfilePicture() }
             .onChange(of: isActive) { loadProfilePicture() }
             .onChange(of: viewModel.sidebar.user?.id) { loadProfilePicture() }
+            // The picture can change in the frontend's profile page; coming back to a tab picks that up.
+            .onChange(of: viewModel.selection) { loadProfilePicture() }
     }
 
     private var placeholder: UIImage {

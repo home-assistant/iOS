@@ -61,6 +61,7 @@ final class MacSidebarViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 self?.readLegacyPreferences()
+                self?.subscribeIfNeeded()
             }
             .store(in: &cancellables)
 
@@ -72,7 +73,8 @@ final class MacSidebarViewModel: ObservableObject {
             .store(in: &cancellables)
 
         // At a cold launch the server's URL is not evaluated yet when the sidebar first appears, so there is
-        // no API to subscribe through; the connection announces itself once it is up.
+        // no API to subscribe through. The frontend connecting (above) means the URL resolved since; the API
+        // finishing its own connection is the other moment to try again.
         NotificationCenter.default.publisher(for: HomeAssistantAPI.didConnectNotification)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
