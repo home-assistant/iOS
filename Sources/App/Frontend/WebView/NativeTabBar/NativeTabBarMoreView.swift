@@ -3,7 +3,8 @@ import Shared
 import SwiftUI
 
 /// The More tab: the rest of the list under a bar with the profile picker, notifications and settings. Where the
-/// bars run vertically the avatar moves into the bar beside the gear, and the bell stays with the pinned tabs.
+/// bars run vertically the avatar moves into the bar beside the gear, which gives way to the bell once a page
+/// from the list is showing.
 @available(iOS 26, *)
 struct NativeTabBarMoreView: View {
     private enum Constants {
@@ -88,6 +89,14 @@ struct NativeTabBarMoreView: View {
                         )
                     )
                 }
+                // Once a page from the list is up, the bar is any page's bar: the bell takes the gear's place.
+                if viewModel.moreShowsFrontend {
+                    if let notifications = viewModel.notificationsItem {
+                        NativeTabBarNotificationsToolbarItem(viewModel: viewModel, notifications: notifications)
+                    }
+                } else {
+                    settingsToolbarItem
+                }
             } else {
                 ToolbarItem(placement: .topBarLeading) {
                     profileHeader
@@ -96,14 +105,18 @@ struct NativeTabBarMoreView: View {
                     NativeTabBarNotificationsToolbarItem(viewModel: viewModel, notifications: notifications)
                     ToolbarSpacer(.fixed, placement: .topBarTrailing)
                 }
+                settingsToolbarItem
             }
-            NativeTabBarSettingsToolbarItem(
-                viewModel: viewModel,
-                appSettingsTransitionID: NativeTabBarViewModel.appSettingsTransitionID,
-                transitionNamespace: transitionNamespace,
-                appSettingsPresenter: appSettingsPresenter
-            )
         }
+    }
+
+    private var settingsToolbarItem: some ToolbarContent {
+        NativeTabBarSettingsToolbarItem(
+            viewModel: viewModel,
+            appSettingsTransitionID: NativeTabBarViewModel.appSettingsTransitionID,
+            transitionNamespace: transitionNamespace,
+            appSettingsPresenter: appSettingsPresenter
+        )
     }
 
     /// The avatar beside the server's name: the server picker when there are several servers, otherwise Profile.

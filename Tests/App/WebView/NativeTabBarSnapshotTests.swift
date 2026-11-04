@@ -41,6 +41,17 @@ struct NativeTabBarSnapshotTests {
     }
 
     @available(iOS 26, *)
+    @Test func moreViewInTheVerticalBarShowingTheFrontend() throws {
+        let viewModel = NativeTabBarViewModel.preview(suiteName: "NativeTabBarSnapshotTests.moreVerticalBarFrontend")
+        viewModel.didSelect(.more)
+        try viewModel.open(#require(viewModel.moreItems.first))
+        assertLightDarkSnapshots(
+            of: NavigationStack { NativeTabBarMoreView(viewModel: viewModel, usesVerticalBar: true) },
+            drawHierarchyInKeyWindow: true
+        )
+    }
+
+    @available(iOS 26, *)
     @Test func moreViewForANonAdmin() {
         let viewModel = NativeTabBarViewModel.preview(
             isAdmin: false,
