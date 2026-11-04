@@ -156,7 +156,7 @@ struct AppMigrationCoordinatorTests {
         #expect(newApp.importState == .failed(message: AppMigrationError.wrongSession.localizedDescription))
         #expect(newApp.handle(url: AppMigrationLink.payloadReady(sessionID: UUID(), key: "short").url(to: .newApp)))
         #expect(newApp.importState == .failed(message: AppMigrationError.wrongSession.localizedDescription))
-        #expect(try !newApp.handle(url: #require(URL(string: "homeassistant-ohf-dev://settings"))))
+        #expect(!newApp.handle(url: URL(string: "homeassistant-ohf-dev://settings")!))
         #expect(!newApp.handle(url: AppMigrationLink.request(session).url(to: .previousApp)))
 
         let completed = UUID()
@@ -347,8 +347,8 @@ struct AppMigrationCoordinatorTests {
         #expect(newApp.keepsScreenOn)
 
         // A stray decline reaches neither side: the previous app only takes it for the session it handed off.
-        #expect(!previousApp
-            .handle(url: AppMigrationLink.declined(sessionID: UUID(), reason: nil).url(to: .previousApp)))
+        let strayDecline = AppMigrationLink.declined(sessionID: UUID(), reason: nil).url(to: .previousApp)
+        #expect(!previousApp.handle(url: strayDecline))
         #expect(previousApp.handoffPhase == .handedOff(sessionID: request.id))
 
         newApp.keepExistingSetup()
