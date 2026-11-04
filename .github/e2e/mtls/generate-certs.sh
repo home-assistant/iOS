@@ -31,21 +31,31 @@ cd "$OUT_DIR"
 openssl req -x509 -newkey rsa:2048 -nodes -days "$VALIDITY_DAYS" \
   -subj "/CN=HA iOS E2E CA" \
   -addext "basicConstraints=critical,CA:TRUE" \
+  -addext "keyUsage=critical,keyCertSign,cRLSign" \
+  -addext "subjectKeyIdentifier=hash" \
   -keyout ca.key -out ca.pem
 
-openssl req -newkey rsa:2048 -nodes \
-  -subj "/CN=localhost" \
-  -addext "subjectAltName=$SAN_LIST" \
-  -keyout server.key -out server.csr
+# Extensions go through -extfile rather than -copy_extensions so that Apple's LibreSSL `openssl`
+# works too. OpenSSL 3 strict verification (which Python 3.13+ turns on) wants key usage and key
+# identifiers on every certificate in the chain.
+openssl req -newkey rsa:2048 -nodes -subj "/CN=localhost" -keyout server.key -out server.csr
 openssl x509 -req -in server.csr -CA ca.pem -CAkey ca.key -CAcreateserial \
-  -days "$VALIDITY_DAYS" -copy_extensions copy -out server.pem
+  -days "$VALIDITY_DAYS" -out server.pem -extfile /dev/stdin <<EOF
+subjectAltName=$SAN_LIST
+keyUsage=critical,digitalSignature,keyEncipherment
+extendedKeyUsage=serverAuth
+subjectKeyIdentifier=hash
+authorityKeyIdentifier=keyid,issuer
+EOF
 
-openssl req -newkey rsa:2048 -nodes \
-  -subj "/CN=$CERT_ALIAS" \
-  -addext "extendedKeyUsage=clientAuth" \
-  -keyout client.key -out client.csr
+openssl req -newkey rsa:2048 -nodes -subj "/CN=$CERT_ALIAS" -keyout client.key -out client.csr
 openssl x509 -req -in client.csr -CA ca.pem -CAkey ca.key -CAcreateserial \
-  -days "$VALIDITY_DAYS" -copy_extensions copy -out client.pem
+  -days "$VALIDITY_DAYS" -out client.pem -extfile /dev/stdin <<EOF
+keyUsage=critical,digitalSignature
+extendedKeyUsage=clientAuth
+subjectKeyIdentifier=hash
+authorityKeyIdentifier=keyid,issuer
+EOF
 
 # SHA1/3DES rather than the PBES2/AES default, the same as home-assistant/android: every
 # `SecPKCS12Import` on the supported iOS versions reads it, and so does LibreSSL's `openssl`.
