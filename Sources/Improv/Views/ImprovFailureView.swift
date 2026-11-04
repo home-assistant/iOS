@@ -22,7 +22,7 @@ struct ImprovFailureView: View {
         } label: {
             Text(verbatim: L10n.Improv.Button.continue)
         }
-        .buttonStyle(.primaryQuietButton)
+        .buttonStyle(.primaryButton)
         .padding(.bottom, DesignSystem.Spaces.two)
     }
 }
