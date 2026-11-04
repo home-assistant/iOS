@@ -1,0 +1,141 @@
+name: Prepare an Xcode test job
+description: >-
+  Sets a macOS runner up for a fastlane test lane: trims the simulator runtimes, boots the
+  simulators the lane will use while the rest runs, restores the gem, build tool and DerivedData
+  caches, puts the source timestamps back so the restored build stays incremental, and resolves
+  the Swift packages.
+
+inputs:
+  developer-dir:
+    description: The Xcode to build with, as DEVELOPER_DIR names it
+    required: true
+  scheme:
+    description: The scheme whose Swift packages are resolved before the tests
+    required: true
+  simulators:
+    description: Simulators to boot ahead of the tests, one `<platform>|<model>` per line
+    required: true
+
+outputs:
+  derived-data-key:
+    description: The exact cache key DerivedData was looked up under
+    value: ${{ steps.keys.outputs.derived-data }}
+  derived-data-cache-hit:
+    description: Whether DerivedData came back from that exact key rather than a fallback
+    value: ${{ steps.derived_data.outputs.cache-hit }}
+
+runs:
+  using: composite
+  steps:
+    # The xcode-27 image registers the watchOS 27.0 runtime twice, once "Unusable - Cryptex Mount
+    # Preferred". About 20 seconds after CoreSimulator first starts, simdiskimaged re-registers it
+    # and retries ejecting disks by a guessed BSD name, which can unmount the usable copy mid-run:
+    # the watch tests then fail with "runtime path not found" or hang connecting to the simulator
+    # (actions/runner-images#14946). Deleting the unusable copy first, before anything else starts
+    # CoreSimulator, leaves nothing to re-register. When the daemon takes the usable copy down
+    # anyway, the test lane mounts it again before the watch tests (Tools/EnsureSimulatorRuntime.sh).
+    # Remove this step once the image is fixed.
+    - name: Remove unusable simulator runtimes
+      shell: bash
+      run: |
+        xcrun simctl runtime list
+        for id in $(xcrun simctl runtime list | grep '(Unusable' \
+          | grep -oE '[0-9A-F]{8}(-[0-9A-F]{4}){3}-[0-9A-F]{12}'); do
+          xcrun simctl runtime delete "$id" || echo "::warning::Could not delete simulator runtime $id"
+        done
+        xcrun simctl runtime list
+
+    # A simulator's first boot on the runner takes five minutes or more, during which the test
+    # action sits waiting. Started here, the boot overlaps the cache restores and the build.
+    - name: Boot simulators
+      shell: bash
+      env:
+        SIMULATORS: ${{ inputs.simulators }}
+      run: |
+        while IFS='|' read -r platform model; do
+          [ -n "$platform" ] && Tools/BootSimulator.sh "$platform" "$model"
+        done <<< "$SIMULATORS"
+
+    - uses: ruby/setup-ruby@de492cf36cbab201753d720ce4f4e336cd688c94  # v1.336.0
+      with:
+        ruby-version: .ruby-version
+
+    # ImageVersion is set by the runner, not the workflow, so it is read from the process
+    # environment rather than the `env` context.
+    - name: Compute cache keys
+      id: keys
+      shell: bash
+      env:
+        DEVELOPER_DIR: ${{ inputs.developer-dir }}
+        GEMS_HASH: ${{ hashFiles('.ruby-version', '**/Gemfile.lock') }}
+        BUILD_TOOLS_HASH: ${{ hashFiles('BuildTools/Package.swift', 'BuildTools/Package.resolved') }}
+        PACKAGES_HASH: ${{ hashFiles('Package.resolved') }}
+      run: |
+        {
+          echo "gems=$RUNNER_OS-gems-$ImageVersion-$DEVELOPER_DIR-$GEMS_HASH"
+          echo "build-tools=$RUNNER_OS-buildtools-$ImageVersion-$DEVELOPER_DIR-$BUILD_TOOLS_HASH"
+          echo "derived-data-prefix=$RUNNER_OS-deriveddata-v2-$DEVELOPER_DIR-"
+          echo "derived-data=$RUNNER_OS-deriveddata-v2-$DEVELOPER_DIR-$PACKAGES_HASH"
+        } >> "$GITHUB_OUTPUT"
+
+    - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+      name: "Cache: Gems"
+      id: cache_gems
+      with:
+        path: vendor/bundle
+        key: ${{ steps.keys.outputs.gems }}
+
+    # SwiftGen and SwiftLint are built from source by Tools/build_tool into BuildTools/.build, which
+    # otherwise costs two minutes at the head of every build, before anything else can compile.
+    - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+      name: "Cache: Build tools"
+      with:
+        path: |
+          BuildTools/.build
+          .build/swiftpm-cache
+        key: ${{ steps.keys.outputs.build-tools }}
+
+    # DerivedData is warmed on `main` (the caller saves it after the tests) and only restored
+    # on PRs, so pinned SPM dependencies are compiled once per Package.resolved and reused
+    # instead of recompiled from scratch on every run.
+    - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+      name: "Restore: DerivedData"
+      id: derived_data
+      with:
+        path: ~/Library/Developer/Xcode/DerivedData
+        key: ${{ steps.keys.outputs.derived-data }}
+        restore-keys: ${{ steps.keys.outputs.derived-data-prefix }}
+
+    # A fallback restore carries precompiled Clang modules for whatever binary dependency
+    # versions `main` had. When a PR moves one of those pins, the freshly checked out
+    # headers are newer than the module built from the old ones and the build fails with
+    # "has been modified since the module file was built" instead of rebuilding it. Drop
+    # the modules so they are rebuilt against the headers actually present.
+    - name: "Drop precompiled modules from a fallback DerivedData restore"
+      if: steps.derived_data.outputs.cache-hit != 'true'
+      shell: bash
+      run: rm -rf ~/Library/Developer/Xcode/DerivedData/*/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+    # The checkout gave every source file a fresh timestamp, which Xcode reads as "changed" and
+    # answers with a full rebuild of the project's own modules. Put back the timestamps the cached
+    # build recorded on every file this commit left unchanged (see Tools/source_timestamps.py).
+    - name: Restore source timestamps
+      shell: bash
+      run: python3 Tools/source_timestamps.py restore ~/Library/Developer/Xcode/DerivedData
+
+    - name: Install Gems
+      if: steps.cache_gems.outputs.cache-hit != 'true'
+      shell: bash
+      run: bundle install --jobs 4 --retry 3
+
+    # The test lanes run with package resolution disabled, so the test action does not
+    # re-resolve once per scheme. That relies on the packages already being checked out, which
+    # a cold DerivedData cache is not, so resolve them from the pinned versions up front.
+    - name: Resolve Swift packages
+      shell: bash
+      env:
+        SCHEME: ${{ inputs.scheme }}
+      run: >-
+        xcodebuild -resolvePackageDependencies
+        -project HomeAssistant.xcodeproj
+        -scheme "$SCHEME"
