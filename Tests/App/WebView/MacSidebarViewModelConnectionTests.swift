@@ -181,7 +181,7 @@ struct MacSidebarViewModelConnectionTests {
                     "notifications": Dictionary(uniqueKeysWithValues: ids.map { ($0, [String: Any]()) }),
                 ]))
             }
-            func badge() -> Int? {
+            @MainActor func badge() -> Int? {
                 context.viewModel.fixedItems.first { $0.kind == .notifications }?.badge
             }
 
@@ -217,7 +217,8 @@ struct MacSidebarViewModelConnectionTests {
 
             let resubscribed = await waitUntil { replacement.pendingSubscriptions.count == firstCount }
             #expect(resubscribed)
-            #expect(context.connection.pendingSubscriptions.allSatisfy(\.cancellable.wasCancelled))
+            let previousCancelled = context.connection.pendingSubscriptions.allSatisfy(\.cancellable.wasCancelled)
+            #expect(previousCancelled)
 
             NotificationCenter.default.post(name: HomeAssistantAPI.didConnectNotification, object: nil)
             try await Task.sleep(for: .milliseconds(50))
