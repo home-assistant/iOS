@@ -1459,6 +1459,24 @@ public enum L10n {
         /// Did the old app open?
         public static var title: String { return L10n.tr("Localizable", "app_migration.import.open_check.title") }
       }
+      public enum Replace {
+        /// This app is already set up with %@. The transfer your existing app sent replaces everything this app holds now.
+        public static func body(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "app_migration.import.replace.body", String(describing: p1))
+        }
+        /// The transfer brings %@. Replacing cannot be undone.
+        public static func incoming(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "app_migration.import.replace.incoming", String(describing: p1))
+        }
+        /// Keep this app's setup
+        public static var keepButton: String { return L10n.tr("Localizable", "app_migration.import.replace.keep_button") }
+        /// no servers
+        public static var noServers: String { return L10n.tr("Localizable", "app_migration.import.replace.no_servers") }
+        /// Replace with the transfer
+        public static var replaceButton: String { return L10n.tr("Localizable", "app_migration.import.replace.replace_button") }
+        /// Replace this app's setup?
+        public static var title: String { return L10n.tr("Localizable", "app_migration.import.replace.title") }
+      }
       public enum Waiting {
         /// Confirm the transfer in your existing Home Assistant app. You will be brought back here automatically.
         public static var body: String { return L10n.tr("Localizable", "app_migration.import.waiting.body") }

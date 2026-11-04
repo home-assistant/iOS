@@ -164,6 +164,9 @@ final class OnboardingStateObservable: ObservableObject {
         if AppMigrationHandoffStore.isActive {
             return .migrationHandoff
         }
+        if AppMigrationCoordinator.shared.importState?.isConfirmingReplacement == true {
+            return .onboarding(.initial)
+        }
         if Current.servers.isMirrorRestorePending {
             return .recoveredServerImport
         }

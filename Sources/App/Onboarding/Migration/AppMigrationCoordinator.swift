@@ -14,7 +14,12 @@ final class AppMigrationCoordinator: ObservableObject {
     private let dependencies: AppMigrationCoordinatorDependencies
 
     @Published private(set) var importState: AppMigrationImportState? {
-        didSet { updateScreenLock() }
+        didSet {
+            updateScreenLock()
+            if oldValue?.isConfirmingReplacement != importState?.isConfirmingReplacement {
+                NotificationCenter.default.post(name: Self.handoffDidChange, object: nil)
+            }
+        }
     }
 
     @Published private(set) var completedSummary: AppMigrationSummary? {
@@ -34,6 +39,8 @@ final class AppMigrationCoordinator: ObservableObject {
     }
 
     private var session: AppMigrationSession?
+    /// Opened and verified, waiting for the user to let it replace what this app already holds.
+    private var pendingPayload: AppMigrationPayload?
 
     init(dependencies: AppMigrationCoordinatorDependencies = .init()) {
         self.dependencies = dependencies
@@ -133,6 +140,10 @@ final class AppMigrationCoordinator: ObservableObject {
             }
         case let (.previousApp, .erase(sessionID)):
             eraseAfterHandoff(sessionID: sessionID)
+        case let (.previousApp, .declined(sessionID, _)):
+            guard case .handedOff(sessionID) = handoffPhase else { return false }
+            leaveTakeover()
+            dependencies.restorePushRegistration()
         default:
             return false
         }
@@ -162,8 +173,37 @@ final class AppMigrationCoordinator: ObservableObject {
 
     func cancelImport() {
         session = nil
+        pendingPayload = nil
         AppMigrationSessionStore.clear()
         importState = nil
+    }
+
+    /// The user chose the transfer over what this app already held.
+    func replaceExistingSetup() {
+        guard let payload = pendingPayload, importState?.isConfirmingReplacement == true else { return }
+        pendingPayload = nil
+        wipeLocalData()
+        Current.onboardingObservation.needed(.logout)
+        let started = Current.date()
+        Task {
+            do {
+                try await apply(payload, started: started)
+            } catch {
+                Current.Log.error("App migration import failed: \(error)")
+                importState = .failed(message: error.localizedDescription)
+            }
+        }
+    }
+
+    /// The user kept what this app already had: the payload is dropped, and the previous app, waiting
+    /// on its handed-off screen, is told to carry on as before.
+    func keepExistingSetup() {
+        guard let session = currentSession(), importState?.isConfirmingReplacement == true else { return }
+        cancelImport()
+        Task {
+            _ = await dependencies
+                .open(AppMigrationLink.declined(sessionID: session.id, reason: nil).url(to: .previousApp))
+        }
     }
 
     func finishImport() {
@@ -220,27 +260,35 @@ final class AppMigrationCoordinator: ObservableObject {
                 }.value
                 guard payload.sessionID == sessionID else { throw AppMigrationError.wrongSession }
                 if replacingExistingSetup, !Current.servers.all.isEmpty {
-                    wipeLocalData()
-                    Current.onboardingObservation.needed(.logout)
+                    pendingPayload = payload
+                    importState = .confirmingReplacement(
+                        existingServerNames: Current.servers.all.map(\.info.name),
+                        incomingServerNames: payload.serverNames
+                    )
+                    return
                 }
-                importState = .applying
-                Current.Log.info("App migration import: applying \(payload.database.count) database bytes")
-                let summary = try await Task.detached {
-                    try AppMigrationImporter().apply(payload)
-                }.value
-                await pace(from: started)
-                AppMigrationSessionStore.clear()
-                AppMigrationSessionStore.saveCompleted(sessionID)
-                self.session = nil
-                importState = nil
-                completedSummary = summary
-                dependencies.keepRegistrations(Current.servers.all)
-                dependencies.adoptPushRegistration()
+                try await apply(payload, started: started)
             } catch {
                 Current.Log.error("App migration import failed: \(error)")
                 importState = .failed(message: error.localizedDescription)
             }
         }
+    }
+
+    private func apply(_ payload: AppMigrationPayload, started: Date) async throws {
+        importState = .applying
+        Current.Log.info("App migration import: applying \(payload.database.count) database bytes")
+        let summary = try await Task.detached {
+            try AppMigrationImporter().apply(payload)
+        }.value
+        await pace(from: started)
+        AppMigrationSessionStore.clear()
+        AppMigrationSessionStore.saveCompleted(payload.sessionID)
+        session = nil
+        importState = nil
+        completedSummary = summary
+        dependencies.keepRegistrations(Current.servers.all)
+        dependencies.adoptPushRegistration()
     }
 
     /// The previous app asked to redo the transfer: drop everything received so far, then request again.
@@ -333,6 +381,10 @@ final class AppMigrationCoordinator: ObservableObject {
                     .open(AppMigrationLink.declined(sessionID: request.id, reason: nil).url(to: .newApp))
             }
         }
+        leaveTakeover()
+    }
+
+    private func leaveTakeover() {
         exportRequest = nil
         exportStartedHere = false
         exportState = .idle
