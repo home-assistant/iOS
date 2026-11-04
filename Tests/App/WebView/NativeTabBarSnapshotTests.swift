@@ -28,6 +28,30 @@ struct NativeTabBarSnapshotTests {
         )
     }
 
+    @available(iOS 26, *)
+    @Test func moreViewInTheVerticalBar() {
+        let viewModel = NativeTabBarViewModel.preview(
+            additionalServers: [ServerFixture.withRemoteConnection],
+            suiteName: "NativeTabBarSnapshotTests.moreVerticalBar"
+        )
+        assertLightDarkSnapshots(
+            of: NavigationStack { NativeTabBarMoreView(viewModel: viewModel, usesVerticalBar: true) },
+            drawHierarchyInKeyWindow: true
+        )
+    }
+
+    @available(iOS 26, *)
+    @Test func moreViewForANonAdmin() {
+        let viewModel = NativeTabBarViewModel.preview(
+            isAdmin: false,
+            suiteName: "NativeTabBarSnapshotTests.moreNonAdmin"
+        )
+        assertLightDarkSnapshots(
+            of: NavigationStack { NativeTabBarMoreView(viewModel: viewModel) },
+            drawHierarchyInKeyWindow: true
+        )
+    }
+
     @Test func customizeView() {
         let viewModel = NativeTabBarViewModel.preview(suiteName: "NativeTabBarSnapshotTests.customize")
         assertLightDarkSnapshots(

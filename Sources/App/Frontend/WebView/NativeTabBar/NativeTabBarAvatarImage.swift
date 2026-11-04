@@ -3,6 +3,9 @@ import UIKit
 
 /// The profile picture, or the user's initial on the brand colour, as a round bar button image.
 enum NativeTabBarAvatarImage {
+    /// The size of the avatar wherever it sits in a bar.
+    static let barButtonSize: CGFloat = 32
+
     static func circular(_ picture: UIImage?, initial: String, size: CGFloat) -> UIImage {
         let bounds = CGRect(origin: .zero, size: CGSize(width: size, height: size))
         let image = UIGraphicsImageRenderer(bounds: bounds).image { context in

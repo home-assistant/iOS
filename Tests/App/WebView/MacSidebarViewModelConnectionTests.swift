@@ -118,6 +118,48 @@ struct MacSidebarViewModelConnectionTests {
         }
     }
 
+    @Test("A sidebar started before its API exists subscribes once the API connects")
+    func startBeforeTheAPIExistsSubscribesOnConnect() async throws {
+        let previousCachedApis = Current.cachedApis
+        defer { Current.cachedApis = previousCachedApis }
+        let suiteName = "MacSidebarViewModelConnectionTests.lateStart"
+        let userDefaults = try #require(UserDefaults(suiteName: suiteName))
+        userDefaults.removePersistentDomain(forName: suiteName)
+        defer { userDefaults.removePersistentDomain(forName: suiteName) }
+
+        let server = Server.fake { info in
+            info.connection.set(address: nil, for: .internal)
+            info.connection.set(address: nil, for: .external)
+            info.connection.set(address: nil, for: .remoteUI)
+        }
+        let viewModel = MacSidebarViewModel(
+            server: server,
+            overlayState: WebFrontendOverlayState(),
+            snapshotStore: MacSidebarSnapshotStore(userDefaults: userDefaults)
+        )
+        defer { viewModel.stop() }
+
+        viewModel.start()
+        #expect(Current.api(for: server) == nil)
+
+        let api = HomeAssistantAPI(server: server)
+        let connection = HAMockConnection()
+        api.connection = connection
+        server.update { info in
+            info.connection.set(address: URL(string: "https://example.com"), for: .external)
+        }
+        Current.setCachedApi(api, for: server.identifier)
+        NotificationCenter.default.post(name: HomeAssistantAPI.didConnectNotification, object: nil)
+
+        #expectawait (waitUntil { !connection.pendingRequests.isEmpty })
+
+        // A second connect must not double the subscriptions.
+        let requestCount = connection.pendingRequests.count
+        NotificationCenter.default.post(name: HomeAssistantAPI.didConnectNotification, object: nil)
+        try await Task.sleep(for: .milliseconds(50))
+        #expect(connection.pendingRequests.count == requestCount)
+    }
+
     @Test func editsAreSavedBackToTheServer() async throws {
         try await withViewModel { context in
             context.viewModel.start()

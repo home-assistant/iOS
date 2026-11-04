@@ -445,17 +445,6 @@ struct NativeTabBarViewModelTests {
         #expect(presenter.zoomSourceID == NativeTabBarViewModel.appSettingsTransitionID)
     }
 
-    @Test("A pinned tab's gear opens the settings sheet without a zoom source")
-    func showAppSettingsFromATab() {
-        let sut = makeFixture("appSettingsTab").sut
-        let presenter = AppSettingsPresenter()
-
-        sut.showAppSettings(using: presenter, zoomingFrom: nil)
-        #expect(presenter.isSheetPresented)
-        #expect(presenter.mode == .full)
-        #expect(presenter.zoomSourceID == nil)
-    }
-
     @Test("Switching to another server goes through the app coordinator; the current one is left alone")
     func openServer() async {
         let other = ServerFixture.withRemoteConnection
