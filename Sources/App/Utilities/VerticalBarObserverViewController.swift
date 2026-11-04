@@ -19,6 +19,18 @@ final class VerticalBarObserverViewController: UIViewController {
         super.viewDidLoad()
         view.isUserInteractionEnabled = false
         view.backgroundColor = .clear
+        #if !targetEnvironment(macCatalyst)
+        if #available(iOS 27.1, *) {
+            // The bars can move into a column after the first layout, as when the device unfolds or the
+            // tab bar comes up after the frontend; the traits behind the edge announce that.
+            let traits = UITraitCollection.systemTraitsAffectingVerticalBarEdge
+            registerForTraitChanges(traits, action: #selector(barTraitsDidChange))
+        }
+        #endif
+    }
+
+    @objc func barTraitsDidChange() {
+        report()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -31,8 +43,14 @@ final class VerticalBarObserverViewController: UIViewController {
         report()
     }
 
+    /// The scene's traits carry the edge: a tab's content can have it overridden to unspecified while the
+    /// window around it, as on a folded iPhone Duo's outer display, still runs its bars vertically.
+    private var sceneTraits: UITraitCollection {
+        view.window?.windowScene?.traitCollection ?? view.window?.traitCollection ?? traitCollection
+    }
+
     private func report() {
-        let value = Self.hasVerticalBar(in: traitCollection)
+        let value = Self.hasVerticalBar(in: sceneTraits)
         guard value != lastReported else { return }
         lastReported = value
         onChange?(value)

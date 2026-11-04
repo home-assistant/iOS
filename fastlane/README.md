@@ -163,7 +163,15 @@ Update the test cases from the fcm repo
 [bundle exec] fastlane test
 ```
 
-Run tests
+Run the iOS unit tests
+
+### test_watch
+
+```sh
+[bundle exec] fastlane test_watch
+```
+
+Run the watchOS tests
 
 ### e2e
 

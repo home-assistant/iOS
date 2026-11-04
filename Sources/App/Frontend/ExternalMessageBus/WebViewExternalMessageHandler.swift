@@ -688,10 +688,11 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             ))
 
         guard let improvController else { return }
-        improvController.modalTransitionStyle = .crossDissolve
+        // The host stays transparent and unanimated: the view raises the system sheet itself once it is on
+        // screen, and dismissing that sheet dismisses this host.
         improvController.modalPresentationStyle = .overFullScreen
         improvController.view.backgroundColor = .clear
-        webViewController?.presentOverlayController(controller: improvController, animated: true)
+        webViewController?.presentOverlayController(controller: improvController, animated: false)
     }
 
     func stopImprovScanIfNeeded() {

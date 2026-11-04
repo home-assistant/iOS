@@ -2,7 +2,8 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
-/// The settings gear at the trailing end of the More tab's bar: Home Assistant Settings for admins, and App Settings.
+/// The settings gear at the trailing end of the More tab's bar: Home Assistant Settings for those who can open
+/// it, otherwise the app's own settings.
 @available(iOS 26, *)
 struct NativeTabBarSettingsToolbarItem: ToolbarContent {
     private enum Constants {
@@ -19,7 +20,6 @@ struct NativeTabBarSettingsToolbarItem: ToolbarContent {
     }
 
     var body: some ToolbarContent {
-        ToolbarSpacer(.fixed, placement: .topBarTrailing)
         if let transitionNamespace {
             settingsItem.matchedTransitionSource(id: appSettingsTransitionID, in: transitionNamespace)
         } else {
@@ -29,21 +29,8 @@ struct NativeTabBarSettingsToolbarItem: ToolbarContent {
 
     private var settingsItem: some ToolbarContent {
         ToolbarItem(placement: .topBarTrailing) {
-            Menu {
-                if let settings = viewModel.settingsItem {
-                    Button {
-                        viewModel.open(settings)
-                    } label: {
-                        Label(L10n.TabBar.More.homeAssistantSettings, systemSymbol: .gearshape)
-                    }
-                }
-                Button {
-                    if let appSettingsPresenter {
-                        viewModel.showAppSettings(using: appSettingsPresenter, zoomingFrom: appSettingsTransitionID)
-                    }
-                } label: {
-                    Label(L10n.TabBar.More.appSettings, systemSymbol: .iphone)
-                }
+            Button {
+                viewModel.openSettings(using: appSettingsPresenter, zoomingFrom: appSettingsTransitionID)
             } label: {
                 Label {
                     Text(L10n.Mac.Sidebar.settings)
