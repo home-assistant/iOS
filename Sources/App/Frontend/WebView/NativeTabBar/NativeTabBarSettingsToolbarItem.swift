@@ -30,11 +30,7 @@ struct NativeTabBarSettingsToolbarItem: ToolbarContent {
     private var settingsItem: some ToolbarContent {
         ToolbarItem(placement: .topBarTrailing) {
             Button {
-                if let settings = viewModel.settingsItem {
-                    viewModel.open(settings)
-                } else if let appSettingsPresenter {
-                    viewModel.showAppSettings(using: appSettingsPresenter, zoomingFrom: appSettingsTransitionID)
-                }
+                viewModel.openSettings(using: appSettingsPresenter, zoomingFrom: appSettingsTransitionID)
             } label: {
                 Label {
                     Text(L10n.Mac.Sidebar.settings)

@@ -445,6 +445,28 @@ struct NativeTabBarViewModelTests {
         #expect(presenter.zoomSourceID == NativeTabBarViewModel.appSettingsTransitionID)
     }
 
+    @Test("The gear opens Home Assistant Settings when there is one, otherwise the app's settings")
+    func openSettings() {
+        let admin = makeFixture("gearAdmin").sut
+        var navigated: [String] = []
+        admin.sidebar.onNavigate = { navigated.append($0) }
+        let presenter = AppSettingsPresenter()
+
+        admin.openSettings(using: presenter)
+        #expect(navigated == ["/config"])
+        #expect(!presenter.isSheetPresented)
+
+        let user = makeFixture("gearUser", isAdmin: false).sut
+        user.sidebar.onNavigate = { navigated.append($0) }
+        user.openSettings(using: nil)
+        #expect(navigated == ["/config"])
+
+        user.openSettings(using: presenter, zoomingFrom: "gear")
+        #expect(navigated == ["/config"])
+        #expect(presenter.isSheetPresented)
+        #expect(presenter.zoomSourceID == "gear")
+    }
+
     @Test("Switching to another server goes through the app coordinator; the current one is left alone")
     func openServer() async {
         let other = ServerFixture.withRemoteConnection

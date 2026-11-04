@@ -22,10 +22,13 @@ final class VerticalBarObserverViewController: UIViewController {
         if #available(iOS 27.1, *) {
             // The bars can move into a column after the first layout, as when the device unfolds or the
             // tab bar comes up after the frontend; the traits behind the edge announce that.
-            registerForTraitChanges(UITraitCollection.systemTraitsAffectingVerticalBarEdge) { (self: Self, _) in
-                self.report()
-            }
+            let traits = UITraitCollection.systemTraitsAffectingVerticalBarEdge
+            registerForTraitChanges(traits, action: #selector(barTraitsDidChange))
         }
+    }
+
+    @objc func barTraitsDidChange() {
+        report()
     }
 
     override func viewWillAppear(_ animated: Bool) {

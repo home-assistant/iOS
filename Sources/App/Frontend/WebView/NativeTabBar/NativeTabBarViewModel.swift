@@ -225,6 +225,18 @@ final class NativeTabBarViewModel: ObservableObject {
         }
     }
 
+    /// The gear: Home Assistant Settings for those who can open it, otherwise the app's own settings.
+    func openSettings(
+        using presenter: AppSettingsPresenter?,
+        zoomingFrom sourceID: String? = NativeTabBarViewModel.appSettingsTransitionID
+    ) {
+        if let settings = settingsItem {
+            open(settings)
+        } else if let presenter {
+            showAppSettings(using: presenter, zoomingFrom: sourceID)
+        }
+    }
+
     /// The presenter belongs to the scene the tab bar is showing in, so Settings opens in that window only.
     func showAppSettings(
         using presenter: AppSettingsPresenter,
