@@ -27,5 +27,18 @@ struct VerticalBarObserverTests {
 
         controller.viewDidLayoutSubviews()
         #expect(reported == [false])
+
+        controller.barTraitsDidChange()
+        #expect(reported == [false])
+    }
+
+    @Test("A trait change announced by the system is reported like a layout pass")
+    func reportsOnTraitChange() {
+        let controller = VerticalBarObserverViewController()
+        var reported: [Bool] = []
+        controller.onChange = { reported.append($0) }
+
+        controller.barTraitsDidChange()
+        #expect(reported == [false])
     }
 }
