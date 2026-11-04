@@ -23,6 +23,10 @@ public protocol FrontendThemeProviderProtocol {
     /// exactly as ``FrontendColors/color`` does; a capture is what gives those a real value.
     func color(_ frontendColor: FrontendColors, for serverId: String?) -> Color
 
+    /// A colour for a property only themes define, resolved per appearance: each of light and dark
+    /// uses its own captured `name`, falling back to ``color(_:for:)`` of `fallback` for that appearance.
+    func color(of name: String, fallback: FrontendColors, for serverId: String?) -> Color
+
     /// Replace what is stored for one server and appearance with a freshly captured theme.
     func store(_ variables: [FrontendThemeVariable], for serverId: String, appearance: FrontendThemeAppearance)
 

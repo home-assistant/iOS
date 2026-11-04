@@ -92,7 +92,12 @@ struct NativeTabBarMoreView: View {
                 // Once a page from the list is up, the bar is any page's bar: the bell takes the gear's place.
                 if viewModel.moreShowsFrontend {
                     if let notifications = viewModel.notificationsItem {
-                        NativeTabBarNotificationsToolbarItem(viewModel: viewModel, notifications: notifications)
+                        NativeTabBarNotificationsToolbarItem(
+                            viewModel: viewModel,
+                            notifications: notifications,
+                            badgeColor: viewModel.badgeColor,
+                            badgeTextColor: viewModel.badgeTextColor
+                        )
                     }
                 } else {
                     settingsToolbarItem
@@ -102,7 +107,12 @@ struct NativeTabBarMoreView: View {
                     profileHeader
                 }
                 if let notifications = viewModel.notificationsItem {
-                    NativeTabBarNotificationsToolbarItem(viewModel: viewModel, notifications: notifications)
+                    NativeTabBarNotificationsToolbarItem(
+                        viewModel: viewModel,
+                        notifications: notifications,
+                        badgeColor: viewModel.badgeColor,
+                        badgeTextColor: viewModel.badgeTextColor
+                    )
                     ToolbarSpacer(.fixed, placement: .topBarTrailing)
                 }
                 settingsToolbarItem

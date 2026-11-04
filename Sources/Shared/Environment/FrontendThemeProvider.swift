@@ -60,6 +60,16 @@ public final class FrontendThemeProvider: FrontendThemeProviderProtocol {
         return Self.adaptiveColor(light: light, dark: dark)
     }
 
+    public func color(of name: String, fallback: FrontendColors, for serverId: String?) -> Color {
+        let light = storedColor(name: name, serverId: serverId, appearance: .light)
+            ?? storedColor(name: fallback.rawValue, serverId: serverId, appearance: .light)
+            ?? fallback.lightColor
+        let dark = storedColor(name: name, serverId: serverId, appearance: .dark)
+            ?? storedColor(name: fallback.rawValue, serverId: serverId, appearance: .dark)
+            ?? fallback.darkColor
+        return Self.adaptiveColor(light: light, dark: dark)
+    }
+
     public func store(_ variables: [FrontendThemeVariable], for serverId: String, appearance: FrontendThemeAppearance) {
         do {
             try FrontendThemeVariable.replaceAll(variables, serverId: serverId, appearance: appearance)

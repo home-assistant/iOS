@@ -21,6 +21,12 @@ public struct CircularComplicationContentView: View {
         /// Icon size when the value moved to the gauge's bottom label: the icon owns the inner circle,
         /// so it leads at a size the 10pt shared-center glyph could never reach.
         static let iconSizeIconLed: CGFloat = 20
+        /// Icon size when the icon is alone inside a gauge with no min/max labels (open arc or capacity
+        /// ring): the inner circle is all its own, so it fills it.
+        static let iconSizeIconOnly: CGFloat = 24
+        /// Icon size when the icon is alone inside an open gauge that shows min/max labels: larger than
+        /// the shared-center glyph, but still clear of the labels at the bottom corners.
+        static let iconSizeIconOnlyWithMinMax: CGFloat = 16
         /// Slightly negative to counteract the value font's tall line box, which otherwise leaves too
         /// large a gap above the name.
         static let centerSpacing: CGFloat = -2
@@ -141,12 +147,21 @@ public struct CircularComplicationContentView: View {
         .padding(Layout.iconGaugePadding)
     }
 
+    /// Icon size for the shared center: enlarged when the icon has the center to itself.
+    private var centerIconSize: CGFloat {
+        guard hasGauge else { return Layout.iconSizeNoGauge }
+        guard model.isIconOnly else { return Layout.iconSize }
+        // Only the open gauge draws min/max labels; the capacity ring ignores any it carries.
+        let hasMinMax = !model.isCapacityGauge && (model.minLabel != nil || model.maxLabel != nil)
+        return hasMinMax ? Layout.iconSizeIconOnlyWithMinMax : Layout.iconSizeIconOnly
+    }
+
     /// Center of the complication: icon / value / name per the toggles. `padded` insets it off the
     /// surrounding open-gauge ring.
     @ViewBuilder
     private func center(padded: Bool) -> some View {
         let textColor = model.textColor ?? .primary
-        let iconSize = hasGauge ? Layout.iconSize : Layout.iconSizeNoGauge
+        let iconSize = centerIconSize
         VStack(spacing: Layout.centerSpacing) {
             if model.showsIcon, let iconImage = model.iconImage {
                 iconImage
