@@ -3,6 +3,7 @@ import SwiftUI
 
 struct NotificationPermissionRequestView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
 
     var body: some View {
         VStack(spacing: DesignSystem.Spaces.three) {
@@ -46,6 +47,11 @@ struct NotificationPermissionRequestView: View {
         .padding(.horizontal, DesignSystem.Spaces.three)
         .padding(.top, DesignSystem.Spaces.four)
         .padding(.bottom, DesignSystem.Spaces.one)
+        // At the medium detent the sheet sits well below the iPhone Duo camera and vertical bar, so the
+        // horizontal safe area would just squeeze the content to one side. In compact height the medium
+        // detent is unavailable and the sheet fills the screen, where the inset keeps the content clear of
+        // the camera.
+        .ignoresSafeArea(.container, edges: verticalSizeClass == .compact ? [] : .horizontal)
     }
 
     private func triggerNativePopup() {

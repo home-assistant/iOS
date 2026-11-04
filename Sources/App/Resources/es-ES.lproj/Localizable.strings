@@ -1546,6 +1546,9 @@ Home Assistant es un software de código abierto, defiende la privacidad y se ej
 "reminders_sync.settings.access_denied.body" = "Permite el acceso completo a Recordatorios en la aplicación Ajustes de iOS para sincronizar tus listas.";
 "reminders_sync.settings.access_denied.title" = "Se requiere acceso a los recordatorios";
 "reminders_sync.settings.add_list" = "Añadir";
+"reminders_sync.settings.completed.footer" = "Items that were already completed before syncing started normally stay where they are. Turn this on to copy them to the other list as completed, so checked-off items are known on both sides. A list with a long history can gain many completed items on the first sync.";
+"reminders_sync.settings.completed.header" = "Completed items";
+"reminders_sync.settings.completed.title" = "Include completed items";
 "reminders_sync.settings.conflicts.footer" = "Esto solo es relevante en el caso de las sincronizaciones bidireccionales. Si se ha editado el mismo elemento en ambas aplicaciones desde la última sincronización, se conservará la versión de la aplicación que elijas aquí.";
 "reminders_sync.settings.conflicts.header" = "Conflictos";
 "reminders_sync.settings.conflicts.title" = "Conservar los cambios de";
@@ -3430,6 +3433,7 @@ Haz clic derecho en el escritorio, selecciona Editar widgets, busca Home Assista
 "widgets.todo_list.due_date.in_format" = "En %@";
 "widgets.todo_list.due_date.now" = "Ahora";
 "widgets.todo_list.due_date.today" = "Hoy";
+"widgets.todo_list.load_failed" = "Couldn't update. Tap refresh.";
 "widgets.todo_list.parameter.item_id" = "ID de la tarea";
 "widgets.todo_list.parameter.list" = "Lista";
 "widgets.todo_list.parameter.list_id" = "ID de la lista";
