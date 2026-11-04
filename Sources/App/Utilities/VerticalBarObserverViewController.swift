@@ -19,12 +19,14 @@ final class VerticalBarObserverViewController: UIViewController {
         super.viewDidLoad()
         view.isUserInteractionEnabled = false
         view.backgroundColor = .clear
+        #if !targetEnvironment(macCatalyst)
         if #available(iOS 27.1, *) {
             // The bars can move into a column after the first layout, as when the device unfolds or the
             // tab bar comes up after the frontend; the traits behind the edge announce that.
             let traits = UITraitCollection.systemTraitsAffectingVerticalBarEdge
             registerForTraitChanges(traits, action: #selector(barTraitsDidChange))
         }
+        #endif
     }
 
     @objc func barTraitsDidChange() {
