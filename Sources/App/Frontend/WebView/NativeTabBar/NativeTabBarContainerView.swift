@@ -24,6 +24,14 @@ struct NativeTabBarContainerView: View {
     }
 
     var body: some View {
+        NativeTabBarAvatarLoader(viewModel: viewModel, isActive: hasVerticalBar) { avatar in
+            tabView(avatar: avatar)
+        }
+        .onAppear { viewModel.start() }
+        .onDisappear { viewModel.stop() }
+    }
+
+    private func tabView(avatar: UIImage) -> some View {
         TabView(selection: Binding(
             get: { viewModel.selection },
             set: { viewModel.didSelect($0) }
@@ -39,6 +47,7 @@ struct NativeTabBarContainerView: View {
                                 frontendOpacity: frontendOpacity,
                                 frontendIgnoredSafeAreaEdges: frontendIgnoredSafeAreaEdges,
                                 showsBarItems: hasVerticalBar,
+                                avatar: avatar,
                                 onNeedsWebViewController: onNeedsWebViewController
                             )
                         } else {
@@ -61,7 +70,7 @@ struct NativeTabBarContainerView: View {
             Tab(value: NativeTabBarTab.more) {
                 ZStack {
                     NavigationStack {
-                        NativeTabBarMoreView(viewModel: viewModel)
+                        NativeTabBarMoreView(viewModel: viewModel, usesVerticalBar: hasVerticalBar, avatar: avatar)
                     }
                     if viewModel.moreShowsFrontend {
                         NativeTabBarFrontendSlot(
@@ -134,8 +143,6 @@ struct NativeTabBarContainerView: View {
                 }
             }
         }
-        .onAppear { viewModel.start() }
-        .onDisappear { viewModel.stop() }
     }
 }
 

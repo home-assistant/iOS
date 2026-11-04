@@ -5096,7 +5096,7 @@ public enum L10n {
       public static var direction: String { return L10n.tr("Localizable", "reminders_sync.add.direction") }
       /// These lists are already being synced.
       public static var duplicateWarning: String { return L10n.tr("Localizable", "reminders_sync.add.duplicate_warning") }
-      /// The first sync links items that appear in both lists under the same title. Everything else is copied according to the sync direction. Completed items are only copied when “Include completed items” is turned on in the sync settings.
+      /// The first sync links items that appear in both lists under the same title. Everything else is copied according to the sync direction. Completed items are not copied.
       public static var listsFooter: String { return L10n.tr("Localizable", "reminders_sync.add.lists_footer") }
       /// Lists to sync
       public static var listsHeader: String { return L10n.tr("Localizable", "reminders_sync.add.lists_header") }
@@ -8282,14 +8282,10 @@ public enum L10n {
       public static var search: String { return L10n.tr("Localizable", "tab_bar.item.search") }
     }
     public enum More {
-      /// App Settings
-      public static var appSettings: String { return L10n.tr("Localizable", "tab_bar.more.app_settings") }
       /// Customize
       public static var customize: String { return L10n.tr("Localizable", "tab_bar.more.customize") }
       /// Edit profile
       public static var editProfile: String { return L10n.tr("Localizable", "tab_bar.more.edit_profile") }
-      /// Home Assistant Settings
-      public static var homeAssistantSettings: String { return L10n.tr("Localizable", "tab_bar.more.home_assistant_settings") }
       /// Other servers
       public static var otherServers: String { return L10n.tr("Localizable", "tab_bar.more.other_servers") }
       /// More
