@@ -224,11 +224,22 @@ jobs:
       - name: Verify mTLS proxy
         if: env.E2E_TEST == 'MTLSOnboardingE2ETests'
         run: |
-          STATUS=$(curl -s -o /dev/null -w '%{http_code}' --cacert "$RUNNER_TEMP/mtls/ca.pem" "$E2E_MTLS_URL/api/")
-          if [ "$STATUS" != "400" ]; then
-            echo "::error::Expected 400 from the proxy without a client certificate, got $STATUS"
-            exit 1
-          fi
+          # Apple's curl (SecureTransport) aborts the handshake when a client certificate is
+          # requested and none is configured, so the no-certificate probe goes through Python.
+          python3 - "$E2E_MTLS_URL/api/" "$RUNNER_TEMP/mtls/ca.pem" <<'EOF'
+          import ssl, sys, urllib.error, urllib.request
+          url, ca = sys.argv[1:3]
+          context = ssl.create_default_context(cafile=ca)
+          try:
+              urllib.request.urlopen(url, context=context, timeout=30)
+              status = 200
+          except urllib.error.HTTPError as error:
+              status = error.code
+          if status != 400:
+              print(f"::error::Expected 400 from the proxy without a client certificate, got {status}")
+              sys.exit(1)
+          print("Proxy rejects requests without a client certificate")
+          EOF
 
           python3 Tools/home_assistant_e2e_auth.py \
             --url "$E2E_MTLS_URL" \

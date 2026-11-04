@@ -113,10 +113,14 @@ bundle exec fastlane e2e test:MTLSOnboardingE2ETests url:https://localhost:8443 
 The `mtls_certificates:` option is what makes the lane trust the CA on the simulator, hand the
 `client.p12` to the flow, and verify the instance through the proxy, since the check script
 presents `client.pem` when given `--ca-certificate`, `--client-certificate` and `--client-key`.
-Without the client certificate the proxy must answer 400; with it the instance answers through it:
+Without the client certificate the proxy must answer 400; with it the instance answers through it.
+Apple's bundled `curl` cannot run the first check (its SecureTransport backend aborts the handshake
+with exit code 35 when a client certificate is requested), so use Homebrew's `curl` or Python for it:
 
 ```bash
-curl -s -o /dev/null -w '%{http_code}\n' --cacert /tmp/mtls/ca.pem https://localhost:8443/api/
+python3 -c 'import ssl,urllib.request,urllib.error;c=ssl.create_default_context(cafile="/tmp/mtls/ca.pem")
+try: urllib.request.urlopen("https://localhost:8443/api/",context=c)
+except urllib.error.HTTPError as e: print(e.code)'
 curl -s --cacert /tmp/mtls/ca.pem --cert /tmp/mtls/client.pem --key /tmp/mtls/client.key https://localhost:8443/api/
 ```
 
