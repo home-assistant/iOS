@@ -18,6 +18,10 @@ final class E2EFlow {
         static let clientCertificateFile = value(for: "E2E_CLIENT_CERTIFICATE_FILE", default: "")
         static let clientCertificatePassword = value(for: "E2E_CLIENT_CERTIFICATE_PASSWORD", default: "e2ep12pass")
 
+        /// Onboarding only asks about local access and the home network when the server can be
+        /// reached over plain HTTP; with an HTTPS URL it settles both on its own.
+        static var usesHTTPS: Bool { url.lowercased().hasPrefix("https://") }
+
         private static func value(for key: String, default fallback: String) -> String {
             let value = ProcessInfo.processInfo.environment[key] ?? ""
             return value.isEmpty ? fallback : value
@@ -244,6 +248,8 @@ final class E2EFlow {
         // Some iOS versions follow the location alert with a second one over the next screen; either
         // answer will do, but it has to be cleared before anything below it can be tapped.
         answerSystemAlertIfPresent(timeout: Timeout.optional)
+
+        guard !Instance.usesHTTPS else { return }
 
         // The secure level is what keeps the home network step in the flow: the less secure one
         // settles the decision on the spot and jumps straight to completion.
