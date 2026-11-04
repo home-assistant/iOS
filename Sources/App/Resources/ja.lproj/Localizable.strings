@@ -689,7 +689,7 @@
 "connection.active_url_type.toast.internal" = "内部URLを使用する。";
 "connection.active_url_type.toast.none" = "現在、このサーバーには有効なURLがありません。";
 "connection.active_url_type.toast.remote_ui" = "クラウドリモートUIのURLを使用する。";
-"connection.active_url_type.toast.remote_ui_link" = "Using %@ Remote UI URL.";
+"connection.active_url_type.toast.remote_ui_link" = "%@ のリモートUI URLを使用する。";
 "connection.active_url_type.toast.title" = "接続タイプ";
 "connection.error.details.button.clipboard" = "クリップボードにコピー";
 "connection.error.details.button.discord" = "Discordで質問する";
@@ -702,8 +702,8 @@
 "connection.error.details.title" = "接続エラー";
 "connection.error.failed_connect.cloud.title" = "Home Assistant Cloud サブスクリプションがアクティブでサーバーに接続されていることを確認してください。これは [Nabu Casa](https://account.nabucasa.com) で確認できます。";
 "connection.error.failed_connect.cloud_inactive.title" = "アプリ内で Home Assistant Cloud の使用が無効になっています。リモート アクセスに必要な場合は、コンパニオン アプリの設定を開いて有効にしてください。";
-"connection.error.failed_connect.cloud_inactive_link.title" = "You have disabled %@ use in the app, if you need it for remote access please open companion app settings and enable it.";
-"connection.error.failed_connect.cloud_link.title" = "Make sure your %@ subscription is active and connected to your server, you can verify that at [Nabu Casa](https://account.nabucasa.com)";
+"connection.error.failed_connect.cloud_inactive_link.title" = "このアプリでは「%@ 」の使用が無効になっています。リモートアクセスにこの機能が必要な場合は、コンパニオンアプリの設定を開き、有効にしてください。";
+"connection.error.failed_connect.cloud_link.title" = "%@ のサブスクリプションが有効であり、サーバーに接続されていることを確認してください。確認方法は[Nabu Casa](https://account.nabucasa.com)をご覧ください。";
 "connection.error.failed_connect.subtitle" = "接続を確認して、もう一度お試しください。自宅にいない場合は、リモート アクセスが設定されていることを確認してください。";
 "connection.error.failed_connect.title" = "Home Assistantに接続できませんでした";
 "connection.error.failed_connect.url" = "アプリは現在接続中です";
@@ -1545,6 +1545,9 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "reminders_sync.settings.access_denied.body" = "リストを同期するには、システム設定アプリで「リマインダー」への完全なアクセスを許可してください。";
 "reminders_sync.settings.access_denied.title" = "リマインダーへのアクセス権が必要です";
 "reminders_sync.settings.add_list" = "追加";
+"reminders_sync.settings.completed.footer" = "Items that were already completed before syncing started normally stay where they are. Turn this on to copy them to the other list as completed, so checked-off items are known on both sides. A list with a long history can gain many completed items on the first sync.";
+"reminders_sync.settings.completed.header" = "Completed items";
+"reminders_sync.settings.completed.title" = "Include completed items";
 "reminders_sync.settings.conflicts.footer" = "これは双方向同期の場合にのみ適用されます。前回の同期以降、両方のアプリで同じ項目が編集された場合、ここで選択した側のバージョンが保持されます。";
 "reminders_sync.settings.conflicts.header" = "競合の解決";
 "reminders_sync.settings.conflicts.title" = "変更の優先元";
@@ -1659,7 +1662,7 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "settings.connection_section.client_certificate.remove_confirmation.message" = "証明書はデバイスから削除されます。mTLS認証を使用するには、証明書を再度インポートする必要があります。";
 "settings.connection_section.client_certificate.remove_confirmation.remove" = "削除";
 "settings.connection_section.client_certificate.remove_confirmation.title" = "証明書を削除しますか？";
-"settings.connection_section.cloud_link_overrides_external" = "When connecting via %@, the External URL will not be used. You do not need to configure one unless you want to disable it.";
+"settings.connection_section.cloud_link_overrides_external" = "%@ 経由で接続する場合、「外部 URL」は使用されません。無効にしたい場合を除き、設定を行う必要はありません。";
 "settings.connection_section.cloud_overrides_external" = "クラウド経由で接続する場合、外部 URL は使用されません。クラウドを無効にする場合を除き、構成する必要はありません。";
 "settings.connection_section.cloudhook.check_reachability.reachable" = "到達可能";
 "settings.connection_section.cloudhook.check_reachability.reachable_status_code" = "到達可能 (HTTP %li）";
@@ -1747,7 +1750,7 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "settings.connection_section.urls_how_it_works.active.header" = "現在使用中";
 "settings.connection_section.urls_how_it_works.active.none" = "現在の設定ではURLを使用できません";
 "settings.connection_section.urls_how_it_works.away.body" = "リストにあるネットワークに一致するものがない場合、クラウド機能が有効になっているときは Home Assistant Cloud の URL が使用され、そうでない場合は外部の URL が使用されます。";
-"settings.connection_section.urls_how_it_works.away.body_link" = "When no listed network matches, the %@ URL is used if it is turned on, and the external URL otherwise.";
+"settings.connection_section.urls_how_it_works.away.body_link" = "リストにあるネットワークに一致するものがない場合、%@ のURLが有効になっているときはそのURLが使用され、そうでない場合は外部のURLが使用されます。";
 "settings.connection_section.urls_how_it_works.away.title" = "その他の場所";
 "settings.connection_section.urls_how_it_works.background.body" = "センサーの更新、通知アクション、ローカルプッシュは、アプリを閉じた状態でも引き続き実行されます。バックグラウンドでは、iOSは位置情報へのアクセスが「アプリ使用中のみ」ではなく「常に」に設定されている場合にのみネットワーク名を共有するため、この設定がないとホームネットワークが認識されず、外出時と同じ方法で接続されます。";
 "settings.connection_section.urls_how_it_works.background.title" = "アプリがバックグラウンドで実行されている間";
@@ -1775,7 +1778,7 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "settings.connection_section.webhook.active.unavailable" = "URLがありません";
 "settings.connection_section.webhook.endpoints.footer" = "これらのURLは機密情報として扱ってください。これらのURLを知っている人なら誰でも、このモバイルアプリのwebhookにリクエストを送信することができます。";
 "settings.connection_section.webhook.footer" = "このアプリは、センサーや位置情報などの更新情報をこのWebhookに送信します。Home Assistant Cloudは「クラウドフック」を提供しており、外出中はこれが使用されます。クラウドフックがない場合、アプリはこのサーバーの内部URL、リモートURL、または外部URLからWebhookのURLを生成します。";
-"settings.connection_section.webhook.footer_link" = "The app sends sensor, location and other updates to this webhook. %@ provides a cloudhook, which is used whenever you are away from home. Without it, the app builds the webhook URL from the internal, remote or external URL of this server instead.";
+"settings.connection_section.webhook.footer_link" = "このアプリは、センサー情報や位置情報などの更新情報をこのWebhookに送信します。%@ は「クラウドフック」を提供しており、これはユーザーが自宅を離れている際に使用されます。クラウドフックがない場合、アプリはこのサーバーの内部URL、リモートURL、または外部URLからWebhookのURLを生成します。";
 "settings.connection_section.webhook.in_use" = "使用中";
 "settings.connection_section.webhook.title" = "Webhook";
 "settings.connection_section.websocket.status.authenticating" = "認証";
@@ -3071,7 +3074,7 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "watch.settings.client_events.title" = "ログ";
 "watch.settings.complications.empty" = "まだ設定されたコンプリケーションはありません。";
 "watch.settings.complications.footer" = "各コンプリケーションの現在の値を、Home Assistantから直接取得します。これには、アクセス可能なサーバーのURL（ローカルネットワーク、またはリモート／クラウドのURL）が必要です。";
-"watch.settings.complications.footer_link" = "Fetches each complication's current value directly from Home Assistant. This needs a reachable server URL (local network or a remote/%@ URL).";
+"watch.settings.complications.footer_link" = "各コンプリケーションの現在の値を、Home Assistantから直接取得します。これには、アクセス可能なサーバーのURL（ローカルネットワーク、またはリモート／%@ のURL）が必要です。";
 "watch.settings.complications.last_attempt" = "最後の試み：%@";
 "watch.settings.complications.list_footer" = "コンプリケーションをタップすると、最終更新日時を確認したり、再試行したりできます。";
 "watch.settings.complications.never" = "まだ更新されていません";
@@ -3151,7 +3154,7 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "web_view.add_to.option.Deeplink.title" = "ディープリンク";
 "web_view.add_to.option.MacToolbar.title" = "Macツールバー";
 "web_view.add_to.option.NfcTag.title" = "NFCタグ";
-"web_view.add_to.option.WatchComplication.title" = "Watch Complication";
+"web_view.add_to.option.WatchComplication.title" = "Watch コンプリケーション";
 "web_view.add_to.option.Widget.title" = "ウィジェット";
 "web_view.empty_state.body" = "接続を確認するか、しばらくしてからもう一度お試しください。Home Assistantが再起動している場合は、オンラインに戻った後に再接続されます。";
 "web_view.empty_state.clean_cache_and_reload_button" = "キャッシュを消去して再読み込み";
@@ -3408,6 +3411,7 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "widgets.todo_list.due_date.in_format" = "%@以内";
 "widgets.todo_list.due_date.now" = "現在";
 "widgets.todo_list.due_date.today" = "今日";
+"widgets.todo_list.load_failed" = "Couldn't update. Tap refresh.";
 "widgets.todo_list.parameter.item_id" = "アイテムID";
 "widgets.todo_list.parameter.list" = "リスト";
 "widgets.todo_list.parameter.list_id" = "リストID";
