@@ -23,6 +23,7 @@
             "alert": {
                 "body": "test"
             },
+            "mutable-content": true,
             "sound": "default"
         },
         "presentation_options": [

@@ -1,15 +1,25 @@
 import CallbackURLKit
-import Communicator
 import FirebaseMessaging
 import Foundation
+import MediaPlayer
 import PromiseKit
 import Shared
 import SwiftUI
 import UserNotifications
 import XCGLogger
 
+#if DEBUG
+private let forceDisableLocalPushForLiveActivityTesting = false
+#endif
+
 class NotificationManager: NSObject, LocalPushManagerDelegate {
     lazy var localPushManager: NotificationManagerLocalPushInterface = {
+        #if DEBUG
+        if forceDisableLocalPushForLiveActivityTesting {
+            return NotificationManagerLocalPushInterfaceDisallowed()
+        }
+        #endif
+
         #if targetEnvironment(simulator)
         return NotificationManagerLocalPushInterfaceDirect(delegate: self)
         #else
@@ -22,7 +32,12 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
     }()
 
     var commandManager = NotificationCommandManager()
-    private weak var cameraOverlayController: UIViewController?
+
+    /// Offers a notification's own actions when a plain tap on it has nothing else to do.
+    let tapActionPresenter = NotificationTapActionPresenter()
+
+    /// Hidden, off-screen volume view; `MPVolumeView` only drives the hardware volume while in a window.
+    private lazy var volumeControlView = MPVolumeView(frame: CGRect(x: -2000, y: -2000, width: 1, height: 1))
 
     override init() {
         super.init()
@@ -32,23 +47,14 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
             name: UIApplication.didBecomeActiveNotification,
             object: nil
         )
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(showCameraFromNotification(_:)),
-            name: NotificationCommandManager.didReceiveShowCameraNotification,
-            object: nil
-        )
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(hideCameraFromNotification),
-            name: NotificationCommandManager.didReceiveHideCameraNotification,
-            object: nil
-        )
     }
 
     func setupNotifications() {
         UNUserNotificationCenter.current().delegate = self
         _ = localPushManager
+        if Manager.shared.callbackURLScheme == nil {
+            Manager.shared.callbackURLScheme = Manager.urlSchemes?.first
+        }
     }
 
     @objc private func didBecomeActive() {
@@ -56,71 +62,29 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
             UIApplication.shared.applicationIconBadgeNumber = 0
         }
         localPushManager.scheduleAppOpenLocalPushRetries()
-    }
-
-    @objc private func showCameraFromNotification(_ notification: Notification) {
-        guard UIApplication.shared.applicationState == .active else {
-            scheduleShowCameraFallbackNotification(userInfo: notification.userInfo)
-            return
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        if #available(iOS 17.2, *) {
+            // Catch ends and starts enqueued by the extension while the app was suspended.
+            LiveActivityPendingEndObserver.drain()
+            LiveActivityPendingStartObserver.drain()
         }
-
-        openCamera(from: notification.userInfo)
+        #endif
     }
 
     private func openCamera(from userInfo: [AnyHashable: Any]?) {
-        guard #available(iOS 16.0, *) else {
-            Current.Log.info("Ignoring show_camera push command because camera player requires iOS 16")
-            return
-        }
-
         guard let entityId = cameraEntityId(from: userInfo) else {
-            Current.Log.error("Received show_camera push command without a valid camera entity_id")
+            Current.Log.error("Received kiosk_show_camera command without a valid camera entity_id")
             return
         }
 
-        Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
-            .done { webViewController in
-                let view = CameraPlayerView(
-                    server: self.cameraServer(from: userInfo, fallback: webViewController.server),
-                    cameraEntityId: entityId
-                ).embeddedInHostingController()
-                self.cameraOverlayController = view
-                view.modalPresentationStyle = .overFullScreen
-                webViewController.presentOverlayController(controller: view, animated: true)
+        Current.sceneManager.webViewControllerPromise
+            .done(on: .main) { [weak self] webViewController in
+                guard let self else { return }
+                let server = cameraServer(from: userInfo, fallback: webViewController.server)
+                CameraOverlayPresenter.shared.show(entityId: entityId, server: server, on: webViewController)
             }.catch { error in
                 Current.Log.error("Failed to show camera from push command: \(error)")
             }
-    }
-
-    private func scheduleShowCameraFallbackNotification(userInfo: [AnyHashable: Any]?) {
-        guard let entityId = cameraEntityId(from: userInfo) else {
-            Current.Log.error("Received show_camera push command without a valid camera entity_id")
-            return
-        }
-
-        let content = UNMutableNotificationContent()
-        content.body = L10n.CameraPlayer.Notification.body
-        content.sound = .default
-        var fallbackUserInfo: [AnyHashable: Any] = [
-            "homeassistant": [
-                "command": "show_camera",
-                "entity_id": entityId,
-            ],
-        ]
-        if let webhookId = webhookId(from: userInfo) {
-            fallbackUserInfo["webhook_id"] = webhookId
-        }
-        content.userInfo = fallbackUserInfo
-
-        Current.userNotificationCenter.add(UNNotificationRequest(
-            identifier: "show_camera.\(entityId)",
-            content: content,
-            trigger: nil
-        )) { error in
-            if let error {
-                Current.Log.error("Failed to schedule show_camera fallback notification: \(error)")
-            }
-        }
     }
 
     private func cameraEntityId(from userInfo: [AnyHashable: Any]?) -> String? {
@@ -172,20 +136,43 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
         return server
     }
 
-    @objc private func hideCameraFromNotification() {
-        Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
-            .done { webViewController in
-                guard let cameraOverlayController = self.cameraOverlayController,
-                      webViewController.overlayedController === cameraOverlayController else {
-                    Current.Log.info("Ignoring hide_camera push command because no camera is on display")
-                    return
-                }
-
-                webViewController.dismissOverlayController(animated: true) { [weak self] in
-                    self?.cameraOverlayController = nil
-                }
+    private func hideCamera() {
+        Current.sceneManager.webViewControllerPromise
+            .done(on: .main) { webViewController in
+                CameraOverlayPresenter.shared.hide(on: webViewController)
             }.catch { error in
                 Current.Log.error("Failed to hide camera from push command: \(error)")
+            }
+    }
+
+    private func setScreenBrightness(_ level: Float) {
+        let clamped = CGFloat(min(max(level, 0), 1))
+        DispatchQueue.main.async {
+            Current.setScreenBrightness(clamped)
+            Current.Log.info("Kiosk set screen brightness to \(clamped)")
+        }
+    }
+
+    private func setSystemVolume(_ level: Float) {
+        let clamped = min(max(level, 0), 1)
+        Current.sceneManager.webViewControllerPromise
+            .done(on: .main) { [weak self] webViewController in
+                guard let self else { return }
+                if volumeControlView.superview == nil {
+                    webViewController.view.addSubview(volumeControlView)
+                }
+                // The slider only exists once the view is in the hierarchy, so read it on the next loop.
+                DispatchQueue.main.async {
+                    guard let slider = self.volumeControlView.subviews.compactMap({ $0 as? UISlider }).first else {
+                        Current.Log.error("Unable to locate system volume slider for kiosk command")
+                        return
+                    }
+                    slider.setValue(clamped, animated: false)
+                    slider.sendActions(for: .touchUpInside)
+                    Current.Log.info("Kiosk set system volume to \(clamped)")
+                }
+            }.catch { error in
+                Current.Log.error("Failed to set volume from push command: \(error)")
             }
     }
 
@@ -215,8 +202,10 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 
     func didRegisterForRemoteNotifications(deviceToken: Data) {
         let apnsToken = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
-        Current.Log.verbose("Successfully registered for push notifications! APNS token: \(apnsToken)")
-        Current.crashReporter.setUserProperty(value: apnsToken, name: "APNS Token")
+        Current.Log.verbose(
+            "Successfully registered for push notifications! APNS token: \(LogRedaction.redactToken(apnsToken))"
+        )
+        Current.crashReporter.setUserProperty(value: LogRedaction.redactToken(apnsToken), name: "APNS Token")
 
         var tokenType: MessagingAPNSTokenType = .prod
 
@@ -248,7 +237,7 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
     }
 
     private func handleRemoteNotification(userInfo: [AnyHashable: Any]) -> Guarantee<UIBackgroundFetchResult> {
-        Current.Log.verbose("remote notification: \(userInfo)")
+        Current.Log.verbose("remote notification: \(LogRedaction.redactValues(in: userInfo))")
 
         return commandManager.handle(userInfo).map {
             UIBackgroundFetchResult.newData
@@ -337,33 +326,41 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 }
 
 extension NotificationManager: UNUserNotificationCenterDelegate {
-    private func urlString(from response: UNNotificationResponse) -> String? {
-        let content = response.notification.request.content
-        let urlValue = ["url", "uri", "clickAction"].compactMap { content.userInfo[$0] }.first
-
-        if let action = content.userInfoActionConfigs.first(
-            where: { $0.identifier.lowercased() == response.actionIdentifier.lowercased() }
-        ), let url = action.url {
-            // we only allow the action-specific one to override global if it's set
-            return url
-        } else if let openURLRaw = urlValue as? String {
-            // global url [string], always do it if we aren't picking a specific action
-            return openURLRaw
-        } else if let openURLDictionary = urlValue as? [String: String] {
-            // old-style, per-action url -- for before we could define actions in the notification dynamically
-            return openURLDictionary.compactMap { key, value -> String? in
-                if response.actionIdentifier == UNNotificationDefaultActionIdentifier,
-                   key.lowercased() == NotificationCategory.FallbackActionIdentifier {
-                    return value
-                } else if key.lowercased() == response.actionIdentifier.lowercased() {
-                    return value
-                } else {
-                    return nil
-                }
-            }.first
-        } else {
-            return nil
+    /// Where opening a notification takes the user: the URL it asks for, the entity it is about, or —
+    /// when the tap has nothing else to do — the actions it carries. Split out of the delegate
+    /// callback below, which only the system can call, so the routing can be exercised on its own.
+    func handleOpenedNotification(
+        content: UNNotificationContent,
+        actionIdentifier: String,
+        server: Server
+    ) {
+        if let url = content.urlString(forActionIdentifier: actionIdentifier) {
+            Current.Log.info("launching URL \(url)")
+            Current.sceneManager.appCoordinator.done {
+                $0.open(from: .notification, server: server, urlString: url, isComingFromAppIntent: false)
+            }
+            return
         }
+
+        guard actionIdentifier == UNNotificationDefaultActionIdentifier else { return }
+
+        if let entityId = content.userInfo["entity_id"] as? String,
+           let entityURL = AppConstants.openEntityDeeplinkURL(
+               entityId: entityId,
+               serverId: server.identifier.rawValue
+           ) {
+            // No tap action was specified, so open the notification's entity on the server it
+            // came from.
+            Current.Log.info("opening entity \(entityId) from notification tap")
+            Current.sceneManager.appCoordinator.done { _ in
+                URLOpener.shared.open(entityURL, options: [:], completionHandler: nil)
+            }
+            return
+        }
+
+        // Nothing was asked of this tap, and iOS keeps a notification's actions hidden until it is
+        // pressed and held — offer them here so a tap is not a dead end.
+        tapActionPresenter.present(for: content, server: server)
     }
 
     public func userNotificationCenter(
@@ -379,11 +376,42 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
             return
         }
 
+        #if DEBUG
+        if response.actionIdentifier == NotificationSnoozeAction.debugTenSecondsActionIdentifier {
+            Current.notificationDispatcher.reschedule(response.notification.request.content, after: 10)
+            completionHandler()
+            return
+        }
+        #endif
+
+        // Snooze is an on-device-only convenience: reschedule a local re-delivery of the same
+        // notification (so it keeps its snooze actions) and skip forwarding to Home Assistant.
+        if let minutes = NotificationSnoozeAction.minutes(fromActionIdentifier: response.actionIdentifier) {
+            Current.notificationDispatcher.reschedule(
+                response.notification.request.content,
+                after: TimeInterval(minutes) * 60
+            )
+            completionHandler()
+            return
+        }
+
         let userInfo = response.notification.request.content.userInfo
 
         Current.Log.verbose("User info in incoming notification \(userInfo) with response \(response)")
 
-        if isShowCameraCommand(userInfo: userInfo), cameraEntityId(from: userInfo) != nil {
+        // A tap must still run any HA command the notification carries. willPresent covers the
+        // foreground path; this covers taps from the background/lock screen. Notably, a
+        // `live_update` Live Activity start delivered over local push is handled by the
+        // PushProvider extension (which can't touch ActivityKit), so without this a tap would
+        // never start the activity. Fire-and-forget: it's independent of the tap routing below.
+        if let hadict = userInfo["homeassistant"] as? [String: Any],
+           (hadict["command"] as? String) != nil || (hadict["live_update"] as? Bool) == true {
+            commandManager.handle(userInfo).cauterize()
+        }
+
+        if Current.kiosk.settings.acceptRemoteCommands,
+           KioskPushCommand(message: response.notification.request.content.body) == .showCamera,
+           cameraEntityId(from: userInfo) != nil {
             openCamera(from: userInfo)
             completionHandler()
             return
@@ -400,12 +428,8 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
             handleShortcutNotification(shortcutName, shortcutDict)
         }
 
-        if let url = urlString(from: response) {
-            Current.Log.info("launching URL \(url)")
-            Current.sceneManager.webViewWindowControllerPromise.done {
-                $0.open(from: .notification, server: server, urlString: url, isComingFromAppIntent: false)
-            }
-        }
+        let content = response.notification.request.content
+        handleOpenedNotification(content: content, actionIdentifier: response.actionIdentifier, server: server)
 
         if let info = HomeAssistantAPI.PushActionInfo(response: response) {
             Current.backgroundTask(withName: BackgroundTask.handlePushAction.rawValue) { _ in
@@ -419,32 +443,6 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         } else {
             completionHandler()
         }
-
-        if response.notification.request.identifier == NotificationIdentifier.carPlayIntro.rawValue {
-            Current.Log.info("Launching CarPlay configuration screen")
-            Current.sceneManager.webViewWindowControllerPromise.done {
-                let carPlayView = CarPlayConfigurationView().embeddedInHostingController()
-                $0.present(carPlayView)
-            }
-        }
-    }
-
-    private func isShowCameraCommand(userInfo: [AnyHashable: Any]) -> Bool {
-        if userInfo["command"] as? String == "show_camera" {
-            return true
-        }
-
-        if let homeassistant = userInfo["homeassistant"] as? [String: Any],
-           homeassistant["command"] as? String == "show_camera" {
-            return true
-        }
-
-        if let homeassistant = userInfo["homeassistant"] as? [AnyHashable: Any],
-           homeassistant["command"] as? String == "show_camera" {
-            return true
-        }
-
-        return false
     }
 
     public func userNotificationCenter(
@@ -464,7 +462,12 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         if let hadict = notification.request.content.userInfo["homeassistant"] as? [String: Any],
            (hadict["command"] as? String) != nil || (hadict["live_update"] as? Bool) == true {
             commandManager.handle(notification.request.content.userInfo).done {
-                completionHandler([])
+                // Play the chime if the notification has sound (non-silent live update),
+                // but never show a banner — the Live Activity widget is the visual feedback.
+                let options: UNNotificationPresentationOptions = notification.request.content.sound != nil
+                    ? [.sound]
+                    : []
+                completionHandler(options)
             }.catch { error in
                 // Unknown command — fall through to normal banner presentation so the user isn't silently swallowed.
                 if case NotificationCommandManager.CommandError.unknownCommand = error {
@@ -479,6 +482,11 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         if notification.request.content.userInfo[XCGLogger.notifyUserInfoKey] != nil,
            UIApplication.shared.applicationState != .background {
             completionHandler([])
+            return
+        }
+
+        if let options = kioskPushPresentationOptions(for: notification.request) {
+            completionHandler(options)
             return
         }
 
@@ -501,6 +509,97 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         return completionHandler(methods)
     }
 
+    /// Takes the request rather than the `UNNotification` wrapping it: everything here needs only the
+    /// request, and unlike a notification a request can be built in tests.
+    func kioskPushPresentationOptions(for request: UNNotificationRequest) -> UNNotificationPresentationOptions? {
+        let content = request.content
+        let message = content.body
+        guard KioskPushCommand.isKioskCommand(message: message) else {
+            return nil
+        }
+
+        let kioskSettings = Current.kiosk.settings
+        guard kioskSettings.acceptRemoteCommands else {
+            Current.Log.info("Ignoring kiosk remote command (disabled in settings): \(message)")
+            return nil
+        }
+
+        guard let command = KioskPushCommand(message: message) else {
+            Current.Log.warning("Unhandled kiosk push command, using default presentation: \(message)")
+            return nil
+        }
+
+        performKioskCommand(command, userInfo: content.userInfo)
+
+        // The command already ran above; the toast is only its visual confirmation, which the user can
+        // switch off for a kiosk that should react silently.
+        if #available(iOS 18, *),
+           let toast = command.confirmationToast(id: request.identifier, settings: kioskSettings) {
+            Task { @MainActor in
+                ToastPresenter.shared.show(toast: toast, duration: 4)
+            }
+        }
+
+        return []
+    }
+
+    private func performKioskCommand(_ command: KioskPushCommand, userInfo: [AnyHashable: Any]) {
+        switch command {
+        case .showScreensaver:
+            Current.kiosk.requestScreensaver(.show)
+        case .hideScreensaver:
+            Current.kiosk.requestScreensaver(.hide)
+        case .showCamera:
+            openCamera(from: userInfo)
+        case .hideCamera:
+            hideCamera()
+        case .setBrightness:
+            if let level = command.level(from: userInfo) {
+                setScreenBrightness(level)
+            } else {
+                Current.Log.error("Ignoring \(command.rawValue): missing or invalid level in payload")
+            }
+        case .setVolume:
+            if let level = command.level(from: userInfo) {
+                setSystemVolume(level)
+            } else {
+                Current.Log.error("Ignoring \(command.rawValue): missing or invalid volume in payload")
+            }
+        case .setScreensaverMode:
+            if let mode = command.screensaverMode(from: userInfo) {
+                Current.kiosk.setScreensaverMode(mode)
+            } else {
+                Current.Log.error("Ignoring \(command.rawValue): missing or invalid mode in payload")
+            }
+        case .setScreensaverBrightness:
+            if let level = command.level(from: userInfo) {
+                Current.kiosk.setScreensaverDimLevel(Double(level))
+            } else {
+                Current.Log.error("Ignoring \(command.rawValue): missing or invalid level in payload")
+            }
+        case .reload:
+            Current.sceneManager.webViewControllerPromise.done { $0.refresh() }
+        case .defaultDashboard:
+            returnToKioskDefault()
+        }
+    }
+
+    /// Returns the kiosk to its configured server and dashboard. If the kiosk is pinned to a server
+    /// other than the one on screen, switching to it rebuilds the web view (which loads the kiosk
+    /// dashboard on creation); otherwise the current web view navigates to the configured dashboard.
+    /// Mirrors `OnboardingStateObservable.applyKioskTarget(_:)`.
+    private func returnToKioskDefault() {
+        let serverId = Current.kioskSettings.serverId
+        Current.sceneManager.webViewControllerPromise.done { webViewController in
+            if let serverId, serverId != webViewController.server.identifier.rawValue,
+               let server = Current.servers.server(forServerIdentifier: serverId) {
+                Current.sceneManager.appCoordinator.done { $0.open(server: server) }
+            } else {
+                webViewController.applyKioskDashboard()
+            }
+        }
+    }
+
     public func userNotificationCenter(
         _ center: UNUserNotificationCenter,
         openSettingsFor notification: UNNotification?
@@ -511,8 +610,8 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         .navigationViewStyle(.stack)
         let hostingController = rootView.embeddedInHostingController()
 
-        Current.sceneManager.webViewWindowControllerPromise.done {
-            var rootViewController = $0.window.rootViewController
+        Current.sceneManager.appCoordinator.done {
+            var rootViewController = $0.window?.rootViewController
             if let navigationController = rootViewController as? UINavigationController {
                 rootViewController = navigationController.viewControllers.first
             }
@@ -525,12 +624,13 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
 
 extension NotificationManager: MessagingDelegate {
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-        let loggableCurrent = Current.settingsStore.pushID ?? "(null)"
-        let loggableNew = fcmToken ?? "(null)"
+        let currentToken = Current.settingsStore.pushID
+        let loggableCurrent = currentToken.map { LogRedaction.redactToken($0) } ?? "(null)"
+        let loggableNew = fcmToken.map { LogRedaction.redactToken($0) } ?? "(null)"
 
         Current.Log.info("Firebase registration token refreshed, new token: \(loggableNew)")
 
-        if loggableCurrent != loggableNew {
+        if currentToken != fcmToken {
             Current.Log.warning("FCM token has changed from \(loggableCurrent) to \(loggableNew)")
         }
 

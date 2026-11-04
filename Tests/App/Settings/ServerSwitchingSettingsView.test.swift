@@ -1,0 +1,93 @@
+@testable import HomeAssistant
+@testable import Shared
+import SharedTesting
+import SwiftUI
+import Testing
+import UIKit
+
+@Suite(.sharedState)
+struct ServerSwitchingSettingsViewTests {
+    @MainActor
+    @Test func searchIndexesNothingWithASingleServer() {
+        let previousServers = Current.servers
+        defer { Current.servers = previousServers }
+
+        Current.servers = FakeServerManager(initial: 1)
+        #expect(ServerSwitchingSettingsView.settingsSearchEntries.isEmpty)
+
+        Current.servers = FakeServerManager(initial: 2)
+        let titles = ServerSwitchingSettingsView.settingsSearchEntries.map(\.title)
+        #expect(titles.contains(L10n.Settings.ServerSwitching.AutomaticSwitching.title))
+        #expect(titles.contains(L10n.Settings.ServerSwitching.ByLocation.title))
+        #expect(!titles.contains(L10n.SettingsDetails.General.Restoration.title))
+    }
+
+    @MainActor
+    @Test func serverSwitchingScreen() async throws {
+        let previousServers = Current.servers
+        defer { Current.servers = previousServers }
+        // Two servers so the location-based switching toggle and its footer are visible.
+        Current.servers = FakeServerManager(initial: 2)
+        assertLightDarkSnapshots(
+            of: NavigationView { ServerSwitchingSettingsView() },
+            drawHierarchyInKeyWindow: true
+        )
+    }
+
+    @MainActor
+    @Test func serverSwitchingScreenWithClosestServer() async throws {
+        let previousServers = Current.servers
+        defer { Current.servers = previousServers }
+        Current.servers = FakeServerManager(initial: 2)
+        assertLightDarkSnapshots(
+            of: NavigationView {
+                ServerSwitchingSettingsView(
+                    viewModel: ServerSwitchingSettingsViewModel(
+                        closestServerDescription: "Fake Server · 1.2 km",
+                        closestServerSource: .location(distance: 1200)
+                    )
+                )
+            },
+            drawHierarchyInKeyWindow: true
+        )
+    }
+
+    @MainActor
+    @Test func serverSwitchingScreenWithClosestServerOnHomeNetwork() async throws {
+        let previousServers = Current.servers
+        defer { Current.servers = previousServers }
+        Current.servers = FakeServerManager(initial: 2)
+        // Matched by Wi-Fi: no distance in the value, and the badge says where it came from.
+        assertLightDarkSnapshots(
+            of: NavigationView {
+                ServerSwitchingSettingsView(
+                    viewModel: ServerSwitchingSettingsViewModel(
+                        closestServerDescription: "Fake Server",
+                        closestServerSource: .homeNetwork
+                    )
+                )
+            },
+            drawHierarchyInKeyWindow: true
+        )
+    }
+
+    /// Turning location-based switching off stores it without asking for location permission.
+    @MainActor
+    @Test func turningLocationSwitchingOffStoresIt() async throws {
+        let previousServers = Current.servers
+        let previousSwitching = Current.settingsStore.locationBasedServerSwitching
+        defer {
+            Current.servers = previousServers
+            Current.settingsStore.locationBasedServerSwitching = previousSwitching
+        }
+        Current.servers = FakeServerManager(initial: 2)
+        Current.settingsStore.locationBasedServerSwitching = true
+
+        let driver = await SwiftUIScreenDriver.show(ServerSwitchingSettingsView())
+        defer { driver.close() }
+        #expect(driver.views(of: UISwitch.self).count == 1)
+
+        await driver.toggleSwitches()
+        #expect(!Current.settingsStore.locationBasedServerSwitching)
+    }
+}

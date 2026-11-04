@@ -2,7 +2,7 @@ import Foundation
 import Shared
 
 /// External Bus message types used by the web view integration.
-/// - See: Home Assistant External Bus docs: https://developers.home-assistant.io/docs/frontend/external-bus
+/// - See: Home Assistant External Bus docs: https://contributors.home-assistant.io/frontend/reference/external-bus/
 /// - See: Frontend implementation:
 /// https://github.com/home-assistant/frontend/blob/dev/src/external_app/external_messaging.ts
 enum WebViewExternalBusMessage: String, CaseIterable {
@@ -10,10 +10,12 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case configScreenShow = "config_screen/show"
     case haptic
     case connectionStatus = "connection-status"
+    case frontendLoaded = "frontend/loaded"
     case tagRead = "tag/read"
     case tagWrite = "tag/write"
     case themeUpdate = "theme-update"
     case matterCommission = "matter/commission"
+    case matterShareDevice = "matter/share_device"
     case threadImportCredentials = "thread/import_credentials"
     case threadStoreCredentialInAppleKeychain = "thread/store_in_platform_keychain"
     case barCodeScanner = "bar_code/scan"
@@ -29,12 +31,21 @@ enum WebViewExternalBusMessage: String, CaseIterable {
     case entityAddToGetActions = "entity/add_to/get_actions"
     case entityAddTo = "entity/add_to"
     case cameraPlayerShow = "camera/show"
+    case webRTCStreamStart = "webrtc/stream/start"
+    case webRTCStreamStop = "webrtc/stream/stop"
+    case frontendReloadAndClearCache = "frontend/reload_and_clear_cache"
+    case sidebarShow = "sidebar/show"
+    case moreInfoOpened = "more_info/opened"
+    case moreInfoClosed = "more_info/closed"
+    case entityControlled = "entity/controlled"
 
     @MainActor static var configResult: [String: Any] {
         [
             "hasSettingsScreen": !Current.isCatalyst,
+            "hasSidebar": AppLabsFeature.iosNativeTabBar.isEnabled,
             "canWriteTag": Current.tags.isNFCAvailable,
             "canCommissionMatter": Current.matter.isAvailable,
+            "canShareMatterDeviceToAppleHome": Current.matter.canShareDevice,
             "hasMatterStatusReport": Current.matter.isAvailable,
             "canImportThreadCredentials": Current.matter.threadCredentialsSharingEnabled,
             "hasBarCodeScanner": true,
@@ -42,24 +53,15 @@ enum WebViewExternalBusMessage: String, CaseIterable {
                 .threadCredentialsStoreInKeychainEnabled,
             "hasAssist": true,
             "hasAssistSettings": true,
-            "hasCameraPlayer": {
-                if #available(iOS 16.0, *), !Current.isCatalyst {
-                    return true
-                } else {
-                    return false
-                }
-            }(),
+            "hasCameraPlayer": !Current.isCatalyst,
+            "webrtc": [
+                "hasCameraMicrophoneStream": !Current.isCatalyst,
+            ],
             "canSetupImprov": true,
             "downloadFileSupported": true,
             "hasEntityAddTo": true,
+            "hasSplashscreen": true,
             "appVersion": "\(AppConstants.version) (\(AppConstants.build))",
-            "toastComponentVersion": { // Frontend can use this to know if the version has what it needs
-                if #available(iOS 18, *), !Current.isCatalyst, Current.settingsStore.toastsHandledByApp {
-                    return ToastManager.toastComponentVersion
-                } else {
-                    return -1
-                }
-            }(),
         ]
     }
 }
@@ -73,4 +75,7 @@ enum WebViewExternalBusOutgoingMessage: String, CaseIterable {
     case improvDiscoveredDeviceSetupDone = "improv/device_setup_done"
     case navigate = "navigate"
     case matterCommissionFinish = "matter/commission/finish"
+    case kioskModeSet = "kiosk_mode/set"
+    case showNotifications = "notifications/show"
+    case webRTCStreamStopped = "webrtc/stream/stopped"
 }

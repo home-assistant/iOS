@@ -1,13 +1,11 @@
 import Foundation
 import PromiseKit
-import Version
 
 public struct AvailableUpdate: Codable, Comparable {
     public var id: Int
     public var htmlUrl: URL
     public var tagName: String
     public var name: String
-    public var body: String
     public var prerelease: Bool
 
     var version: Version {

@@ -104,6 +104,23 @@ class DiskCacheTests: XCTestCase {
         XCTAssertEqual(try hang(read4), obj4)
     }
 
+    func testDeleteRemovesValue() {
+        let obj1 = TestObject1()
+        let cache: DiskCache = cache
+
+        let write = cache.set(obj1, for: "key")
+        let delete = write.then { cache.delete(for: "key") }
+        let read = delete.then { cache.value(for: "key") as Promise<TestObject1> }
+
+        XCTAssertNoThrow(try hang(delete))
+        XCTAssertThrowsError(try hang(read))
+    }
+
+    func testDeleteMissingKey() {
+        let cache: DiskCache = cache
+        XCTAssertNoThrow(try hang(cache.delete(for: "missing_value")))
+    }
+
     func testJsonEncoderFail() {
         let obj1 = DoubleObject1(value: 3)
         let obj2 = DoubleObject1(value: .infinity)

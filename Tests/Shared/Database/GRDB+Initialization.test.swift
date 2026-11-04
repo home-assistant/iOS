@@ -1,8 +1,9 @@
 import GRDB
 @testable import Shared
+import SharedTesting
 import Testing
 
-@Suite("GRDB Initialization Tests")
+@Suite("GRDB Initialization Tests", .sharedState)
 struct GRDBInitializationTests {
     /// Helper to create a unique test database path
     func makeTestDatabasePath() -> String {
@@ -27,10 +28,10 @@ struct GRDBInitializationTests {
         )
     }
 
-    @Test("Tables returns exactly 16 tables")
-    func tablesReturns16Tables() throws {
+    @Test("Tables returns exactly 34 tables")
+    func tablesReturns31Tables() throws {
         let tables = DatabaseQueue.tables()
-        #expect(tables.count == 16, "DatabaseQueue.tables() should return exactly 16 tables")
+        #expect(tables.count == 34, "DatabaseQueue.tables() should return exactly 34 tables")
     }
 
     @Test("Tables contains all expected table names")
@@ -43,19 +44,33 @@ struct GRDBInitializationTests {
             GRDBDatabaseTable.HAAppEntity.rawValue,
             GRDBDatabaseTable.watchConfig.rawValue,
             GRDBDatabaseTable.carPlayConfig.rawValue,
+            GRDBDatabaseTable.macToolbarConfig.rawValue,
             GRDBDatabaseTable.appIconShortcutConfig.rawValue,
             GRDBDatabaseTable.assistPipelines.rawValue,
             GRDBDatabaseTable.serverInfoMirror.rawValue,
-            GRDBDatabaseTable.appEntityRegistryListForDisplay.rawValue,
-            GRDBDatabaseTable.entityRegistry.rawValue,
+            GRDBDatabaseTable.displayEntityRegistry.rawValue,
             GRDBDatabaseTable.deviceRegistry.rawValue,
             GRDBDatabaseTable.appPanel.rawValue,
             GRDBDatabaseTable.customWidget.rawValue,
             GRDBDatabaseTable.appArea.rawValue,
             GRDBDatabaseTable.homeViewConfiguration.rawValue,
             GRDBDatabaseTable.assistConfiguration.rawValue,
-            GRDBDatabaseTable.kioskSettings.rawValue,
+            GRDBDatabaseTable.voiceToolsServerConfiguration.rawValue,
             GRDBDatabaseTable.allowedTags.rawValue,
+            GRDBDatabaseTable.kioskSettings.rawValue,
+            GRDBDatabaseTable.appLabsFeatureState.rawValue,
+            GRDBDatabaseTable.watchComplication.rawValue,
+            GRDBDatabaseTable.watchComplicationConfig.rawValue,
+            GRDBDatabaseTable.appZone.rawValue,
+            GRDBDatabaseTable.notificationCategory.rawValue,
+            GRDBDatabaseTable.locationHistory.rawValue,
+            GRDBDatabaseTable.locationError.rawValue,
+            GRDBDatabaseTable.remindersSyncConfig.rawValue,
+            GRDBDatabaseTable.remindersSyncItemLink.rawValue,
+            GRDBDatabaseTable.remindersSyncHistoryEntry.rawValue,
+            GRDBDatabaseTable.focusName.rawValue,
+            GRDBDatabaseTable.HACalendar.rawValue,
+            GRDBDatabaseTable.HACalendarEvent.rawValue,
         ]
 
         for expectedName in expectedTableNames {

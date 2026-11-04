@@ -12,16 +12,18 @@ struct MagicItemAddView: View {
 
     enum PickerOption {
         case entities
-        case scripts
-        case scenes
+        /// Areas, reached from the watch configuration's add menu: an area entry opens the area's
+        /// entities on the watch. Never offered alongside the others in the segmented picker.
+        case areas
         case assistPipelines
+        case complications
     }
 
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var viewModel = MagicItemAddViewModel()
+    @StateObject private var viewModel: MagicItemAddViewModel
     @State private var selectedEntity: HAAppEntity?
     private let visiblePickerOptions: [PickerOption]
-    private let initialItemType: MagicItemAddType
+    private let allowMultipleSelection: Bool
 
     let context: Context
     let itemToAdd: (MagicItem?) -> Void
@@ -30,34 +32,25 @@ struct MagicItemAddView: View {
         context: Context,
         initialItemType: MagicItemAddType? = nil,
         visiblePickerOptions: [PickerOption]? = nil,
+        allowMultipleSelection: Bool = false,
         itemToAdd: @escaping (MagicItem?) -> Void
     ) {
         self.context = context
+        self.allowMultipleSelection = allowMultipleSelection
         self.itemToAdd = itemToAdd
 
         let resolvedPickerOptions = visiblePickerOptions ?? {
-            var options: [PickerOption] = []
-            if [.carPlay, .widget, .appIconShortcut].contains(context) {
-                options.append(.entities)
-            }
-            if context != .widget {
-                // In other context user can just select entities directly
-                // In Apple watch we don't have entity support yet
-                if context == .watch {
-                    options.append(.scripts)
-                    options.append(.scenes)
-                }
-            }
+            var options: [PickerOption] = [.entities]
             if [.carPlay, .appIconShortcut].contains(context), #available(iOS 26.0, *) {
                 options.append(.assistPipelines)
             }
             return options
         }()
         self.visiblePickerOptions = resolvedPickerOptions
-        self.initialItemType = initialItemType ?? Self.defaultItemType(
-            for: context,
+        let resolvedInitialItemType = initialItemType ?? Self.defaultItemType(
             visiblePickerOptions: resolvedPickerOptions
         )
+        self._viewModel = StateObject(wrappedValue: MagicItemAddViewModel(selectedItemType: resolvedInitialItemType))
     }
 
     var body: some View {
@@ -68,19 +61,17 @@ struct MagicItemAddView: View {
                     VStack {
                         pickerView
                             .padding(.horizontal)
-                        entitiesPerServerList()
+                        // The watch only offers what it can display and run; other contexts show everything.
+                        entitiesPerServerList(domainFilter: context == .watch ? Domain.watchAddable : nil)
                     }
-                case .scripts:
+                case .areas:
                     VStack {
                         pickerView
                             .padding(.horizontal)
-                        entitiesPerServerList(domainFilter: .script)
-                    }
-                case .scenes:
-                    VStack {
-                        pickerView
-                            .padding(.horizontal)
-                        entitiesPerServerList(domainFilter: .scene)
+                        AreaMagicItemAddList { area in
+                            itemToAdd(area)
+                            dismiss()
+                        }
                     }
                 case .assistPipelines:
                     VStack {
@@ -91,11 +82,18 @@ struct MagicItemAddView: View {
                             dismiss()
                         }
                     }
+                case .complications:
+                    VStack {
+                        pickerView
+                            .padding(.horizontal)
+                        ComplicationMagicItemAddList { complication in
+                            itemToAdd(complication)
+                            dismiss()
+                        }
+                    }
                 }
             }
             .onAppear {
-                autoSelectItemType()
-
                 if viewModel.selectedServerId == nil {
                     viewModel.selectedServerId = Current.servers.all.first?.identifier.rawValue
                 }
@@ -109,15 +107,12 @@ struct MagicItemAddView: View {
             #endif
         }
         .navigationViewStyle(.stack)
-        .modify { view in
-            if #available(iOS 16.0, *) {
-                view
-                    .presentationDetents([.large])
-                    .presentationDragIndicator(.visible)
-            } else {
-                view
-            }
-        }
+        #if targetEnvironment(macCatalyst)
+            .frame(minWidth: 540, minHeight: 720)
+        #else
+            .presentationDetents([.large])
+            .presentationDragIndicator(.visible)
+        #endif
     }
 
     @ViewBuilder
@@ -130,15 +125,15 @@ struct MagicItemAddView: View {
                     case .entities:
                         Text(verbatim: L10n.MagicItem.ItemType.Entity.List.title)
                             .tag(MagicItemAddType.entities)
-                    case .scripts:
-                        Text(verbatim: L10n.MagicItem.ItemType.Script.List.title)
-                            .tag(MagicItemAddType.scripts)
-                    case .scenes:
-                        Text(verbatim: L10n.MagicItem.ItemType.Scene.List.title)
-                            .tag(MagicItemAddType.scenes)
+                    case .areas:
+                        Text(verbatim: L10n.MagicItem.ItemType.Area.List.title)
+                            .tag(MagicItemAddType.areas)
                     case .assistPipelines:
                         Text(verbatim: L10n.Widgets.Action.Name.assist)
                             .tag(MagicItemAddType.assistPipelines)
+                    case .complications:
+                        Text(verbatim: L10n.MagicItem.ItemType.Complication.List.title)
+                            .tag(MagicItemAddType.complications)
                     }
                 }
             }
@@ -149,43 +144,35 @@ struct MagicItemAddView: View {
         }
     }
 
-    private func autoSelectItemType() {
-        viewModel.selectedItemType = initialItemType
-    }
-
-    private static func defaultItemType(
-        for context: Context,
-        visiblePickerOptions: [PickerOption]
-    ) -> MagicItemAddType {
-        if let firstOption = visiblePickerOptions.first {
-            switch firstOption {
-            case .entities:
-                return .entities
-            case .scripts:
-                return .scripts
-            case .scenes:
-                return .scenes
-            case .assistPipelines:
-                return .assistPipelines
-            }
-        }
-
-        switch context {
-        case .watch:
-            return .scripts
-        case .carPlay, .widget, .appIconShortcut:
+    private static func defaultItemType(visiblePickerOptions: [PickerOption]) -> MagicItemAddType {
+        switch visiblePickerOptions.first {
+        case .entities, .none:
             return .entities
+        case .areas:
+            return .areas
+        case .assistPipelines:
+            return .assistPipelines
+        case .complications:
+            return .complications
         }
     }
 
     @ViewBuilder
-    private func entitiesPerServerList(domainFilter: Domain? = nil) -> some View {
+    private func entitiesPerServerList(domainFilter: [Domain]? = nil) -> some View {
         EntityPicker(
             selectedServerId: Current.servers.all
                 .first(where: { $0.identifier.rawValue == viewModel.selectedServerId })?.identifier.rawValue,
             selectedEntity: $selectedEntity,
             domainFilter: domainFilter,
-            mode: .inline
+            mode: .inline,
+            allowMultipleSelection: allowMultipleSelection,
+            onMultipleSelectionConfirmed: { entities in
+                // Two or more entities skip customization and are added with their default configuration.
+                for entity in entities {
+                    itemToAdd(.init(id: entity.entityId, serverId: entity.serverId, type: .entity))
+                }
+                dismiss()
+            }
         )
         .background(
             NavigationLink("", isActive: .init(get: {

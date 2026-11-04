@@ -108,4 +108,28 @@ class NotificationAttachmentParserCameraTests: XCTestCase {
         XCTAssertEqual(result.typeHint, kUTTypeJPEG)
         XCTAssertEqual(result.hideThumbnail, nil)
     }
+
+    func testKioskCommandSkipsAttachment() {
+        let content = UNMutableNotificationContent()
+        content.body = "kiosk_show_camera"
+        content.userInfo["entity_id"] = "camera.any"
+        let promise = parser.attachmentInfo(from: content)
+        XCTAssertEqual(promise.wait(), .missing)
+    }
+
+    func testKioskCommandIsMatchedCaseInsensitively() {
+        let content = UNMutableNotificationContent()
+        content.body = "  KIOSK_SHOW_CAMERA\n"
+        content.userInfo["entity_id"] = "camera.any"
+        let promise = parser.attachmentInfo(from: content)
+        XCTAssertEqual(promise.wait(), .missing)
+    }
+
+    func testNonKioskMessageKeepsAttachment() {
+        let content = UNMutableNotificationContent()
+        content.body = "Someone is at the door"
+        content.userInfo["entity_id"] = "camera.any"
+        let promise = parser.attachmentInfo(from: content)
+        XCTAssertEqual(promise.wait().attachmentInfo?.url, URL(string: "/api/camera_proxy/camera.any"))
+    }
 }

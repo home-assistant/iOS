@@ -13,7 +13,7 @@ struct WidgetScripts: Widget {
         ) { timelineEntry in
             WidgetBasicContainerView(
                 emptyViewGenerator: {
-                    AnyView(WidgetEmptyView(message: L10n.Widgets.Scripts.notConfigured))
+                    AnyView(WidgetEmptyStateView(message: L10n.Widgets.Scripts.notConfigured))
                 },
                 contents: timelineEntry.scripts.map { script in
                     WidgetBasicViewModel(
@@ -34,23 +34,20 @@ struct WidgetScripts: Widget {
                         useCustomColors: false
                     )
                 },
-                type: .button
+                type: .button,
+                widgetKind: .scripts
             )
         }
         .contentMarginsDisabledIfAvailable()
         .configurationDisplayName(L10n.Widgets.Scripts.title)
         .description(L10n.Widgets.Scripts.description)
         .supportedFamilies(WidgetScriptsSupportedFamilies.families)
+        .disfavoredInCarPlayIfAvailable(for: WidgetScriptsSupportedFamilies.families)
     }
 }
 
 enum WidgetScriptsSupportedFamilies {
-    @available(iOS 16.0, *)
-    static let families: [WidgetFamily] = [
-        .systemSmall,
-        .systemMedium,
-        .systemLarge,
-        .systemExtraLarge,
-        .accessoryCircular,
-    ]
+    static var families: [WidgetFamily] {
+        [.systemSmall, .systemMedium, .systemLarge] + WidgetFamily.extraLarges + [.accessoryCircular]
+    }
 }

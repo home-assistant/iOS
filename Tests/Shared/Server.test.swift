@@ -2,6 +2,33 @@
 import XCTest
 
 class ServerTests: XCTestCase {
+    private var previousCurrentNetworkState: (() async -> NetworkState)!
+    private var previousLastKnownNetworkState: (() -> NetworkState)!
+    private var previousRefreshNetworkInformation: (() async -> Void)!
+
+    override func setUp() {
+        super.setUp()
+        previousCurrentNetworkState = Current.connectivity.currentNetworkState
+        previousLastKnownNetworkState = Current.connectivity.lastKnownNetworkState
+        previousRefreshNetworkInformation = Current.connectivity.refreshNetworkInformation
+        setNetworkState(NetworkState())
+    }
+
+    override func tearDown() {
+        Current.connectivity.currentNetworkState = previousCurrentNetworkState
+        Current.connectivity.lastKnownNetworkState = previousLastKnownNetworkState
+        Current.connectivity.refreshNetworkInformation = previousRefreshNetworkInformation
+        super.tearDown()
+    }
+
+    private func setNetworkState(_ state: NetworkState) {
+        Current.connectivity.currentNetworkState = { state }
+        Current.connectivity.lastKnownNetworkState = { state }
+        Current.connectivity.refreshNetworkInformation = {
+            Current.connectivity.lastKnownNetworkState = { state }
+        }
+    }
+
     private func waitLoop() {
         let expectation = expectation(description: "run loop")
         DispatchQueue.main.async {
@@ -170,5 +197,90 @@ class ServerTests: XCTestCase {
         XCTAssertNil(mirrored.connection.webhookSecret)
         XCTAssertFalse(mirrored.connection.securityExceptions.hasExceptions)
         XCTAssertNil(mirrored.connection.clientCertificate)
+    }
+
+    func testActiveURLReturnsInternalWhenOnInternalNetwork() async {
+        var info = ServerInfo.fake()
+        info.connection.set(address: URL(string: "http://internal.example.com:8123"), for: .internal)
+        info.connection.set(address: URL(string: "https://external.example.com"), for: .external)
+        info.connection.internalSSIDs = ["my_ssid"]
+        let server = Server.fake(initial: info)
+        setNetworkState(NetworkState(ssid: "my_ssid"))
+
+        let url = await server.activeURL()
+
+        XCTAssertEqual(url, info.connection.address(for: .internal))
+        XCTAssertEqual(server.info.connection.activeURLType, .internal)
+    }
+
+    func testActiveURLReturnsExternalWhenNotOnInternalNetwork() async {
+        var info = ServerInfo.fake()
+        info.connection.set(address: URL(string: "http://internal.example.com:8123"), for: .internal)
+        info.connection.set(address: URL(string: "https://external.example.com"), for: .external)
+        info.connection.internalSSIDs = ["my_ssid"]
+        let server = Server.fake(initial: info)
+        setNetworkState(NetworkState(ssid: "other_ssid"))
+
+        let url = await server.activeURL()
+
+        XCTAssertEqual(url, info.connection.address(for: .external))
+        XCTAssertEqual(server.info.connection.activeURLType, .external)
+    }
+
+    func testActiveURLUsingLastKnownNetworkStateEvaluatesAgainstCache() {
+        var info = ServerInfo.fake()
+        info.connection.set(address: URL(string: "http://internal.example.com:8123"), for: .internal)
+        info.connection.set(address: URL(string: "https://external.example.com"), for: .external)
+        info.connection.internalSSIDs = ["my_ssid"]
+        let server = Server.fake(initial: info)
+        setNetworkState(NetworkState(ssid: "my_ssid"))
+
+        let url = server.activeURLUsingLastKnownNetworkState()
+
+        XCTAssertEqual(url, info.connection.address(for: .internal))
+        XCTAssertEqual(server.info.connection.activeURLType, .internal)
+    }
+
+    func testActiveAPIURLAppendsAPIPath() async {
+        var info = ServerInfo.fake()
+        info.connection.set(address: nil, for: .internal)
+        info.connection.set(address: URL(string: "https://external.example.com"), for: .external)
+        let server = Server.fake(initial: info)
+
+        let url = await server.activeAPIURL()
+
+        XCTAssertEqual(url, URL(string: "https://external.example.com/api"))
+    }
+
+    func testWebhookURLReturnsCloudhookWhenNotOnInternalNetwork() async {
+        var info = ServerInfo.fake()
+        info.connection.set(address: URL(string: "http://internal.example.com:8123"), for: .internal)
+        info.connection.set(address: URL(string: "https://external.example.com"), for: .external)
+        info.connection.cloudhookURL = URL(string: "https://hooks.nabu.casa/webhook-id")
+        info.connection.internalSSIDs = ["my_ssid"]
+        let server = Server.fake(initial: info)
+        setNetworkState(NetworkState(ssid: "other_ssid"))
+
+        let url = await server.webhookURL()
+
+        XCTAssertEqual(url, info.connection.cloudhookURL)
+    }
+
+    func testWebhookURLUsesInternalURLWhenOnInternalNetwork() async {
+        var info = ServerInfo.fake()
+        info.connection.set(address: URL(string: "http://internal.example.com:8123"), for: .internal)
+        info.connection.set(address: URL(string: "https://external.example.com"), for: .external)
+        info.connection.cloudhookURL = URL(string: "https://hooks.nabu.casa/webhook-id")
+        info.connection.internalSSIDs = ["my_ssid"]
+        let server = Server.fake(initial: info)
+        setNetworkState(NetworkState(ssid: "my_ssid"))
+
+        let url = await server.webhookURL()
+
+        XCTAssertEqual(
+            url,
+            info.connection.address(for: .internal)?
+                .appendingPathComponent("api/webhook/\(info.connection.webhookID)", isDirectory: false)
+        )
     }
 }

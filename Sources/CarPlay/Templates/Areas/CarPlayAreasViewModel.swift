@@ -4,16 +4,12 @@ import HAKit
 import SFSafeSymbols
 import Shared
 
-@available(iOS 16.0, *)
 final class CarPlayAreasViewModel {
     weak var templateProvider: CarPlayAreasZonesTemplate?
 
     var entitiesListTemplate: CarPlayEntitiesListTemplate?
     private var entities: HACachedStates?
     private var currentTask: Task<Void, Never>?
-    private var preferredServerId: String {
-        prefs.string(forKey: CarPlayServersListTemplate.carPlayPreferredServerKey) ?? ""
-    }
 
     func cancelRequest() {
         currentTask?.cancel()
@@ -21,7 +17,7 @@ final class CarPlayAreasViewModel {
     }
 
     func update() {
-        guard let server = Current.servers.server(forServerIdentifier: preferredServerId) ?? Current.servers.all.first else {
+        guard let server = CarPlayPreferredServer.current else {
             templateProvider?.updateAreaItems(items: [])
             return
         }

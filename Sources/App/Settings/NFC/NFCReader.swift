@@ -1,3 +1,4 @@
+#if !targetEnvironment(macCatalyst)
 import CoreNFC
 import Foundation
 import PromiseKit
@@ -90,3 +91,4 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
         }
     }
 }
+#endif

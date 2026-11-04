@@ -1,0 +1,37 @@
+import AppIntents
+import Shared
+
+struct OpenAppSettingsAppIntent: AppIntent {
+    static var title: LocalizedStringResource = .init(
+        "app_intents.open_app_settings.title",
+        defaultValue: "Open app settings"
+    )
+
+    static var description = IntentDescription(.init(
+        "app_intents.open_app_settings.description",
+        defaultValue: "Opens the companion app directly in its settings"
+    ))
+
+    static var openAppWhenRun: Bool = true
+    // `openAppWhenRun` is deprecated from iOS 26; both stay until the deployment target passes 26.
+    @available(iOS 26.0, watchOS 26.0, *)
+    static var supportedModes: IntentModes { .foreground }
+
+    @MainActor
+    func perform() async throws -> some IntentResult {
+        #if os(watchOS)
+        // The watch has no scene manager: settings are a sheet owned by the home screen, so the
+        // request is handed to it (and latched, for when this runs before that view exists).
+        WatchSettingsLaunch.request()
+        #else
+        if Current.isCatalyst {
+            Current.sceneManager.activateAnyScene(for: .settings)
+        } else {
+            Current.sceneManager.appCoordinator.done { coordinator in
+                coordinator.showSettings()
+            }
+        }
+        #endif
+        return .result()
+    }
+}

@@ -4,7 +4,6 @@ import Shared
 import SwiftUI
 import WidgetKit
 
-@available(iOS 16.4, *)
 struct UpdateWidgetItemConfirmationStateAppIntent: AppIntent {
     static var title: LocalizedStringResource = "Update custom widget confirmation"
     static var isDiscoverable: Bool = false
@@ -15,6 +14,11 @@ struct UpdateWidgetItemConfirmationStateAppIntent: AppIntent {
 
     @Parameter(title: "item Id")
     var serverUniqueId: String?
+
+    /// True when the rest of a split tile was tapped rather than its icon, so confirming runs the
+    /// tile's tap behavior.
+    @Parameter(title: "Confirms tap action")
+    var confirmsTapAction: Bool?
 
     func perform() async throws -> some IntentResult {
         guard let serverUniqueId, let widgetId else {
@@ -31,7 +35,9 @@ struct UpdateWidgetItemConfirmationStateAppIntent: AppIntent {
 
         if var widget = try CustomWidget.widgets()?.first(where: { $0.id == widgetId }),
            let magicItem = widget.items.first(where: { $0.serverUniqueId == serverUniqueId }) {
-            widget.itemsStates = [magicItem.serverUniqueId: .pendingConfirmation]
+            widget.itemsStates = [
+                magicItem.serverUniqueId: confirmsTapAction == true ? .pendingTapConfirmation : .pendingConfirmation,
+            ]
             do {
                 try await Current.database().write { [widget] db in
                     try widget.update(db)

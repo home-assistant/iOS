@@ -10,6 +10,7 @@ struct SearchingServersAnimationView: View {
         static let logoPulseScale: CGFloat = 1.15
         static let logoPulseDuration: Double = 0.8
         static let secondsUntilShowText: CGFloat = 8
+        static let minimumScale: CGFloat = 0.4
     }
 
     @State private var rotation: Double = 0
@@ -18,9 +19,21 @@ struct SearchingServersAnimationView: View {
     @State private var showText: Bool = false
 
     let text: String?
+    /// Height the whole animation may take. The dots and logo shrink to what is left beside the
+    /// text once it shows; the text keeps its size so it stays legible.
+    let availableHeight: CGFloat?
+    @State private var textHeight: CGFloat = 0
 
-    init(text: String? = nil) {
+    init(text: String? = nil, availableHeight: CGFloat? = nil) {
         self.text = text
+        self.availableHeight = availableHeight
+    }
+
+    /// Ratio the dots and logo are drawn at so the measured text and the spacing still fit.
+    private var scale: CGFloat {
+        guard let availableHeight, availableHeight > 0 else { return 1 }
+        let heightForDots = availableHeight - textHeight - DesignSystem.Spaces.three
+        return min(1, max(Constants.minimumScale, heightForDots / Constants.dotsSize))
     }
 
     var body: some View {
@@ -37,6 +50,11 @@ struct SearchingServersAnimationView: View {
                 .frame(width: showText ? nil : 0)
                 .opacity(showText ? 1 : 0)
                 .animation(.easeInOut, value: showText)
+                .onGeometryChange(for: CGFloat.self) { proxy in
+                    proxy.size.height
+                } action: { height in
+                    textHeight = height
+                }
         }
         .onAppear {
             animateLogoPulse()
@@ -65,13 +83,13 @@ struct SearchingServersAnimationView: View {
             .resizable()
             .aspectRatio(contentMode: .fit)
             .scaleEffect(logoScale, anchor: .center)
-            .frame(width: Constants.logoSize, height: Constants.logoSize)
+            .frame(width: Constants.logoSize * scale, height: Constants.logoSize * scale)
     }
 
     private var dots: some View {
         Image(.searchingServersDots)
             .resizable()
-            .frame(width: Constants.dotsSize, height: Constants.dotsSize)
+            .frame(width: Constants.dotsSize * scale, height: Constants.dotsSize * scale)
             .rotationEffect(.degrees(rotation))
     }
 

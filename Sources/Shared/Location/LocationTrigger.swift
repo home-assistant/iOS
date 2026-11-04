@@ -27,6 +27,8 @@ public enum LocationUpdateTrigger: String, CaseIterable {
     case Launch = "Launch"
     case Periodic = "Periodic"
     case Signaled = "Signaled"
+    /// A sensor update repeated after an earlier one failed to reach the server.
+    case Retry = "Retry"
     case Unknown = "Unknown"
     case watchContext = "Watch Context"
 
@@ -43,7 +45,7 @@ public enum LocationUpdateTrigger: String, CaseIterable {
         case .SignificantLocationUpdate, .BackgroundFetch, .PushNotification, .watchContext:
             // background events we know are usually time sensitive
             return 10.0
-        case .Manual, .URLScheme, .XCallbackURL, .AppShortcut, .Siri, .Launch, .Periodic, .Signaled:
+        case .Manual, .URLScheme, .XCallbackURL, .AppShortcut, .Siri, .Launch, .Periodic, .Signaled, .Retry:
             // user is actively doing this, so wait a little longer
             return 30.0
         case .Unknown:
@@ -70,6 +72,7 @@ public enum LocationUpdateTrigger: String, CaseIterable {
         case .Launch: return nil
         case .Periodic: return nil
         case .Signaled: return nil
+        case .Retry: return nil
         case .watchContext: return nil
         }
     }
@@ -116,7 +119,7 @@ public enum LocationUpdateTrigger: String, CaseIterable {
             body = L10n.LocationChangeNotification.Manual.body
         case .Siri:
             body = L10n.LocationChangeNotification.Siri.body
-        case .RegionExit, .RegionEnter, .Unknown:
+        case .RegionExit, .RegionEnter, .Retry, .Unknown:
             body = L10n.LocationChangeNotification.Unknown.body
         case .Launch:
             body = L10n.LocationChangeNotification.Launch.body

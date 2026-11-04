@@ -5,6 +5,7 @@ import SwiftUI
 public protocol DiskCache {
     func value<T: Codable>(for key: String) -> Promise<T>
     func set<T: Codable>(_ value: T, for key: String) -> Promise<Void>
+    func delete(for key: String) -> Promise<Void>
 }
 
 private struct DiskCacheKey: EnvironmentKey {
@@ -64,6 +65,32 @@ public final class DiskCacheImpl: DiskCache {
             ) { url in
                 do {
                     try data.write(to: url)
+                    seal.fulfill(())
+                } catch {
+                    seal.reject(error)
+                }
+            }
+            if let error = coordinatorError {
+                seal.reject(error)
+            }
+        }
+        return promise
+    }
+
+    public func delete(for key: String) -> Promise<Void> {
+        let (promise, seal) = Promise<Void>.pending()
+        DispatchQueue.global().async { [coordinator, container] in
+            var coordinatorError: NSError?
+            coordinator.coordinate(
+                writingItemAt: Self.URL(in: container, for: key),
+                options: .forDeleting,
+                error: &coordinatorError
+            ) { url in
+                do {
+                    let fileManager = FileManager.default
+                    if fileManager.fileExists(atPath: url.path) {
+                        try fileManager.removeItem(at: url)
+                    }
                     seal.fulfill(())
                 } catch {
                     seal.reject(error)

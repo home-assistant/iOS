@@ -4,7 +4,7 @@ import Shared
 
 struct OnboardingAuthStepSensors: OnboardingAuthPostStep {
     var api: HomeAssistantAPI
-    var sender: UIViewController
+    var presenter: OnboardingAuthPresenter
 
     static var supportedPoints: Set<OnboardingAuthStepPoint> {
         Set([.afterRegister])

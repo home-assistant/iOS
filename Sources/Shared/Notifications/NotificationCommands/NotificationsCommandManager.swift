@@ -1,8 +1,5 @@
-#if canImport(Communicator)
-import Communicator
-#endif
 import Foundation
-import PromiseKit
+@preconcurrency import PromiseKit
 import UserNotifications
 import WidgetKit
 
@@ -15,14 +12,6 @@ public class NotificationCommandManager {
         .init(rawValue: "didUpdateComplicationsNotification")
     }
 
-    public static var didReceiveShowCameraNotification: Notification.Name {
-        .init(rawValue: "didReceiveShowCameraNotification")
-    }
-
-    public static var didReceiveHideCameraNotification: Notification.Name {
-        .init(rawValue: "didReceiveHideCameraNotification")
-    }
-
     public enum CommandError: Error {
         case notCommand
         case unknownCommand
@@ -33,8 +22,6 @@ public class NotificationCommandManager {
         register(command: "clear_notification", handler: HandlerClearNotification())
         #if os(iOS)
         register(command: "update_complications", handler: HandlerUpdateComplications())
-        register(command: "show_camera", handler: HandlerShowCamera())
-        register(command: "hide_camera", handler: HandlerHideCamera())
         #if !targetEnvironment(macCatalyst)
         if #available(iOS 17.2, *) {
             register(command: "live_activity", handler: HandlerStartOrUpdateLiveActivity())
@@ -60,6 +47,10 @@ public class NotificationCommandManager {
 
         if let webhookId = payload["webhook_id"] as? String {
             hadict["webhook_id"] = webhookId
+        }
+
+        if let confirmID = payload[LocalPushManager.confirmIDUserInfoKey] as? String {
+            hadict[LocalPushManager.confirmIDUserInfoKey] = confirmID
         }
 
         // Support data.live_update: true — the same field Android uses for Live Updates.
@@ -118,20 +109,25 @@ private struct HandlerLocationUpdate: NotificationCommandHandler {
 
 private struct HandlerClearNotification: NotificationCommandHandler {
     func handle(_ payload: [String: Any]) -> Promise<Void> {
-        Current.Log.verbose("clearing notification for \(payload)")
+        Current.Log.verbose("Clearing notification for \(LogRedaction.redactValues(in: payload))")
         let keys = ["tag", "collapseId"].compactMap { payload[$0] as? String }
         if !keys.isEmpty {
             UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: keys)
         }
 
-        // Also end any Live Activity whose tag matches — same YAML works on both iOS and Android.
-        // Bridged into the returned Promise so the background fetch window stays open until
-        // the activity is actually dismissed (prevents the OS suspending mid-dismiss).
-        // ActivityKit is unavailable in the PushProvider extension and Mac Catalyst, so guard accordingly.
+        // ActivityKit works only in the app, not the PushProvider extension, so the extension
+        // hands the end off via the App Group queue + a Darwin signal for the app to drain. The
+        // confirm id, when present, lets the app report back so the extension can have the server
+        // re-send the end through APNs when the app is suspended.
         #if os(iOS) && !targetEnvironment(macCatalyst)
-        if #available(iOS 17.2, *), !Current.isAppExtension, let tag = payload["tag"] as? String {
+        if #available(iOS 17.2, *), let tag = payload["tag"] as? String, !tag.isEmpty {
+            if Current.isAppExtension {
+                LiveActivityPendingEnd.handOff(tag: tag, payload: payload)
+                return .value(())
+            }
             return Promise<Void> { seal in
                 Task {
+                    Current.Log.verbose("Clearing live activity for \(LogRedaction.redactValues(in: payload))")
                     await Current.liveActivityRegistry?.end(tag: tag, dismissalPolicy: .immediate)
                     // https://stackoverflow.com/a/56657888/6324550
                     DispatchQueue.main.async { seal.fulfill(()) }
@@ -153,7 +149,7 @@ private struct HandlerClearNotification: NotificationCommandHandler {
 private struct HandlerUpdateComplications: NotificationCommandHandler {
     func handle(_ payload: [String: Any]) -> Promise<Void> {
         Promise<Void> { seal in
-            Communicator.shared.transfer(ComplicationInfo(content: [:])) { result in
+            Communicator.shared.transfer(HAWatchConnectivity.ComplicationInfo(content: [:])) { result in
                 switch result {
                 case .success: seal.fulfill(())
                 case let .failure(error): seal.reject(error)

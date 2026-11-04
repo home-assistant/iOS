@@ -4,8 +4,7 @@ import PromiseKit
 import Shared
 import SwiftUI
 
-@available(iOS 16.4, *)
-final class AutomationAppIntent: AppIntent {
+final class AutomationAppIntent: AppIntent, @unchecked Sendable {
     static let title: LocalizedStringResource = .init(
         "widgets.automation.trigger.title",
         defaultValue: "Trigger automation"
@@ -39,8 +38,8 @@ final class AutomationAppIntent: AppIntent {
     )
     var hapticConfirmation: Bool
 
-    func perform() async throws -> some IntentResult & ReturnsValue<Bool> {
-        await Current.connectivity.syncNetworkInformation()
+    func perform() async throws -> some IntentResult & ReturnsValue<Bool> & ProvidesDialog {
+        await Current.connectivity.refreshNetworkInformation()
         if hapticConfirmation {
             AppIntentHaptics.notify()
         }
@@ -81,6 +80,9 @@ final class AutomationAppIntent: AppIntent {
 
         DataWidgetsUpdater.update()
 
-        return .result(value: success)
+        let dialog = success
+            ? L10n.AppIntents.Automations.SuccessMessage.content(automation.displayString)
+            : L10n.AppIntents.Automations.FailureMessage.content(automation.displayString)
+        return .result(value: success, dialog: .init(stringLiteral: dialog))
     }
 }

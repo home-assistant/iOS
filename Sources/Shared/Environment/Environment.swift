@@ -1,20 +1,18 @@
 import CoreBluetooth
 import CoreLocation
 import CoreMotion
+import Dependencies
 import Foundation
 import GRDB
 import HAKit
-import NetworkExtension
+import os
 import PromiseKit
-import RealmSwift
 import UserNotifications
-import Version
 import XCGLogger
 
 public enum AppConfiguration: Int, CaseIterable, CustomStringConvertible, Equatable {
     case fastlaneSnapshot
     case debug
-    case beta
     case release
 
     public var description: String {
@@ -23,37 +21,92 @@ public enum AppConfiguration: Int, CaseIterable, CustomStringConvertible, Equata
             return "fastlane"
         case .debug:
             return "debug"
-        case .beta:
-            return "beta"
         case .release:
             return "release"
         }
     }
 }
 
-private var underlyingWasSetUp: UInt32 = 0
+private let underlyingWasSetUp = OSAllocatedUnfairLock(initialState: false)
 private var underlyingCurrent = AppEnvironment()
 
-public var Current: AppEnvironment {
-    get {
-        let result = underlyingCurrent
-        if OSAtomicTestAndSetBarrier(0, &underlyingWasSetUp) == false {
-            // we only want to run setup once, but we _must_ have 'Current' work during it to allow 'Current' to be
-            // reentrant, which is a requirement for touching things like Log but also touching more unexpected
-            // things like accessing any L10n helper value, which funnels through Current as well.
-            result.setup()
+private enum AppEnvironmentDependencyKey: DependencyKey {
+    static var liveValue: AppEnvironment { underlyingCurrent }
+    // Tests share the global instance so pre-bridge semantics are preserved;
+    // suites opt into an isolated environment via `withCurrent`.
+    static var testValue: AppEnvironment { underlyingCurrent }
+}
+
+public extension DependencyValues {
+    /// The app's operating environment. Prefer `@Dependency(\.environment)` over `Current` in new code.
+    var environment: AppEnvironment {
+        get {
+            let result = self[AppEnvironmentDependencyKey.self]
+            // one-time setup applies only to the global environment; scoped overrides are
+            // responsible for their own configuration.
+            // we only want to run setup once, but we _must_ have 'Current' work during it to allow 'Current'
+            // to be reentrant, which is a requirement for touching things like Log but also touching more
+            // unexpected things like accessing any L10n helper value, which funnels through Current as well.
+            // so this is a test-and-set: the flag flips inside the lock, but setup() runs outside it.
+            if result === underlyingCurrent {
+                let needsSetup = underlyingWasSetUp.withLock { wasSetUp -> Bool in
+                    if wasSetUp {
+                        return false
+                    }
+                    wasSetUp = true
+                    return true
+                }
+                if needsSetup {
+                    result.setup()
+                }
+            }
+            return result
         }
-        return result
+        set { self[AppEnvironmentDependencyKey.self] = newValue }
     }
-    set {
-        underlyingCurrent = newValue
+}
+
+public var Current: AppEnvironment {
+    // resolved through the dependency system so `withCurrent`/`withDependencies` can override it
+    // task-locally; outside any override this is the process-wide global, exactly as before.
+    @Dependency(\.environment) var environment
+    return environment
+}
+
+/// Runs `operation` with `Current` (and `@Dependency(\.environment)`) resolving to `environment`,
+/// including in structured-concurrency child tasks spawned inside it. `Task.detached` and work that
+/// hops to a dispatch queue or PromiseKit callback do not inherit the override and fall back to the
+/// global environment.
+public func withCurrent<R>(
+    _ environment: AppEnvironment,
+    operation: () throws -> R
+) rethrows -> R {
+    try withDependencies {
+        $0.environment = environment
+    } operation: {
+        try operation()
+    }
+}
+
+/// Async variant of the synchronous `withCurrent`.
+public func withCurrent<R>(
+    _ environment: AppEnvironment,
+    operation: () async throws -> R
+) async rethrows -> R {
+    try await withDependencies {
+        $0.environment = environment
+    } operation: {
+        try await operation()
     }
 }
 
 /// The current "operating envrionment" the app. Implementations can be swapped out to facilitate better
 /// unit tests.
 public class AppEnvironment {
-    init() {
+    /// Process-wide logging hooks. They are installed once, by whichever environment is created first
+    /// (the global one in the app), so the fresh environments tests create concurrently through
+    /// `makeIsolated()` do not rewrite these globals while other threads read them.
+    private static let installProcessWideLogging: Void = {
         PromiseKit.conf.logHandler = { event in
             Current.Log.info {
                 switch event {
@@ -68,6 +121,7 @@ public class AppEnvironment {
                 }
             }
         }
+
         HAGlobal.log = { level, log in
             let string = "WebSocket: \(log.replacingOccurrences(of: "\n", with: " "))"
 
@@ -76,13 +130,154 @@ public class AppEnvironment {
             case .error: Current.Log.error(string)
             }
         }
+    }()
+
+    init() {
+        _ = Self.installProcessWideLogging
+
+        // Lets the end-to-end tests relaunch as another device; only honored in their configuration.
+        if isFastlaneSnapshot,
+           let vendorID = UserDefaults(suiteName: AppConstants.AppGroupID)!.string(forKey: "E2E_VENDOR_IDENTIFIER"),
+           !vendorID.isEmpty {
+            device.identifierForVendor = { vendorID }
+        }
     }
 
     func setup() {
         _ = Current // just to make sure we don't crash for this case
 
+        // Point the HANetworking package's injected environment at the real `Current` services. The
+        // package can't import HACore (cycle), so it reads these through `HANetworkingEnvironment`.
+        HANetworkingEnvironment.current.log = .init(
+            error: { Current.Log.error($0) },
+            warning: { Current.Log.warning($0) },
+            info: { Current.Log.info($0) },
+            verbose: { Current.Log.verbose($0) },
+            debug: { Current.Log.debug($0) }
+        )
+        HANetworkingEnvironment.current.date = { Current.date() }
+        HANetworkingEnvironment.current.isCatalyst = Current.isCatalyst
+        HANetworkingEnvironment.current.isAppExtension = { Current.isAppExtension }
+        HANetworkingEnvironment.current.connectivity = .init(
+            refreshNetworkInformation: { await Current.connectivity.refreshNetworkInformation() },
+            currentNetworkState: { await Current.connectivity.currentNetworkState() },
+            lastKnownNetworkState: { Current.connectivity.lastKnownNetworkState() }
+        )
+        #if !os(watchOS)
+        HANetworkingEnvironment.current.refreshAppDatabase = { server, forceUpdate, showProgress in
+            Current.appDatabaseUpdater.update(server: server, forceUpdate: forceUpdate, showProgress: showProgress)
+        }
+        #endif
+        HANetworkingEnvironment.current.prefs = Current.settingsStore.prefs
+        HANetworkingEnvironment.current.database = { Current.database() }
+        HANetworkingEnvironment.current.bundleID = AppConstants.BundleID
+        HANetworkingEnvironment.current.defaultServerName = ServerInfo.defaultName
+        HANetworkingEnvironment.current.isDebug = Current.appConfiguration == .debug
+        HANetworkingEnvironment.current.handleReauthenticationRequired = { server, statusCode, errorDescription in
+            Current.clientEventStore.addEvent(ClientEvent(
+                text: "Refresh token is invalid, notifying user",
+                type: .networkRequest,
+                payload: ["error": errorDescription]
+            ))
+            Current.modelManager.unsubscribe()
+            Current.api(for: server)?.connection.disconnect()
+            Current.onboardingObservation.needed(.unauthenticated(server.identifier.rawValue, statusCode))
+        }
+
+        // Point the HADesignSystem package's injected environment at the app's localized strings and
+        // constants. Like HANetworking, the package can't import Shared (cycle), so it reads these
+        // through `HADesignSystemEnvironment`.
+        HADesignSystemEnvironment.current.strings = with(.init()) {
+            $0.collapsibleViewCollapse = L10n.Component.CollapsibleView.collapse
+            $0.collapsibleViewExpand = L10n.Component.CollapsibleView.expand
+            $0.privacyLabel = L10n.privacyLabel
+            $0.reportIssueButtonTitle = L10n.Experimental.Badge.ReportIssueButton.title
+            $0.tipPrefix = L10n.Component.Tip.prefix
+            $0.dismissAlert = L10n.Component.Alert.dismiss
+            $0.removeChip = L10n.Component.Chip.remove
+            $0.previousPeriod = L10n.Component.EnergyPeriod.previous
+            $0.nextPeriod = L10n.Component.EnergyPeriod.next
+            $0.compareWithPreviousPeriod = L10n.Component.EnergyPeriod.compare
+            $0.moreInformation = L10n.Component.moreInformation
+            $0.clearValue = L10n.Component.TimeInput.clear
+            $0.never = L10n.Component.AbsoluteTime.never
+            $0.qrCode = L10n.Component.QrCode.label
+            $0.qrCodeFailed = L10n.Component.QrCode.failed
+            $0.retry = L10n.Component.QrScanner.retry
+            $0.enterCodeManually = L10n.Component.QrScanner.manualInput
+            $0.submit = L10n.Component.QrScanner.submit
+            $0.allDay = L10n.Component.Calendar.allDay
+            $0.showMore = L10n.Component.Distribution.showMore
+            $0.showLess = L10n.Component.Distribution.showLess
+            $0.previousTrack = L10n.Component.MediaControl.previous
+            $0.nextTrack = L10n.Component.MediaControl.next
+            $0.play = L10n.Component.MediaControl.play
+            $0.pause = L10n.Component.MediaControl.pause
+            $0.deleteDigit = L10n.Component.AlarmPanel.delete
+            $0.moreSaturation = L10n.Component.ColorPicker.moreSaturation
+            $0.lessSaturation = L10n.Component.ColorPicker.lessSaturation
+            $0.adjustLowerTarget = L10n.Component.CircularSlider.adjustLower
+            $0.adjustUpperTarget = L10n.Component.CircularSlider.adjustUpper
+            $0.decrease = L10n.Component.CircularSlider.decrease
+            $0.increase = L10n.Component.CircularSlider.increase
+            $0.toggle = L10n.Component.StateToggle.toggle
+            $0.turnOn = L10n.Component.StateToggle.turnOn
+            $0.turnOff = L10n.Component.StateToggle.turnOff
+            $0.lock = L10n.Component.Lock.lock
+            $0.unlock = L10n.Component.Lock.unlock
+            $0.openDoor = L10n.Component.Lock.openDoor
+            $0.openDoorConfirm = L10n.Component.Lock.openDoorConfirm
+            $0.openDoorDone = L10n.Component.Lock.openDoorDone
+            $0.shuffle = L10n.Component.MediaControl.shuffle
+            $0.repeatMode = L10n.Component.MediaControl.repeatMode
+            $0.repeatOff = L10n.Component.MediaControl.repeatOff
+            $0.repeatAll = L10n.Component.MediaControl.repeatAll
+            $0.repeatOne = L10n.Component.MediaControl.repeatOne
+            $0.stop = L10n.Component.MediaControl.stop
+            $0.mute = L10n.Component.MediaControl.mute
+            $0.unmute = L10n.Component.MediaControl.unmute
+            $0.volume = L10n.Component.MediaControl.volume
+            $0.volumeDown = L10n.Component.MediaControl.volumeDown
+            $0.volumeUp = L10n.Component.MediaControl.volumeUp
+            $0.trackPosition = L10n.Component.MediaControl.trackPosition
+            $0.timerStart = L10n.Component.Timer.start
+            $0.timerSet = L10n.Component.Timer.setDuration
+            $0.timerPause = L10n.Component.Timer.pause
+            $0.timerCancel = L10n.Component.Timer.cancel
+            $0.timerFinish = L10n.Component.Timer.finish
+            $0.updateInstall = L10n.Component.Update.install
+            $0.updateSkip = L10n.Component.Update.skip
+            $0.updateClearSkipped = L10n.Component.Update.clearSkipped
+            $0.updateReleaseAnnouncement = L10n.Component.Update.releaseAnnouncement
+            $0.coverPositionMode = L10n.Component.Cover.positionMode
+            $0.coverButtonsMode = L10n.Component.Cover.buttonsMode
+            $0.lightBrightness = L10n.Component.Light.brightness
+            $0.lightColor = L10n.Component.Light.color
+            $0.lightColorTemperature = L10n.Component.Light.colorTemperature
+            $0.lightSetWhite = L10n.Component.Light.setWhite
+            $0.sceneActivate = L10n.Component.Scene.activate
+            $0.vacuumCleaning = L10n.Component.Vacuum.cleaning
+            $0.vacuumByArea = L10n.Component.Vacuum.byArea
+        }
+        HADesignSystemEnvironment.current.reportIssueURL = AppConstants.WebURLs.issues
+
         (crashReporter as? CrashReporterImpl)?.setup()
         (servers as? ServerManagerImpl)?.setup()
+        LogRedactionServerObserver.shared.start(observing: servers)
+    }
+
+    /// A fresh environment for one test, meant to be resolved through `withCurrent` so what the test
+    /// assigns to it never reaches the global instance another test may be reading at that moment.
+    ///
+    /// Every member starts from its default implementation, as the global one does before
+    /// `setup()` runs, except the ones wrapping a resource the process can only hold once: those
+    /// are shared with the global environment rather than created again.
+    public static func makeIsolated() -> AppEnvironment {
+        let environment = AppEnvironment()
+        // Background URL session identifiers cannot be reused, so a second WebhookManager would
+        // compete with the first for the same sessions.
+        environment.webhooks = underlyingCurrent.webhooks
+        return environment
     }
 
     /// Crash reporting and related metadata gathering
@@ -95,15 +290,17 @@ public class AppEnvironment {
     /// Provides the Client Event store used for local logging.
     public var clientEventStore: ClientEventStoreProtocol = ClientEventStore()
 
-    /// Provides the Realm used for many data storage tasks.
-    public var realm: () -> Realm = Realm.live
-    /// Provides the Realm given objectTypes to reduce memory usage mostly in extensions.
-    public func realm(objectTypes: [ObjectBase.Type]) -> Realm {
-        Realm.getRealm(objectTypes: objectTypes)
-    }
+    /// Provides the store that records received notifications for the in-app history.
+    public var notificationHistoryStore: NotificationHistoryStoreProtocol = NotificationHistoryStore()
 
     public var database: () -> DatabaseQueue = {
-        .appDatabase
+        // App Intents can run in a background-woken process without a foreground transition,
+        // leaving the DB suspended; resume it here so accesses don't abort mid-shortcut. While
+        // backgrounded the resume is protected by an expiring activity that re-suspends GRDB
+        // before the process freezes, so no access is caught holding the app-group SQLite file
+        // lock (0xdead10cc).
+        AppDatabaseSuspension.shared.resumeForAccess()
+        return .appDatabase
     }
 
     public var watchConfig: () throws -> WatchConfig? = {
@@ -134,6 +331,19 @@ public class AppEnvironment {
         AreasService.shared
     }
 
+    public var entityComponentIcons: () -> EntityComponentIconsProviderProtocol = {
+        EntityComponentIconsService.shared
+    }
+
+    /// The frontend theme captured from the web view, for drawing native screens in the user's colors.
+    public var frontendTheme: () -> FrontendThemeProviderProtocol = {
+        FrontendThemeProvider.shared
+    }
+
+    public var calendarsModel: () -> HACalendarsModelProtocol = {
+        HACalendarsModel.shared
+    }
+
     /// APNs environment string for token reporting. "sandbox" in DEBUG builds, "production" otherwise.
     /// TestFlight uses distribution signing and routes through the production APNs endpoint.
     public var apnsEnvironment: String {
@@ -160,12 +370,19 @@ public class AppEnvironment {
 
     public var panelsUpdater: PanelsUpdaterProtocol = PanelsUpdater.shared
 
-    public var realmFatalPresentation: ((UIViewController) -> Void)?
+    /// Asks iOS for the permissions the given sensors need, at the moment the user switches them on.
+    ///
+    /// Sensors are opt-in, so the toggle is the only place the app learns someone wants one. The app
+    /// points this at `SensorPermissionRequester`; everywhere else, tests included, it does nothing.
+    public var requestSensorPermissions: ([String]) -> Void = { _ in }
 
     public var impactFeedback: ImpactFeedbackGeneratorProtocol = ImpactFeedbackGenerator()
     /// Wrapper around UIApplication for use in shared framework
     public var application: (() -> UIApplication)?
 
+    // TODO: Modernization - `UIScreen.main` is deprecated. Brightness belongs to the screen of the window
+    // asking for it (`view.window?.windowScene?.screen`); thread that screen in from callers that have a
+    // window instead of resolving it here.
     /// Wrapper around UIScreen.main.brightness for testability
     public var screenBrightness: () -> CGFloat = { UIScreen.main.brightness }
     public var setScreenBrightness: (CGFloat) -> Void = { UIScreen.main.brightness = $0 }
@@ -211,11 +428,24 @@ public class AppEnvironment {
         _cachedApis[identifier] = api
     }
 
+    /// Evicts cached API instances so they are rebuilt on next access. Needed when a server's
+    /// connection configuration changes in a way that affects the URLSession delegates created at
+    /// `HomeAssistantAPI` init time — e.g. when an mTLS client certificate is added or removed.
+    public func resetAPICache(for identifiers: [Identifier<Server>]) {
+        cachedApisLock.lock()
+        defer { cachedApisLock.unlock() }
+        for identifier in identifiers {
+            _cachedApis[identifier] = nil
+        }
+    }
+
     public var apis: [HomeAssistantAPI] { servers.all.compactMap(api(for:)) }
 
     private var lastActiveURLForServer = [Identifier<Server>: URL?]()
     public func api(for server: Server) -> HomeAssistantAPI? {
-        guard server.info.connection.activeURL() != nil else {
+        // Evaluated against cached network information: this is only a "has any usable URL" check,
+        // and refreshing here would force every caller to be async.
+        guard server.info.connection.evaluateActiveURL() != nil else {
             return nil
         }
 
@@ -261,12 +491,26 @@ public class AppEnvironment {
         $0.register(provider: ActiveSensor.self)
         $0.register(provider: FrontmostAppSensor.self)
         $0.register(provider: FocusSensor.self)
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        // Focus Filters, and so the name of the running Focus, are an iOS feature.
+        $0.register(provider: FocusNameSensor.self)
+        #endif
         $0.register(provider: LastUpdateSensor.self)
-        $0.register(provider: WatchBatterySensor.self)
         $0.register(provider: AppVersionSensor.self)
         $0.register(provider: LocationPermissionSensor.self)
         $0.register(provider: AudioOutputSensor.self)
         $0.register(provider: BarometerSensor.self)
+        $0.register(provider: KioskModeSensor.self)
+        $0.register(provider: KioskBrightnessSensor.self)
+        $0.register(provider: KioskVolumeSensor.self)
+        $0.register(provider: KioskScreensaverSensor.self)
+        $0.register(provider: CameraMotionSensor.self)
+        $0.register(provider: CameraStreamSensor.self)
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        $0.register(provider: HingeSensor.self)
+        $0.register(provider: DevicePoseSensor.self)
+        $0.register(provider: HealthKitSensor.self)
+        #endif
     }
 
     public var localized = LocalizedManager()
@@ -280,9 +524,15 @@ public class AppEnvironment {
     /// Dispatchque local notifications (From the App to the App, not from Home Assistant)
     public var notificationDispatcher: LocalNotificationDispatcherProtocol = LocalNotificationDispatcher()
 
+    public var forceCloseWarningManager = ForceCloseWarningManager()
+
     #if os(watchOS)
     public var backgroundRefreshScheduler = WatchBackgroundRefreshScheduler()
     #endif
+
+    /// The watch's own `mobile_app` registrations, one per server. Compiled everywhere so the
+    /// reporting built on it stays testable from the iOS unit-test target.
+    public var watchDeviceRegistrations: WatchDeviceRegistrationStore = KeychainWatchDeviceRegistrationStore()
 
     #if targetEnvironment(macCatalyst)
     public var macBridge: MacBridge = {
@@ -303,13 +553,31 @@ public class AppEnvironment {
 
     public lazy var activeState: ActiveStateManager = .init()
 
+    public lazy var motionDetection: MotionDetectionManager = .init()
+
+    public lazy var cameraStreamServer: CameraStreamServer = .init()
+
     public lazy var clientVersion: () -> Version = { AppConstants.clientVersion }
 
     public var onboardingObservation = OnboardingStateObservation()
 
+    public lazy var kiosk = KioskModeManager()
+
+    /// The latest hinge reading on a folding device, fed by the interaction the app attaches
+    /// to its root view.
+    public lazy var hinge = HingeObserver()
+
+    public lazy var appLabs = AppLabsStore()
+
+    /// The current kiosk mode configuration. Always available, defaulting to a disabled
+    /// configuration when nothing has been persisted yet.
+    public var kioskSettings: KioskSettings { kiosk.settings }
+
     public var isPerformingSingleShotLocationQuery = false
 
-    public var backgroundTask: HomeAssistantBackgroundTaskRunner = ProcessInfoBackgroundTaskRunner()
+    public var backgroundTask: HomeAssistantBackgroundTaskRunner = AppEnvironment.processIsRunningTests
+        ? ImmediateBackgroundTaskRunner()
+        : ProcessInfoBackgroundTaskRunner()
 
     /// Use of 'appConfiguration' is preferred, but sometimes Beta builds are done as releases.
     public var isTestFlight = {
@@ -317,9 +585,23 @@ public class AppEnvironment {
         print("⚠️ isTestFlight returns TRUE while debugging")
         return true
         #else
-        return Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
+        return AppEnvironment.isTestFlightReceipt()
         #endif
     }()
+
+    /// On iOS a TestFlight build gets a `sandboxReceipt` file. On Mac Catalyst the receipt is always
+    /// `_MASReceipt/receipt`, so the receipt type inside it (`ProductionSandbox` for TestFlight,
+    /// `Production` for the App Store) is what tells them apart; the payload is signed, not encrypted.
+    static func isTestFlightReceipt() -> Bool {
+        guard let url = Bundle.main.appStoreReceiptURL else { return false }
+        #if targetEnvironment(macCatalyst)
+        guard let receipt = try? Data(contentsOf: url),
+              let marker = "ProductionSandbox".data(using: .utf8) else { return false }
+        return receipt.range(of: marker) != nil
+        #else
+        return url.lastPathComponent == "sandboxReceipt"
+        #endif
+    }
 
     #if os(iOS)
     public var isAppExtension = AppConstants.BundleID != Bundle.main.bundleIdentifier
@@ -363,8 +645,10 @@ public class AppEnvironment {
     }
 
     public var isRunningTests: Bool {
-        NSClassFromString("XCTest") != nil
+        Self.processIsRunningTests
     }
+
+    private static let processIsRunningTests = NSClassFromString("XCTest") != nil
 
     public var isBackgroundRequestsImmediate = {
         #if os(watchOS)
@@ -379,8 +663,6 @@ public class AppEnvironment {
             return .fastlaneSnapshot
         } else if isDebug {
             return .debug
-        } else if (Bundle.main.bundleIdentifier ?? "").lowercased().contains("beta"), isTestFlight {
-            return .beta
         } else {
             return .release
         }
@@ -420,7 +702,7 @@ public class AppEnvironment {
         )
 
         // Create a file log destination
-        let isTestFlight = Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
+        let isTestFlight = AppEnvironment.isTestFlightReceipt()
         let fileDestination = AutoRotatingFileDestination(
             writeToFile: logPath,
             identifier: "advancedLogger.fileDestination",
@@ -440,6 +722,7 @@ public class AppEnvironment {
         fileDestination.showFileName = true
         fileDestination.showLineNumber = true
         fileDestination.showDate = true
+        fileDestination.formatters = LogRedaction.isEnabled ? [LogRedactionFormatter()] : nil
 
         // Process this destination in the background
         fileDestination.logQueue = XCGLogger.logQueue
@@ -496,6 +779,10 @@ public class AppEnvironment {
 
     public var pedometer = Pedometer()
 
+    #if os(iOS) && !targetEnvironment(macCatalyst)
+    public var healthKitService = HealthKitService()
+    #endif
+
     /// Wrapper around CMAltimeter for barometric pressure readings
     public struct Barometer {
         private let underlyingAltimeter = CMAltimeter()
@@ -520,6 +807,10 @@ public class AppEnvironment {
 
     public var barometer = Barometer()
 
+    /// Multiplexes the single altimeter session `Barometer` exposes, so more than one consumer can
+    /// read pressure at a time.
+    public var barometerObserver = BarometerObserver()
+
     public var device = DeviceWrapper()
 
     public var matter = MatterWrapper()
@@ -540,7 +831,9 @@ public class AppEnvironment {
             CLLocationManager.oneShotLocation(timeout: $0.oneShotTimeout(maximum: $1))
         }
 
-        public var permissionStatus: CLAuthorizationStatus {
+        /// `authorizationStatus` performs synchronous XPC to locationd and can block for
+        /// seconds; avoid calling this on the main thread.
+        public var permissionStatus: () -> CLAuthorizationStatus = {
             CLLocationManager().authorizationStatus
         }
     }
@@ -551,6 +844,8 @@ public class AppEnvironment {
 
     public var focusStatus = FocusStatusWrapper()
 
+    public var focusFilter = FocusFilterWrapper()
+
     public var diskCache: DiskCache = DiskCacheImpl()
 
     public var bluetoothPermissionStatus: CBManagerAuthorization {
@@ -559,22 +854,6 @@ public class AppEnvironment {
 
     public var userNotificationCenter: UNUserNotificationCenter {
         UNUserNotificationCenter.current()
-    }
-
-    public var networkInformation: NEHotspotNetwork? {
-        get async {
-            await withCheckedContinuation { continuation in
-                NEHotspotNetwork.fetchCurrent { hotspotNetwork in
-                    continuation.resume(returning: hotspotNetwork)
-                }
-            }
-        }
-    }
-
-    public func networkInformation(completion: @escaping (NEHotspotNetwork?) -> Void) {
-        NEHotspotNetwork.fetchCurrent { hotspotNetwork in
-            completion(hotspotNetwork)
-        }
     }
 
     #if !os(watchOS)

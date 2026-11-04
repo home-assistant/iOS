@@ -2,7 +2,6 @@ import Foundation
 import HAKit
 import Shared
 
-@available(iOS 16.4, *)
 enum CustomWidgetIntentHelper {
     /// Returns the active `HAConnection` for `serverId`, or nil if it can't be
     /// resolved. When `activeURL` is nil, dispatches a local notification so a

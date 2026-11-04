@@ -2,11 +2,45 @@ import CoreTelephony
 import Foundation
 import PromiseKit
 @testable import Shared
-import Version
+import SharedTesting
 import XCTest
 
 #if !targetEnvironment(macCatalyst)
 class ConnectivitySensorTests: XCTestCase {
+    /// The enablement this class resets lives in the app group defaults, which every test process
+    /// on the simulator shares; a suite of its own keeps another process's reset out of this one.
+    private var privateSettings: PrivateSettingsStore!
+
+    /// Enablement is per server, so the device-level observation these cover only starts while
+    /// there is a server to report to.
+    private var previousServers: ServerManager!
+
+    override func setUp() {
+        super.setUp()
+        privateSettings = PrivateSettingsStore()
+
+        previousServers = Current.servers
+        let servers = FakeServerManager()
+        servers.addFake()
+        Current.servers = servers
+        // Stated rather than inherited: the observation only runs while a server wants the sensor,
+        // and what an earlier test left in the shared selection is not this test's premise.
+        SensorEnablementStore.resetForTesting()
+        Current.sensors.setEnabledForAllServers(true, forUniqueIDs: [
+            WebhookSensorId.connectivitySSID.rawValue,
+            WebhookSensorId.connectivityBSID.rawValue,
+            WebhookSensorId.connectivityConnectionType.rawValue,
+        ])
+    }
+
+    override func tearDown() {
+        SensorEnablementStore.resetForTesting()
+        Current.servers = previousServers
+        privateSettings.restore()
+        privateSettings = nil
+        super.tearDown()
+    }
+
     private func setUp(
         ssid: String?,
         bssid: String?,
@@ -18,8 +52,7 @@ class ConnectivitySensorTests: XCTestCase {
         networkAttributes: [String: Any] = [:]
     ) throws -> (ssid: WebhookSensor?, bssid: WebhookSensor?, connection: WebhookSensor?, sims: [WebhookSensor]) {
         Current.connectivity.hasWiFi = { hasWiFi }
-        Current.connectivity.currentWiFiSSID = { ssid }
-        Current.connectivity.currentWiFiBSSID = { bssid }
+        Current.connectivity.currentNetworkState = { NetworkState(ssid: ssid, bssid: bssid) }
         Current.connectivity.simpleNetworkType = { networkType }
         Current.connectivity.cellularNetworkType = { cellularNetworkType ?? networkType }
         Current.connectivity.telephonyCarriers = { cellular }

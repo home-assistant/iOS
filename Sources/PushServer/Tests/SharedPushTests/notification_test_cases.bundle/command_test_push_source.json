@@ -17,6 +17,7 @@
                 "title": "test_push_source",
                 "body": "<test-push-value>"
             },
+            "mutable-content": true,
             "sound": "default"
         }
     }

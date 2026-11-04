@@ -5,7 +5,7 @@ import UIKit
 struct NFCTagView: View {
     let identifier: String
 
-    @State private var showShareSheet = false
+    @State private var shareWrapper: ShareWrapper?
     @State private var showYamlSheet = false
 
     var body: some View {
@@ -16,9 +16,7 @@ struct NFCTagView: View {
         }
         .navigationTitle(L10n.Nfc.Detail.title)
         .navigationBarTitleDisplayMode(.inline)
-        .sheet(isPresented: $showShareSheet) {
-            NFCShareSheet(activityItems: [identifier])
-        }
+        .shareSheet(item: $shareWrapper)
         .sheet(isPresented: $showYamlSheet) {
             YamlCodeView(yaml: yamlExample)
         }
@@ -47,7 +45,7 @@ struct NFCTagView: View {
             }
 
             Button {
-                showShareSheet = true
+                shareWrapper = ShareWrapper(items: [identifier])
             } label: {
                 Label {
                     Text(L10n.Nfc.Detail.share)
@@ -125,22 +123,6 @@ struct NFCTagView: View {
           tag_id: \(identifier)
         """
     }
-}
-
-// MARK: - Activity View Controller (Share Sheet)
-
-struct NFCShareSheet: UIViewControllerRepresentable {
-    let activityItems: [Any]
-    let applicationActivities: [UIActivity]? = nil
-
-    func makeUIViewController(context: Context) -> UIActivityViewController {
-        UIActivityViewController(
-            activityItems: activityItems,
-            applicationActivities: applicationActivities
-        )
-    }
-
-    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
 
 // MARK: - YAML Code View

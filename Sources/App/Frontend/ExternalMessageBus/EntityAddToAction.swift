@@ -44,7 +44,11 @@ extension EntityAddToAction {
 enum EntityAddToActionType: String, Codable {
     case carPlayQuickAccess
     case watchItem
+    case watchComplication
     case customWidget
+    case macToolbarItem
+    case deeplink
+    case nfcTag
 }
 
 // MARK: - Action Implementations
@@ -76,6 +80,26 @@ struct CustomWidgetAction: EntityAddToAction {
 
     func text() -> String {
         L10n.WebView.AddTo.Option.Widget.title
+    }
+}
+
+/// Action to add an entity to the Mac titlebar/toolbar
+struct MacToolbarItemAction: EntityAddToAction {
+    var mdiIcon: String { "mdi:dock-window" }
+    var actionType: String { EntityAddToActionType.macToolbarItem.rawValue }
+
+    func text() -> String {
+        L10n.WebView.AddTo.Option.MacToolbar.title
+    }
+}
+
+/// Action to build a deep link that opens the entity's more info dialog
+struct DeeplinkAction: EntityAddToAction {
+    var mdiIcon: String { "mdi:link-variant" }
+    var actionType: String { EntityAddToActionType.deeplink.rawValue }
+
+    func text() -> String {
+        L10n.WebView.AddTo.Option.Deeplink.title
     }
 }
 
@@ -162,8 +186,16 @@ private struct AnyEntityAddToAction: Codable {
             self.action = try container.decode(CarPlayQuickAccessAction.self, forKey: .data)
         case .watchItem:
             self.action = try container.decode(WatchItemAction.self, forKey: .data)
+        case .watchComplication:
+            self.action = try container.decode(WatchComplicationAction.self, forKey: .data)
         case .customWidget:
             self.action = try container.decode(CustomWidgetAction.self, forKey: .data)
+        case .macToolbarItem:
+            self.action = try container.decode(MacToolbarItemAction.self, forKey: .data)
+        case .deeplink:
+            self.action = try container.decode(DeeplinkAction.self, forKey: .data)
+        case .nfcTag:
+            self.action = try container.decode(NFCTagAction.self, forKey: .data)
         }
     }
 
@@ -187,8 +219,32 @@ private struct AnyEntityAddToAction: Codable {
             } else {
                 throw EntityAddToError.encodingFailed
             }
+        case .watchComplication:
+            if let typed = action as? WatchComplicationAction {
+                try container.encode(typed, forKey: .data)
+            } else {
+                throw EntityAddToError.encodingFailed
+            }
         case .customWidget:
             if let typed = action as? CustomWidgetAction {
+                try container.encode(typed, forKey: .data)
+            } else {
+                throw EntityAddToError.encodingFailed
+            }
+        case .macToolbarItem:
+            if let typed = action as? MacToolbarItemAction {
+                try container.encode(typed, forKey: .data)
+            } else {
+                throw EntityAddToError.encodingFailed
+            }
+        case .deeplink:
+            if let typed = action as? DeeplinkAction {
+                try container.encode(typed, forKey: .data)
+            } else {
+                throw EntityAddToError.encodingFailed
+            }
+        case .nfcTag:
+            if let typed = action as? NFCTagAction {
                 try container.encode(typed, forKey: .data)
             } else {
                 throw EntityAddToError.encodingFailed

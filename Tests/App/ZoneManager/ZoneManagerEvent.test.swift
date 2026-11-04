@@ -1,6 +1,7 @@
 import CoreLocation
 import Foundation
 @testable import HomeAssistant
+@testable import Shared
 import XCTest
 
 class ZoneManagerEventTests: XCTestCase {
@@ -69,5 +70,37 @@ class ZoneManagerEventTests: XCTestCase {
         XCTAssertFalse(ZoneManagerEvent(eventType: .region(beaconRegion, .inside)).shouldOneShotLocation)
         XCTAssertTrue(ZoneManagerEvent(eventType: .region(circularRegion, .inside)).shouldOneShotLocation)
         XCTAssertTrue(ZoneManagerEvent(eventType: .locationChange([])).shouldOneShotLocation)
+    }
+
+    func testIsMultiRegionExit() throws {
+        let zone = AppZone(
+            entityId: "zone.small",
+            serverIdentifier: "server",
+            latitude: circularRegion.center.latitude,
+            longitude: circularRegion.center.longitude,
+            radius: 25
+        )
+        let subregion = try XCTUnwrap(zone.circularRegionsForMonitoring.first)
+        XCTAssertNotEqual(subregion.identifier, zone.identifier)
+
+        XCTAssertTrue(
+            ZoneManagerEvent(eventType: .region(subregion, .outside), associatedZone: zone).isMultiRegionExit
+        )
+        XCTAssertFalse(
+            ZoneManagerEvent(eventType: .region(subregion, .inside), associatedZone: zone).isMultiRegionExit
+        )
+        XCTAssertFalse(ZoneManagerEvent(eventType: .region(subregion, .outside)).isMultiRegionExit)
+        XCTAssertFalse(
+            ZoneManagerEvent(eventType: .region(zone.circularRegion, .outside), associatedZone: zone)
+                .isMultiRegionExit
+        )
+
+        var beaconZone = zone
+        beaconZone.identifier = "beacon"
+        let beacon = CLBeaconRegion(uuid: UUID(), identifier: "beacon@000")
+        XCTAssertFalse(
+            ZoneManagerEvent(eventType: .region(beacon, .outside), associatedZone: beaconZone).isMultiRegionExit
+        )
+        XCTAssertFalse(ZoneManagerEvent(eventType: .locationChange([])).isMultiRegionExit)
     }
 }

@@ -12,6 +12,9 @@ final class WidgetsKindTests: XCTestCase {
         XCTAssertEqual(WidgetsKind.sensors.rawValue, "sensors")
         XCTAssertEqual(WidgetsKind.custom.rawValue, "custom")
         XCTAssertEqual(WidgetsKind.commonlyUsedEntities.rawValue, "commonlyUsedEntities")
+        XCTAssertEqual(WidgetsKind.areas.rawValue, "areas")
+        XCTAssertEqual(WidgetsKind.entities.rawValue, "entities")
+        XCTAssertEqual(WidgetsKind.energy.rawValue, "energy")
 
         // Controls
         XCTAssertEqual(WidgetsKind.controlAutomation.rawValue, "controlAutomation")
@@ -25,14 +28,10 @@ final class WidgetsKindTests: XCTestCase {
         XCTAssertEqual(WidgetsKind.controlButton.rawValue, "controlButton")
         XCTAssertEqual(WidgetsKind.controlOpenEntity.rawValue, "controlOpenEntity")
         XCTAssertEqual(WidgetsKind.controlOpenCamera.rawValue, "controlOpenCamera")
-        XCTAssertEqual(WidgetsKind.controlOpenLock.rawValue, "controlOpenLock")
-        XCTAssertEqual(WidgetsKind.controlOpenCoverEntity.rawValue, "controlOpenCoverEntity")
-        XCTAssertEqual(WidgetsKind.controlOpenInputBoolean.rawValue, "controlOpenInputBoolean")
-        XCTAssertEqual(WidgetsKind.controlOpenLight.rawValue, "controlOpenLight")
-        XCTAssertEqual(WidgetsKind.controlOpenSwitch.rawValue, "controlOpenSwitch")
-        XCTAssertEqual(WidgetsKind.controlOpenSensor.rawValue, "controlOpenSensor")
         XCTAssertEqual(WidgetsKind.controlFan.rawValue, "controlFan")
+        XCTAssertEqual(WidgetsKind.controlOpenHomeAssistant.rawValue, "controlOpenHomeAssistant")
         XCTAssertEqual(WidgetsKind.todoList.rawValue, "todoList")
-        XCTAssertEqual(WidgetsKind.allCases.count, 27)
+        XCTAssertEqual(WidgetsKind.calendar.rawValue, "calendar")
+        XCTAssertEqual(WidgetsKind.allCases.count, 26)
     }
 }

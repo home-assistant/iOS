@@ -1,5 +1,4 @@
 import Foundation
-import MBProgressHUD
 import PromiseKit
 import Shared
 import UIKit
@@ -16,6 +15,123 @@ extension UIWindowSceneDelegate {
             .pendingResolver(from: connectionOptions.userActivities)
 
         pendingResolver(self)
+    }
+}
+
+/// The app-level coordinator for the primary web-view window. Implemented by `HomeAssistantView`'s
+/// coordinator as the web view migrates off `WebViewWindowController`; reached via `SceneManager.appCoordinator`.
+///
+/// Not `@MainActor` — like the `WebViewWindowController` it replaces, it's called from PromiseKit `.done`
+/// closures (which run on the main queue) across non-isolated contexts.
+/// Where a URL-open request originated, used for the confirmation prompt copy.
+enum OpenSource {
+    case notification
+    case deeplink
+
+    func message(with urlString: String) -> String {
+        switch self {
+        case .notification: return L10n.Alerts.OpenUrlFromNotification.message(urlString)
+        case .deeplink: return L10n.Alerts.OpenUrlFromDeepLink.message(urlString)
+        }
+    }
+
+    /// The copy shown above the server picker when the URL arrived without a server to open it on. The URL
+    /// stays out of the sentence so the picker can show it as a pill.
+    func serverSelectPrompt(with urlString: String) -> ServerSelectPrompt {
+        switch self {
+        case .notification:
+            return ServerSelectPrompt(message: L10n.Alerts.OpenUrlFromNotification.selectServer, link: urlString)
+        case .deeplink:
+            return ServerSelectPrompt(message: L10n.Alerts.OpenUrlFromDeepLink.selectServer, link: urlString)
+        }
+    }
+}
+
+protocol AppCoordinator: AnyObject {
+    var presentedViewController: UIViewController? { get }
+    var window: UIWindow? { get }
+    var frontend: (any WebFrontend)? { get }
+    func present(_ viewController: UIViewController, animated: Bool, completion: (() -> Void)?)
+    func show(alert: ServerAlert)
+    func showSettings()
+    func showAssistSettings()
+    func showDownloadManager(_ viewModel: DownloadManagerViewModel)
+    func showOnboardingPermissions(server: Server, steps: [OnboardingPermissionsNavigationViewModel.StepID])
+    @discardableResult func open(server: Server) -> Guarantee<any WebFrontend>
+    /// Activates `server` in response to an explicit user action (server picker, server settings).
+    /// Unlike `open(server:)`, activating the already-active server is not a no-op: the frontend is sent
+    /// back to the Home Assistant root, so re-activating a server always recovers from a stuck screen.
+    func activate(server: Server)
+    /// Asks the user which server an action applies to, using the Settings sheet's compact server picker.
+    /// `zoomsFromStandBy` is only set by the stand-by view's server pill, the one entry point the sheet has
+    /// something to zoom out of; everywhere else the sheet slides up as usual.
+    func selectServer(prompt: ServerSelectPrompt?, zoomsFromStandBy: Bool, completion: @escaping (Server) -> Void)
+    func presentInvitation(url: URL?)
+    func setup()
+    func open(
+        from: OpenSource,
+        server: Server,
+        urlString: String,
+        skipConfirm: Bool,
+        avoidUnnecessaryReload: Bool,
+        isComingFromAppIntent: Bool
+    )
+    func openSelectingServer(
+        from: OpenSource,
+        urlString: String,
+        skipConfirm: Bool,
+        queryParameters: [URLQueryItem]?,
+        isComingFromAppIntent: Bool
+    )
+    /// Clears everything presented over the frontend — SwiftUI sheets and covers as well as UIKit overlays —
+    /// and runs `completion` once the screen is free. Anything that opens the app to launch something goes
+    /// through this, so it is never swallowed by content the user already had open.
+    func dismissPresentedContent(completion: (() -> Void)?)
+}
+
+extension AppCoordinator {
+    func present(_ viewController: UIViewController) {
+        present(viewController, animated: true, completion: nil)
+    }
+
+    /// The picker as every entry point but the stand-by pill wants it: sliding up, not zooming.
+    func selectServer(prompt: ServerSelectPrompt?, completion: @escaping (Server) -> Void) {
+        selectServer(prompt: prompt, zoomsFromStandBy: false, completion: completion)
+    }
+
+    /// Convenience matching the old default arguments (`skipConfirm`/`avoidUnnecessaryReload` = false).
+    func open(from: OpenSource, server: Server, urlString: String, isComingFromAppIntent: Bool) {
+        open(
+            from: from,
+            server: server,
+            urlString: urlString,
+            skipConfirm: false,
+            avoidUnnecessaryReload: false,
+            isComingFromAppIntent: isComingFromAppIntent
+        )
+    }
+
+    /// Convenience with default `avoidUnnecessaryReload` = false.
+    func open(from: OpenSource, server: Server, urlString: String, skipConfirm: Bool, isComingFromAppIntent: Bool) {
+        open(
+            from: from,
+            server: server,
+            urlString: urlString,
+            skipConfirm: skipConfirm,
+            avoidUnnecessaryReload: false,
+            isComingFromAppIntent: isComingFromAppIntent
+        )
+    }
+
+    /// Convenience with default `queryParameters` = nil.
+    func openSelectingServer(from: OpenSource, urlString: String, skipConfirm: Bool, isComingFromAppIntent: Bool) {
+        openSelectingServer(
+            from: from,
+            urlString: urlString,
+            skipConfirm: skipConfirm,
+            queryParameters: nil,
+            isComingFromAppIntent: isComingFromAppIntent
+        )
     }
 }
 
@@ -40,30 +156,72 @@ final class SceneManager {
 
     private var pendingResolvers: [String: PendingResolver] = [:]
 
-    var webViewWindowControllerPromise: Guarantee<WebViewWindowController> {
-        firstly { () -> Guarantee<WebViewSceneDelegate> in
-            scene(for: .init(activity: .webView))
-        }.map { delegate in
-            delegate.windowController!
+    /// The current foreground `WebViewController`, published by `HomeAssistantView` (the SwiftUI web-frontend
+    /// host) as the web view migrates off `WebViewWindowController`. Consumers that only need the web view
+    /// read this instead of `webViewWindowControllerPromise.then(\.webViewControllerPromise)`.
+    private(set) var webViewControllerPromise: Guarantee<WebViewController>
+    /// Dropped once used: the seal holds the promise's box, and the box holds what it was sealed
+    /// with, so keeping the seal keeps the process's first controller for the app's lifetime.
+    private var webViewControllerSeal: (WebViewController) -> Void
+
+    /// Called by `HomeAssistantView` whenever it creates or replaces its `WebViewController`.
+    func setWebViewController(_ controller: WebViewController) {
+        if webViewControllerPromise.isFulfilled {
+            webViewControllerPromise = .value(controller)
+        } else {
+            webViewControllerSeal(controller)
+            webViewControllerSeal = { _ in }
         }
     }
 
-    init() {
-        // swiftlint:disable prohibit_environment_assignment
-        Current.realmFatalPresentation = { [weak self] viewController in
-            guard let self else { return }
+    private var appCoordinatorPromise: Guarantee<AppCoordinator>
+    /// Let go of once used, for the same reason as `webViewControllerSeal`.
+    private var appCoordinatorSeal: (AppCoordinator) -> Void
 
-            let under = UIViewController()
-            under.view.backgroundColor = .black
-            under.modalPresentationStyle = .fullScreen
+    private struct WeakAppCoordinator {
+        weak var value: AppCoordinator?
+    }
 
-            webViewWindowControllerPromise.done { parent in
-                parent.present(under, animated: false, completion: {
-                    under.present(viewController, animated: true, completion: nil)
-                })
-            }
+    /// Every coordinator currently registered, weakly held in registration order. Multi-window (iPad,
+    /// Catalyst) runs one per scene, so this is how a request that started in a particular window finds
+    /// that window's coordinator instead of whichever one happened to register last.
+    private var registeredAppCoordinators: [WeakAppCoordinator] = []
+
+    /// The app-wide coordinator, for requests that arrive without a window behind them (deep links,
+    /// notifications, App Intents). Anything triggered from a window should go through
+    /// `appCoordinator(for:)` so it stays in that window.
+    var appCoordinator: Guarantee<AppCoordinator> { appCoordinatorPromise }
+
+    /// Called by `HomeAssistantView` once its coordinator exists.
+    func registerAppCoordinator(_ coordinator: AppCoordinator) {
+        registeredAppCoordinators.removeAll { $0.value == nil || $0.value === coordinator }
+        registeredAppCoordinators.append(WeakAppCoordinator(value: coordinator))
+
+        if appCoordinatorPromise.isFulfilled {
+            appCoordinatorPromise = .value(coordinator)
+        } else {
+            appCoordinatorSeal(coordinator)
+            appCoordinatorSeal = { _ in }
         }
-        // swiftlint:enable prohibit_environment_assignment
+    }
+
+    /// The coordinator showing `scene`, for requests that started in one window and belong there —
+    /// a tap in that web view, a gesture on it. Falls back to the app-wide coordinator when the scene has
+    /// none of its own (kiosk mode, a window still coming up). Call on the main thread.
+    func appCoordinator(for scene: UIWindowScene?) -> Guarantee<AppCoordinator> {
+        guard let scene else { return appCoordinatorPromise }
+        // Newest registration first, so a scene that came back gets its current coordinator rather than one
+        // left over from the container it replaced.
+        let coordinators = registeredAppCoordinators.reversed().compactMap(\.value)
+        guard let coordinator = coordinators.first(where: { $0.window?.windowScene === scene }) else {
+            return appCoordinatorPromise
+        }
+        return .value(coordinator)
+    }
+
+    init() {
+        (self.webViewControllerPromise, self.webViewControllerSeal) = Guarantee<WebViewController>.pending()
+        (self.appCoordinatorPromise, self.appCoordinatorSeal) = Guarantee<AppCoordinator>.pending()
     }
 
     fileprivate func pendingResolver<T>(from activities: Set<NSUserActivity>) -> (T) -> Void {
@@ -120,6 +278,7 @@ final class SceneManager {
         ) { error in
             Current.Log.error(error)
         }
+        bringAppToFrontIfNeeded()
     }
 
     public func activateAnyScene(for activity: SceneActivity, with userInfo: [AnyHashable: Any]) {
@@ -130,6 +289,13 @@ final class SceneManager {
         ) { error in
             Current.Log.error(error)
         }
+        bringAppToFrontIfNeeded()
+    }
+
+    private func bringAppToFrontIfNeeded() {
+        #if targetEnvironment(macCatalyst)
+        Current.macBridge.activateApp()
+        #endif
     }
 
     public func scene<DelegateType: UIWindowSceneDelegate>(
@@ -220,7 +386,7 @@ final class SceneManager {
         onto window: Promise<UIWindow>
     ) {
         window.done { window in
-            let hud = MBProgressHUD.showAdded(to: window, animated: true)
+            let hud = ProgressHUD.showAdded(to: window, animated: true)
             hud.mode = .customView
             hud.backgroundView.style = .blur
             hud.customView = with(IconImageView(frame: .init(x: 0, y: 0, width: 64, height: 64))) {

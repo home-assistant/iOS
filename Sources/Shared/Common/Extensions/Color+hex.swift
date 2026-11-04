@@ -1,4 +1,5 @@
 import Foundation
+import HADesignSystem
 import SwiftUI
 
 public extension Color {

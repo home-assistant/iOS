@@ -116,7 +116,7 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
         }
 
         var needsCategory = false
-        var needsMutableContent = false
+        var needsMutableContent = true
 
         var payload: [String: Any] = [
             "aps": [
@@ -136,6 +136,20 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
             needsCategory = true
             needsMutableContent = true
             payload["entity_id"] = entityId
+        }
+
+        // Pass kiosk command values (kiosk_set_brightness / kiosk_set_volume /
+        // kiosk_set_screensaver_mode) through to the client.
+        if let level = data["level"] {
+            payload["level"] = level
+        }
+
+        if let volume = data["volume"] {
+            payload["volume"] = volume
+        }
+
+        if let mode = data["mode"] {
+            payload["mode"] = mode
         }
 
         if let actionData = data["action_data"] {
@@ -169,6 +183,16 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
         addAttachment(key: "video", contentType: "mpeg4")
         addAttachment(key: "image", contentType: "jpeg")
         addAttachment(key: "audio", contentType: "waveformaudio")
+
+        for key in NotificationPayloadKey.notificationDecorationKeys {
+            if let value = data[key.rawValue] {
+                payload[key.rawValue] = value
+            }
+        }
+        if payload[NotificationPayloadKey.iconURL.rawValue] != nil ||
+            payload[NotificationPayloadKey.notificationIcon.rawValue] != nil {
+            needsMutableContent = true
+        }
 
         payload["url"] = data["url"]
         payload["shortcut"] = data["shortcut"]
@@ -267,6 +291,20 @@ enum LegacyNotificationCommandType: String {
     case updateWidgets = "update_widgets"
     case showCamera = "show_camera"
     case hideCamera = "hide_camera"
+}
+
+public enum NotificationPayloadKey: String, CaseIterable {
+    case iconURL = "icon_url"
+    case notificationIcon = "notification_icon"
+    case notificationIconColor = "notification_icon_color"
+    case color
+
+    public static let notificationDecorationKeys: [Self] = [
+        .iconURL,
+        .notificationIcon,
+        .notificationIconColor,
+        .color,
+    ]
 }
 
 private extension Dictionary where Value == Any {

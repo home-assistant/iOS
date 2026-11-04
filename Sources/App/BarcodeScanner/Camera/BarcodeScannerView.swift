@@ -144,6 +144,8 @@ struct BarcodeScannerView: View {
 }
 
 final class BarcodeScannerHostingController: UIHostingController<BarcodeScannerView> {
+    // TODO: Modernization - Consider adopting `prefersInterfaceOrientationLocked` (iOS 26+)
+    // as the modern replacement for orientation locking via `supportedInterfaceOrientations`.
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         [.portrait]
     }

@@ -59,6 +59,28 @@ struct StatePrecisionTests {
         #expect(result == "-7,418")
     }
 
+    @Test("Given a unit-converted state with float noise when adjusted then rounds like the frontend")
+    func floatNoiseRoundsToDisplayPrecision() {
+        let result = StatePrecision.adjustPrecision(
+            stateValue: "78.99999999999999",
+            decimalPlaces: 1,
+            locale: Locale(identifier: "en_US")
+        )
+
+        #expect(result == "79.0")
+    }
+
+    @Test("Given a non-numeric state when adjusted then passes through unchanged")
+    func nonNumericStatePassesThrough() {
+        let result = StatePrecision.adjustPrecision(
+            stateValue: "unavailable",
+            decimalPlaces: 1,
+            locale: Locale(identifier: "en_US")
+        )
+
+        #expect(result == "unavailable")
+    }
+
     @Test("Given comma decimal state value in locale when adjusted then keeps locale decimals without grouping")
     func localizedDecimalValue() {
         let result = StatePrecision.adjustPrecision(

@@ -1,4 +1,5 @@
 import HAKit
+import HAKit_Mocks
 @testable import HomeAssistant
 import PromiseKit
 @testable import Shared
@@ -8,7 +9,7 @@ class OnboardingAuthStepConfigTests: XCTestCase {
     private var step: OnboardingAuthStepConfig!
     private var api: FakeHomeAssistantAPI!
     private var connection: HAMockConnection!
-    private var sender: UIViewController!
+    private var presenter: OnboardingAuthPresenter!
 
     override func setUp() {
         super.setUp()
@@ -16,9 +17,22 @@ class OnboardingAuthStepConfigTests: XCTestCase {
         connection = HAMockConnection()
         api = FakeHomeAssistantAPI(server: .fake())
         api.connection = connection
-        sender = UIViewController()
+        presenter = OnboardingAuthPresenter()
 
-        step = OnboardingAuthStepConfig(api: api, sender: sender)
+        step = OnboardingAuthStepConfig(api: api, presenter: presenter)
+    }
+
+    override func tearDown() {
+        // XCTest keeps this test case alive for the whole run, and an API left alive stays registered
+        // with the app's sensor container, which every later sensor signal fans out to. A request the
+        // test never answers would keep it alive through the step's promise chain.
+        connection?.pendingRequests.removeAll()
+        connection?.pendingSubscriptions.removeAll()
+        step = nil
+        api = nil
+        connection = nil
+        presenter = nil
+        super.tearDown()
     }
 
     func testSupportedPoints() {
@@ -31,6 +45,30 @@ class OnboardingAuthStepConfigTests: XCTestCase {
         XCTAssertFalse(result.isResolved)
         api.getConfigResolver?.fulfill(())
         XCTAssertNoThrow(try hang(result))
+    }
+
+    func testPerformSendsThroughTheSignedInURL() {
+        _ = step.perform(point: .afterRegister)
+
+        XCTAssertEqual(api.getConfigOverrideURL, URL(string: "http://homeassistant.local:8123"))
+    }
+
+    func testSignedInURLPrefersTheInternalURL() {
+        var connection = ServerInfo.fake().connection
+        connection.set(address: URL(string: "http://192.168.1.10:8123/"), for: .internal)
+        connection.set(address: URL(string: "https://example.com"), for: .external)
+        connection.cloudhookURL = URL(string: "https://hooks.nabu.casa/cloudhook-id")
+        connection.set(address: URL(string: "https://ui.nabu.casa"), for: .remoteUI)
+
+        XCTAssertEqual(OnboardingAuthStepConfig.signedInURL(of: connection), URL(string: "http://192.168.1.10:8123"))
+    }
+
+    func testSignedInURLFallsBackToTheExternalURL() {
+        var connection = ServerInfo.fake().connection
+        connection.set(address: nil, for: .internal)
+        connection.set(address: URL(string: "https://example.com"), for: .external)
+
+        XCTAssertEqual(OnboardingAuthStepConfig.signedInURL(of: connection), URL(string: "https://example.com"))
     }
 
     func testPerformFailure() {
@@ -50,10 +88,12 @@ private enum TestError: Error {
 
 private class FakeHomeAssistantAPI: HomeAssistantAPI {
     var getConfigResolver: Resolver<Void>?
+    var getConfigOverrideURL: URL?
 
-    override func getConfig() -> Promise<Void> {
+    override func getConfig(overrideURL: URL? = nil) -> Promise<Void> {
         let (promise, resolver) = Promise<Void>.pending()
         getConfigResolver = resolver
+        getConfigOverrideURL = overrideURL
         return promise
     }
 }

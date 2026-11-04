@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1330"
+   LastUpgradeVersion = "2700"
    version = "1.8">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -48,7 +48,7 @@
       <Testables>
          <TestableReference
             skipped = "NO"
-            parallelizable = "NO">
+            parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B657A8FB1CA646EB00121384"
@@ -59,13 +59,24 @@
          </TestableReference>
          <TestableReference
             skipped = "NO"
-            parallelizable = "NO">
+            parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "D03D894120E0BC1800D4F28D"
                BuildableName = "HomeAssistant-Tests-Shared.xctest"
                BlueprintName = "Tests-Shared"
                ReferencedContainer = "container:HomeAssistant.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "HAAPITests"
+               BuildableName = "HAAPITests"
+               BlueprintName = "HAAPITests"
+               ReferencedContainer = "container:Sources/HAAPI">
             </BuildableReference>
          </TestableReference>
       </Testables>

@@ -1,3 +1,4 @@
+#if !targetEnvironment(macCatalyst)
 import CoreNFC
 import Foundation
 import PromiseKit
@@ -27,7 +28,7 @@ class NFCWriter: NSObject, NFCNDEFReaderSessionDelegate {
         }
     }
 
-    init(requiredPayload: [NFCNDEFPayload], optionalPayload: [NFCNDEFPayload]) {
+    init(requiredPayload: [NFCNDEFPayload], optionalPayload: [NFCNDEFPayload], alertMessage: String) {
         self.requiredMessage = NFCNDEFMessage(records: requiredPayload)
         self.optionalMessage = NFCNDEFMessage(records: requiredPayload + optionalPayload)
         (self.promise, self.seal) = Promise<NFCNDEFMessage>.pending()
@@ -38,7 +39,7 @@ class NFCWriter: NSObject, NFCNDEFReaderSessionDelegate {
             queue: nil,
             invalidateAfterFirstRead: false
         )
-        readerSession.alertMessage = L10n.Nfc.Write.startMessage(Current.device.inspecificModel())
+        readerSession.alertMessage = alertMessage
         readerSession.begin()
     }
 
@@ -53,7 +54,7 @@ class NFCWriter: NSObject, NFCNDEFReaderSessionDelegate {
         // when you provide `reader(_:didDetect:)`.
     }
 
-    private static func message(
+    static func message(
         for capacity: Int,
         required: NFCNDEFMessage,
         optional: NFCNDEFMessage
@@ -125,3 +126,4 @@ class NFCWriter: NSObject, NFCNDEFReaderSessionDelegate {
         }
     }
 }
+#endif

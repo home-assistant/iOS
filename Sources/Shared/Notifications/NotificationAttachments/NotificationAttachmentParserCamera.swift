@@ -1,6 +1,6 @@
-import CoreServices
 import Foundation
 import PromiseKit
+import UniformTypeIdentifiers
 import UserNotifications
 
 final class NotificationAttachmentParserCamera: NotificationAttachmentParser {
@@ -15,6 +15,11 @@ final class NotificationAttachmentParserCamera: NotificationAttachmentParser {
     }
 
     func attachmentInfo(from content: UNNotificationContent) -> Guarantee<NotificationAttachmentParserResult> {
+        // Kiosk commands are never shown, and waiting on a snapshot would let a later command overtake them.
+        guard !Self.isKioskCommand(content) else {
+            return .value(.missing)
+        }
+
         guard let entityId = content.userInfo["entity_id"] as? String, entityId.hasPrefix("camera.") else {
             return .value(.missing)
         }
@@ -29,9 +34,13 @@ final class NotificationAttachmentParserCamera: NotificationAttachmentParser {
         return .value(.fulfilled(.init(
             url: proxyURL,
             needsAuth: true,
-            typeHint: kUTTypeJPEG,
+            typeHint: UTType.jpeg.identifier as CFString,
             hideThumbnail: hideThumbnail,
             lazy: lazy
         )))
+    }
+
+    private static func isKioskCommand(_ content: UNNotificationContent) -> Bool {
+        content.body.trimmingCharacters(in: .whitespacesAndNewlines).lowercased().hasPrefix("kiosk_")
     }
 }

@@ -52,7 +52,7 @@ struct AssistPipelinePicker: View {
 
                     ForEach(assistConfigs, id: \.serverId) { config in
                         Section(serverName(serverId: config.serverId)) {
-                            ForEach(config.pipelines.filter({ pipeline in
+                            ForEach(pipelines(for: config).filter({ pipeline in
                                 if searchTerm.count > 2 {
                                     return pipeline.name.lowercased().contains(searchTerm.lowercased())
                                 } else {
@@ -98,10 +98,15 @@ struct AssistPipelinePicker: View {
         }
     }
 
+    private func pipelines(for config: AssistPipelines) -> [Pipeline] {
+        guard !config.pipelines.isEmpty else { return [] }
+        return [.init(id: "", name: L10n.AppIntents.Assist.PreferredPipeline.title)] + config.pipelines
+    }
+
     private func nameForSelectedPipeline() -> String? {
-        guard let selectedServerId, let selectedPipelineId else { return nil }
-        return assistConfigs.first(where: { $0.serverId == selectedServerId })?.pipelines
-            .first(where: { $0.id == selectedPipelineId })?.name
+        guard let selectedServerId, let selectedPipelineId,
+              let config = assistConfigs.first(where: { $0.serverId == selectedServerId }) else { return nil }
+        return pipelines(for: config).first(where: { $0.id == selectedPipelineId })?.name
     }
 
     private func serverName(serverId: String) -> String {

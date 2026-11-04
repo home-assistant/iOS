@@ -24,9 +24,16 @@ struct ControlCover: ControlWidget {
                 intent.toggle = false
                 return intent
             }(), label: {
+                // swiftlint:disable:next sf_safe_symbol
                 Label(template.name, systemImage: template.icon.id)
             }, valueLabel: { isOn in
-                Label(isOn ? L10n.openLabel : L10n.closeLabel, systemImage: template.icon.id)
+                // swiftlint:disable:next sf_safe_symbol
+                Label(
+                    isOn
+                        ? CoreStrings.componentCoverEntityComponentStateOpen
+                        : CoreStrings.componentCoverEntityComponentStateClosed,
+                    systemImage: template.icon.id
+                )
             })
             .tint(Color.haPrimary)
         }

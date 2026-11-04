@@ -1,0 +1,43 @@
+import Foundation
+import os
+import UserNotifications
+
+/// Posts local notifications tracing the widget's own complication self fetch while the developer
+/// option (watch Settings → Troubleshooting → Developer) is enabled. The widget extension has no UI
+/// of its own, so notifications are the only way to observe when WidgetKit actually runs a refresh
+/// and whether the fetch succeeded or why it failed. Off by default; best-effort — if the system
+/// declines to deliver from the extension, the refresh itself is unaffected.
+enum WatchWidgetRefreshNotifier {
+    // Unlocalized on purpose: the widget target carries no strings tables (see the plain-text
+    // constants in `WatchWidgetConstants`), and this developer-only tracing never shows for
+    // regular users.
+    static func notifyStarted(names: [String]) {
+        post(
+            title: "Widget reload started",
+            body: names.isEmpty
+                ? "Self fetch: no complications configured"
+                : "Self fetch: reloading \(names.count) — \(names.joined(separator: ", "))"
+        )
+    }
+
+    static func notifyFinished(_ summary: String) {
+        post(title: "Widget reload finished", body: summary)
+    }
+
+    private static func post(title: String, body: String) {
+        guard UserDefaults(suiteName: WatchWidgetConstants.appGroupID)?
+            .bool(forKey: WatchWidgetConstants.refreshNotificationsKey) == true else { return }
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.body = body
+        UNUserNotificationCenter.current().add(
+            UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+        ) { error in
+            // Never affects the refresh itself; the log explains a silent toggle (e.g. notifications
+            // not authorized, or the system refusing delivery from the widget extension).
+            if let error {
+                Logger().error("Failed to post widget refresh debug notification: \(error.localizedDescription)")
+            }
+        }
+    }
+}

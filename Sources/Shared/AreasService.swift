@@ -3,22 +3,34 @@ import HAKit
 
 public protocol AreasServiceProtocol {
     var areas: [String: [HAAreasRegistryResponse]] { get }
+    var floors: [String: [HAFloorRegistryResponse]] { get }
     func fetchAreasAndItsEntities(for server: Server) async -> [String: Set<String>]
     func area(for areaId: String, serverId: String) -> HAAreasRegistryResponse?
+    func floor(for floorId: String, serverId: String) -> HAFloorRegistryResponse?
 }
 
 final class AreasService: AreasServiceProtocol {
     static var shared: AreasServiceProtocol = AreasService()
 
     private var request: HACancellable?
+    private var floorsRequest: HACancellable?
     /// [ServerId: [HAAreasRegistryResponse]]
     var areas: [String: [HAAreasRegistryResponse]] = [:]
+    /// [ServerId: [HAFloorRegistryResponse]]
+    var floors: [String: [HAFloorRegistryResponse]] = [:]
 
     func area(for areaId: String, serverId: String) -> HAAreasRegistryResponse? {
         guard let areasForServer = areas[serverId] else {
             return nil
         }
         return areasForServer.first(where: { $0.areaId == areaId })
+    }
+
+    func floor(for floorId: String, serverId: String) -> HAFloorRegistryResponse? {
+        guard let floorsForServer = floors[serverId] else {
+            return nil
+        }
+        return floorsForServer.first(where: { $0.floorId == floorId })
     }
 
     func fetchAreasAndItsEntities(for server: Server) async -> [String: Set<String>] {
@@ -43,6 +55,13 @@ final class AreasService: AreasServiceProtocol {
             )
         }
         self.areas[server.identifier.rawValue] = areas
+        // Only fetch the floor registry when at least one area references a floor — otherwise the
+        // floor names would never be used and the request is a wasted round-trip.
+        if areas.contains(where: { $0.floorId != nil }) {
+            await fetchFloors(for: server, connection: connection)
+        } else {
+            floors[server.identifier.rawValue] = []
+        }
         if areas.isEmpty {
             Current.Log.verbose("No areas found on the server.")
             return [:]
@@ -50,7 +69,7 @@ final class AreasService: AreasServiceProtocol {
             // Read entity and device registries from database instead of making API calls
             let entitiesForAreas = fetchEntitiesFromDatabase(serverId: server.identifier.rawValue)
             let deviceForAreas = fetchDevicesFromDatabase(serverId: server.identifier.rawValue)
-            let allEntitiesPerArea = getAllEntitiesFromArea(
+            let allEntitiesPerArea = Self.getAllEntitiesFromArea(
                 devicesAndAreas: deviceForAreas,
                 entitiesAndAreas: entitiesForAreas
             )
@@ -59,9 +78,28 @@ final class AreasService: AreasServiceProtocol {
         }
     }
 
-    private func fetchEntitiesFromDatabase(serverId: String) -> [AppEntityRegistry] {
+    private func fetchFloors(for server: Server, connection: HAConnection) async {
+        floorsRequest?.cancel()
+        let floors = await withCheckedContinuation { continuation in
+            floorsRequest = connection.send(
+                HATypedRequest<[HAFloorRegistryResponse]>.configFloorRegistry(),
+                completion: { result in
+                    switch result {
+                    case let .success(data):
+                        continuation.resume(returning: data)
+                    case let .failure(error):
+                        Current.Log.error(userInfo: ["Failed to retrieve floors": error.localizedDescription])
+                        continuation.resume(returning: [])
+                    }
+                }
+            )
+        }
+        self.floors[server.identifier.rawValue] = floors
+    }
+
+    private func fetchEntitiesFromDatabase(serverId: String) -> [EntityRegistryListForDisplay.Entity] {
         do {
-            return try AppEntityRegistry.config(serverId: serverId)
+            return try EntityRegistryListForDisplay.Entity.config(serverId: serverId)
         } catch {
             Current.Log.error("Failed to fetch entities from database: \(error.localizedDescription)")
             return []
@@ -77,18 +115,24 @@ final class AreasService: AreasServiceProtocol {
         }
     }
 
-    private func getAllEntitiesFromArea(
+    /// Maps each area to the set of entities it contains, resolving both directly-assigned
+    /// entities and those inherited from their device's area.
+    static func getAllEntitiesFromArea(
         devicesAndAreas: [AppDeviceRegistry],
-        entitiesAndAreas: [AppEntityRegistry]
+        entitiesAndAreas: [EntityRegistryListForDisplay.Entity]
     ) -> [String: Set<String>] {
         /// area_id : Set<device_id>
         var areasAndDevicesDict: [String: Set<String>] = [:]
         /// device_id : area_id (reverse lookup for O(1) access)
         var deviceToAreaMap: [String: String] = [:]
+        let devicesById = Dictionary(
+            devicesAndAreas.map { ($0.deviceId, $0) },
+            uniquingKeysWith: { first, _ in first }
+        )
 
         // Build area->devices mapping and device->area reverse lookup
         for device in devicesAndAreas {
-            if let areaId = device.areaId {
+            if let areaId = device.effectiveAreaId(in: devicesById) {
                 areasAndDevicesDict[areaId, default: []].insert(device.deviceId)
                 deviceToAreaMap[device.deviceId] = areaId
             }
@@ -101,11 +145,12 @@ final class AreasService: AreasServiceProtocol {
 
         // Single pass through entities: add to areas and build device->entities mapping
         for entity in entitiesAndAreas {
-            guard let entityId = entity.entityId else { continue }
+            let entityId = entity.entityId
 
-            // Add entity directly to its area
+            // An entity's own area overrides its device's, so it never inherits as well
             if let areaId = entity.areaId {
                 areasAndEntitiesDict[areaId, default: []].insert(entityId)
+                continue
             }
 
             // Build device->entities mapping for later
@@ -128,9 +173,9 @@ final class AreasService: AreasServiceProtocol {
     /// For testing purposes only
     public func testGetAllEntitiesFromArea(
         devicesAndAreas: [AppDeviceRegistry],
-        entitiesAndAreas: [AppEntityRegistry]
+        entitiesAndAreas: [EntityRegistryListForDisplay.Entity]
     ) -> [String: Set<String>] {
-        getAllEntitiesFromArea(devicesAndAreas: devicesAndAreas, entitiesAndAreas: entitiesAndAreas)
+        Self.getAllEntitiesFromArea(devicesAndAreas: devicesAndAreas, entitiesAndAreas: entitiesAndAreas)
     }
     #endif
 }

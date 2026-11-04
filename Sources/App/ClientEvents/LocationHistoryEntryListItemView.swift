@@ -21,9 +21,9 @@ struct LocationHistoryEntryListItemView: View {
             .edgesIgnoringSafeArea([.top, .bottom])
         } label: {
             VStack(alignment: .leading) {
-                Text(dateFormatter.string(from: entry.CreatedAt))
+                Text(dateFormatter.string(from: entry.createdAt))
                     .foregroundStyle(.primary)
-                if let trigger = entry.Trigger {
+                if let trigger = entry.trigger {
                     Text(trigger)
                         .foregroundStyle(.secondary)
                 }

@@ -5,43 +5,32 @@ import SFSafeSymbols
 import Shared
 
 @available(iOS 18.0, *)
-struct IntentLightEntity: AppEntity {
+struct IntentLightEntity: AppEntity, EntityContextRepresentable {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Light")
 
     static let defaultQuery = IntentLightAppEntityQuery()
 
     // UniqueID: serverId-entityId
     var id: String
+    @Property(title: .init("app_intents.entity.property.entity_id", defaultValue: "Entity ID"))
     var entityId: String
     var serverId: String
+    @Property(title: .init("app_intents.entity.property.area", defaultValue: "Area"))
     var areaName: String?
+    @Property(title: .init("app_intents.entity.property.device", defaultValue: "Device"))
     var deviceName: String?
+    var parentDeviceName: String?
+    var contextReach: EntityContextReach = .device
+    @Property(title: .init("app_intents.entity.property.floor", defaultValue: "Floor"))
+    var floorName: String?
+    @Property(title: .init("app_intents.entity.property.name", defaultValue: "Name"))
     var displayString: String
     var iconName: String
     var displayRepresentation: DisplayRepresentation {
         DisplayRepresentation(
             title: "\(displayString)",
-            subtitle: .init(stringLiteral: subtitle)
+            subtitle: contextSubtitle.map { LocalizedStringResource(stringLiteral: $0) }
         )
-    }
-
-    private var subtitle: String {
-        var subtitle = ""
-        if let areaName {
-            subtitle += areaName
-        }
-
-        if let deviceName,
-           deviceName.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() != displayString.lowercased()
-           .trimmingCharacters(in: .whitespacesAndNewlines) {
-            if subtitle.isEmpty {
-                subtitle += deviceName
-            } else {
-                subtitle += " → \(deviceName)"
-            }
-        }
-
-        return subtitle
     }
 
     init(
@@ -50,41 +39,58 @@ struct IntentLightEntity: AppEntity {
         serverId: String,
         areaName: String? = nil,
         deviceName: String? = nil,
+        parentDeviceName: String? = nil,
+        contextReach: EntityContextReach = .device,
+        floorName: String? = nil,
         displayString: String,
         iconName: String
     ) {
         self.id = id
-        self.entityId = entityId
         self.serverId = serverId
+        self.iconName = iconName
+        self.entityId = entityId
         self.areaName = areaName
         self.deviceName = deviceName
+        self.parentDeviceName = parentDeviceName
+        self.contextReach = contextReach
+        self.floorName = floorName
         self.displayString = displayString
-        self.iconName = iconName
     }
 }
 
 @available(iOS 18.0, *)
 struct IntentLightAppEntityQuery: EntityQuery, EntityStringQuery {
+    #if WIDGET_EXTENSION
+    @IntentParameterDependency<ControlLightsConfiguration>(\.$server)
+    var config
+    #endif
+
     func entities(for identifiers: [String]) async throws -> [IntentLightEntity] {
         getLightEntities().flatMap(\.1).filter { identifiers.contains($0.id) }
     }
 
     func entities(matching string: String) async throws -> IntentItemCollection<IntentLightEntity> {
-        let lightsPerServer = getLightEntities(matching: string)
-
-        return .init(sections: lightsPerServer.map { (key: Server, value: [IntentLightEntity]) in
-            .init(
-                .init(stringLiteral: key.info.name),
-                items: value
-            )
-        })
+        collection(for: getLightEntities(matching: string))
     }
 
     func suggestedEntities() async throws -> IntentItemCollection<IntentLightEntity> {
-        let lightsPerServer = getLightEntities()
+        collection(for: getLightEntities())
+    }
 
-        return .init(sections: lightsPerServer.map { (key: Server, value: [IntentLightEntity]) in
-            .init(.init(stringLiteral: key.info.name), items: value)
+    /// Scopes the list to the server picked in the configuration (flat list). When no server is
+    /// selected (e.g. a widget configured before this option existed), falls back to grouping
+    /// every server's entities into sections.
+    private func collection(
+        for entitiesPerServer: [(Server, [IntentLightEntity])]
+    ) -> IntentItemCollection<IntentLightEntity> {
+        #if WIDGET_EXTENSION
+        if let server = config?.server {
+            let items = entitiesPerServer.first { $0.0.identifier.rawValue == server.id }?.1 ?? []
+            return .init(items: items)
+        }
+        #endif
+        return .init(sections: entitiesPerServer.map { server, items in
+            .init(.init(stringLiteral: server.info.name), items: items)
         })
     }
 
@@ -93,15 +99,19 @@ struct IntentLightAppEntityQuery: EntityQuery, EntityStringQuery {
         let entities = ControlEntityProvider(domains: [.light]).getEntities(matching: string)
 
         for (server, values) in entities {
-            let deviceMap = values.devicesMap(for: server.identifier.rawValue)
+            let deviceContexts = values.deviceContexts(for: server.identifier.rawValue)
             let areasMap = values.areasMap(for: server.identifier.rawValue)
+            let floorMap = values.floorNamesMap(for: server.identifier.rawValue)
             lightEntities.append((server, values.map({ entity in
                 IntentLightEntity(
                     id: entity.id,
                     entityId: entity.entityId,
                     serverId: entity.serverId,
                     areaName: areasMap[entity.entityId]?.name,
-                    deviceName: deviceMap[entity.entityId]?.name,
+                    deviceName: deviceContexts[entity.entityId]?.deviceName,
+                    parentDeviceName: deviceContexts[entity.entityId]?.parentDeviceName,
+                    contextReach: deviceContexts[entity.entityId]?.reach ?? .device,
+                    floorName: floorMap[entity.entityId],
                     displayString: entity.name,
                     iconName: entity.icon ?? SFSymbol.lightbulbFill.rawValue
                 )

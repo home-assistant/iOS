@@ -33,7 +33,7 @@ final class EntityAddToHandler {
                 // CarPlay is available on iPhone only (not iPad) for supported domains
                 #if !targetEnvironment(macCatalyst)
                 if !Current.isCatalyst, UIDevice.current.userInterfaceIdiom == .phone {
-                    let isCarPlaySupported = domain.map { CarPlaySupportedDomains.all.contains($0) } ?? false
+                    let isCarPlaySupported = domain.map { Domain.carPlaySupported.contains($0) } ?? false
                     if isCarPlaySupported {
                         actions.append(CarPlayQuickAccessAction())
                     }
@@ -43,16 +43,34 @@ final class EntityAddToHandler {
                 // Watch is available on iPhone for supported domains
                 #if os(iOS)
                 if !Current.isCatalyst {
-                    let isWatchSupported = domain.map { WatchSupportedDomains.all.contains($0) } ?? false
+                    let isWatchSupported = domain.map { Domain.watchAddable.contains($0) } ?? false
                     if isWatchSupported {
                         actions.append(WatchItemAction())
+                    }
+                    // The complication builder renders any entity's state, so no domain check here;
+                    // only a phone pairs with a watch, so an iPad is never offered one.
+                    if UIDevice.current.userInterfaceIdiom == .phone {
+                        actions.append(WatchComplicationAction())
                     }
                 }
                 #endif
 
                 // Widgets are available on all platforms
-                if let domain, HAAppUsedContent.domains.contains(domain) {
-                    actions.append(CustomWidgetAction())
+                actions.append(CustomWidgetAction())
+
+                // Mac titlebar/toolbar is available on Mac Catalyst for any entity
+                if Current.isCatalyst, domain != nil {
+                    actions.append(MacToolbarItemAction())
+                }
+
+                if domain != nil {
+                    actions.append(DeeplinkAction())
+
+                    // Writing the deep link onto a tag needs NFC hardware, which Catalyst and the
+                    // older devices never have.
+                    if Current.tags.isNFCAvailable {
+                        actions.append(NFCTagAction())
+                    }
                 }
 
                 seal.fulfill(actions)
@@ -92,6 +110,10 @@ final class EntityAddToHandler {
                     addToWatchItems(entityId: entityId, webViewController: webViewController)
                     seal.fulfill(())
 
+                case .watchComplication:
+                    openComplicationBuilder(entityId: entityId, webViewController: webViewController)
+                    seal.fulfill(())
+
                 case .customWidget:
                     openWidgetBuilder(
                         actionType: actionType,
@@ -99,6 +121,21 @@ final class EntityAddToHandler {
                         webViewController: webViewController
                     )
                     seal.fulfill(())
+
+                case .macToolbarItem:
+                    addToMacToolbar(entityId: entityId, webViewController: webViewController)
+                    seal.fulfill(())
+
+                case .deeplink:
+                    openDeeplink(entityId: entityId, webViewController: webViewController)
+                    seal.fulfill(())
+
+                case .nfcTag:
+                    writeDeeplinkToNFCTag(entityId: entityId).done {
+                        seal.fulfill(())
+                    }.catch { error in
+                        seal.reject(error)
+                    }
 
                 case .none:
                     seal.reject(EntityAddToError.unknownActionType)
@@ -117,7 +154,7 @@ final class EntityAddToHandler {
             serverId: webViewController.server.identifier.rawValue,
             type: .entity
         ))
-        let carPlaySettingsView = CarPlayConfigurationView(viewModel: viewModel)
+        let carPlaySettingsView = CarPlayConfigurationView(needsNavigationStack: true, viewModel: viewModel)
         webViewController.presentOverlayController(
             controller: carPlaySettingsView.embeddedInHostingController(),
             animated: true
@@ -132,11 +169,88 @@ final class EntityAddToHandler {
             serverId: webViewController.server.identifier.rawValue,
             type: .entity
         ))
-        let watchSettingsView = WatchConfigurationView(needsNavigationController: true, viewModel: viewModel)
-            .preferredColorScheme(.dark)
-        let viewController = watchSettingsView.embeddedInHostingController()
-        viewController.overrideUserInterfaceStyle = .dark
-        webViewController.presentOverlayController(controller: viewController, animated: true)
+        let watchSettingsView = WatchConfigurationView(needsNavigationStack: true, viewModel: viewModel)
+        webViewController.presentOverlayController(
+            controller: watchSettingsView.embeddedInHostingController(),
+            animated: true
+        )
+    }
+
+    /// Opens the complication builder as a new complication with the entity already picked, the same
+    /// screen the Apple Watch settings open from "New complication", minus the source and entity steps.
+    private func openComplicationBuilder(entityId: String, webViewController: WebViewControllerProtocol) {
+        Current.Log.info("Opening complication builder for entity \(entityId)")
+        let editor = WatchComplicationBuilderEditView(
+            prefilledEntityId: entityId,
+            serverId: webViewController.server.identifier.rawValue
+        )
+        let builder = NavigationView { editor }.navigationViewStyle(.stack)
+        webViewController.presentOverlayController(
+            controller: builder.embeddedInHostingController(),
+            animated: true
+        )
+    }
+
+    private func addToMacToolbar(entityId: String, webViewController: WebViewControllerProtocol) {
+        Current.Log.info("Adding entity \(entityId) to Mac toolbar")
+        let serverId = webViewController.server.identifier.rawValue
+
+        do {
+            var config = try MacToolbarConfig.config() ?? MacToolbarConfig()
+
+            let addedItem: MagicItem
+            if let existing = config.items.first(where: { $0.id == entityId && $0.serverId == serverId }) {
+                addedItem = existing
+            } else {
+                let appEntity = HAAppEntity.entity(id: entityId, serverId: serverId)
+                let iconName = appEntity?.icon
+                    ?? Domain(rawValue: appEntity?.domain ?? "")?.icon(deviceClass: appEntity?.rawDeviceClass).name
+                    ?? MaterialDesignIcons.dotsGridIcon.name
+
+                let item = MagicItem(
+                    id: entityId,
+                    serverId: serverId,
+                    type: .entity,
+                    customization: .init(icon: iconName),
+                    action: .moreInfoDialog,
+                    displayText: appEntity?.name
+                )
+                config.items.append(item)
+                addedItem = item
+
+                try Current.database().write { db in
+                    try config.insert(db, onConflict: .replace)
+                }
+            }
+
+            NotificationCenter.default.post(
+                name: .macToolbarConfigDidChange,
+                object: nil,
+                userInfo: [MacToolbarConfigChange.userInfoKey: MacToolbarConfigChange.added(addedItem)]
+            )
+        } catch {
+            Current.Log.error("Failed to add entity \(entityId) to Mac toolbar: \(error.localizedDescription)")
+        }
+    }
+
+    private func openDeeplink(entityId: String, webViewController: WebViewControllerProtocol) {
+        DeeplinkPresenter.present(target: .entity(id: entityId), from: webViewController)
+    }
+
+    /// Writes the same deep link the `DeeplinkAction` hands out onto an NFC tag, so that scanning the
+    /// tag opens the entity's more info dialog. The system NFC sheet is the whole UI here: it asks for
+    /// the tag, reports success, and shows any write failure.
+    private func writeDeeplinkToNFCTag(entityId: String) -> Promise<Void> {
+        guard let deeplink = DeeplinkTarget.entity(id: entityId).url(serverName: nil) else {
+            Current.Log.error("Could not build a deeplink for entity \(entityId) to write to an NFC tag")
+            return .init(error: EntityAddToError.invalidPayload)
+        }
+
+        Current.Log.info("Writing deeplink for entity \(entityId) to an NFC tag")
+        return Current.tags.writeNFC(
+            deeplink: deeplink,
+            alertMessage: L10n.Nfc.Write.Deeplink.startMessage(Current.device.inspecificModel())
+        )
     }
 
     private func openWidgetBuilder(
@@ -242,7 +356,7 @@ final class EntityAddToHandler {
             }
 
             // Open the widget creation view to let user see and further customize
-            let widgetCreationView = WidgetCreationView(widget: updatedWidget) {
+            let widgetCreationView = WidgetCreationView(needsNavigationStack: true, widget: updatedWidget) {
                 // Reload widgets after changes
             }
             let hostingController = widgetCreationView
@@ -274,7 +388,7 @@ final class EntityAddToHandler {
             items: [newItem]
         )
 
-        let widgetCreationView = WidgetCreationView(widget: newWidget) {
+        let widgetCreationView = WidgetCreationView(needsNavigationStack: true, widget: newWidget) {
             // Reload widgets after changes
         }
 

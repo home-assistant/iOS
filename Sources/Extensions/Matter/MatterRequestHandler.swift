@@ -1,4 +1,5 @@
 import HAKit
+import HAKit_PromiseKit
 import MatterSupport
 import PromiseKit
 import Shared

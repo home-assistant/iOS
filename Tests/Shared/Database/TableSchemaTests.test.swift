@@ -1,8 +1,9 @@
 import GRDB
 @testable import Shared
+import SharedTesting
 import Testing
 
-@Suite("Table Schema Tests")
+@Suite("Table Schema Tests", .sharedState)
 struct TableSchemaTests {
     /// Helper method to verify table schema
     func verifyTableSchema(
@@ -117,27 +118,14 @@ struct TableSchemaTests {
         )
     }
 
-    @Test("AppEntityRegistryListForDisplayTable schema validation")
-    func appEntityRegistryListForDisplayTableSchema() throws {
-        let table = AppEntityRegistryListForDisplayTable()
-        let expectedColumns = DatabaseTables.AppEntityRegistryListForDisplay.allCases.map(\.rawValue)
+    @Test("DisplayEntityRegistryTable schema validation")
+    func displayEntityRegistryTableSchema() throws {
+        let table = DisplayEntityRegistryTable()
+        let expectedColumns = DatabaseTables.DisplayEntityRegistry.allCases.map(\.rawValue)
         try verifyTableSchema(
             table: table,
-            expectedTableName: GRDBDatabaseTable.appEntityRegistryListForDisplay.rawValue,
+            expectedTableName: GRDBDatabaseTable.displayEntityRegistry.rawValue,
             expectedColumns: expectedColumns
-        )
-    }
-
-    @Test("AppEntityRegistryTable schema validation")
-    func appEntityRegistryTableSchema() throws {
-        let table = AppEntityRegistryTable()
-        // Note: AppEntityRegistryTable filters out .id from definedColumns
-        let expectedColumns = DatabaseTables.EntityRegistry.allCases.map(\.rawValue)
-        try verifyTableSchema(
-            table: table,
-            expectedTableName: GRDBDatabaseTable.entityRegistry.rawValue,
-            expectedColumns: expectedColumns,
-            filterOutId: true
         )
     }
 
@@ -209,6 +197,17 @@ struct TableSchemaTests {
         )
     }
 
+    @Test("MacToolbarConfigTable schema validation")
+    func macToolbarConfigTableSchema() throws {
+        let table = MacToolbarConfigTable()
+        let expectedColumns = DatabaseTables.MacToolbarConfig.allCases.map(\.rawValue)
+        try verifyTableSchema(
+            table: table,
+            expectedTableName: GRDBDatabaseTable.macToolbarConfig.rawValue,
+            expectedColumns: expectedColumns
+        )
+    }
+
     @Test("AllowedTagTable schema validation")
     func allowedTagTableSchema() throws {
         let table = AllowedTagTable()
@@ -220,13 +219,134 @@ struct TableSchemaTests {
         )
     }
 
-    @Test("All 16 tables create successfully together")
+    @Test("AppZoneTable schema validation")
+    func appZoneTableSchema() throws {
+        try verifyTableSchema(
+            table: AppZoneTable(),
+            expectedTableName: GRDBDatabaseTable.appZone.rawValue,
+            expectedColumns: DatabaseTables.AppZone.allCases.map(\.rawValue)
+        )
+    }
+
+    @Test("NotificationCategoryTable schema validation")
+    func notificationCategoryTableSchema() throws {
+        try verifyTableSchema(
+            table: NotificationCategoryTable(),
+            expectedTableName: GRDBDatabaseTable.notificationCategory.rawValue,
+            expectedColumns: DatabaseTables.NotificationCategory.allCases.map(\.rawValue)
+        )
+    }
+
+    @Test("WatchComplicationTable schema validation")
+    func watchComplicationTableSchema() throws {
+        try verifyTableSchema(
+            table: WatchComplicationTable(),
+            expectedTableName: GRDBDatabaseTable.watchComplication.rawValue,
+            expectedColumns: DatabaseTables.WatchComplication.allCases.map(\.rawValue)
+        )
+    }
+
+    @Test("LocationHistoryTable schema validation")
+    func locationHistoryTableSchema() throws {
+        try verifyTableSchema(
+            table: LocationHistoryTable(),
+            expectedTableName: GRDBDatabaseTable.locationHistory.rawValue,
+            expectedColumns: DatabaseTables.LocationHistory.allCases.map(\.rawValue)
+        )
+    }
+
+    @Test("LocationErrorTable schema validation")
+    func locationErrorTableSchema() throws {
+        try verifyTableSchema(
+            table: LocationErrorTable(),
+            expectedTableName: GRDBDatabaseTable.locationError.rawValue,
+            expectedColumns: DatabaseTables.LocationError.allCases.map(\.rawValue)
+        )
+    }
+
+    @Test("RemindersSyncConfigTable schema validation")
+    func remindersSyncConfigTableSchema() throws {
+        try verifyTableSchema(
+            table: RemindersSyncConfigTable(),
+            expectedTableName: GRDBDatabaseTable.remindersSyncConfig.rawValue,
+            expectedColumns: DatabaseTables.RemindersSyncConfig.allCases.map(\.rawValue)
+        )
+    }
+
+    @Test("RemindersSyncItemLinkTable schema validation")
+    func remindersSyncItemLinkTableSchema() throws {
+        try verifyTableSchema(
+            table: RemindersSyncItemLinkTable(),
+            expectedTableName: GRDBDatabaseTable.remindersSyncItemLink.rawValue,
+            expectedColumns: DatabaseTables.RemindersSyncItemLink.allCases.map(\.rawValue)
+        )
+    }
+
+    @Test("RemindersSyncHistoryEntryTable schema validation")
+    func remindersSyncHistoryEntryTableSchema() throws {
+        try verifyTableSchema(
+            table: RemindersSyncHistoryEntryTable(),
+            expectedTableName: GRDBDatabaseTable.remindersSyncHistoryEntry.rawValue,
+            expectedColumns: DatabaseTables.RemindersSyncHistoryEntry.allCases.map(\.rawValue)
+        )
+    }
+
+    @Test("FocusNameTable schema validation")
+    func focusNameTableSchema() throws {
+        try verifyTableSchema(
+            table: FocusNameTable(),
+            expectedTableName: GRDBDatabaseTable.focusName.rawValue,
+            expectedColumns: DatabaseTables.FocusName.allCases.map(\.rawValue)
+        )
+    }
+
+    @Test("HACalendarTable schema validation")
+    func haCalendarTableSchema() throws {
+        try verifyTableSchema(
+            table: HACalendarTable(),
+            expectedTableName: GRDBDatabaseTable.HACalendar.rawValue,
+            expectedColumns: DatabaseTables.HACalendar.allCases.map(\.rawValue)
+        )
+    }
+
+    @Test("HACalendarEventTable schema validation")
+    func haCalendarEventTableSchema() throws {
+        try verifyTableSchema(
+            table: HACalendarEventTable(),
+            expectedTableName: GRDBDatabaseTable.HACalendarEvent.rawValue,
+            expectedColumns: DatabaseTables.HACalendarEvent.allCases.map(\.rawValue)
+        )
+    }
+
+    @Test("VoiceToolsServerConfigurationTable schema validation")
+    func voiceToolsServerConfigurationTableSchema() throws {
+        let table = VoiceToolsServerConfigurationTable()
+        let expectedColumns = DatabaseTables.VoiceToolsServerConfiguration.allCases.map(\.rawValue)
+        try verifyTableSchema(
+            table: table,
+            expectedTableName: GRDBDatabaseTable.voiceToolsServerConfiguration.rawValue,
+            expectedColumns: expectedColumns
+        )
+    }
+
+    @Test("FrontendThemeVariableTable schema validation")
+    func frontendThemeVariableTableSchema() throws {
+        let table = FrontendThemeVariableTable()
+        let expectedColumns = DatabaseTables.FrontendThemeVariable.allCases.map(\.rawValue)
+        try verifyTableSchema(
+            table: table,
+            expectedTableName: GRDBDatabaseTable.frontendThemeVariable.rawValue,
+            expectedColumns: expectedColumns
+        )
+    }
+
+    @Test("All 34 tables create successfully together")
     func allTablesCreateTogether() throws {
         let database = try DatabaseQueue(path: ":memory:")
         let tables = DatabaseQueue.tables()
 
-        // Verify we have exactly 16 tables
-        #expect(tables.count == 16, "Should have exactly 16 tables, but found \(tables.count)")
+        // Verify we have exactly 34 tables
+        #expect(tables.count == 34, "Should have exactly 34 tables, but found \(tables.count)")
 
         // Create all tables
         for table in tables {

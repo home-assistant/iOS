@@ -2,6 +2,8 @@
 "NSCameraUsageDescription" = "Ambil foto dan kirimkan ke server Home Assistant Anda";
 "NSCrossWebsiteTrackingUsageDescription" = "Aktifkan pelacakan lintas situs web opsional jika konfigurasi Anda memerlukannya.";
 "NSFocusStatusUsageDescription" = "Laporkan status fokus Anda sebagai sensor.";
+"NSHealthShareUsageDescription" = "Read selected Apple Health metrics so they can be shared with Home Assistant as sensors.";
+"NSHealthUpdateUsageDescription" = "Home Assistant does not write any data to Apple Health.";
 "NSLocalNetworkUsageDescription" = "Temukan dan terhubung dengan instans Home Assistant Anda.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "Kami sarankan untuk memilih \"Selalu Izinkan\" untuk pengalaman lokasi terbaik. Memilih \"Hanya Saat Menggunakan Aplikasi\" akan menonaktifkan iBeacon, geofence, pembaruan lokasi latar belakang, dan pelaporan yang akurat.";
 "NSLocationAlwaysUsageDescription" = "Kami selalu membutuhkan akses ke lokasi Anda untuk fitur seperti iBeacon, geofence, pembaruan lokasi latar belakang, dan pelaporan yang akurat.";

@@ -40,7 +40,7 @@ struct WhatsNewView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spaces.one) {
-            Text(L10n.WhatsNew.title)
+            Text(release.title ?? L10n.WhatsNew.title)
                 .font(.title.bold())
                 .foregroundStyle(.primary)
                 .multilineTextAlignment(.center)
@@ -51,8 +51,8 @@ struct WhatsNewView: View {
 
     private var items: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spaces.four) {
-            ForEach(Array(release.items.enumerated()), id: \.element.id) { offset, item in
-                WhatsNewItemRow(item: item, iconColor: WhatsNewColors.iconColor(for: offset))
+            ForEach(release.items) { item in
+                WhatsNewItemRow(item: item)
             }
         }
     }
@@ -76,12 +76,44 @@ struct WhatsNewView: View {
 
 private struct WhatsNewItemRow: View {
     let item: WhatsNewItem
-    let iconColor: UIColor
+
+    @State private var presentedURL: IdentifiableURL?
 
     var body: some View {
-        HStack(alignment: .center, spacing: DesignSystem.Spaces.three) {
-            WhatsNewIconView(icon: item.icon, color: iconColor)
-                .frame(width: 48, height: 48)
+        if let destination = item.destination {
+            switch destination {
+            case let .link(url):
+                // Presented as a sheet: SFSafariViewController has its own close button, which would
+                // collide with a navigation back button if pushed.
+                Button {
+                    presentedURL = IdentifiableURL(url: url)
+                } label: {
+                    content(showsLinkAffordance: true)
+                }
+                .buttonStyle(.plain)
+                .accessibilityHint(L10n.WhatsNew.Item.opensLinkHint)
+                .sheet(item: $presentedURL) { item in
+                    SafariWebView(url: item.url)
+                        .ignoresSafeArea()
+                }
+            case let .article(article):
+                NavigationLink {
+                    WhatsNewArticleView(article: article)
+                } label: {
+                    content(showsLinkAffordance: true)
+                }
+                .buttonStyle(.plain)
+                .accessibilityHint(L10n.WhatsNew.Item.opensArticleHint)
+            }
+        } else {
+            content(showsLinkAffordance: false)
+        }
+    }
+
+    private func content(showsLinkAffordance: Bool) -> some View {
+        HStack(alignment: .center, spacing: DesignSystem.Spaces.two) {
+            WhatsNewIconView(icon: item.icon, color: .haPrimary)
+                .frame(width: 46, height: 46)
                 .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: DesignSystem.Spaces.half) {
@@ -96,39 +128,19 @@ private struct WhatsNewItemRow: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+
+            if showsLinkAffordance {
+                Image(systemSymbol: .chevronForward)
+                    .font(.body.weight(.semibold))
+                    .foregroundStyle(.tertiary)
+                    .accessibilityHidden(true)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .contentShape(Rectangle())
     }
 }
 
-private struct WhatsNewIconView: View {
-    let icon: WhatsNewIcon
-    let color: UIColor
-
-    var body: some View {
-        switch icon {
-        case let .sfSymbol(symbol):
-            Image(systemSymbol: symbol)
-                .font(.system(size: 38, weight: .regular))
-                .foregroundStyle(Color(uiColor: color))
-        case let .materialDesign(icon):
-            Image(uiImage: icon.image(ofSize: CGSize(width: 38, height: 38), color: color))
-                .renderingMode(.template)
-                .foregroundStyle(Color(uiColor: color))
-        }
-    }
-}
-
-private enum WhatsNewColors {
-    private static let colors: [UIColor] = [
-        .haPrimary,
-        .systemRed,
-        .systemGreen,
-        .systemBlue,
-        .systemOrange,
-    ]
-
-    static func iconColor(for index: Int) -> UIColor {
-        colors[index % colors.count]
-    }
+#Preview {
+    WhatsNewView(release: WhatsNewCatalog.mock, onViewed: {})
 }

@@ -1,17 +1,10 @@
 import Alamofire
 import CallbackURLKit
-import Communicator
-#if DEBUG
-import DebugSwift
-#endif
 import FirebaseCore
 import FirebaseMessaging
 import Intents
 import KeychainAccess
-import MBProgressHUD
-import ObjectMapper
 import PromiseKit
-import RealmSwift
 import SafariServices
 import Shared
 import UIKit
@@ -23,9 +16,15 @@ let keychain = AppConstants.Keychain
 let prefs = UserDefaults(suiteName: AppConstants.AppGroupID)!
 
 private extension UIApplication {
+    /// Under the SwiftUI `App` lifecycle `UIApplication.shared.delegate` is SwiftUI's own internal
+    /// delegate — not the `@UIApplicationDelegateAdaptor`-managed `AppDelegate` — so the bare
+    /// `delegate as! AppDelegate` cast aborts. Resolve via the recorded `AppDelegate.shared`.
     var typedDelegate: AppDelegate {
-        // swiftlint:disable:next force_cast
-        delegate as! AppDelegate
+        guard let appDelegate = AppDelegate.shared else {
+            // swiftlint:disable:next force_cast
+            return delegate as! AppDelegate
+        }
+        return appDelegate
     }
 }
 
@@ -39,24 +38,24 @@ extension AppEnvironment {
     }
 }
 
-@main
+// `@main` is on `HAApp`; this delegate is installed via `@UIApplicationDelegateAdaptor`.
 class AppDelegate: UIResponder, UIApplicationDelegate {
+    /// Set from `init` so the adaptor-managed delegate stays reachable; see `UIApplication.typedDelegate`.
+    private(set) static var shared: AppDelegate?
+
     let sceneManager = SceneManager()
     private let lifecycleManager = LifecycleManager()
     let notificationManager = NotificationManager()
-    #if DEBUG
-    private let debugSwift = DebugSwift()
-    #endif
-    private var zoneManager: ZoneManager?
-    private var titleSubscription: MenuManagerTitleSubscription? {
-        didSet {
-            if oldValue != titleSubscription {
-                oldValue?.cancel()
-            }
-        }
+
+    override init() {
+        super.init()
+        AppDelegate.shared = self
     }
 
-    private var shouldRefreshTitleSubscription = false
+    private var zoneManager: ZoneManager?
+    #if targetEnvironment(macCatalyst)
+    private let statusItemManager = StatusItemManager()
+    #endif
 
     private var watchCommunicatorService: WatchCommunicatorService?
 
@@ -65,6 +64,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
         MaterialDesignIcons.register()
+        // Before anything reads the Focus sensors, which the launch below already does.
+        FocusNameFocusFilterAppIntent.registerCurrentValuesReader()
 
         guard !Current.isRunningTests else {
             return true
@@ -80,6 +81,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UIApplication.shared
         }
 
+        Current.requestSensorPermissions = { uniqueIDs in
+            Task { @MainActor in
+                SensorPermissionRequester.shared.requestPermissionsIfNeeded(forSensorUniqueIDs: uniqueIDs)
+            }
+        }
+
         Current.isBackgroundRequestsImmediate = { [lifecycleManager] in
             if Current.isCatalyst {
                 return false
@@ -88,7 +95,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
 
-        #if targetEnvironment(simulator)
+        #if targetEnvironment(macCatalyst)
+        Current.tags = TagActivityManager()
+        #elseif targetEnvironment(simulator)
         Current.tags = SimulatorTagManager()
         #else
         Current.tags = iOSTagManager()
@@ -103,6 +112,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupMenus()
 
         let launchingForLocation = launchOptions?[.location] != nil
+
+        AnimatedSVGWebViewCache.shared
+            .preloadOnFirstActivation(HomeAssistantStandByView.loadingLogoResourceName)
+
         let event = ClientEvent(
             text: "Application Starting" + (launchingForLocation ? " due to location change" : ""),
             type: .unknown
@@ -111,11 +124,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         zoneManager = ZoneManager()
 
-        UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
+        BackgroundRefreshManager.register()
+        BackgroundRefreshManager.scheduleAppRefresh()
+        RemindersSyncBackgroundRefresher.register()
+        RemindersSyncBackgroundRefresher.schedule()
 
         setupWatchCommunicator()
         setupUIApplicationShortcutItems()
         migrateIfNeeded()
+        RemindersSyncManager.shared.start()
+        if #available(iOS 18.0, *) {
+            SpotlightEntityIndexer.shared.start()
+        }
+        if #available(iOS 17.0, *) {
+            HomeAssistantAppShortcuts.updateAppShortcutParameters()
+        }
 
         return true
     }
@@ -128,8 +151,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return true
         }
 
+        // Tints the remaining UIKit-backed switches (e.g. the Eureka settings forms) with the
+        // brand color. SwiftUI toggles are no longer UISwitch-backed, so they get
+        // `BrandedSwitchToggleStyle` at the hosting seams instead.
+        UISwitch.appearance().onTintColor = .haPrimary
+
         lifecycleManager.didFinishLaunching()
-        setupDebugSwift()
+        FlightGreetingManager.shared.start()
+        LocationBasedServerSwitcher.shared.start()
+
+        #if targetEnvironment(macCatalyst)
+        statusItemManager.configure()
+        // Dock icon: when "Open Home Assistant UI in browser" is on there is no in-app web view, so a
+        // reopen with no windows (Dock icon click) should open the browser instead of creating a window.
+        Current.macBridge.setReopenHandler { StatusItemPrimaryAction.openInBrowserIfNeeded() }
+        #endif
 
         checkForUpdate()
         checkForAlerts()
@@ -137,31 +173,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
-    private func setupDebugSwift() {
-        #if DEBUG
-        debugSwift.setup()
-        debugSwift.show()
-        #endif
-    }
-
     override func buildMenu(with builder: UIMenuBuilder) {
         if builder.system == .main {
             let manager = MenuManager(builder: builder)
             manager.update()
-
-            #if targetEnvironment(macCatalyst)
-            titleSubscription = manager.subscribeStatusItemTitle(
-                existing: shouldRefreshTitleSubscription ? nil : titleSubscription,
-                update: Current.macBridge.configureStatusItem(title:)
-            )
-            shouldRefreshTitleSubscription = false
-            #endif
         }
-    }
-
-    @objc func openAbout() {
-        precondition(Current.sceneManager.supportsMultipleScenes)
-        sceneManager.activateAnyScene(for: .about)
     }
 
     @objc func openMenuUrl(_ command: AnyObject) {
@@ -169,22 +185,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
 
-        let delegate: Guarantee<WebViewSceneDelegate> = sceneManager.scene(for: .init(activity: .webView))
-        delegate.done {
-            $0.urlHandler?.handle(url: url)
+        // The primary window is SwiftUI-hosted now, so route through the coordinator (like the other
+        // `webViewWindowControllerPromise` consumers) instead of looking up a UIKit scene delegate.
+        sceneManager.appCoordinator.done { coordinator in
+            IncomingURLHandler(coordinator: coordinator).handle(url: url)
         }
-    }
-
-    @objc func openPreferences() {
-        precondition(Current.sceneManager.supportsMultipleScenes)
-        sceneManager.activateAnyScene(for: .settings)
-    }
-
-    @objc func openHelp() {
-        openURLInBrowser(
-            URL(string: "https://companion.home-assistant.io")!,
-            nil
-        )
     }
 
     func application(
@@ -192,12 +197,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         configurationForConnecting connectingSceneSession: UISceneSession,
         options: UIScene.ConnectionOptions
     ) -> UISceneConfiguration {
-        if #available(iOS 16.0, *), connectingSceneSession.role == UISceneSession.Role.carTemplateApplication {
+        if connectingSceneSession.role == UISceneSession.Role.carTemplateApplication {
             return SceneActivity.carPlay.configuration
         } else {
             let activity = options.userActivities
                 .compactMap { SceneActivity(activityIdentifier: $0.activityType) }
                 .first ?? .webView
+
+            if activity == .webView {
+                // The primary window is owned by SwiftUI's `WindowGroup { ContainerView() }` (see `HAApp`).
+                // The name MUST stay `WebView` (the shipped config name) — persisted scene sessions reference
+                // it, and renaming it blanks the window on upgrade. `QuickActionWindowSceneDelegate` only
+                // forwards Home-screen quick actions (it never owns a window), so SwiftUI still hosts the
+                // scene; it restores quick-action handling lost when `WebViewSceneDelegate` was removed.
+                let configuration = UISceneConfiguration(
+                    name: "WebView",
+                    sessionRole: connectingSceneSession.role
+                )
+                configuration.delegateClass = QuickActionWindowSceneDelegate.self
+                return configuration
+            }
+
             return activity.configuration
         }
     }
@@ -218,34 +238,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         notificationManager.didReceiveRemoteNotification(userInfo: userInfo, fetchCompletionHandler: completionHandler)
     }
 
-    func application(
-        _ application: UIApplication,
-        performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
-    ) {
-        Current.clientEventStore.addEvent(ClientEvent(text: "Background fetch activated", type: .backgroundOperation))
-        Current.backgroundTask(withName: BackgroundTask.backgroundFetch.rawValue) { remaining in
-            let updatePromise: Promise<Void>
-            if Current.settingsStore.isLocationEnabled(for: UIApplication.shared.applicationState),
-               Current.settingsStore.locationSources.backgroundFetch {
-                updatePromise = firstly {
-                    Current.location.oneShotLocation(.BackgroundFetch, remaining)
-                }.then { location in
-                    when(fulfilled: Current.apis.map {
-                        $0.SubmitLocation(updateType: .BackgroundFetch, location: location, zone: nil)
-                    })
-                }.asVoid()
-            } else {
-                updatePromise = when(fulfilled: Current.apis.map {
-                    $0.UpdateSensors(trigger: .BackgroundFetch, location: nil)
-                })
-            }
-
-            return updatePromise
-        }.done {
-            completionHandler(.newData)
-        }.catch { error in
-            Current.Log.error("Error when attempting to update data during background fetch: \(error)")
-            completionHandler(.failed)
+    func applicationWillTerminate(_ application: UIApplication) {
+        Current.forceCloseWarningManager.postImmediateWarning()
+        // This prevents users from getting stuck on a page without a way to recover
+        if !Current.isCatalyst {
+            Current.settingsStore.lastActiveURLPath = nil
         }
     }
 
@@ -277,7 +274,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Current.updater.check(dueToUserInteraction: dueToUserInteraction).done { [sceneManager] update in
             let alert = UIAlertController(
                 title: L10n.Updater.UpdateAvailable.title,
-                message: update.body,
+                message: nil,
                 preferredStyle: .alert
             )
             alert.addAction(UIAlertAction(
@@ -289,7 +286,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             ))
             alert.addAction(UIAlertAction(title: L10n.okLabel, style: .cancel, handler: nil))
 
-            sceneManager.webViewWindowControllerPromise.done {
+            sceneManager.appCoordinator.done {
                 $0.present(alert, animated: true, completion: nil)
             }
         }.catch { [sceneManager] error in
@@ -303,7 +300,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 )
                 alert.addAction(UIAlertAction(title: L10n.okLabel, style: .cancel, handler: nil))
 
-                sceneManager.webViewWindowControllerPromise.done {
+                sceneManager.appCoordinator.done {
                     $0.present(alert, animated: true, completion: nil)
                 }
             }
@@ -314,7 +311,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         firstly {
             Current.serverAlerter.check(dueToUserInteraction: false)
         }.done { [sceneManager] alert in
-            sceneManager.webViewWindowControllerPromise.done { controller in
+            sceneManager.appCoordinator.done { controller in
                 controller.show(alert: alert)
             }
         }.catch { error in
@@ -325,7 +322,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     private func showNotificationCategoryAlertIfNeeded() {
-        guard Current.realm().objects(NotificationCategory.self).isEmpty == false else {
+        guard NotificationCategory.all().isEmpty == false else {
             return
         }
 
@@ -358,7 +355,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 alert.addAction(UIAlertAction(title: L10n.okLabel, style: .cancel, handler: { _ in
                     userDefaults.set(true, forKey: seenKey)
                 }))
-                sceneManager.webViewWindowControllerPromise.done {
+                sceneManager.appCoordinator.done {
                     $0.present(alert)
                 }
             }.catch { error in
@@ -381,6 +378,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         })
     }
 
+    private var liveActivityPendingEndObserver: Any?
+    private var liveActivityPendingStartObserver: Any?
+
     private func setupLiveActivityReattachment() {
         #if os(iOS) && !targetEnvironment(macCatalyst)
         if #available(iOS 17.2, *) {
@@ -388,6 +388,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // This avoids a lazy-init race if a push notification handler accesses it
             // concurrently from a background thread.
             guard let registry = Current.liveActivityRegistry else { return }
+
+            // Register before draining so ends/starts enqueued while the app was gone aren't missed.
+            let pendingEndObserver = LiveActivityPendingEndObserver()
+            liveActivityPendingEndObserver = pendingEndObserver
+            pendingEndObserver.drain()
+
+            // Starts handed off by the PushProvider extension (local-push live_update notifications,
+            // which can't touch ActivityKit in-process). Drained here and on foreground.
+            let pendingStartObserver = LiveActivityPendingStartObserver()
+            liveActivityPendingStartObserver = pendingStartObserver
+            pendingStartObserver.drain()
 
             Task {
                 // Re-attach observation tasks (push token + lifecycle) to any Live Activities
@@ -414,7 +425,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private func setupFirebase() {
         let optionsFile: String = {
             switch Current.appConfiguration {
-            case .beta: return "GoogleService-Info-Beta"
             case .debug, .fastlaneSnapshot: return "GoogleService-Info-Debug"
             case .release: return "GoogleService-Info-Release"
             }
@@ -430,9 +440,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     private func setupModels() {
-        // Force Realm migration to happen now
-        _ = Realm.live()
         NotificationCategory.setupObserver()
+        // Start the server-state subscriptions that keep GRDB models in sync
+        // (zones via the states cache); without this, appZone is never populated
+        // and region monitoring has nothing to track.
+        Current.modelManager.cleanup().cauterize()
+        Current.modelManager.subscribe(isAppInForeground: {
+            UIApplication.shared.applicationState == .active
+        })
     }
 
     private func setupMenus() {
@@ -452,23 +467,47 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     @objc private func menuRelatedSettingDidChange(_ note: Notification) {
         UIMenuSystem.main.setNeedsRebuild()
+        #if targetEnvironment(macCatalyst)
+        statusItemManager.configure()
+        #endif
     }
 
     @objc private func apiDidConnect(_ note: Notification) {
-        // When API reconnects, rebuild the menu to refresh the status item title subscription
-        // Force refresh by setting the flag that will cause the subscription to be recreated
-        #if targetEnvironment(macCatalyst)
-        shouldRefreshTitleSubscription = true
-        #endif
         UIMenuSystem.main.setNeedsRebuild()
+        #if targetEnvironment(macCatalyst)
+        statusItemManager.apiDidConnect()
+        #endif
     }
 
     private func setupUIApplicationShortcutItems() {
-        AppIconShortcutItemsUpdater.update()
+        AppIconShortcutItemsUpdater.start()
     }
 
     private func migrateIfNeeded() {
         resetLocalPush()
+        resetShakeGesture()
+        migrateRestoreLastURL()
+    }
+
+    /// Remember Last Page becomes opt-in (disabled by default); installs that already
+    /// have a server configured keep the previous enabled-by-default behavior.
+    private func migrateRestoreLastURL() {
+        Current.settingsStore.migrateRestoreLastURLToOptInIfNeeded(
+            hasExistingServers: !Current.servers.all.isEmpty
+        )
+    }
+
+    /// Shake gesture no longer opens debug by default; users who had it set to debug are reset once to none.
+    private func resetShakeGesture() {
+        if !Current.settingsStore.migratedShakeGestureToNone {
+            var gestures = Current.settingsStore.gestures
+            if gestures[.shake] == .openDebug {
+                gestures[.shake] = HAGestureAction.none
+                Current.settingsStore.gestures = gestures
+                Current.Log.info("Reset shake gesture from open debug to none due to migration")
+            }
+            Current.settingsStore.migratedShakeGestureToNone = true
+        }
     }
 
     /// Local push becomes opt-in on 2025.6, users will have local push reset and need to re-enable it

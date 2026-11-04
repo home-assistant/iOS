@@ -56,6 +56,57 @@ final class AssistViewModelTests: XCTestCase {
     }
 
     @MainActor
+    func testOnAppearWithoutAutoStartRecordingFocusesInput() async throws {
+        mockAssistService.pipelineResponse = .init(preferredPipeline: "", pipelines: [])
+
+        sut.initialRoutine()
+        await Task.yield()
+        XCTAssertTrue(sut.focusOnInput)
+        XCTAssertFalse(mockAudioRecorder.startRecordingCalled)
+    }
+
+    @MainActor
+    func testOnAppearFocusesInputBeforePipelinesLoad() async throws {
+        mockAssistService.holdsPipelinesCompletion = true
+        mockAssistService.pipelineResponse = .init(preferredPipeline: "", pipelines: [])
+
+        sut.initialRoutine()
+        XCTAssertTrue(sut.focusOnInput)
+
+        mockAssistService.completePendingPipelinesFetch()
+        await Task.yield()
+        XCTAssertTrue(sut.focusOnInput)
+    }
+
+    @MainActor
+    func testOnAppearAutoStartRecordingDoesNotFocusInput() async throws {
+        sut = makeSut(autoStartRecording: true)
+        mockAssistService.pipelineResponse = .init(preferredPipeline: "", pipelines: [])
+
+        sut.initialRoutine()
+        await Task.yield()
+        XCTAssertFalse(sut.focusOnInput)
+        XCTAssertTrue(mockAudioRecorder.startRecordingCalled)
+    }
+
+    @MainActor
+    func testNewSessionWithAutoStartRecordingRemovesInputFocus() async throws {
+        mockAssistService.pipelineResponse = .init(preferredPipeline: "", pipelines: [])
+
+        sut.initialRoutine()
+        await Task.yield()
+        XCTAssertTrue(sut.focusOnInput)
+
+        sut.didRequestNewSession(.init(
+            server: ServerFixture.standard,
+            pipelineId: "",
+            autoStartRecording: true
+        ))
+        await Task.yield()
+        XCTAssertFalse(sut.focusOnInput)
+    }
+
+    @MainActor
     func testOnDisappear() async throws {
         sut = makeSut(autoStartRecording: true)
 
@@ -115,6 +166,66 @@ final class AssistViewModelTests: XCTestCase {
         sut.didReceiveIntentEndContent("test")
         XCTAssertEqual(sut.chatItems.first?.content, "test")
         XCTAssertEqual(sut.chatItems.first?.itemType, .output)
+    }
+
+    /// The intent-end response holds only the final assistant message, so the text the agent wrote
+    /// before a tool call must survive it, in the same bubble and after a paragraph break.
+    @MainActor
+    func testIntentEndKeepsTextStreamedBeforeToolCall() {
+        sut.didStartStreamResponseMessage()
+        sut.didReceiveStreamResponseChunk("Let me check the weather for you.")
+        // The tool result delta carries no text.
+        sut.didReceiveStreamResponseChunk("")
+        sut.didStartStreamResponseMessage()
+        sut.didReceiveStreamResponseChunk("It is 21 degrees ")
+        sut.didReceiveStreamResponseChunk("in Utrecht.")
+        sut.didReceiveIntentEndContent("It is 21 degrees in Utrecht.")
+
+        XCTAssertEqual(sut.chatItems.map(\.itemType), [.output])
+        XCTAssertEqual(sut.chatItems.last?.content, "Let me check the weather for you.\n\nIt is 21 degrees in Utrecht.")
+    }
+
+    @MainActor
+    func testEmptyStreamChunksKeepTypingIndicator() {
+        sut.didReceiveSttContent("What is the temperature in the living room?")
+        // An agent that calls a tool first streams a message start and the tool call without text.
+        sut.didStartStreamResponseMessage()
+        sut.didReceiveStreamResponseChunk("")
+        sut.didReceiveStreamResponseChunk("")
+
+        XCTAssertEqual(sut.chatItems.map(\.itemType), [.input, .typing])
+
+        sut.didStartStreamResponseMessage()
+        sut.didReceiveStreamResponseChunk("It is 21 degrees.")
+
+        XCTAssertEqual(sut.chatItems.map(\.itemType), [.input, .output])
+        XCTAssertEqual(sut.chatItems.last?.content, "It is 21 degrees.")
+    }
+
+    @MainActor
+    func testIntentEndDoesNotDuplicateFullyStreamedReply() {
+        sut.didStartStreamResponseMessage()
+        sut.didReceiveStreamResponseChunk("The lights ")
+        sut.didReceiveStreamResponseChunk("are on.")
+        sut.didReceiveIntentEndContent("The lights are on.")
+
+        XCTAssertEqual(sut.chatItems.map(\.content), ["The lights are on."])
+    }
+
+    @MainActor
+    func testIntentEndAppendsResponseThatWasNotStreamed() {
+        sut.didStartStreamResponseMessage()
+        sut.didReceiveStreamResponseChunk("Let me check.")
+        sut.didReceiveIntentEndContent("Done.")
+
+        XCTAssertEqual(sut.chatItems.map(\.content), ["Let me check.\n\nDone."])
+    }
+
+    func testJoinWithParagraphBreakCountsExistingLineBreaks() {
+        XCTAssertEqual(AssistViewModel.joinWithParagraphBreak("A", "B"), "A\n\nB")
+        XCTAssertEqual(AssistViewModel.joinWithParagraphBreak("A\n", "B"), "A\n\nB")
+        XCTAssertEqual(AssistViewModel.joinWithParagraphBreak("A\n\n", "B"), "A\n\nB")
+        XCTAssertEqual(AssistViewModel.joinWithParagraphBreak("", "B"), "B")
     }
 
     @MainActor
@@ -276,6 +387,28 @@ final class AssistViewModelTests: XCTestCase {
     }
 
     @MainActor
+    func testOnDeviceSTT_listeningStateChangeFalseWithPendingTranscript_submitsToAssistService() async throws {
+        let mockTranscriber = MockSpeechTranscriber()
+        sut = makeSut(speechTranscriber: mockTranscriber)
+        sut.configuration.enableOnDeviceSTT = true
+
+        sut.assistWithAudio()
+        await Task.yield()
+
+        mockTranscriber.simulateTranscriptUpdate("Turn on the lights", isFinal: false)
+        await Task.yield()
+        mockTranscriber.simulateListeningStateChange(false)
+        await Task.yield()
+
+        XCTAssertEqual(
+            mockAssistService.assistSource,
+            .text(input: "Turn on the lights", pipelineId: "", expectTTS: true)
+        )
+        XCTAssertEqual(sut.inputText, "")
+        XCTAssertFalse(sut.isRecording)
+    }
+
+    @MainActor
     func testOnDeviceSTT_stopStreaming_callsStopListeningOnTranscriber() {
         let mockTranscriber = MockSpeechTranscriber()
         sut = makeSut(speechTranscriber: mockTranscriber)
@@ -401,6 +534,79 @@ final class AssistViewModelTests: XCTestCase {
         XCTAssertTrue(mockSynthesizer.stopCalled)
     }
 
+    // MARK: - Request history
+
+    @MainActor
+    func testRecallPreviousRequest_withNoHistory_doesNothing() {
+        sut.inputText = "draft"
+
+        XCTAssertFalse(sut.recallPreviousRequest())
+        XCTAssertEqual(sut.inputText, "draft")
+    }
+
+    @MainActor
+    func testRecallPreviousRequest_walksBackwardsAndStopsAtTheOldest() {
+        send("first")
+        send("second")
+
+        XCTAssertTrue(sut.recallPreviousRequest())
+        XCTAssertEqual(sut.inputText, "second")
+
+        XCTAssertTrue(sut.recallPreviousRequest())
+        XCTAssertEqual(sut.inputText, "first")
+
+        XCTAssertFalse(sut.recallPreviousRequest())
+        XCTAssertEqual(sut.inputText, "first")
+    }
+
+    @MainActor
+    func testRecallNextRequest_walksForwardsAndRestoresTheDraft() {
+        send("first")
+        send("second")
+        sut.inputText = "half typed"
+
+        sut.recallPreviousRequest()
+        sut.recallPreviousRequest()
+        XCTAssertEqual(sut.inputText, "first")
+
+        XCTAssertTrue(sut.recallNextRequest())
+        XCTAssertEqual(sut.inputText, "second")
+
+        XCTAssertTrue(sut.recallNextRequest())
+        XCTAssertEqual(sut.inputText, "half typed")
+
+        XCTAssertFalse(sut.recallNextRequest())
+        XCTAssertEqual(sut.inputText, "half typed")
+    }
+
+    @MainActor
+    func testRecallNextRequest_withoutWalkingBackFirst_doesNothing() {
+        send("first")
+        sut.inputText = "draft"
+
+        XCTAssertFalse(sut.recallNextRequest())
+        XCTAssertEqual(sut.inputText, "draft")
+    }
+
+    @MainActor
+    func testSendingARequest_startsTheHistoryWalkOver() {
+        send("first")
+        sut.recallPreviousRequest()
+        XCTAssertEqual(sut.inputText, "first")
+
+        send("second")
+
+        // Walking again starts from the newest request rather than continuing where it left off.
+        XCTAssertTrue(sut.recallPreviousRequest())
+        XCTAssertEqual(sut.inputText, "second")
+    }
+
+    @MainActor
+    private func send(_ text: String) {
+        sut.inputText = text
+        sut.assistWithText()
+    }
+
     @MainActor
     func testOnDeviceTTS_onFinished_triggersRecordingAgainWhenNeeded() async {
         let mockSynthesizer = MockSpeechSynthesizer()
@@ -416,5 +622,196 @@ final class AssistViewModelTests: XCTestCase {
         await Task.yield()
 
         XCTAssertTrue(mockAudioRecorder.startRecordingCalled)
+    }
+
+    // MARK: - Pipeline capabilities
+
+    /// The backend rejects a run that starts at `stt` on a pipeline without a speech-to-text engine,
+    /// so the microphone must not go live for one: the user would be talking to nothing.
+    @MainActor
+    func testVoiceRequestOnPipelineWithoutSpeechToTextDoesNotRecord() {
+        selectFetchedPipeline(textOnlyPipeline)
+        sut.focusOnInput = false
+
+        sut.assistWithAudio()
+
+        XCTAssertFalse(mockAudioRecorder.startRecordingCalled)
+        XCTAssertNil(mockAssistService.assistSource)
+        XCTAssertEqual(sut.chatItems.last?.itemType, .error)
+        XCTAssertEqual(sut.chatItems.last?.content, L10n.Assist.Error.speechToTextUnsupported)
+        XCTAssertTrue(sut.focusOnInput, "the keyboard is the way left to ask")
+    }
+
+    /// Only the cache says the engine is missing, and it can predate one added on the server, so the
+    /// request goes out and `AssistService` confirms with the server.
+    @MainActor
+    func testVoiceRequestOnCachedPipelineWithoutSpeechToTextStillRecords() {
+        sut.pipelines = [textOnlyPipeline]
+        sut.preferredPipelineId = textOnlyPipeline.id
+
+        sut.assistWithAudio()
+        sut.didStartRecording(with: 16000)
+
+        XCTAssertTrue(mockAudioRecorder.startRecordingCalled)
+        XCTAssertEqual(
+            mockAssistService.assistSource,
+            .audio(pipelineId: textOnlyPipeline.id, audioSampleRate: 16000, tts: true)
+        )
+    }
+
+    /// Transcribing on device needs nothing from the pipeline's speech-to-text engine.
+    @MainActor
+    func testOnDeviceSTT_pipelineWithoutSpeechToText_stillListens() async {
+        let mockTranscriber = MockSpeechTranscriber()
+        sut = makeSut(speechTranscriber: mockTranscriber)
+        sut.configuration.enableOnDeviceSTT = true
+        selectFetchedPipeline(textOnlyPipeline)
+
+        sut.assistWithAudio()
+        await Task.yield()
+
+        XCTAssertTrue(mockTranscriber.startListeningCalled)
+        XCTAssertNotEqual(sut.chatItems.last?.itemType, .error)
+    }
+
+    /// The reported hang: a transcript from on-device STT went to a text-only pipeline asking for
+    /// TTS, which the backend refused before the run started. It now ends at `intent`.
+    @MainActor
+    func testOnDeviceSTT_transcriptOnPipelineWithoutTextToSpeech_doesNotRequestServerTTS() {
+        sut.configuration.enableOnDeviceSTT = true
+        selectFetchedPipeline(textOnlyPipeline)
+        sut.inputText = "Zeg alleen TEST"
+
+        sut.assistWithTextExpectingTTS()
+
+        XCTAssertEqual(
+            mockAssistService.assistSource,
+            .text(input: "Zeg alleen TEST", pipelineId: textOnlyPipeline.id, expectTTS: false)
+        )
+    }
+
+    @MainActor
+    func testOnDeviceSTT_transcriptOnPipelineWithTextToSpeech_requestsServerTTS() {
+        sut.configuration.enableOnDeviceSTT = true
+        selectFetchedPipeline(voicePipeline)
+        sut.inputText = "Turn on the lights"
+
+        sut.assistWithTextExpectingTTS()
+
+        XCTAssertEqual(
+            mockAssistService.assistSource,
+            .text(input: "Turn on the lights", pipelineId: voicePipeline.id, expectTTS: true)
+        )
+    }
+
+    @MainActor
+    func testVoiceRunOnPipelineWithoutTextToSpeech_endsAtIntent() {
+        let pipeline = Pipeline(id: "stt-only", name: "STT only", sttEngine: "stt.cloud")
+        selectFetchedPipeline(pipeline)
+
+        sut.didStartRecording(with: 16000)
+
+        XCTAssertEqual(
+            mockAssistService.assistSource,
+            .audio(pipelineId: pipeline.id, audioSampleRate: 16000, tts: false)
+        )
+    }
+
+    @MainActor
+    func testVoiceRunOnPipelineWithTextToSpeech_requestsServerTTS() {
+        selectFetchedPipeline(voicePipeline)
+
+        sut.didStartRecording(with: 16000)
+
+        XCTAssertEqual(
+            mockAssistService.assistSource,
+            .audio(pipelineId: voicePipeline.id, audioSampleRate: 16000, tts: true)
+        )
+    }
+
+    /// Speaking the reply on device keeps the run at `intent` even when the pipeline could speak it.
+    @MainActor
+    func testOnDeviceTTS_voiceRunOnPipelineWithTextToSpeech_endsAtIntent() {
+        sut.configuration.enableOnDeviceTTS = true
+        selectFetchedPipeline(voicePipeline)
+
+        sut.didStartRecording(with: 16000)
+
+        XCTAssertEqual(
+            mockAssistService.assistSource,
+            .audio(pipelineId: voicePipeline.id, audioSampleRate: 16000, tts: false)
+        )
+    }
+
+    /// Loads `pipeline` the way the view does on appear, so its capabilities count as current.
+    @MainActor
+    private func selectFetchedPipeline(_ pipeline: Pipeline) {
+        mockAssistService.pipelineResponse = .init(preferredPipeline: pipeline.id, pipelines: [pipeline])
+        sut.initialRoutine()
+        sut.pipelines = [pipeline]
+        sut.preferredPipelineId = pipeline.id
+    }
+
+    private var textOnlyPipeline: Pipeline {
+        .init(conversationEngine: "conversation.google_ai", id: "text-only", name: "Text only")
+    }
+
+    private var voicePipeline: Pipeline {
+        .init(id: "voice", name: "Voice", sttEngine: "stt.cloud", ttsEngine: "tts.cloud")
+    }
+
+    /// Recording starts before the pipeline is subscribed, so a run the server refuses arrives with
+    /// the microphone still live. The error has to take the view out of its listening state too,
+    /// otherwise it keeps recording into a pipeline that will never accept the audio.
+    @MainActor
+    func testErrorWhileRecordingStopsRecording() async {
+        sut.isRecording = true
+
+        sut.didReceiveError(code: "stt-provider-missing", message: "No speech-to-text provider")
+        await waitUntilNotRecording()
+
+        XCTAssertFalse(sut.isRecording)
+        XCTAssertTrue(mockAudioRecorder.stopRecordingCalled)
+        XCTAssertEqual(sut.chatItems.last?.itemType, .error)
+    }
+
+    /// An error outside a recording — a failed prompt, say — has no microphone to release, so it
+    /// must not reach for the recorder.
+    @MainActor
+    func testErrorWhileNotRecordingLeavesRecorderAlone() async {
+        sut.isRecording = false
+
+        sut.didReceiveError(code: "pipeline_run_failed", message: "socket died")
+        await Task.yield()
+
+        XCTAssertFalse(mockAudioRecorder.stopRecordingCalled)
+        XCTAssertEqual(sut.chatItems.last?.itemType, .error)
+    }
+
+    /// A recorder that fails has stopped for good, so the run it was feeding is abandoned rather than
+    /// left waiting for audio, and nothing more is sent to it.
+    @MainActor
+    func testRecordingFailureCancelsRunAndStopsSendingAudio() async {
+        sut.didReceiveGreenLightForAudioInput()
+
+        sut.didFailToRecord(error: AudioRecorderError.captureDeviceUnavailable)
+        let deadline = Date().addingTimeInterval(2)
+        while !mockAssistService.cancelRunCalled, Date() < deadline {
+            await Task.yield()
+        }
+        sut.didOutputSample(data: Data([0x01]))
+
+        XCTAssertTrue(mockAssistService.cancelRunCalled)
+        XCTAssertFalse(sut.canSendAudioData)
+        XCTAssertFalse(mockAssistService.sendAudioDataCalled)
+    }
+
+    /// The stop is scheduled onto the main actor, so it lands a turn after the error arrives.
+    @MainActor
+    private func waitUntilNotRecording(timeout: TimeInterval = 2) async {
+        let deadline = Date().addingTimeInterval(timeout)
+        while sut.isRecording, Date() < deadline {
+            await Task.yield()
+        }
     }
 }

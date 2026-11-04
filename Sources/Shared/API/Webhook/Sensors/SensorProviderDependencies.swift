@@ -1,4 +1,5 @@
 import Foundation
+import HAKit
 
 public protocol SensorProviderUpdateSignaler: AnyObject {
     init(signal: @escaping () -> Void)
@@ -6,7 +7,7 @@ public protocol SensorProviderUpdateSignaler: AnyObject {
 
 public class SensorProviderDependencies {
     var updateSignalHandler: (SensorProvider.Type) -> Void = { _ in }
-    private var updateSignalers: [String: [SensorProviderUpdateSignaler]] = [:]
+    private let updateSignalers = HAProtected<[String: [SensorProviderUpdateSignaler]]>(value: [:])
 
     private func key(for sensorProvider: SensorProvider) -> String {
         String(describing: type(of: sensorProvider))
@@ -16,7 +17,7 @@ public class SensorProviderDependencies {
         for sensorProvider: SensorProvider
     ) -> SignalerType? {
         let key = key(for: sensorProvider)
-        return updateSignalers[key]?.compactMap({ $0 as? SignalerType }).first
+        return updateSignalers.read { $0[key]?.compactMap { $0 as? SignalerType }.first }
     }
 
     public func updateSignaler<SignalerType: SensorProviderUpdateSignaler>(
@@ -26,12 +27,18 @@ public class SensorProviderDependencies {
             return existing
         }
 
+        let key = key(for: sensorProvider)
         let sensorType = type(of: sensorProvider)
         let created = SignalerType(signal: { [weak self] in
             self?.updateSignalHandler(sensorType)
         })
 
-        updateSignalers[key(for: sensorProvider), default: []] += [created]
-        return created
+        return updateSignalers.mutate { signalers in
+            if let existing = signalers[key]?.compactMap({ $0 as? SignalerType }).first {
+                return existing
+            }
+            signalers[key, default: []].append(created)
+            return created
+        }
     }
 }

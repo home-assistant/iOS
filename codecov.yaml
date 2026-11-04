@@ -11,10 +11,27 @@ coverage:
         informational: true
     patch:
       default:
+        # Enforcement lives in the `patch-coverage` job of .github/workflows/ci.yml,
+        # which requests changes on a pull request whose changed lines fall below
+        # this bar. Codecov reports the same number so its comment and status agree
+        # with the gate, but stays informational rather than blocking merges twice.
+        target: 90%
         informational: true
+
+# Report coverage on every pull request, updating one comment in place rather
+# than adding a new one per push.
+comment:
+  layout: "condensed_header, diff, files, condensed_footer"
+  behavior: default
+  require_changes: false
+
+# Statuses and the comment carry the report; per-line annotations on the diff
+# are pure noise while most of the project is uncovered.
+github_checks:
+  annotations: false
+
 ignore:
   - Sources/Shared/Resources
   - Sources/App/Resources
   - Sources/SharedTesting
   - Tests
-  - Pods

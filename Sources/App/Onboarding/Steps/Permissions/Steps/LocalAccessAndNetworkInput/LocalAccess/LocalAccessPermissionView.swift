@@ -50,13 +50,15 @@ struct LocalAccessPermissionView: View {
             value: ConnectionSecurityLevel.mostSecure.rawValue,
             title: L10n.Onboarding.LocalAccess.SecureOption.title,
             subtitle: nil,
-            isRecommended: true
+            isRecommended: true,
+            accessibilityIdentifier: AccessibilityIdentifier.onboardingLocalAccessSecureOption.rawValue
         ),
         SelectionOption(
             value: ConnectionSecurityLevel.lessSecure.rawValue,
             title: L10n.Onboarding.LocalAccess.LessSecureOption.title,
             subtitle: nil,
-            isRecommended: false
+            isRecommended: false,
+            accessibilityIdentifier: AccessibilityIdentifier.onboardingLocalAccessLessSecureOption.rawValue
         ),
     ]
 
@@ -95,6 +97,7 @@ struct LocalAccessPermissionView: View {
             primaryAction: {
                 action(viewModel.selection)
             },
+            primaryActionIdentifier: AccessibilityIdentifier.onboardingLocalAccessNext.rawValue,
             secondaryActionTitle: L10n.SettingsDetails.learnMore,
             secondaryAction: {
                 showLearnMore = true

@@ -1,7 +1,7 @@
 import Shared
 import SwiftUI
 
-enum OnboardingStyle: Equatable {
+enum OnboardingStyle: Hashable {
     case initial
     case required
     case secondary
@@ -24,41 +24,55 @@ enum OnboardingNavigation {
     }
 }
 
+/// Hosts the onboarding screens in a `NavigationStack` whose path is owned by the
+/// `OnboardingAuthPresenter`, so the auth flow's steps (login web view, device naming, permissions)
+/// are real pushes.
 struct OnboardingNavigationView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject public var viewModel = OnboardingNavigationViewModel()
-    public let onboardingStyle: OnboardingStyle
+    @StateObject private var presenter: OnboardingAuthPresenter
 
-    init(onboardingStyle: OnboardingStyle) {
+    public let onboardingStyle: OnboardingStyle
+    private let prefillURL: URL?
+    private let shouldDismissOnSuccess: Bool
+
+    init(
+        onboardingStyle: OnboardingStyle,
+        prefillURL: URL? = nil,
+        shouldDismissOnSuccess: Bool = false,
+        presenter: @autoclosure @escaping () -> OnboardingAuthPresenter = OnboardingAuthPresenter()
+    ) {
+        self._presenter = StateObject(wrappedValue: presenter())
         self.onboardingStyle = onboardingStyle
+        self.prefillURL = prefillURL
+        self.shouldDismissOnSuccess = shouldDismissOnSuccess
     }
 
     var body: some View {
-        NavigationView {
-            Group {
-                switch onboardingStyle {
-                case .initial:
-                    OnboardingWelcomeView(shouldDismissOnboarding: $viewModel.shouldDismiss)
-                case .secondary:
-                    OnboardingServersListView(onboardingStyle: onboardingStyle)
-                case .required:
-                    OnboardingWelcomeView(shouldDismissOnboarding: $viewModel.shouldDismiss)
+        NavigationStack(path: $presenter.path) {
+            root
+                .navigationDestination(for: OnboardingDestination.self) { destination in
+                    view(for: destination)
                 }
-            }
-            .navigationViewStyle(.stack)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    if onboardingStyle.insertsCancelButton, !Current.isCatalyst {
-                        Button(action: {
-                            closeOnboarding()
-                        }) {
-                            Text(L10n.cancelLabel)
-                        }
-                    }
-                }
-            }
         }
-        .navigationViewStyle(.stack)
+        .alert(
+            L10n.Onboarding.ConnectionTestResult.CertificateError.title,
+            isPresented: certificateTrustAlertBinding,
+            presenting: presenter.certificateTrustRequest
+        ) { request in
+            Button(L10n.Onboarding.ConnectionTestResult.CertificateError.actionTrust, role: .destructive) {
+                request.trust()
+            }
+            Button(L10n.Onboarding.ConnectionTestResult.CertificateError.actionDontTrust, role: .cancel) {
+                request.dontTrust()
+            }
+        } message: { request in
+            Text(request.message)
+        }
+        .sheet(item: clientCertificateSheetItem) { request in
+            clientCertificateSheet(request: request)
+        }
+        .sheet(item: $presenter.serverIdentityRequest, content: OnboardingServerIdentitySheet.init)
         .onChange(of: viewModel.shouldDismiss) { newValue in
             if newValue {
                 closeOnboarding()
@@ -66,12 +80,137 @@ struct OnboardingNavigationView: View {
         }
     }
 
+    @ViewBuilder
+    private var root: some View {
+        switch onboardingStyle {
+        case .initial, .required:
+            OnboardingWelcomeView(continueAction: { presenter.push(.serversList) })
+        case .secondary:
+            serversList
+                .navigationTitle(L10n.Settings.ConnectionSection.addServer)
+        }
+    }
+
+    @ViewBuilder
+    private func view(for destination: OnboardingDestination) -> some View {
+        switch destination {
+        case .serversList:
+            serversList
+        case let .login(loginViewModel):
+            OnboardingAuthLoginView(viewModel: loginViewModel)
+        case let .deviceName(request):
+            // Back would land on the finished login page; the view has its own Cancel.
+            DeviceNameView(request: request)
+                .navigationBarBackButtonHidden(true)
+        case let .permissions(server):
+            OnboardingPermissionsNavigationView(
+                onboardingServer: server,
+                showsNavigationBarForBackOnly: true,
+                onDismiss: { finishFlow() }
+            )
+            .navigationBarBackButtonHidden(true)
+        case let .clientCertificate(request):
+            // Mac Catalyst only; the user resolves the step through the page's own buttons.
+            ClientCertificateOnboardingView(
+                onImport: { certificate in
+                    request.complete(with: certificate)
+                },
+                onCancel: {
+                    request.cancel()
+                }
+            )
+            .navigationBarBackButtonHidden(true)
+        case let .connectionError(context):
+            // Mac Catalyst only; iOS shows the same details as a sheet over the servers list.
+            ConnectionErrorDetailsView(
+                server: nil,
+                error: context.error,
+                showSettingsEntry: false,
+                expandMoreDetails: true
+            )
+        case let .serverIdentity(request):
+            // Mac Catalyst only; the user resolves the step through the page's own buttons.
+            OnboardingServerIdentityView(request: request)
+                .navigationBarBackButtonHidden(true)
+        }
+    }
+
+    private var serversList: some View {
+        OnboardingServersListView(
+            prefillURL: prefillURL,
+            shouldDismissOnSuccess: shouldDismissOnSuccess,
+            onboardingStyle: onboardingStyle,
+            presenter: presenter
+        )
+    }
+
+    /// Ends onboarding after the permissions flow. The stack is popped to root without animation
+    /// first so the container never tears the `NavigationStack` down while pages are pushed — doing
+    /// so leaks the pushed page's hosting view over the app.
+    private func finishFlow() {
+        var transaction = Transaction()
+        transaction.disablesAnimations = true
+        withTransaction(transaction) {
+            presenter.popToRoot()
+        }
+        DispatchQueue.main.async {
+            Current.onboardingObservation.complete()
+        }
+    }
+
+    /// The trust alert can only be answered through its buttons; an unanswered request is kept so a
+    /// follow-up presentation (retry after trusting) isn't dropped by the dismissal callback.
+    private var certificateTrustAlertBinding: Binding<Bool> {
+        Binding(
+            get: { presenter.certificateTrustRequest != nil },
+            set: { isPresented in
+                if !isPresented, presenter.certificateTrustRequest?.isAnswered == true {
+                    presenter.certificateTrustRequest = nil
+                }
+            }
+        )
+    }
+
+    /// iOS only — Mac Catalyst pushes the import step as a page instead. Held back while a screen
+    /// below has its own sheet up (manual URL entry) so the mTLS prompt is never presented behind
+    /// it; the request stays pending in the presenter and is shown once the hold is released after
+    /// the other sheet fully dismissed.
+    private var clientCertificateSheetItem: Binding<OnboardingClientCertificateRequest?> {
+        Binding(
+            get: { presenter.holdClientCertificateSheet ? nil : presenter.clientCertificateRequest },
+            set: { newValue in
+                if newValue == nil {
+                    presenter.clientCertificateRequest = nil
+                }
+            }
+        )
+    }
+
+    private func clientCertificateSheet(request: OnboardingClientCertificateRequest) -> some View {
+        NavigationView {
+            ClientCertificateOnboardingView(
+                onImport: { certificate in
+                    request.complete(with: certificate)
+                },
+                onCancel: {
+                    request.cancel()
+                }
+            )
+        }
+        .navigationViewStyle(.stack)
+        .presentationDetents([.medium])
+        .onDisappear {
+            // Interactive dismissal without a choice counts as cancelling the import.
+            request.cancel()
+        }
+    }
+
     private func closeOnboarding() {
         if onboardingStyle == .secondary {
             dismiss()
         } else {
-            Current.sceneManager.webViewWindowControllerPromise.done { windowController in
-                windowController.setup()
+            Current.sceneManager.appCoordinator.done { coordinator in
+                coordinator.setup()
             }
         }
     }

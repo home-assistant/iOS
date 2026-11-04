@@ -193,4 +193,35 @@ struct URLExtensionsTests {
 
         #expect(resolvedURL.sameHostRedirectBaseURL(from: attemptedURL) == nil)
     }
+
+    @Test(
+        "Given URLs equal ignoring query params, including the two root path spellings and the HA /0 suffix",
+        arguments: [
+            ("https://example.com", "https://example.com/"), // root "" vs "/"
+            ("https://example.com/", "https://example.com"),
+            ("https://example.com?external_auth=1", "https://example.com/"), // query ignored + root spelling
+            ("https://example.com/lovelace?edit=1", "https://example.com/lovelace"),
+            ("https://example.com/0", "https://example.com"), // HA /0 suffix on the root
+        ]
+    )
+    func isEqualIgnoringQueryParamsTreatsEquivalentURLsAsEqual(lhs: String, rhs: String) throws {
+        let lhsURL = try #require(URL(string: lhs))
+        let rhsURL = try #require(URL(string: rhs))
+
+        #expect(lhsURL.isEqualIgnoringQueryParams(to: rhsURL))
+    }
+
+    @Test(
+        "Given URLs with genuinely different paths or hosts then isEqualIgnoringQueryParams returns false",
+        arguments: [
+            ("https://example.com/lovelace", "https://example.com/lovelace/removed"),
+            ("https://example.com/", "https://other.com/"),
+        ]
+    )
+    func isEqualIgnoringQueryParamsSeparatesDifferentPages(lhs: String, rhs: String) throws {
+        let lhsURL = try #require(URL(string: lhs))
+        let rhsURL = try #require(URL(string: rhs))
+
+        #expect(!lhsURL.isEqualIgnoringQueryParams(to: rhsURL))
+    }
 }

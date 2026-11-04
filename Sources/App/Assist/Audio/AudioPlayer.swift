@@ -4,7 +4,7 @@ import Shared
 
 protocol AudioPlayerProtocol {
     var delegate: AudioPlayerDelegate? { get set }
-    func play(url: URL)
+    func play(url: URL, server: Server?)
     func pause()
 }
 
@@ -16,24 +16,80 @@ protocol AudioPlayerDelegate: AnyObject {
 final class AudioPlayer: NSObject, AudioPlayerProtocol {
     weak var delegate: AudioPlayerDelegate?
     private let player = AVPlayer()
+    private var dataPlayer: AVAudioPlayer?
+    private var downloadTask: URLSessionDataTask?
 
-    func play(url: URL) {
+    func play(url: URL, server: Server?) {
+        stopCurrentPlayback()
+
+        let audioSession = AVAudioSession.sharedInstance()
+
+        // Each step is attempted independently: if deactivation fails (e.g. while the
+        // recorder's capture session is still tearing down), the category switch below must
+        // still run — otherwise the session can stay in the output-less .record category
+        // and playback is silent.
         do {
-            let audioSession = AVAudioSession.sharedInstance()
             try audioSession.setActive(false)
-            try audioSession.setCategory(.playback)
-            try audioSession.setActive(true)
-
-            Current.Log.verbose("Audio player current volume: \(audioSession.outputVolume)")
-
-            if audioSession.outputVolume == 0 {
-                delegate?.volumeIsZero()
-                return
-            }
         } catch {
-            Current.Log.error("Failed to setup audio session for audio player: \(error.localizedDescription)")
+            Current.Log.error("Failed to deactivate audio session before playback: \(error.localizedDescription)")
+        }
+        do {
+            // Naming the mode matters as much as the category here: it survives a category change on
+            // its own, so a preceding on-device transcription would otherwise leave `.measurement`
+            // in place and play the response back quietly.
+            try audioSession.setCategory(.playback, mode: .default)
+        } catch {
+            Current.Log.error("Failed to set playback category for audio player: \(error.localizedDescription)")
+        }
+        do {
+            try audioSession.setActive(true)
+        } catch {
+            Current.Log.error("Failed to activate audio session for audio player: \(error.localizedDescription)")
         }
 
+        Current.Log.verbose("Audio player current volume: \(audioSession.outputVolume)")
+
+        if audioSession.outputVolume == 0 {
+            delegate?.volumeIsZero()
+            return
+        }
+
+        // Falls back to streaming when the server is unknown: for the servers streaming can
+        // handle, playback keeps working, and the certificate-requiring ones failed either way.
+        if let server, requiresCertificateAwareLoading(server: server) {
+            downloadAndPlay(url: url, server: server)
+        } else {
+            playStreaming(url: url)
+        }
+    }
+
+    func pause() {
+        player.pause()
+        dataPlayer?.pause()
+        downloadTask?.cancel()
+    }
+
+    /// Stops whichever path is currently active so a new `play` never overlaps the previous
+    /// audio or receives its finish callbacks. `AVAudioPlayer.stop()` does not fire the
+    /// finished-playing delegate, so no spurious `audioPlayerDidFinishPlaying` results.
+    private func stopCurrentPlayback() {
+        downloadTask?.cancel()
+        downloadTask = nil
+        dataPlayer?.stop()
+        dataPlayer = nil
+        NotificationCenter.default.removeObserver(self, name: .AVPlayerItemDidPlayToEndTime, object: nil)
+        player.replaceCurrentItem(with: nil)
+    }
+
+    /// AVPlayer loads media over its own connection, which can neither present the server's
+    /// client certificate (mTLS) nor apply the app's TLS security exceptions — so for servers
+    /// configured with either, streaming would always fail the handshake.
+    private func requiresCertificateAwareLoading(server: Server) -> Bool {
+        server.info.connection.clientCertificate != nil ||
+            server.info.connection.securityExceptions.hasExceptions
+    }
+
+    private func playStreaming(url: URL) {
         let playerItem = AVPlayerItem(url: url)
         player.replaceCurrentItem(with: playerItem)
         player.play()
@@ -46,8 +102,64 @@ final class AudioPlayer: NSObject, AudioPlayerProtocol {
         )
     }
 
-    func pause() {
-        player.pause()
+    private func downloadAndPlay(url: URL, server: Server) {
+        downloadTask?.cancel()
+
+        let session = HomeAssistantAPI.makeCertificateAwareURLSession(server: server)
+        var task: URLSessionDataTask?
+        task = session.dataTask(with: url) { [weak self] data, response, error in
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
+                guard downloadTask === task else { return }
+                downloadTask = nil
+                handleDownloadResult(data: data, response: response, error: error)
+            }
+        }
+        downloadTask = task
+        task?.resume()
+        // The running task completes normally; afterwards the session releases its delegate,
+        // which URLSession otherwise retains forever.
+        session.finishTasksAndInvalidate()
+    }
+
+    private func handleDownloadResult(data: Data?, response: URLResponse?, error: Error?) {
+        if let error {
+            guard (error as? URLError)?.code != .cancelled else { return }
+            Current.Log.error("Failed to download TTS audio: \(error.localizedDescription)")
+            finishWithoutPlayback()
+            return
+        }
+
+        if let httpResponse = response as? HTTPURLResponse, !(200 ..< 300).contains(httpResponse.statusCode) {
+            Current.Log.error("TTS audio download failed with status code: \(httpResponse.statusCode)")
+            finishWithoutPlayback()
+            return
+        }
+
+        guard let data, !data.isEmpty else {
+            Current.Log.error("TTS audio download returned empty data")
+            finishWithoutPlayback()
+            return
+        }
+
+        do {
+            dataPlayer = try AVAudioPlayer(data: data)
+            dataPlayer?.delegate = self
+            dataPlayer?.prepareToPlay()
+            if dataPlayer?.play() != true {
+                Current.Log.error("AVAudioPlayer failed to start TTS playback")
+                finishWithoutPlayback()
+            }
+        } catch {
+            Current.Log.error("Failed to create AVAudioPlayer for TTS: \(error.localizedDescription)")
+            finishWithoutPlayback()
+        }
+    }
+
+    /// Failed playback reports as finished so a continue-conversation pipeline run resumes
+    /// listening instead of hanging on audio that will never end.
+    private func finishWithoutPlayback() {
+        delegate?.audioPlayerDidFinishPlaying(self)
     }
 
     @objc private func audioDidFinishPlaying(_ notification: Notification) {
@@ -56,5 +168,11 @@ final class AudioPlayer: NSObject, AudioPlayerProtocol {
 
     deinit {
         NotificationCenter.default.removeObserver(self)
+    }
+}
+
+extension AudioPlayer: AVAudioPlayerDelegate {
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        delegate?.audioPlayerDidFinishPlaying(self)
     }
 }

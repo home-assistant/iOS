@@ -3,7 +3,6 @@ import Foundation
 import HAKit
 import Shared
 
-@available(iOS 16.0, *)
 final class CarPlayAreasZonesTemplate: CarPlayTemplateProvider {
     private var childTemplateProvider: (any CarPlayTemplateProvider)?
     private let viewModel: CarPlayAreasViewModel

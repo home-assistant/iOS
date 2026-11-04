@@ -7,7 +7,7 @@ protocol BarcodeScannerCameraDelegate: AnyObject {
     func didDetectBarcode(_ code: String, format: String)
 }
 
-final class BarcodeScannerCamera: NSObject {
+final class BarcodeScannerCamera: NSObject, @unchecked Sendable {
     private let captureSession = AVCaptureSession()
     private var isCaptureSessionConfigured = false
     private var deviceInput: AVCaptureDeviceInput?
@@ -154,9 +154,7 @@ final class BarcodeScannerCamera: NSObject {
             .upce,
         ]
 
-        if #available(iOS 15.4, *) {
-            metadataObjectTypes.append(.codabar)
-        }
+        metadataObjectTypes.append(.codabar)
 
         metadataOutput.metadataObjectTypes = metadataObjectTypes
 
@@ -308,22 +306,15 @@ final class BarcodeScannerCamera: NSObject {
         }
     }
 
+    // TODO: Modernization - `UIScreen.main` is deprecated. Rotate frames with
+    // `AVCaptureDevice.RotationCoordinator` (iOS 17+) driven by the preview, or read the screen of the
+    // window hosting the preview (`view.window?.windowScene?.screen`) instead of the main screen.
     private var deviceOrientation: UIDeviceOrientation {
         var orientation = UIDevice.current.orientation
         if orientation == UIDeviceOrientation.unknown {
             orientation = UIScreen.main.orientation
         }
         return orientation
-    }
-
-    private func videoOrientationFor(_ deviceOrientation: UIDeviceOrientation) -> AVCaptureVideoOrientation? {
-        switch deviceOrientation {
-        case .portrait: return AVCaptureVideoOrientation.portrait
-        case .portraitUpsideDown: return AVCaptureVideoOrientation.portraitUpsideDown
-        case .landscapeLeft: return AVCaptureVideoOrientation.landscapeRight
-        case .landscapeRight: return AVCaptureVideoOrientation.landscapeLeft
-        default: return nil
-        }
     }
 }
 
@@ -336,7 +327,7 @@ extension BarcodeScannerCamera: AVCaptureVideoDataOutputSampleBufferDelegate {
         guard let pixelBuffer = sampleBuffer.imageBuffer else { return }
 
         if connection.isVideoOrientationSupported,
-           let videoOrientation = videoOrientationFor(deviceOrientation) {
+           let videoOrientation = AVCaptureVideoOrientation(deviceOrientation: deviceOrientation) {
             connection.videoOrientation = videoOrientation
         }
 

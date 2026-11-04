@@ -24,9 +24,19 @@ struct WebhookSensorIdTests {
         assert(WebhookSensorId.appVersion.rawValue == "app-version")
         assert(WebhookSensorId.locationPermission.rawValue == "location-permission")
         assert(WebhookSensorId.focus.rawValue == "focus")
+        assert(WebhookSensorId.focusName.rawValue == "focus_name")
         assert(WebhookSensorId.pressure.rawValue == "pressure")
+        assert(WebhookSensorId.kioskMode.rawValue == "kioskMode")
+        assert(WebhookSensorId.kioskBrightness.rawValue == "kioskBrightness")
+        assert(WebhookSensorId.kioskVolume.rawValue == "kioskVolume")
+        assert(WebhookSensorId.kioskScreensaver.rawValue == "kioskScreensaver")
+        assert(WebhookSensorId.cameraMotion.rawValue == "cameraMotion")
+        assert(WebhookSensorId.cameraStream.rawValue == "cameraStream")
+        assert(WebhookSensorId.hingeAngle.rawValue == "hinge_angle")
+        assert(WebhookSensorId.hingeStatus.rawValue == "hinge_status")
+        assert(WebhookSensorId.devicePose.rawValue == "device_pose")
         assert(
-            WebhookSensorId.allCases.count == 22,
+            WebhookSensorId.allCases.count == 32,
             "WebhookSensorId has different number of cases than defined in test, \(WebhookSensorId.allCases.count)"
         )
     }

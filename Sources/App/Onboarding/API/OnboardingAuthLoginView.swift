@@ -1,0 +1,110 @@
+import SFSafeSymbols
+import Shared
+import SwiftUI
+import WebKit
+
+/// The Home Assistant login page for onboarding and re-authentication. Pushed onto the onboarding
+/// navigation stack (`.pushed`, back button cancels) or presented modally with its own navigation bar
+/// and cancel button (`.modal`, used by re-authentication flows).
+struct OnboardingAuthLoginView: View {
+    enum Style {
+        case pushed
+        case modal
+    }
+
+    @ObservedObject var viewModel: OnboardingAuthLoginViewModel
+    var style: Style = .pushed
+    var title: String?
+    var banner: String?
+
+    var body: some View {
+        switch style {
+        case .pushed:
+            // Cancellation comes from the navigation back button; disappearing while the OAuth
+            // callback is unresolved rejects the login promise.
+            content
+        case .modal:
+            NavigationView {
+                content
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button(L10n.cancelLabel) {
+                                viewModel.cancel()
+                            }
+                            .accessibilityIdentifier(AccessibilityIdentifier.loginCancel.rawValue)
+                        }
+                    }
+            }
+            .navigationViewStyle(.stack)
+            .interactiveDismissDisabled()
+        }
+    }
+
+    private var content: some View {
+        VStack(spacing: 0) {
+            if let banner {
+                Text(banner)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, DesignSystem.Spaces.one)
+                    .background(.bar)
+                    .accessibilityIdentifier(AccessibilityIdentifier.loginBanner.rawValue)
+            }
+            LoginWebView(webView: viewModel.webView)
+                // Edge to edge like the frontend web view: WebKit insets the page content for the bars
+                // and any camera or vertical bar (iPhone Duo) itself, so only its background bleeds.
+                .ignoresSafeArea(.container, edges: .all)
+        }
+        .overlay {
+            if viewModel.isLoading || viewModel.didCompleteLogin {
+                ZStack {
+                    Color(uiColor: .systemBackground)
+                        .opacity(0.8)
+                        .ignoresSafeArea()
+                    HAProgressView()
+                }
+            }
+        }
+        .navigationTitle(title ?? viewModel.authDetails.url.host ?? "")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(.visible, for: .navigationBar)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    viewModel.refresh()
+                } label: {
+                    Image(systemSymbol: .arrowClockwise)
+                }
+            }
+        }
+        .onAppear {
+            viewModel.startIfNeeded()
+        }
+        .onDisappear {
+            viewModel.cancelIfUnresolved()
+        }
+    }
+
+    /// Hosts the view model's `WKWebView`; all WebKit behavior lives on the view model.
+    private struct LoginWebView: UIViewRepresentable {
+        let webView: WKWebView
+
+        func makeUIView(context: Context) -> WKWebView {
+            webView
+        }
+
+        func updateUIView(_ uiView: WKWebView, context: Context) {}
+    }
+}
+
+#Preview {
+    NavigationStack {
+        OnboardingAuthLoginView(
+            // swiftlint:disable:next force_try
+            viewModel: OnboardingAuthLoginViewModel(authDetails: try! OnboardingAuthDetails(
+                baseURL: URL(string: "http://homeassistant.local:8123")!
+            ))
+        )
+    }
+}

@@ -1,8 +1,9 @@
-import Communicator
 import Foundation
 import ObjectMapper
 import PromiseKit
 import Shared
+import SwiftUI
+import UIKit
 
 final class WatchCommunicatorService {
     enum WatchAssistCommunicatorError: Error {
@@ -12,32 +13,175 @@ final class WatchCommunicatorService {
     // Assist
     private var assistService: AssistServiceProtocol?
     private var pendingAudioData: Data?
+    var assistConfiguration: () -> AssistConfiguration = { AssistConfiguration.config }
+    var makeAssistService: (Server) -> AssistServiceProtocol = { AssistService(server: $0) }
+    var makeSpeechRecognizer: OnDeviceRecognizerFactory = systemSpeechRecognizerFactory
+    var watchSpeaksOnDevice: () -> Bool = {
+        (Communicator.shared.counterpartProtocolVersion ?? 0) >= WatchProtocolVersion.assistOnDeviceTTS
+    }
 
-    // [sessionKey: [chunkIndex: Data]]
-    private var audioChunks: [String: [Int: Data]] = [:]
-    private var audioChunkCounts: [String: Int] = [:]
+    var watchReadsAssistResponsesFromPong: () -> Bool = {
+        (Communicator.shared.counterpartProtocolVersion ?? 0) >= WatchProtocolVersion.assistResponsesInPong
+    }
+
+    var send: (HAWatchConnectivity.ImmediateMessage, @escaping (Error) -> Void) -> Void = {
+        Communicator.shared.send($0, errorHandler: $1)
+    }
+
+    /// Queued (`transferUserInfo`) delivery to the watch. Injectable so tests capture the replies.
+    var sendGuaranteed: (HAWatchConnectivity.GuaranteedMessage) -> Void = {
+        Communicator.shared.send($0)
+    }
+
+    /// Pushes the application context to the watch. Injectable so tests never update the paired
+    /// watch's context; `setup()` captures it when it registers the state observers.
+    var syncWatchContext: () -> Void = {
+        HomeAssistantAPI.syncWatchContext()
+    }
+
+    private typealias UndeliveredAssistMessage = (sequence: Int, message: HAWatchConnectivity.ImmediateMessage)
+    private var undeliveredAssistMessages: [UndeliveredAssistMessage] = []
+    private var assistMessageSequence = 0
+    private var assistRunFirstSequence = 1
+    private var isAssistRunInProgress = false
+    /// Counts the watch's Assist requests, so work finishing after a newer one started is dropped.
+    private var assistRunID = 0
+
+    /// One in-progress chunked audio upload from the watch.
+    private struct AudioChunkSession {
+        var chunks: [Int: Data] = [:]
+        var totalChunks: Int
+        var lastChunkAt: Date
+    }
+
+    /// In-progress audio uploads keyed by the watch's per-recording id (or `serverId_pipelineId`
+    /// for watch builds that predate the recording id).
+    private var audioChunkSessions: [String: AudioChunkSession] = [:]
+    /// Partial uploads that stop receiving chunks for this long are abandoned (the watch retried or
+    /// gave up) and dropped, so they can't leak memory or corrupt a later recording.
+    private static let audioChunkSessionTimeout: TimeInterval = 60
+
+    /// One recording the watch streams while it is being made.
+    private struct AssistAudioStream {
+        let id: String
+        /// Transcribes the stream on the phone; `nil` when the pipeline's own speech-to-text does.
+        let recognition: OnDeviceSpeechRecognitionSession?
+        let pipelineId: String
+        let server: Server
+        let configuration: AssistConfiguration
+        var nextSequence = 0
+        /// Audio that arrived before the pipeline was ready for it.
+        var pendingAudio = Data()
+        var isPipelineReady = false
+        /// The watch submitted the recording: the stream only stays until the pipeline has its audio.
+        var isSubmitted = false
+        var abandonment: DispatchWorkItem?
+    }
+
+    /// The recording the watch is streaming, from `assistAudioStreamStart` until the phone stops
+    /// listening to it or the watch submits or cancels it.
+    private var assistAudioStream: AssistAudioStream?
+    /// A stream the watch stops feeding for this long was abandoned — the watch lost the link or
+    /// closed Assist mid-recording — so the run waiting on its audio is cancelled.
+    var assistAudioStreamTimeout: TimeInterval = 30
+
+    /// One in-progress database sync: the ordered chunks plus which indices have been served, so
+    /// the buffer is freed once every chunk went out at least once — the watch pipelines its
+    /// requests, so "the last index was requested" no longer implies the others were answered.
+    private struct DatabaseSyncTransfer {
+        var chunks: [Data]
+        var servedIndices: Set<Int> = []
+    }
+
+    /// In-progress database syncs, keyed by transferId → the ordered chunks the watch pulls.
+    /// Only one sync is ever meaningful at a time (there is one paired watch), so starting a new sync
+    /// frees any previous buffer — a watch that died mid-pull must not leak the encoded mirror.
+    private var databaseSyncChunks: [String: DatabaseSyncTransfer] = [:]
+
+    private var didBecomeActiveObserver: NSObjectProtocol?
+    private var databaseUpdatedObserver: NSObjectProtocol?
+
+    deinit {
+        if let didBecomeActiveObserver {
+            NotificationCenter.default.removeObserver(didBecomeActiveObserver)
+        }
+        if let databaseUpdatedObserver {
+            NotificationCenter.default.removeObserver(databaseUpdatedObserver)
+        }
+    }
 
     func setup() {
         Current.servers.add(observer: self)
+        let syncWatchContext = syncWatchContext
 
         // This directly mutates the data structure for observations to avoid race conditions.
-        Communicator.State.observations.store[.init(queue: .main)] = { state in
+        Communicator.shared.state.observations.store[.init(queue: .main)] = { state in
             Current.Log.verbose("Activation state changed: \(state)")
-            _ = HomeAssistantAPI.SyncWatchContext()
+            syncWatchContext()
         }
 
-        WatchState.observations.store[.init(queue: .main)] = { watchState in
+        Communicator.shared.watchState.observations.store[.init(queue: .main)] = { watchState in
             Current.Log.verbose("Watch state changed: \(watchState)")
-            _ = HomeAssistantAPI.SyncWatchContext()
+            syncWatchContext()
         }
 
-        Reachability.observations.store[.init(queue: .main)] = { reachability in
+        Communicator.shared.reachability.observations.store[.init(queue: .main)] = { reachability in
             Current.Log.verbose("Reachability changed: \(reachability)")
         }
 
         setupMessages()
 
-        Context.observations.store[.init(queue: .main)] = { context in
+        // Background-delivery (transferUserInfo) requests from the watch. These arrive even when the
+        // phone wasn't immediately reachable when the watch asked, so the config pull no longer depends
+        // on the iPhone being foreground. Currently only the config pull uses this fallback.
+        Communicator.shared.guaranteedMessage.observations.store[.init(queue: .main)] = { [weak self] message in
+            guard let self, let messageId = InteractiveImmediateMessages(rawValue: message.identifier) else { return }
+            Current.Log.verbose("Received guaranteed \(message.identifier)")
+            presentWatchInteractionToast(for: messageId)
+            if messageId == .watchConfig {
+                respondToGuaranteedWatchConfigRequest()
+            }
+        }
+
+        // Diagnostics archive pushed from the watch's Logs screen. Saved into the logs directory so
+        // the app's regular "Export Log Files" includes the watch's logs — the watch has no
+        // reliable share sheet of its own.
+        Communicator.shared.blob.observations.store[.init(queue: .main)] = { blob in
+            guard blob.identifier == WatchDiagnosticsTransfer.blobIdentifier else { return }
+            do {
+                let url = try WatchDiagnosticsTransfer.save(blob)
+                Current.Log.info("Saved watch diagnostics archive to \(url.lastPathComponent)")
+                Current.clientEventStore.addEvent(.init(
+                    text: "Received watch diagnostics archive; it will be included in Export Log Files",
+                    type: .settings,
+                    payload: ["fileName": url.lastPathComponent, "bytes": blob.content.count]
+                ))
+            } catch {
+                Current.Log.error("Failed to save watch diagnostics archive: \(error.localizedDescription)")
+            }
+        }
+
+        // When the iOS app finishes refreshing its local database from a server, proactively push the
+        // updated reference tables to the watch over transferFile so its cached data stays fresh without
+        // the user opening the watch app.
+        databaseUpdatedObserver = NotificationCenter.default.addObserver(
+            forName: .appDatabaseUpdaterDidFinishRoutine,
+            object: nil,
+            queue: .main
+        ) { _ in
+            WatchMirrorPushCoordinator.schedule(reason: .databaseUpdated)
+        }
+
+        // Present any client-certificate import the watch requested while the app was backgrounded.
+        didBecomeActiveObserver = NotificationCenter.default.addObserver(
+            forName: UIApplication.didBecomeActiveNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.presentPendingClientCertImportIfPossible()
+        }
+
+        Communicator.shared.context.observations.store[.init(queue: .main)] = { context in
             Current.Log.verbose("Received context: \(context.content.keys) \(context.content)")
 
             if let modelIdentifier = context.content[WatchContext.watchModel.rawValue] as? String {
@@ -47,76 +191,310 @@ final class WatchCommunicatorService {
             Current.apis.forEach({ $0.UpdateSensors(trigger: .watchContext).cauterize() })
         }
 
-        _ = Communicator.shared
+        Communicator.shared.activate()
     }
 
-    private func setupMessages() {
-        InteractiveImmediateMessage.observations.store[.init(queue: .main)] = { [weak self] message in
-            Current.Log.verbose("Received \(message.identifier) \(message) \(message.content)")
+    func setupMessages() {
+        Communicator.shared.interactiveImmediateMessage.observations
+            .store[.init(queue: .main)] = { [weak self] message in
+                Current.Log.verbose(
+                    LogRedaction.isEnabled
+                        ? "Received \(message.identifier) with \(message.content.keys.sorted())"
+                        : "Received \(message.identifier) \(message) \(message.content)"
+                )
 
-            guard let self, let messageId = InteractiveImmediateMessages(rawValue: message.identifier) else {
-                Current.Log
-                    .error(
-                        "Received InteractiveImmediateMessage not mapped in InteractiveImmediateMessages: \(message.identifier)"
-                    )
-                return
-            }
+                guard let self, let messageId = InteractiveImmediateMessages(rawValue: message.identifier) else {
+                    Current.Log
+                        .error(
+                            "Received InteractiveImmediateMessage not mapped in InteractiveImmediateMessages: \(message.identifier)"
+                        )
+                    return
+                }
 
-            switch messageId {
-            case .ping:
-                message.reply(.init(identifier: InteractiveImmediateResponses.pong.rawValue))
-            case .watchConfig:
-                watchConfig(message: message)
-            case .pushAction:
-                pushAction(message: message)
-            case .assistPipelinesFetch:
-                assistPipelinesFetch(message: message)
-            case .assistAudioDataChunked:
-                handleAssistAudioChunkedMessage(message)
-            case .magicItemPressed:
-                magicItemPressed(message: message)
+                presentWatchInteractionToast(for: messageId)
+
+                switch messageId {
+                case .ping:
+                    handlePing(message)
+                case .watchConfig:
+                    watchConfig(message: message)
+                case .watchConfigAvailableItems:
+                    watchConfigAvailableItems(message: message)
+                case .watchConfigUpdate:
+                    watchConfigUpdate(message: message)
+                case .watchDatabaseMirror:
+                    watchDatabaseMirrorSyncStart(message: message)
+                case .watchDatabaseMirrorChunk:
+                    watchDatabaseMirrorSyncChunk(message: message)
+                case .pushAction:
+                    pushAction(message: message)
+                case .assistPipelinesFetch:
+                    assistPipelinesFetch(message: message)
+                case .assistAudioDataChunked:
+                    handleAssistAudioChunkedMessage(message)
+                case .assistAudioStreamStart:
+                    handleAssistAudioStreamStart(message)
+                case .assistAudioStreamChunk:
+                    handleAssistAudioStreamChunk(message)
+                case .assistAudioStreamCancel:
+                    handleAssistAudioStreamCancel(message)
+                case .assistTextInput:
+                    handleAssistTextInputMessage(message)
+                case .magicItemPressed:
+                    magicItemPressed(message: message)
+                case .serversConfigSync:
+                    handleServersConfigSync(message: message)
+                case .clientCertImportRequest:
+                    handleClientCertImportRequest(message: message)
+                case .vacuumCleanableAreas:
+                    handleVacuumCleanableAreas(message: message)
+                case .httpRequest:
+                    handleHTTPRequest(message: message)
+                }
             }
+    }
+
+    /// Visual-only feedback: when the iPhone app is in the foreground and handles a request from the
+    /// watch, surface a brief toast so the user can see the two devices talking. Silently skipped when
+    /// the app isn't active (a toast wouldn't be visible) or on OS versions without the toast overlay.
+    private func presentWatchInteractionToast(for messageId: InteractiveImmediateMessages) {
+        // Skip keepalives, per-chunk pulls (the sync start already toasts), streamed audio (the stream
+        // start already toasts) and relayed requests — those arrive one per watch interaction and
+        // often several per screen, so toasting them would bury the ones that mean something.
+        let untoasted: [InteractiveImmediateMessages] = [
+            .ping, .watchDatabaseMirrorChunk, .assistAudioStreamChunk, .assistAudioStreamCancel, .httpRequest,
+        ]
+        guard !untoasted.contains(messageId) else { return }
+        guard #available(iOS 18, *) else { return }
+
+        let message: String
+        switch messageId {
+        case .watchConfig, .watchConfigUpdate, .watchConfigAvailableItems:
+            message = L10n.Watch.Interaction.Toast.config
+        case .serversConfigSync, .clientCertImportRequest:
+            message = L10n.Watch.Interaction.Toast.servers
+        case .watchDatabaseMirror:
+            message = L10n.Watch.Interaction.Toast.database
+        case .magicItemPressed, .pushAction:
+            message = L10n.Watch.Interaction.Toast.action
+        default:
+            message = L10n.Watch.Interaction.Toast.generic
+        }
+
+        Task { @MainActor in
+            guard UIApplication.shared.applicationState == .active else { return }
+            ToastPresenter.shared.show(
+                id: "watch-interaction",
+                symbol: .applewatch,
+                symbolForegroundStyle: (.white, .haPrimary),
+                title: L10n.Watch.Interaction.Toast.title,
+                message: message,
+                duration: 3
+            )
         }
     }
 
-    private func handleAssistAudioChunkedMessage(_ message: InteractiveImmediateMessage) {
-        guard let chunkData = message.content["chunkData"] as? Data,
-              let chunkIndex = message.content["chunkIndex"] as? Int,
-              let totalChunks = message.content["totalChunks"] as? Int,
+    private func handleServersConfigSync(message: HAWatchConnectivity.InteractiveImmediateMessage) {
+        // Reply with the server configuration AND any mTLS client certificate bundles inline,
+        // mirroring how the watch configuration is delivered — a single, synchronous round-trip.
+        var content: [String: Any] = ["servers": Current.servers.restorableState()]
+        if let certificates = clientCertificateTransferData() {
+            content["clientCertificates"] = certificates
+        }
+        message.reply(.init(
+            identifier: InteractiveImmediateResponses.serversConfigSyncResponse.rawValue,
+            content: content
+        ))
+    }
+
+    /// Fetch a vacuum's cleanable areas on the watch's behalf. The mapping lives in the entity
+    /// registry (WebSocket only), so the watch — which reaches Home Assistant over REST — has to
+    /// ask the phone. The reply carries the areas already resolved to `{id, name}` pairs so the
+    /// watch renders them without needing the registry itself.
+    private func handleVacuumCleanableAreas(message: HAWatchConnectivity.InteractiveImmediateMessage) {
+        let reply: ([VacuumAreaMapping.Area]) -> Void = { areas in
+            message.reply(.init(
+                identifier: InteractiveImmediateResponses.vacuumCleanableAreasResponse.rawValue,
+                content: ["areas": areas.map(\.wireFormat)]
+            ))
+        }
+
+        guard let entityId = message.content["entityId"] as? String,
               let serverId = message.content["serverId"] as? String,
-              let pipelineId = message.content["pipelineId"] as? String else {
+              let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }),
+              let connection = Current.api(for: server)?.connection else {
+            Current.Log.error("Watch asked for vacuum areas with no usable server/entity")
+            reply([])
+            return
+        }
+
+        connection.send(.vacuumAreaMapping(entityId: entityId)).promise
+            .done { mapping in
+                let areas = (try? AppArea.fetchAreas(for: serverId)) ?? []
+                let areasById = Dictionary(areas.map { ($0.areaId, $0) }, uniquingKeysWith: { first, _ in first })
+                // Drop ids the phone no longer knows (a mapping outlives a deleted area) and keep
+                // the mapping's order.
+                reply(mapping.areaIds.compactMap { areaId in
+                    areasById[areaId].map { VacuumAreaMapping.Area(id: $0.areaId, name: $0.name) }
+                })
+            }
+            .catch { error in
+                Current.Log.error("Failed to fetch vacuum area mapping for the watch: \(error)")
+                reply([])
+            }
+    }
+
+    // MARK: - Relayed HTTP requests (watch → phone → Home Assistant)
+
+    /// Perform one HTTP request the watch handed over, and reply with whatever the server said.
+    /// `WatchRelayRequestHandler` makes every decision; this is the message plumbing around it.
+    private func handleHTTPRequest(message: HAWatchConnectivity.InteractiveImmediateMessage) {
+        Task {
+            let payload = await WatchRelayRequestHandler.response(
+                to: message.content,
+                servers: Current.servers.all
+            )
+            message.reply(.init(
+                identifier: InteractiveImmediateResponses.httpRequestResponse.rawValue,
+                content: payload.content
+            ))
+        }
+    }
+
+    // MARK: - mTLS client certificate transfer (phone → watch)
+
+    /// Gather the client certificate bundle(s) for all configured servers, encoded as
+    /// `[ClientCertificateTransferItem]`, to be delivered inline in the `serversConfigSync` reply.
+    /// The watch has a separate Keychain, so the phone re-sends the original bundle + password.
+    private func clientCertificateTransferData() -> Data? {
+        let manager = ClientCertificateManager.shared
+
+        let items: [ClientCertificateTransferItem] = Current.servers.all.compactMap { server in
+            guard let cert = server.info.connection.clientCertificate else { return nil }
+            return manager.transferMaterial(for: cert.keychainIdentifier)
+        }
+
+        // De-duplicate by identifier — the same certificate can be shared across servers.
+        let unique = Array(
+            Dictionary(items.map { ($0.keychainIdentifier, $0) }, uniquingKeysWith: { first, _ in first }).values
+        )
+
+        guard !unique.isEmpty else {
+            Current.Log.info("[mTLS] No client certificate material available to include for watch")
+            return nil
+        }
+
+        Current.Log.info("[mTLS] Including \(unique.count) client certificate(s) in watch reply")
+        return try? JSONEncoder().encode(unique)
+    }
+
+    // MARK: - mTLS client certificate import (requested from the watch)
+
+    private var pendingCertImportServerId: String?
+
+    /// The watch asked us to present the client-certificate import screen for a server. We can't
+    /// foreground the iPhone app from here, so remember the request and present it now (if the app
+    /// is active) or the next time the app becomes active.
+    private func handleClientCertImportRequest(message: HAWatchConnectivity.InteractiveImmediateMessage) {
+        pendingCertImportServerId = message.content["serverId"] as? String
+        message.reply(.init(
+            identifier: InteractiveImmediateResponses.clientCertImportRequestResponse.rawValue,
+            content: ["acknowledged": true]
+        ))
+        DispatchQueue.main.async { [weak self] in
+            self?.presentPendingClientCertImportIfPossible()
+        }
+    }
+
+    private func presentPendingClientCertImportIfPossible() {
+        guard let serverId = pendingCertImportServerId else { return }
+        guard UIApplication.shared.applicationState == .active else {
+            Current.Log.info("[mTLS] Client certificate import requested; will present when the app is active")
+            return
+        }
+        guard let server = Current.servers.server(forServerIdentifier: serverId) else {
+            Current.Log.error("[mTLS] Client certificate import requested for unknown server: \(serverId)")
+            pendingCertImportServerId = nil
+            return
+        }
+        guard let presenter = Self.topViewController(), presenter.presentedViewController == nil else {
+            // Something is already presented; retry on the next activation.
+            return
+        }
+
+        pendingCertImportServerId = nil
+        Current.Log.info("[mTLS] Presenting client certificate import for server \(server.info.name)")
+
+        let importView = ClientCertificateOnboardingView(
+            onImport: { [weak presenter] certificate in
+                server.update { $0.connection.clientCertificate = certificate }
+                Current.Log.info("[mTLS] Imported client certificate on iPhone for watch: \(certificate.displayName)")
+                presenter?.dismiss(animated: true)
+            },
+            onCancel: { [weak presenter] in
+                presenter?.dismiss(animated: true)
+            }
+        )
+
+        let host = UIHostingController(rootView: NavigationView { importView }.navigationViewStyle(.stack))
+        host.modalPresentationStyle = .formSheet
+        presenter.present(host, animated: true)
+    }
+
+    private static func topViewController() -> UIViewController? {
+        let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+        let scene = scenes.first { $0.activationState == .foregroundActive } ?? scenes.first
+        let window = scene?.windows.first { $0.isKeyWindow } ?? scene?.windows.first
+        var top = window?.rootViewController
+        while let presented = top?.presentedViewController {
+            top = presented
+        }
+        return top
+    }
+
+    func handleAssistAudioChunkedMessage(_ message: HAWatchConnectivity.InteractiveImmediateMessage) {
+        guard let payload = AssistAudioChunkPayload(content: message.content) else {
             Current.Log.error("Invalid chunked message data")
             return
         }
-        let sessionKey = serverId + "_" + pipelineId
-        if audioChunks[sessionKey] == nil {
-            audioChunks[sessionKey] = [:]
+        // Older watch builds don't send a recordingId; fall back to the legacy key so they keep working.
+        let sessionKey = payload.recordingId ?? (payload.serverId + "_" + payload.pipelineId)
+
+        // Drop partial uploads that went quiet before starting/continuing this one.
+        let now = Current.date()
+        let staleKeys = audioChunkSessions.filter {
+            now.timeIntervalSince($0.value.lastChunkAt) >= Self.audioChunkSessionTimeout
+        }.keys
+        for staleKey in staleKeys {
+            Current.Log.warning("Dropping abandoned assist audio upload \(staleKey)")
+            audioChunkSessions.removeValue(forKey: staleKey)
         }
-        audioChunks[sessionKey]?[chunkIndex] = chunkData
-        audioChunkCounts[sessionKey] = totalChunks
 
-        // Reply acknowledging receipt of this chunk
-        message.reply(.init(identifier: "assistAudioChunkAck", content: [
-            "acknowledged": true,
-            "chunkIndex": chunkIndex,
-            "totalChunks": totalChunks,
-        ]))
+        var session = audioChunkSessions[sessionKey]
+            ?? AudioChunkSession(totalChunks: payload.totalChunks, lastChunkAt: now)
+        session.chunks[payload.chunkIndex] = payload.chunkData
+        session.totalChunks = payload.totalChunks
+        session.lastChunkAt = now
+        audioChunkSessions[sessionKey] = session
 
-        // Check if all chunks are received
-        if let receivedChunks = audioChunks[sessionKey],
-           receivedChunks.count == totalChunks {
-            // Assemble data in order
-            let sortedChunks = receivedChunks.keys.sorted().compactMap { receivedChunks[$0] }
+        // Acknowledge this chunk; the watch sends the next one only after receiving this.
+        message.reply(.init(
+            identifier: InteractiveImmediateResponses.assistAudioChunkAck.rawValue,
+            content: AssistAudioChunkAckPayload(
+                chunkIndex: payload.chunkIndex,
+                totalChunks: payload.totalChunks
+            ).content
+        ))
+
+        if session.chunks.count == payload.totalChunks {
+            let sortedChunks = session.chunks.keys.sorted().compactMap { session.chunks[$0] }
             let combinedData = sortedChunks.reduce(Data(), +)
-            // Clean up
-            audioChunks.removeValue(forKey: sessionKey)
-            audioChunkCounts.removeValue(forKey: sessionKey)
-            // Call assistAudioData
-            assistAudioData(message: message.toImmediateMessage(), data: combinedData)
+            audioChunkSessions.removeValue(forKey: sessionKey)
+            assistAudioData(payload: payload, data: combinedData)
         }
     }
 
-    private func watchConfig(message: InteractiveImmediateMessage) {
+    private func watchConfig(message: HAWatchConnectivity.InteractiveImmediateMessage) {
         do {
             if let config: WatchConfig = try Current.database().read({ db in
                 try WatchConfig.fetchOne(db)
@@ -132,8 +510,26 @@ final class WatchCommunicatorService {
         }
     }
 
-    private func notifyWatchConfig(message: InteractiveImmediateMessage, watchConfig: WatchConfig) {
-        let responseIdentifier = InteractiveImmediateResponses.watchConfigResponse.rawValue
+    private func notifyWatchConfig(message: HAWatchConnectivity.InteractiveImmediateMessage, watchConfig: WatchConfig) {
+        buildWatchConfigResponseContent(watchConfig: watchConfig) { content in
+            message.reply(.init(
+                identifier: InteractiveImmediateResponses.watchConfigResponse.rawValue,
+                content: content
+            ))
+        }
+    }
+
+    private func notifyEmptyWatchConfig(message: HAWatchConnectivity.InteractiveImmediateMessage) {
+        let responseIdentifier = InteractiveImmediateResponses.emptyWatchConfigResponse.rawValue
+        message.reply(.init(identifier: responseIdentifier))
+    }
+
+    /// Resolve the encoded config + magic-item info payload sent to the watch, shared by the interactive
+    /// reply and the background (`transferUserInfo`) responder.
+    private func buildWatchConfigResponseContent(
+        watchConfig: WatchConfig,
+        completion: @escaping ([String: Any]) -> Void
+    ) {
         let magicItemProvider = Current.magicItemProvider()
         magicItemProvider.loadInformation { _ in
             var magicItemsInfo: [MagicItem.Info] = []
@@ -153,38 +549,298 @@ final class WatchCommunicatorService {
                 }
             }
 
-            message.reply(.init(identifier: responseIdentifier, content: [
-                "config": watchConfig.encodeForWatch(),
-                "magicItemsInfo": magicItemsInfo.map({ $0.encodeForWatch() }),
-            ]))
+            var content: [String: Any] = [
+                "magicItemsInfo": magicItemsInfo.compactMap { try? $0.encodeForWatch() },
+            ]
+            do {
+                content["config"] = try watchConfig.encodeForWatch()
+            } catch {
+                // Without the config key the watch treats the reply as a decode failure and keeps
+                // its cached config — never as an authoritative empty one.
+                Current.Log.error("Failed to encode watch config for reply: \(error.localizedDescription)")
+            }
+            completion(content)
         }
     }
 
-    private func notifyEmptyWatchConfig(message: InteractiveImmediateMessage) {
-        let responseIdentifier = InteractiveImmediateResponses.emptyWatchConfigResponse.rawValue
-        message.reply(.init(identifier: responseIdentifier))
+    /// Background-delivery counterpart of `watchConfig(message:)`. The watch enqueues a
+    /// `GuaranteedMessage` (backed by `transferUserInfo`) when the phone isn't immediately reachable;
+    /// we answer the same way so the config survives the phone being backgrounded/locked. No
+    /// reachability required on either side.
+    private func respondToGuaranteedWatchConfigRequest() {
+        // The types are spelled out: `.init` here is ambiguous between ImmediateMessage (requires
+        // reachability — would defeat this whole flow) and GuaranteedMessage, and used to compile as
+        // the latter only because Swift prefers the overload without defaulted arguments.
+        do {
+            if let config: WatchConfig = try Current.database().read({ db in try WatchConfig.fetchOne(db) }) {
+                let sendGuaranteed = sendGuaranteed
+                buildWatchConfigResponseContent(watchConfig: config) { content in
+                    sendGuaranteed(HAWatchConnectivity.GuaranteedMessage(
+                        identifier: InteractiveImmediateResponses.watchConfigResponse.rawValue,
+                        content: content
+                    ))
+                }
+            } else {
+                sendGuaranteed(HAWatchConnectivity.GuaranteedMessage(
+                    identifier: InteractiveImmediateResponses.emptyWatchConfigResponse.rawValue
+                ))
+            }
+        } catch {
+            Current.Log.error("Failed to read watch config for guaranteed request: \(error.localizedDescription)")
+        }
     }
 
-    private func magicItemPressed(message: InteractiveImmediateMessage) {
+    /// Build the list of items the user can add to the watch configuration and reply to the watch.
+    /// Mirrors the iPhone watch picker (`MagicItemAddView` context `.watch`): all watch-supported
+    /// domains, stored as `type: .entity`.
+    ///
+    /// - Note: Deprecated wire flow with no sender in current watch builds — the watch builds this
+    ///   list locally from the mirrored database (`WatchHomeViewModel+Editing`). Kept for one
+    ///   release cycle so pre-mirror watch builds keep working; remove together with the
+    ///   `watchConfigAvailableItems` message and response cases.
+    private func watchConfigAvailableItems(message: HAWatchConnectivity.InteractiveImmediateMessage) {
+        let responseIdentifier = InteractiveImmediateResponses.watchConfigAvailableItemsResponse.rawValue
+        let allowedDomains = Set(Domain.watchAddable.map(\.rawValue))
+        let magicItemProvider = Current.magicItemProvider()
+        magicItemProvider.loadInformation { entitiesPerServer in
+            let groups: [WatchConfigAvailableItems.ServerGroup] = Current.servers.all.map { server in
+                let serverId = server.identifier.rawValue
+                // The user picks the server before seeing entities, so drop the server prefix that
+                // `getInfo` adds to the context line when multiple servers are configured.
+                let serverPrefix = "\(server.info.name)\(EntityContextSubtitle.separator)"
+                let excluded = HAAppEntity.watchExcludedEntityIds(serverId: serverId)
+                let candidates: [WatchConfigAvailableItems.Candidate] = (entitiesPerServer[serverId] ?? [])
+                    .filter { $0.isWatchCompatible(allowedDomains: allowedDomains, excludedEntityIds: excluded) }
+                    .compactMap { entity in
+                        let item = MagicItem(id: entity.entityId, serverId: serverId, type: .entity)
+                        guard let info = magicItemProvider.getInfo(for: item) else { return nil }
+                        let context = info.contextSubtitle.map { subtitle in
+                            subtitle.hasPrefix(serverPrefix) ? String(subtitle.dropFirst(serverPrefix.count)) : subtitle
+                        }
+                        return .init(
+                            item: item,
+                            info: info,
+                            contextSubtitle: context,
+                            areaName: magicItemProvider.getAreaName(for: item)
+                        )
+                    }
+                return .init(serverId: serverId, serverName: server.info.name, candidates: candidates)
+            }
+            let content: [String: Any]
+            do {
+                content = try ["availableItems": WatchConfigAvailableItems(servers: groups).encodeForWatch()]
+            } catch {
+                Current.Log.error("Failed to encode available items for watch: \(error.localizedDescription)")
+                content = ["error": true]
+            }
+            message.reply(.init(identifier: responseIdentifier, content: content))
+        }
+    }
+
+    /// Persist a `WatchConfig` edited on the watch. The phone's GRDB is the single source of truth,
+    /// so we write it here (mirroring the iPhone `WatchConfigurationViewModel.save()`) and reply with
+    /// the same payload as `watchConfig`, so the watch refreshes its cache with server-resolved info.
+    /// On decode/DB failure we reply with the last-good persisted config, reverting the watch edit.
+    private func watchConfigUpdate(message: HAWatchConnectivity.InteractiveImmediateMessage) {
+        guard let data = message.content["config"] as? Data,
+              var config = WatchConfig.decodeForWatch(data) else {
+            Current.Log.error("Watch config update did not include a decodable config, reverting watch")
+            watchConfig(message: message)
+            return
+        }
+        do {
+            try Current.database().write { db in
+                if config.id != WatchConfig.watchConfigId {
+                    try WatchConfig.deleteAll(db)
+                    config.id = WatchConfig.watchConfigId
+                }
+                try config.insert(db, onConflict: .replace)
+            }
+            notifyWatchConfig(message: message, watchConfig: config)
+            // Entities added from the watch need their registry rows (display precision) mirrored back.
+            WatchMirrorPushCoordinator.schedule(reason: .watchConfigChanged)
+        } catch {
+            Current.Log.error("Failed to persist watch config sent from watch, error: \(error.localizedDescription)")
+            watchConfig(message: message)
+        }
+    }
+
+    /// Chunk size for the database sync. Comfortably under WatchConnectivity's per-message ceiling.
+    private static let mirrorChunkByteSize = 30000
+
+    /// Serial queue the sync-start payload is built on, so the read/encode/compress work never runs
+    /// on the main queue. Serial so overlapping sync requests queue behind each other instead of
+    /// contending for the same SQLite reader.
+    private static let mirrorBuildQueue = DispatchQueue(label: "watch-mirror-build", qos: .userInitiated)
+
+    /// Begin a full database sync: snapshot the reference GRDB tables, encode, split into ordered
+    /// chunks held in memory, and tell the watch how many chunks/bytes to expect. The watch then pulls
+    /// each chunk via `watchDatabaseMirrorChunk`. A single interactive reply here can exceed the size
+    /// cap, which is exactly why the payload itself is chunked rather than returned inline.
+    private func watchDatabaseMirrorSyncStart(message: HAWatchConnectivity.InteractiveImmediateMessage) {
+        let responseId = InteractiveImmediateResponses.watchDatabaseMirrorResponse.rawValue
+        if !databaseSyncChunks.isEmpty {
+            Current.Log.info("Dropping \(databaseSyncChunks.count) abandoned watch DB sync buffer(s)")
+            databaseSyncChunks.removeAll()
+        }
+        // The watch advertises the highest mirror version it understands; absent means a legacy
+        // build. Recorded so proactive pushes serve the same fidelity across launches — including
+        // dropping back to legacy when an older watch (no version key) is paired.
+        let version = message.content[WatchDatabaseMirror.versionKey] as? Int ?? WatchDatabaseMirror.legacyVersion
+        WatchMirrorPushCoordinator.peerMirrorVersion = version
+        let compressed = version >= WatchDatabaseMirror.fullReferenceVersion
+        let storedDigests = message.content[WatchDatabaseMirror.digestsKey] as? [String: String]
+        // Building the snapshot reads every reference table and then encodes, hashes and compresses
+        // megabytes of rows. On the main queue that competes with everything else the app is doing,
+        // and the watch's reply ceiling expires before the answer lands ("The counterpart did not
+        // reply in time"), so the build runs off-main; only the buffer bookkeeping and the reply
+        // itself hop back. Replying off the main queue would be safe too, but the buffer is
+        // main-queue state.
+        Self.mirrorBuildQueue.async { [weak self] in
+            let data: Data
+            let digests: [String: String]
+            do {
+                var mirror = try WatchDatabaseMirror.snapshot(version: version)
+                digests = mirror.tableDigests()
+                // Delta sync: a watch that echoes previously-issued digests receives only the tables
+                // that changed since (nil = retain). Watches that send no digests — older builds or a
+                // first sync — get the full snapshot.
+                if let storedDigests, !storedDigests.isEmpty {
+                    mirror = mirror.omittingTables(matching: storedDigests, currentDigests: digests)
+                }
+                let encoded = try mirror.encodeForWatch()
+                data = compressed ? try WatchDatabaseMirror.compress(encoded) : encoded
+            } catch {
+                Current.Log.error("Failed to build watch database mirror: \(error.localizedDescription)")
+                message.reply(.init(identifier: responseId, content: ["error": true]))
+                return
+            }
+
+            let chunkSize = Self.mirrorChunkByteSize
+            var chunks: [Data] = []
+            var offset = 0
+            while offset < data.count {
+                let end = min(offset + chunkSize, data.count)
+                chunks.append(data.subdata(in: offset ..< end))
+                offset = end
+            }
+            if chunks.isEmpty { chunks = [Data()] }
+            let builtChunks = chunks
+
+            DispatchQueue.main.async {
+                guard let self else {
+                    message.reply(.init(identifier: responseId, content: ["error": true]))
+                    return
+                }
+                let transferId = UUID().uuidString
+                self.databaseSyncChunks[transferId] = DatabaseSyncTransfer(chunks: builtChunks)
+                // Backstop for a watch that dies mid-pull and never starts another sync: a healthy pull
+                // completes in seconds (each chunk request has a 30s reply ceiling and one timeout fails
+                // the whole sync on the watch), so a buffer still around after this long is abandoned.
+                DispatchQueue.main.asyncAfter(deadline: .now() + 600) { [weak self] in
+                    guard let self, databaseSyncChunks.removeValue(forKey: transferId) != nil else { return }
+                    Current.Log.info("Expired abandoned watch DB sync buffer \(transferId)")
+                }
+                Current.Log
+                    .info("Watch DB sync start: \(builtChunks.count) chunk(s), \(data.count) bytes, id \(transferId)")
+                var replyContent: [String: Any] = [
+                    "transferId": transferId,
+                    "totalChunks": builtChunks.count,
+                    "totalBytes": data.count,
+                    // The watch stores these after a successful apply and echoes them on the next sync.
+                    WatchDatabaseMirror.digestsKey: digests,
+                ]
+                // Explicit flag rather than inferred from the requested version: a watch that asked for
+                // v2 but is answered by an older phone build gets no flag and decodes the plain payload.
+                if compressed {
+                    replyContent[WatchDatabaseMirror.compressedKey] = true
+                }
+                message.reply(.init(identifier: responseId, content: replyContent))
+            }
+        }
+    }
+
+    /// Serve one chunk of an in-progress database sync. The buffer is freed once every chunk has
+    /// been served at least once.
+    private func watchDatabaseMirrorSyncChunk(message: HAWatchConnectivity.InteractiveImmediateMessage) {
+        let responseId = InteractiveImmediateResponses.watchDatabaseMirrorChunkResponse.rawValue
+        guard let transferId = message.content["transferId"] as? String,
+              let index = message.content["index"] as? Int,
+              var transfer = databaseSyncChunks[transferId],
+              index >= 0, index < transfer.chunks.count else {
+            Current.Log.error("Invalid watch DB sync chunk request")
+            message.reply(.init(identifier: responseId, content: ["error": true]))
+            return
+        }
+        message.reply(.init(identifier: responseId, content: [
+            "index": index,
+            "chunkData": transfer.chunks[index],
+        ]))
+        transfer.servedIndices.insert(index)
+        if transfer.servedIndices.count == transfer.chunks.count {
+            databaseSyncChunks.removeValue(forKey: transferId)
+        } else {
+            databaseSyncChunks[transferId] = transfer
+        }
+    }
+
+    /// Deprecated wire flow: current watch builds always execute magic items over the watch's own
+    /// networking and never send `magicItemPressed`. Kept for one release cycle so older watch
+    /// builds keep working — see the note on `InteractiveImmediateMessages.magicItemPressed`.
+    private func magicItemPressed(message: HAWatchConnectivity.InteractiveImmediateMessage) {
         let responseIdentifier = InteractiveImmediateResponses.magicItemRowPressedResponse.rawValue
+        // Every failure reply carries a stable code (which the watch maps to a localized message)
+        // plus the technical reason (which the watch records in client events) instead of a bare
+        // `fired: false`.
+        func fail(_ code: MagicItemExecutionFailureCode, _ reason: String) {
+            message.reply(.init(identifier: responseIdentifier, content: [
+                "fired": false,
+                "errorCode": code.rawValue,
+                "error": reason,
+            ]))
+        }
+
+        if let triggeredAt = message.content["triggeredAt"] as? TimeInterval {
+            // The threshold is the watch's interactive reply timeout: past it the watch has given
+            // up on this message, shown the user a failure, and the user may already have retried —
+            // firing the original press now would surprise-execute the action (possibly twice).
+            // Under the threshold the watch is still waiting on this reply and executing is correct.
+            //
+            // The comparison uses wall clocks on two devices. Pairing keeps them within a second,
+            // but the age is a skew-sensitive estimate: a clearly negative value (press "from the
+            // future") is proof of skew, so log it — the same skew inflates positive ages and can
+            // spuriously reject a fresh press as stale.
+            let age = Current.date().timeIntervalSince1970 - triggeredAt
+            if age < -5 {
+                Current.Log.warning(
+                    "Magic item press timestamp is \(Int(-age))s in the future; watch/phone clocks are skewed"
+                )
+            }
+            if age > WatchConnectivityManager.interactiveReplyTimeout {
+                Current.Log.warning("Discarding stale magic item press received \(Int(age))s after it was triggered")
+                fail(.staleRequest, "Request expired before reaching the iPhone (\(Int(age))s old)")
+                return
+            }
+        }
+
         guard let itemType = message.content["itemType"] as? String,
               let itemId = message.content["itemId"] as? String,
               let type = MagicItem.ItemType(rawValue: itemType) else {
             Current.Log.warning("Magic item press did not provide item type or item id")
-            message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+            fail(.invalidItem, "Invalid item type or id")
             return
         }
 
         // Folders don't execute actions, they are containers
         if type == .folder {
-            message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+            fail(.notExecutable, "Folders don't execute actions")
             return
         }
 
         guard let serverId = message.content["serverId"] as? String,
               let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) else {
             Current.Log.warning("Magic item press did not provide valid server info")
-            message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+            fail(.serverNotFound, "Server not found on iPhone")
             return
         }
 
@@ -210,7 +866,7 @@ final class WatchCommunicatorService {
         case .entity:
             guard let domain = MagicItem(id: itemId, serverId: serverId, type: .entity).domain,
                   let mainAction = domain.mainAction else {
-                message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+                fail(.notExecutable, "Entity domain has no executable action")
                 return
             }
             callService(
@@ -225,17 +881,23 @@ final class WatchCommunicatorService {
         case .folder:
             // Already handled above, before server resolution
             break
+        case .area:
+            // Area entries open the area's entities on the watch, they never run anything
+            fail(.notExecutable, "Areas don't execute actions")
         case .assistPipeline, .assistPrompt:
             // Assist items are not supported on Watch
-            message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+            fail(.notExecutable, "Assist items are not supported on Watch")
+        case .complication:
+            // Complications are rendered in place on the watch; there is nothing to run.
+            fail(.notExecutable, "Complications are display-only")
         case .unsupported:
-            message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+            fail(.notExecutable, "Unsupported item type")
         }
     }
 
     private func callService(
         server: Server,
-        message: InteractiveImmediateMessage,
+        message: HAWatchConnectivity.InteractiveImmediateMessage,
         magicItemId: String,
         domain: Domain,
         serviceName: String? = nil,
@@ -243,14 +905,17 @@ final class WatchCommunicatorService {
         responseIdentifier: String
     ) {
         guard let api = Current.api(for: server) else {
-            message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+            message.reply(.init(identifier: responseIdentifier, content: [
+                "fired": false,
+                "errorCode": MagicItemExecutionFailureCode.noConnection.rawValue,
+                "error": "iPhone has no usable connection for this server",
+            ]))
             Current.Log.error("No API available to call service")
             return
         }
-        let domain = domain.rawValue
-        let serviceName = serviceName ?? magicItemId.replacingOccurrences(of: "\(domain).", with: "")
+        let serviceName = serviceName ?? magicItemId.replacingOccurrences(of: "\(domain.rawValue).", with: "")
         api.CallService(
-            domain: domain,
+            domain: domain.serviceDomain,
             service: serviceName,
             serviceData: serviceData,
             triggerSource: .Watch,
@@ -261,46 +926,76 @@ final class WatchCommunicatorService {
                 message.reply(.init(identifier: responseIdentifier, content: ["fired": true]))
             case let .rejected(error):
                 Current.Log.error("Failed to run \(domain), error: \(error.localizedDescription)")
-                message.reply(.init(identifier: responseIdentifier, content: ["fired": false]))
+                message.reply(.init(identifier: responseIdentifier, content: [
+                    "fired": false,
+                    "errorCode": MagicItemExecutionFailureCode.serviceCallFailed.rawValue,
+                    "error": error.localizedDescription,
+                ]))
             }
         }
     }
 
-    private func pushAction(message: InteractiveImmediateMessage) {
+    /// Not private so the reply contract it owes the watch can be unit tested directly; the only
+    /// caller is the message dispatch above.
+    func pushAction(message: HAWatchConnectivity.InteractiveImmediateMessage) {
         let responseIdentifier = InteractiveImmediateResponses.pushActionResponse.rawValue
 
-        if let infoJSON = message.content["PushActionInfo"] as? [String: Any],
-           let info = Mapper<HomeAssistantAPI.PushActionInfo>().map(JSON: infoJSON),
-           let serverIdentifier = message.content["Server"] as? String,
-           let server = Current.servers.server(forServerIdentifier: serverIdentifier),
-           let api = Current.api(for: server) {
-            Current.backgroundTask(withName: BackgroundTask.watchPushAction.rawValue) { _ in
-                firstly {
-                    api.handlePushAction(for: info)
-                }.ensure {
-                    message.reply(.init(identifier: responseIdentifier))
-                }
-            }.catch { error in
-                Current.Log.error("error handling push action: \(error)")
+        // Every path answers, and answers with whether Home Assistant took the action: the watch
+        // shows the user that their reply went through, and a silent non-reply used to leave it
+        // waiting for the connectivity timeout instead.
+        func fail(_ reason: String) {
+            Current.Log.error("error handling push action: \(reason)")
+            message.reply(.init(identifier: responseIdentifier, content: [
+                "fired": false,
+                "error": reason,
+            ]))
+        }
+
+        guard let infoJSON = message.content["PushActionInfo"] as? [String: Any],
+              let info = Mapper<HomeAssistantAPI.PushActionInfo>().map(JSON: infoJSON) else {
+            fail("iPhone could not read the notification action")
+            return
+        }
+
+        guard let serverIdentifier = message.content["Server"] as? String,
+              let server = Current.servers.server(forServerIdentifier: serverIdentifier),
+              let api = Current.api(for: server) else {
+            fail("iPhone has no usable connection for this server")
+            return
+        }
+
+        Current.backgroundTask(withName: BackgroundTask.watchPushAction.rawValue) { _ in
+            api.handlePushAction(for: info)
+        }.pipe { result in
+            switch result {
+            case .fulfilled:
+                message.reply(.init(identifier: responseIdentifier, content: ["fired": true]))
+            case let .rejected(error):
+                fail(error.localizedDescription)
             }
         }
-    }
-
-    private func sendMessage(message: ImmediateMessage) {
-        Communicator.shared.send(message)
     }
 }
 
 // MARK: - Assist
 
 extension WatchCommunicatorService {
-    private func assistPipelinesFetch(message: InteractiveImmediateMessage) {
+    /// Resolve the server an assist message targets. A serverId that doesn't match any configured
+    /// server is an error — silently falling back to another server would run assist against the
+    /// wrong home. The first-server fallback remains only for messages carrying no serverId at all.
+    private func assistTargetServer(for serverId: String?) -> Server? {
+        if let serverId {
+            return Current.servers.all.first(where: { $0.identifier.rawValue == serverId })
+        }
+        return Current.servers.all.first
+    }
+
+    private func assistPipelinesFetch(message: HAWatchConnectivity.InteractiveImmediateMessage) {
         let responseIdentifier = InteractiveImmediateResponses.assistPipelinesFetchResponse.rawValue
 
         let serverId = message.content["serverId"] as? String
-        guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) ?? Current
-            .servers.all.first else {
-            Current.Log.warning("No server available to execute message \(message)")
+        guard let server = assistTargetServer(for: serverId) else {
+            Current.Log.error("Assist pipelines fetch targets unknown server \(serverId ?? "<none>")")
             message.reply(.init(identifier: responseIdentifier, content: ["error": true]))
             return
         }
@@ -317,6 +1012,12 @@ extension WatchCommunicatorService {
                     }),
                     "preferredPipeline": preferredPipeline,
                 ]))
+            } else if let cached = ((try? AssistPipelines.config()) ?? nil)?
+                .first(where: { $0.serverId == server.identifier.rawValue }), !cached.pipelines.isEmpty {
+                message.reply(.init(identifier: responseIdentifier, content: [
+                    "pipelines": cached.pipelines.map { ["name": $0.name, "id": $0.id] },
+                    "preferredPipeline": cached.preferredPipeline,
+                ]))
             } else {
                 Current.Log
                     .error("Error during fetch Assist pipelines: \(WatchAssistCommunicatorError.pipelinesFetchFailed)")
@@ -325,34 +1026,231 @@ extension WatchCommunicatorService {
         }
     }
 
-    private func assistAudioData(message: ImmediateMessage, data: Data) {
-        let serverId = message.content["serverId"] as? String
-        guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) ?? Current
-            .servers.all.first else {
-            let errorMessage = "No server available to execute message \(message.identifier)"
-            Current.Log.warning(errorMessage)
+    private func assistAudioData(payload: AssistAudioChunkPayload, data: Data) {
+        // A watch that gave up streaming this recording uploads it whole instead.
+        dropAssistAudioStream(cancellingRun: true)
+        beginAssistRun()
+        guard let server = assistTargetServer(for: payload.serverId) else {
+            Current.Log.error("Assist audio targets unknown server \(payload.serverId)")
+            // Tell the watch instead of dropping the session on the floor — it routes assistError
+            // to the chat UI, so the user sees a failure rather than an endless spinner.
+            sendMessage(message: .init(
+                identifier: InteractiveImmediateResponses.assistError.rawValue,
+                content: AssistErrorPayload(
+                    code: "unknown_server",
+                    message: "Server not found on iPhone"
+                ).content
+            ))
             return
         }
 
-        let pipelineId = message.content["pipelineId"] as? String
-        guard let sampleRate = message.content["sampleRate"] as? Double else {
-            let errorMessage = "No sample rate received in message \(message.identifier)"
-            Current.Log.error(errorMessage)
+        let configuration = assistConfiguration()
+        if configuration.enableOnDeviceSTT {
+            transcribeOnDevice(
+                data,
+                sampleRate: payload.sampleRate,
+                pipelineId: payload.pipelineId,
+                server: server,
+                configuration: configuration
+            )
+        } else {
+            pendingAudioData = data
+            initAssistServiceIfNeeded(server: server).assist(source: .audio(
+                pipelineId: payload.pipelineId,
+                audioSampleRate: payload.sampleRate,
+                tts: requestsServerTTS(configuration)
+            ))
+        }
+    }
+
+    private func speaksOnDevice(_ configuration: AssistConfiguration) -> Bool {
+        configuration.enableOnDeviceTTS && watchSpeaksOnDevice()
+    }
+
+    private func requestsServerTTS(_ configuration: AssistConfiguration) -> Bool {
+        !configuration.muteTTS && !speaksOnDevice(configuration)
+    }
+
+    private func transcribeOnDevice(
+        _ data: Data,
+        sampleRate: Double,
+        pipelineId: String,
+        server: Server,
+        configuration: AssistConfiguration
+    ) {
+        let runID = assistRunID
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            do {
+                let session = try makeOnDeviceRecognition(sampleRate: sampleRate, configuration: configuration)
+                session.append(WAVDataChunk.pcm(in: data))
+                await runPipeline(
+                    onTranscriptOf: session,
+                    runID: runID,
+                    pipelineId: pipelineId,
+                    server: server,
+                    configuration: configuration
+                )
+            } catch {
+                reportOnDeviceTranscriptionFailure(error)
+            }
+        }
+    }
+
+    @MainActor
+    private func makeOnDeviceRecognition(
+        sampleRate: Double,
+        configuration: AssistConfiguration
+    ) throws -> OnDeviceSpeechRecognitionSession {
+        let locale = configuration.onDeviceSTTLocaleIdentifier.map { Locale(identifier: $0) } ?? Locale.current
+        return try OnDeviceSpeechRecognitionSession(
+            format: .init(rate: Int(sampleRate), width: 2, channels: 1)
+        ) { try makeSpeechRecognizer(locale) }
+    }
+
+    /// Runs the pipeline on the text the phone's own recognizer heard once its audio has ended.
+    /// Transcribing takes a moment, so a request the watch made in the meantime wins: the transcript
+    /// of request `runID` is dropped once a newer one started.
+    @MainActor
+    private func runPipeline(
+        onTranscriptOf session: OnDeviceSpeechRecognitionSession,
+        runID: Int,
+        pipelineId: String,
+        server: Server,
+        configuration: AssistConfiguration
+    ) async {
+        let transcript: Swift.Result<String, Error>
+        do {
+            transcript = try await .success(session.finish())
+        } catch {
+            transcript = .failure(error)
+        }
+        guard runID == assistRunID else {
+            Current.Log.info("Dropping the transcript of a watch Assist request a newer one replaced")
             return
         }
-        pendingAudioData = data
-        initAssistServiceIfNeeded(server: server).assist(source: .audio(
-            pipelineId: pipelineId,
-            audioSampleRate: sampleRate,
-            tts: true
+        do {
+            let input = try transcript.get().trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !input.isEmpty else {
+                didReceiveError(
+                    code: "no_speech_recognized",
+                    message: L10n.Assist.Watch.OnDeviceStt.noSpeechRecognized
+                )
+                return
+            }
+            didReceiveSttContent(input)
+            initAssistServiceIfNeeded(server: server).assist(source: .text(
+                input: input,
+                pipelineId: pipelineId,
+                expectTTS: requestsServerTTS(configuration)
+            ))
+        } catch {
+            reportOnDeviceTranscriptionFailure(error)
+        }
+    }
+
+    private func reportOnDeviceTranscriptionFailure(_ error: Error) {
+        Current.Log.error("On-device transcription of watch audio failed: \(error.localizedDescription)")
+        didReceiveError(code: "on_device_stt_failed", message: error.localizedDescription)
+    }
+
+    /// Run an Assist pipeline with the prompt written on the watch. There is no audio to upload, so
+    /// unlike the recording flow this starts the pipeline as soon as the message arrives; the
+    /// response travels back through the same delegate messages.
+    func handleAssistTextInputMessage(_ message: HAWatchConnectivity.InteractiveImmediateMessage) {
+        dropAssistAudioStream(cancellingRun: true)
+        beginAssistRun()
+        // Every path acknowledges: the watch treats a missing reply as a delivery failure and would
+        // report that on top of the failure reported here.
+        let acknowledge: () -> Void = {
+            message.reply(.init(identifier: InteractiveImmediateResponses.assistTextInputAck.rawValue))
+        }
+        // Failures are also pushed as `assistError`, which the watch routes to the chat UI, so the
+        // user sees a reason rather than an endless spinner.
+        let reportFailure: (String, String) -> Void = { [weak self] code, description in
+            self?.sendMessage(message: .init(
+                identifier: InteractiveImmediateResponses.assistError.rawValue,
+                content: AssistErrorPayload(code: code, message: description).content
+            ))
+            acknowledge()
+        }
+
+        guard let payload = AssistTextInputPayload(content: message.content) else {
+            Current.Log.error("Invalid assist text input message data")
+            reportFailure("invalid_payload", "The iPhone could not read the prompt")
+            return
+        }
+        guard let server = assistTargetServer(for: payload.serverId) else {
+            Current.Log.error("Assist prompt targets unknown server \(payload.serverId)")
+            reportFailure("unknown_server", "Server not found on iPhone")
+            return
+        }
+
+        initAssistServiceIfNeeded(server: server).assist(source: .text(
+            input: payload.text,
+            pipelineId: payload.pipelineId,
+            expectTTS: requestsServerTTS(assistConfiguration())
         ))
+        acknowledge()
+    }
+
+    func handlePing(_ message: HAWatchConnectivity.InteractiveImmediateMessage) {
+        let deliverable = assistMessagesDeliverableByPong.map(\.message)
+        undeliveredAssistMessages.removeFirst(deliverable.count)
+        if !deliverable.isEmpty {
+            Current.Log.info("Handing \(deliverable.map(\.identifier)) to the watch with its pong")
+        }
+        message.reply(.init(
+            identifier: InteractiveImmediateResponses.pong.rawValue,
+            content: PongPayload(
+                assistMessages: deliverable.map { (identifier: $0.identifier, content: $0.content) }
+            ).content
+        ))
+    }
+
+    private var assistMessagesDeliverableByPong: ArraySlice<UndeliveredAssistMessage> {
+        guard isAssistRunInProgress, let answerIndex = undeliveredAssistMessages.firstIndex(where: {
+            $0.message.identifier == InteractiveImmediateResponses.assistIntentEndResponse.rawValue
+        }) else {
+            return undeliveredAssistMessages[...]
+        }
+        return undeliveredAssistMessages[..<answerIndex]
+    }
+
+    private func beginAssistRun() {
+        assistRunID += 1
+        undeliveredAssistMessages.removeAll()
+        assistRunFirstSequence = assistMessageSequence + 1
+        isAssistRunInProgress = true
+    }
+
+    private func sendMessage(message: HAWatchConnectivity.ImmediateMessage) {
+        assistMessageSequence += 1
+        let sequence = assistMessageSequence
+        guard undeliveredAssistMessages.isEmpty else {
+            undeliveredAssistMessages.append((sequence: sequence, message: message))
+            return
+        }
+        send(message) { [weak self] error in
+            Current.Log.error("Could not push \(message.identifier) to the watch: \(error.localizedDescription)")
+            DispatchQueue.main.async {
+                self?.keepForPong(message, sequence: sequence)
+            }
+        }
+    }
+
+    private func keepForPong(_ message: HAWatchConnectivity.ImmediateMessage, sequence: Int) {
+        guard sequence >= assistRunFirstSequence, watchReadsAssistResponsesFromPong() else { return }
+        let index = undeliveredAssistMessages.firstIndex { $0.sequence > sequence }
+            ?? undeliveredAssistMessages.endIndex
+        undeliveredAssistMessages.insert((sequence: sequence, message: message), at: index)
     }
 
     private func initAssistServiceIfNeeded(server: Server) -> AssistServiceProtocol {
         if let assistService {
             assistService.replaceServer(server: server)
         } else {
-            assistService = AssistService(server: server)
+            assistService = makeAssistService(server)
         }
 
         assistService?.delegate = self
@@ -373,6 +1271,240 @@ extension WatchCommunicatorService {
     }
 }
 
+// MARK: - Assist audio stream
+
+/// The watch streams a recording while it is being made, the way in-app Assist streams the
+/// microphone: the pipeline — or the phone's on-device recognizer — hears the audio as it arrives,
+/// and when it hears the user stop speaking the phone tells the watch to stop recording, so nobody
+/// has to submit it. Submitting by hand still works: the watch's last chunk is marked final.
+extension WatchCommunicatorService {
+    func handleAssistAudioStreamStart(_ message: HAWatchConnectivity.InteractiveImmediateMessage) {
+        guard let payload = AssistAudioStreamStartPayload(content: message.content) else {
+            Current.Log.error("Invalid assist audio stream start")
+            sendMessage(message: .init(
+                identifier: InteractiveImmediateResponses.assistError.rawValue,
+                content: AssistErrorPayload(
+                    code: "invalid_payload",
+                    message: L10n.Assist.Watch.AudioStream.unreadable
+                ).content
+            ))
+            // Answered anyway: without a reply the watch waits out its timeout before giving up.
+            message.reply(.init(identifier: InteractiveImmediateResponses.assistAudioStreamAck.rawValue))
+            return
+        }
+        // A new recording replaces one the watch never finished, and the run of the previous
+        // question goes with it: its late events would otherwise end this stream's run.
+        dropAssistAudioStream(cancellingRun: true)
+        assistService?.cancelRun()
+        pendingAudioData = nil
+        beginAssistRun()
+        startAssistAudioStream(payload)
+        replyToAssistAudioStream(message, streamId: payload.streamId)
+    }
+
+    func handleAssistAudioStreamChunk(_ message: HAWatchConnectivity.InteractiveImmediateMessage) {
+        guard let payload = AssistAudioStreamChunkPayload(content: message.content) else {
+            Current.Log.error("Invalid assist audio stream chunk")
+            message.reply(.init(identifier: InteractiveImmediateResponses.assistAudioStreamAck.rawValue))
+            return
+        }
+        defer { replyToAssistAudioStream(message, streamId: payload.streamId) }
+        guard var stream = assistAudioStream, stream.id == payload.streamId, !stream.isSubmitted,
+              payload.sequence >= stream.nextSequence else {
+            return
+        }
+        if payload.sequence > stream.nextSequence {
+            Current.Log.warning("Assist audio stream skipped from chunk \(stream.nextSequence) to \(payload.sequence)")
+        }
+        stream.nextSequence = payload.sequence + 1
+        stream.isSubmitted = payload.isFinal
+        if stream.recognition == nil, !stream.isPipelineReady {
+            stream.pendingAudio.append(payload.audio)
+        }
+        assistAudioStream = stream
+
+        if let recognition = stream.recognition {
+            MainActor.assumeIsolated { recognition.append(payload.audio) }
+        } else if stream.isPipelineReady, !payload.audio.isEmpty {
+            assistService?.sendAudioData(payload.audio)
+        }
+
+        if payload.isFinal {
+            finishSubmittedAssistAudioStream()
+        } else {
+            armAssistAudioStreamAbandonment()
+        }
+    }
+
+    /// The user was not asking anything, so the run is abandoned instead of finished.
+    func handleAssistAudioStreamCancel(_ message: HAWatchConnectivity.InteractiveImmediateMessage) {
+        guard let payload = AssistAudioStreamEndPayload(content: message.content) else {
+            Current.Log.error("Invalid assist audio stream cancel")
+            message.reply(.init(identifier: InteractiveImmediateResponses.assistAudioStreamAck.rawValue))
+            return
+        }
+        if assistAudioStream?.id == payload.streamId {
+            dropAssistAudioStream(cancellingRun: true)
+        }
+        replyToAssistAudioStream(message, streamId: payload.streamId)
+    }
+
+    private func startAssistAudioStream(_ payload: AssistAudioStreamStartPayload) {
+        guard let server = assistTargetServer(for: payload.serverId) else {
+            Current.Log.error("Assist audio stream targets unknown server \(payload.serverId)")
+            didReceiveError(code: "unknown_server", message: L10n.Assist.Watch.AudioStream.serverNotFound)
+            return
+        }
+
+        let configuration = assistConfiguration()
+        var recognition: OnDeviceSpeechRecognitionSession?
+        if configuration.enableOnDeviceSTT {
+            do {
+                recognition = try MainActor.assumeIsolated {
+                    let session = try makeOnDeviceRecognition(
+                        sampleRate: payload.sampleRate,
+                        configuration: configuration
+                    )
+                    session.onListeningEnded = { [weak self] in
+                        guard self?.assistAudioStream?.id == payload.streamId else { return }
+                        self?.stopListeningToAssistAudioStream()
+                    }
+                    return session
+                }
+            } catch {
+                reportOnDeviceTranscriptionFailure(error)
+                return
+            }
+        }
+
+        assistAudioStream = AssistAudioStream(
+            id: payload.streamId,
+            recognition: recognition,
+            pipelineId: payload.pipelineId,
+            server: server,
+            configuration: configuration
+        )
+        armAssistAudioStreamAbandonment()
+        if recognition == nil {
+            initAssistServiceIfNeeded(server: server).assist(source: .audio(
+                pipelineId: payload.pipelineId,
+                audioSampleRate: payload.sampleRate,
+                tts: requestsServerTTS(configuration)
+            ))
+        }
+    }
+
+    /// The pipeline is ready for audio: what arrived before goes out first.
+    private func sendAssistAudioStreamToPipeline() {
+        guard var stream = assistAudioStream, stream.recognition == nil, !stream.isPipelineReady else { return }
+        stream.isPipelineReady = true
+        let pendingAudio = stream.pendingAudio
+        stream.pendingAudio = Data()
+        assistAudioStream = stream
+        if !pendingAudio.isEmpty {
+            assistService?.sendAudioData(pendingAudio)
+        }
+        if stream.isSubmitted {
+            finishSubmittedAssistAudioStream()
+        }
+    }
+
+    /// The watch sent its last chunk. A pipeline not ready for audio yet gets it, and its end, once
+    /// it is.
+    private func finishSubmittedAssistAudioStream() {
+        guard let stream = assistAudioStream, stream.isSubmitted else { return }
+        if let recognition = stream.recognition {
+            removeAssistAudioStream()
+            transcribeAssistAudioStream(stream, with: recognition)
+        } else if stream.isPipelineReady {
+            removeAssistAudioStream()
+            assistService?.finishSendingAudio()
+        }
+    }
+
+    /// The pipeline or the on-device recognizer heard the user stop speaking, or the run is over:
+    /// the watch stops recording instead of waiting for the user to submit.
+    private func stopListeningToAssistAudioStream() {
+        guard let stream = assistAudioStream else { return }
+        removeAssistAudioStream()
+        if !stream.isSubmitted {
+            sendMessage(message: .init(
+                identifier: InteractiveImmediateResponses.assistAudioStreamStop.rawValue,
+                content: AssistAudioStreamEndPayload(streamId: stream.id).content
+            ))
+        }
+        if let recognition = stream.recognition {
+            transcribeAssistAudioStream(stream, with: recognition)
+        } else if stream.isPipelineReady {
+            assistService?.finishSendingAudio()
+        }
+    }
+
+    private func transcribeAssistAudioStream(
+        _ stream: AssistAudioStream,
+        with recognition: OnDeviceSpeechRecognitionSession
+    ) {
+        let runID = assistRunID
+        Task { @MainActor [weak self] in
+            await self?.runPipeline(
+                onTranscriptOf: recognition,
+                runID: runID,
+                pipelineId: stream.pipelineId,
+                server: stream.server,
+                configuration: stream.configuration
+            )
+        }
+    }
+
+    /// Drops the stream in progress and stops its recognizer. `cancellingRun` also abandons the
+    /// pipeline run it was feeding, so nothing heard so far is acted on.
+    private func dropAssistAudioStream(cancellingRun: Bool) {
+        guard let stream = assistAudioStream else { return }
+        removeAssistAudioStream()
+        if let recognition = stream.recognition {
+            MainActor.assumeIsolated { recognition.cancel() }
+        } else if cancellingRun {
+            assistService?.cancelRun()
+        }
+        if cancellingRun {
+            isAssistRunInProgress = false
+        }
+    }
+
+    private func removeAssistAudioStream() {
+        assistAudioStream?.abandonment?.cancel()
+        assistAudioStream = nil
+    }
+
+    private func armAssistAudioStreamAbandonment() {
+        guard let streamId = assistAudioStream?.id else { return }
+        assistAudioStream?.abandonment?.cancel()
+        let abandonment = DispatchWorkItem { [weak self] in
+            guard let self, let stream = assistAudioStream, stream.id == streamId else { return }
+            Current.Log.warning("Dropping assist audio stream \(streamId): the watch stopped sending audio")
+            dropAssistAudioStream(cancellingRun: true)
+            // A watch that submitted the recording is waiting for an answer that will not come. One
+            // that did not may still be recording, to send it whole once it is done.
+            if stream.isSubmitted {
+                didReceiveError(code: "audio_stream_timeout", message: L10n.Assist.Watch.AudioStream.notReceived)
+            }
+        }
+        assistAudioStream?.abandonment = abandonment
+        DispatchQueue.main.asyncAfter(deadline: .now() + assistAudioStreamTimeout, execute: abandonment)
+    }
+
+    private func replyToAssistAudioStream(
+        _ message: HAWatchConnectivity.InteractiveImmediateMessage,
+        streamId: String
+    ) {
+        let isListening = assistAudioStream.map { $0.id == streamId && !$0.isSubmitted } ?? false
+        message.reply(.init(
+            identifier: InteractiveImmediateResponses.assistAudioStreamAck.rawValue,
+            content: AssistAudioStreamAckPayload(streamId: streamId, isListening: isListening).content
+        ))
+    }
+}
+
 // MARK: - AssistServiceDelegate
 
 extension WatchCommunicatorService: AssistServiceDelegate {
@@ -382,49 +1514,65 @@ extension WatchCommunicatorService: AssistServiceDelegate {
 
     func didReceiveEvent(_ event: Shared.AssistEvent) {
         Current.Log.info("Watch Assist received event: \(event)")
+        if event == .runEnd {
+            isAssistRunInProgress = false
+        }
+        // Voice activity detection heard the user stop speaking — the pipeline reads no audio after
+        // that — or the run is over: the watch stops recording, as in-app Assist does.
+        if [.sttVadEnd, .sttEnd, .runEnd].contains(event), assistAudioStream?.recognition == nil {
+            stopListeningToAssistAudioStream()
+        }
     }
 
     func didReceiveSttContent(_ content: String) {
-        let message = ImmediateMessage(
+        let message = HAWatchConnectivity.ImmediateMessage(
             identifier: InteractiveImmediateResponses.assistSTTResponse.rawValue,
-            content: [
-                "content": content,
-            ]
+            content: AssistTextResponsePayload(text: content).content
         )
         sendMessage(message: message)
     }
 
     func didReceiveIntentEndContent(_ content: String) {
-        let message = ImmediateMessage(
+        let message = HAWatchConnectivity.ImmediateMessage(
             identifier: InteractiveImmediateResponses.assistIntentEndResponse.rawValue,
-            content: [
-                "content": content,
-            ]
+            content: AssistTextResponsePayload(text: content).content
         )
         sendMessage(message: message)
+
+        let configuration = assistConfiguration()
+        guard speaksOnDevice(configuration), !configuration.muteTTS else { return }
+        sendMessage(message: .init(
+            identifier: InteractiveImmediateResponses.assistOnDeviceTTS.rawValue,
+            content: AssistOnDeviceTTSPayload(
+                text: content,
+                voiceIdentifier: configuration.onDeviceTTSVoiceIdentifier
+            ).content
+        ))
     }
 
     func didReceiveGreenLightForAudioInput() {
-        sendPendingAudioData()
+        if assistAudioStream != nil {
+            sendAssistAudioStreamToPipeline()
+        } else {
+            sendPendingAudioData()
+        }
     }
 
     func didReceiveTtsMediaUrl(_ mediaUrl: URL) {
-        let message = ImmediateMessage(
+        let message = HAWatchConnectivity.ImmediateMessage(
             identifier: InteractiveImmediateResponses.assistTTSResponse.rawValue,
-            content: [
-                "mediaURL": mediaUrl.absoluteString,
-            ]
+            content: AssistTTSResponsePayload(mediaURL: mediaUrl).content
         )
         sendMessage(message: message)
     }
 
     func didReceiveError(code: String, message: String) {
-        let message = ImmediateMessage(
+        isAssistRunInProgress = false
+        // The run the stream was feeding is over; the watch stops recording when it reads the error.
+        dropAssistAudioStream(cancellingRun: false)
+        let message = HAWatchConnectivity.ImmediateMessage(
             identifier: InteractiveImmediateResponses.assistError.rawValue,
-            content: [
-                "code": code,
-                "message": message,
-            ]
+            content: AssistErrorPayload(code: code, message: message).content
         )
         sendMessage(message: message)
     }
@@ -434,12 +1582,10 @@ extension WatchCommunicatorService: AssistServiceDelegate {
 
 extension WatchCommunicatorService: ServerObserver {
     func serversDidChange(_ serverManager: ServerManager) {
-        _ = HomeAssistantAPI.SyncWatchContext()
-    }
-}
-
-private extension InteractiveImmediateMessage {
-    func toImmediateMessage() -> ImmediateMessage {
-        ImmediateMessage(identifier: identifier, content: content)
+        syncWatchContext()
+        // Also push the reference database (which now carries the servers too) so the new server set
+        // reaches the watch proactively. mTLS client-certificate bundles still flow only through the
+        // on-demand `serversConfigSync` reply (they carry Keychain material kept off the mirror).
+        WatchMirrorPushCoordinator.schedule(reason: .serversChanged)
     }
 }

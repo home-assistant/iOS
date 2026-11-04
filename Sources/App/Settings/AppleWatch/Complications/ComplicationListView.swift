@@ -3,17 +3,22 @@ import SwiftUI
 
 /// SwiftUI replacement for `ComplicationListViewController`.
 struct ComplicationListView: View {
+    @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = ComplicationListViewModel()
     @State private var showFamilyPicker = false
+    @State private var showDeleteAllConfirmation = false
 
     var body: some View {
         List {
-            introSection
-            manualUpdatesSection
             groupSections
+            #if DEBUG
+            // Creating new legacy (ClockKit-era) complications is retained for debugging only; users
+            // build complications through the modern entity/template builder on the root screen.
             addSection
+            #endif
+            deleteAllSection
         }
-        .navigationTitle(L10n.SettingsDetails.Watch.title)
+        .navigationTitle(Text(L10n.Watch.Complications.Legacy.title))
         .sheet(isPresented: $showFamilyPicker) {
             NavigationView {
                 ComplicationFamilySelectView(
@@ -37,41 +42,27 @@ struct ComplicationListView: View {
 
     // MARK: - Sections
 
-    private var introSection: some View {
+    private var deleteAllSection: some View {
         Section {
-            Text(L10n.Watch.Configurator.List.description)
-                .foregroundColor(.primary)
-            Link(destination: URL(string: "https://companion.home-assistant.io/app/ios/apple-watch")!) {
-                HStack {
-                    Text(L10n.Nfc.List.learnMore)
-                    Spacer()
-                    Image(systemSymbol: .arrowUpForwardSquare)
-                        .font(.caption)
-                }
+            Button(role: .destructive) {
+                showDeleteAllConfirmation = true
+            } label: {
+                Text(L10n.Watch.Complications.Legacy.deleteAll)
             }
-            Text(L10n.Watch.Configurator.Warning.templatingAdmin)
-                .foregroundColor(.secondary)
-        }
-    }
-
-    private var manualUpdatesSection: some View {
-        Section {
-            HStack {
-                Text(L10n.Watch.Configurator.List.ManualUpdates.remaining)
-                Spacer()
-                Text(viewModel.remainingUpdatesDescription)
-                    .foregroundColor(.secondary)
-            }
-            LoadingButton(
-                title: L10n.Watch.Configurator.List.ManualUpdates.manuallyUpdate,
-                isLoading: viewModel.isUpdatingComplications
+            .confirmationDialog(
+                L10n.Watch.Complications.Legacy.deleteAllConfirm,
+                isPresented: $showDeleteAllConfirmation,
+                titleVisibility: .visible
             ) {
-                viewModel.updateComplications()
+                Button(role: .destructive) {
+                    viewModel.deleteAll()
+                    // Nothing left to configure here; return to the root, where the legacy entry hides.
+                    dismiss()
+                } label: {
+                    Text(L10n.Watch.Complications.Legacy.deleteAll)
+                }
+                Button(role: .cancel) {} label: { Text(L10n.cancelLabel) }
             }
-        } header: {
-            Text(L10n.Watch.Configurator.List.ManualUpdates.title)
-        } footer: {
-            Text(L10n.Watch.Configurator.List.ManualUpdates.footer)
         }
     }
 
@@ -105,6 +96,7 @@ struct ComplicationListView: View {
         }
     }
 
+    #if DEBUG
     private var addSection: some View {
         Section {
             Button(L10n.addButtonLabel) {
@@ -112,4 +104,9 @@ struct ComplicationListView: View {
             }
         }
     }
+    #endif
+}
+
+#Preview("Legacy complications") {
+    NavigationView { ComplicationListView() }
 }

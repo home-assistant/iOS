@@ -2,7 +2,6 @@ import Foundation
 import Shared
 
 // swiftlint:disable force_cast
-@available(iOS 16.4, *)
 extension ThreadCredentialsSharingView {
     static func buildTransferToHomeAssistant(server: Server) -> ThreadCredentialsSharingView {
         let viewModel = ThreadTransferCredentialToHAViewModel(server: server, threadClient: ThreadClientService())

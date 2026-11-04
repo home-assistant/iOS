@@ -1,22 +1,25 @@
 import Shared
 import SwiftUI
 
-struct AppleLikeListTopRowHeader: View {
+struct AppleLikeListTopRowHeader<Content: View>: View {
     let image: MaterialDesignIcons?
     let headerImageAlternativeView: AnyView?
     let title: String
     let subtitle: String?
+    let content: Content
 
     init(
         image: MaterialDesignIcons?,
         headerImageAlternativeView: AnyView? = nil,
         title: String,
-        subtitle: String? = nil
+        subtitle: String? = nil,
+        @ViewBuilder content: () -> Content
     ) {
         self.image = image
         self.headerImageAlternativeView = headerImageAlternativeView
         self.title = title
         self.subtitle = subtitle
+        self.content = content()
     }
 
     var body: some View {
@@ -38,8 +41,31 @@ struct AppleLikeListTopRowHeader: View {
                         .frame(maxWidth: .infinity, alignment: .center)
                 }
             }
+            if Content.self != EmptyView.self {
+                Divider()
+                content
+                    .frame(maxWidth: .infinity)
+            }
         }
         .padding(.vertical, DesignSystem.Spaces.half)
+    }
+}
+
+extension AppleLikeListTopRowHeader where Content == EmptyView {
+    init(
+        image: MaterialDesignIcons?,
+        headerImageAlternativeView: AnyView? = nil,
+        title: String,
+        subtitle: String? = nil
+    ) {
+        self.init(
+            image: image,
+            headerImageAlternativeView: headerImageAlternativeView,
+            title: title,
+            subtitle: subtitle
+        ) {
+            EmptyView()
+        }
     }
 }
 

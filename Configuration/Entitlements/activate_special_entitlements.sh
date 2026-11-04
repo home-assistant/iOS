@@ -30,6 +30,16 @@ if [[ $TARGET_NAME = "App" ]]; then
 fi
 
 if [[ $TARGET_NAME = "App" ]]; then
+    if [[ $CI && $CONFIGURATION != "Release" ]]; then
+      echo "warning: MATTER_SHARE disabled for CI"
+    elif [[ ${ENABLE_MATTER_SHARE} -eq 1 ]]; then
+        /usr/libexec/PlistBuddy -c "add com.apple.developer.matter.allow-setup-payload bool true" "$ENTITLEMENTS_FILE"
+    else
+        echo "warning: MATTER_SHARE disabled"
+    fi
+fi
+
+if [[ $TARGET_NAME = "App" ]]; then
   if [[ $CI && $CONFIGURATION != "Release" ]]; then
     echo "warning: com.apple.developer.carplay-driving-task disabled for CI"
   elif [[ ${ENABLE_CARPLAY} -eq 1 ]]; then

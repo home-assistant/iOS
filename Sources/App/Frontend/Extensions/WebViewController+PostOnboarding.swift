@@ -18,11 +18,18 @@ extension WebViewController {
         }
     }
 
-    private func showNotificationPermissionRequest() {
-        let view = NotificationPermissionRequestView().embeddedInHostingController()
-        view.modalPresentationStyle = .overFullScreen
-        view.view.backgroundColor = .clear
-        view.modalTransitionStyle = .crossDissolve
-        present(view, animated: true)
+    /// A system sheet at the medium detent, so it stays clear of the bottom safe area the way any
+    /// other sheet does, and its content spans the full width on iPhone Duo. In compact height the
+    /// detent is unavailable and the sheet fills the screen instead.
+    func showNotificationPermissionRequest() {
+        let controller = NotificationPermissionRequestView().embeddedInHostingController()
+
+        if Current.isCatalyst {
+            controller.modalPresentationStyle = .formSheet
+        } else if let sheet = controller.sheetPresentationController {
+            sheet.detents = [.medium()]
+            sheet.prefersGrabberVisible = true
+        }
+        present(controller, animated: true)
     }
 }

@@ -12,6 +12,12 @@ protocol WebViewExternalMessageHandlerProtocol {
     var webViewController: WebViewControllerProtocol? { get set }
     func handleExternalMessage(_ dictionary: [String: Any])
     func sendExternalBus(message: WebSocketMessage) -> Promise<Void>
+    func sendExternalBusCommandWithRetry(command: WebViewExternalBusOutgoingMessage, payload: [String: Any]?)
+    func sendExternalBusCommandWithRetry(
+        command: WebViewExternalBusOutgoingMessage,
+        payload: [String: Any]?,
+        completion: @escaping (Bool) -> Void
+    )
 
     // TODO: Move these methods below to their proper handlers
     func scanImprov()
@@ -22,14 +28,26 @@ protocol WebViewExternalMessageHandlerProtocol {
 final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessageHandlerProtocol {
     weak var webViewController: WebViewControllerProtocol?
     private let improvManager: any ImprovManagerProtocol
+    private let entityControlDonation: EntityControlDonation
+    private let cameraMicrophoneBridge: CameraMicrophoneBridge
     private lazy var entityAddToHandler: EntityAddToHandler = .init(webViewController: webViewController)
 
     private var improvController: UIViewController?
 
+    private var nextOutgoingMessageID = 1
+    private var pendingCommands: [Int: PendingExternalBusCommand] = [:]
+
     init(
-        improvManager: any ImprovManagerProtocol
+        improvManager: any ImprovManagerProtocol,
+        entityControlDonation: EntityControlDonation = .init(),
+        cameraMicrophoneBridge: CameraMicrophoneBridge = .init()
     ) {
         self.improvManager = improvManager
+        self.entityControlDonation = entityControlDonation
+        self.cameraMicrophoneBridge = cameraMicrophoneBridge
+        cameraMicrophoneBridge.onSessionEnded = { [weak self] sessionId in
+            self?.notifyWebRTCStreamStopped(sessionId: sessionId)
+        }
     }
 
     // swiftlint:disable cyclomatic_complexity
@@ -44,17 +62,24 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             return
         }
 
+        if incomingMessage.MessageType == "result" {
+            handleExternalBusCommandResult(incomingMessage)
+            return
+        }
+
         var response: Guarantee<WebSocketMessage>?
 
         if let externalBusMessage = WebViewExternalBusMessage(rawValue: incomingMessage.MessageType) {
             switch externalBusMessage {
             case .configGet:
+                stopWebRTCStreamLeftByPreviousPage()
+                let configResult = WebViewExternalBusMessage.configResult
                 response = Guarantee { seal in
                     DispatchQueue.global(qos: .userInitiated).async {
                         seal(WebSocketMessage(
                             id: incomingMessage.ID!,
                             type: "result",
-                            result: WebViewExternalBusMessage.configResult
+                            result: configResult
                         ))
                     }
                 }
@@ -72,6 +97,8 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                     return
                 }
                 webViewController.updateFrontendConnectionState(state: connEvt)
+            case .frontendLoaded:
+                webViewController.updateFrontendConnectionState(state: FrontEndConnectionState.loaded.rawValue)
             case .tagRead:
                 response = Current.tags.readNFC().map { tag in
                     WebSocketMessage(id: incomingMessage.ID!, type: "result", result: ["success": true, "tag": tag])
@@ -103,6 +130,8 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                 webViewController.evaluateJavaScript("notifyThemeColors()", completion: nil)
             case .matterCommission:
                 matterComissioningHandler(incomingMessage: incomingMessage)
+            case .matterShareDevice:
+                handleMatterShareDevice(incomingMessage)
             case .threadImportCredentials:
                 transferKeychainThreadCredentialsToHARequested()
             case .barCodeScanner:
@@ -133,10 +162,13 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             case .assistShow:
                 let startListening = incomingMessage.Payload?["start_listening"] as? Bool
                 let pipelineId = incomingMessage.Payload?["pipeline_id"] as? String
+                // The user can override what the frontend asks for, this only applies to Assist
+                // opened from the dashboard.
+                let startMode = AssistConfiguration.config.startMode
                 showAssist(
                     server: webViewController.server,
                     pipeline: pipelineId ?? "",
-                    autoStartRecording: startListening ?? false
+                    autoStartRecording: startMode.resolveAutoStartRecording(frontendRequested: startListening ?? false)
                 )
             case .assistSettings:
                 showAssistSettingsViewController()
@@ -180,12 +212,44 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                 }
                 handleEntityAddTo(entityId: entityId, appPayload: appPayload)
             case .cameraPlayerShow:
-                guard #available(iOS 16.0, *) else { return }
                 guard let entityId = incomingMessage.Payload?["entity_id"] as? String else {
                     Current.Log.error("Received camera/show but entity_id was not string! \(incomingMessage)")
                     return
                 }
                 showCameraPlayer(entityId: entityId, cameraName: incomingMessage.Payload?["camera_name"] as? String)
+            case .webRTCStreamStart:
+                startWebRTCStream(incomingMessage: incomingMessage, server: webViewController.server)
+            case .webRTCStreamStop:
+                guard let sessionId = incomingMessage.Payload?["session_id"] as? String else {
+                    Current.Log.error("Received webrtc/stream/stop but session_id was not string! \(incomingMessage)")
+                    return
+                }
+                cameraMicrophoneBridge.stop(sessionId: sessionId)
+            case .frontendReloadAndClearCache:
+                reloadAndClearFrontendCache()
+            case .sidebarShow:
+                NativeTabBarState.shared.requestMore()
+            case .moreInfoOpened:
+                guard let entityId = incomingMessage.Payload?["entity_id"] as? String else {
+                    Current.Log.error("Received more_info/opened but entity_id was not string! \(incomingMessage)")
+                    return
+                }
+                webViewController.setOnscreenEntity(entityId: entityId)
+            case .moreInfoClosed:
+                guard let entityId = incomingMessage.Payload?["entity_id"] as? String else {
+                    Current.Log.error("Received more_info/closed but entity_id was not string! \(incomingMessage)")
+                    return
+                }
+                webViewController.clearOnscreenEntity(entityId: entityId)
+            case .entityControlled:
+                guard let control = EntityControlMessage(payload: incomingMessage.Payload) else {
+                    Current.Log.error("Received entity/controlled with an invalid payload! \(incomingMessage)")
+                    return
+                }
+                let serverId = webViewController.server.identifier.rawValue
+                Task { [entityControlDonation] in
+                    await entityControlDonation.donate(control, serverId: serverId)
+                }
             }
         } else {
             Current.Log.error("unknown: \(incomingMessage.MessageType)")
@@ -198,21 +262,47 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
 
     // swiftlint:enable cyclomatic_complexity
 
-    func showSettingsViewController() {
-        if Current.sceneManager.supportsMultipleScenes, Current.isCatalyst {
-            Current.sceneManager.activateAnyScene(for: .settings)
-        } else {
-            // Use SwiftUI SettingsView wrapped in hosting controller
-            let settingsView = SettingsView().embeddedInHostingController()
-            webViewController?.presentOverlayController(controller: settingsView, animated: true)
+    private func handleMatterShareDevice(_ incomingMessage: WebSocketMessage) {
+        guard let messageId = incomingMessage.ID else {
+            Current.Log.error("Received matter/share_device without a message id")
+            return
         }
+        guard let request = MatterShareRequest(payload: incomingMessage.Payload) else {
+            Current.Log.error("Received matter/share_device with an invalid payload")
+            sendExternalBus(message: .init(
+                id: messageId,
+                error: MatterWrapper.shareError(for: MatterShareError.invalidRequest)
+            )).cauterize()
+            return
+        }
+        Task { @MainActor [weak self] in
+            let outgoing: WebSocketMessage
+            do {
+                try await Current.matter.shareDevice(request)
+                Current.Log.info("Matter device shared")
+                outgoing = .init(id: messageId, type: "result", result: [:])
+            } catch {
+                let busError = MatterWrapper.shareError(for: error)
+                if busError.isCanceled {
+                    Current.Log.info("Sharing Matter device cancelled by user")
+                } else {
+                    // Full error for the log; only the bus message must be free of system text.
+                    Current.Log.error("Sharing Matter device failed: \(error)")
+                }
+                outgoing = .init(id: messageId, error: busError)
+            }
+            self?.sendExternalBus(message: outgoing).cauterize()
+        }
+    }
+
+    func showSettingsViewController() {
+        // Through the web view the message came from, so Settings opens in that window and no other.
+        webViewController?.showSettingsViewController()
     }
 
     @MainActor
     private func showAssistSettingsViewController() {
-        let assistSettingsView = AssistSettingsView().embeddedInHostingController()
-        assistSettingsView.modalPresentationStyle = .overFullScreen
-        webViewController?.presentOverlayController(controller: assistSettingsView, animated: true)
+        Current.sceneManager.appCoordinator.done { $0.showAssistSettings() }
     }
 
     func handleHaptic(_ hapticType: String) {
@@ -237,19 +327,40 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         }
     }
 
+    /// How long the frontend gets to render the element it asked to focus, in attempts and the pause between them.
+    static let elementFocusAttempts = 20
+    static let elementFocusRetryInterval: TimeInterval = 0.15
+
     func handleElementFocus(elementId: String) {
         Current.Log.verbose("Handle element focus for element ID: \(elementId)")
+        focusElement(elementId: elementId, attemptsLeft: Self.elementFocusAttempts)
+    }
 
-        // JavaScript to find and focus element in both regular DOM and Shadow DOM
-        let script = """
+    /// Keyboard focus only follows a scripted `focus()` while the web view is first responder, and the
+    /// frontend asks before the element is always on the page, so this keeps trying until it is.
+    private func focusElement(elementId: String, attemptsLeft: Int) {
+        webViewController?.makeWebViewFirstResponder()
+        webViewController?
+            .evaluateJavaScript(Self.focusElementScript(elementId: elementId)) { [weak self] result, error in
+                if let error {
+                    Current.Log.error("Error focusing element \(elementId): \(error)")
+                    return
+                }
+                guard result as? Bool == false, attemptsLeft > 1 else { return }
+                DispatchQueue.main.asyncAfter(deadline: .now() + Self.elementFocusRetryInterval) {
+                    self?.focusElement(elementId: elementId, attemptsLeft: attemptsLeft - 1)
+                }
+            }
+    }
+
+    /// Finds the element through shadow roots and focuses it; a focus that is already on it is redone so the
+    /// keyboard follows. Evaluates to whether the element was found.
+    static func focusElementScript(elementId: String) -> String {
+        """
         (function() {
-            // Helper function to search through shadow DOM recursively
             function findElementInShadowDOM(elementId, root = document) {
-                // Try to find by ID in current root
                 let element = root.getElementById(elementId);
                 if (element) return element;
-
-                // Search through all elements with shadow roots
                 const allElements = root.querySelectorAll('*');
                 for (const el of allElements) {
                     if (el.shadowRoot) {
@@ -259,22 +370,30 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
                 }
                 return null;
             }
-
-            // Search for the element
-            const elementId = '\(elementId)';
-            const element = findElementInShadowDOM(elementId);
-
-            if (element) {
-                element.focus();
+            function activeElement() {
+                let active = document.activeElement;
+                while (active && active.shadowRoot && active.shadowRoot.activeElement) {
+                    active = active.shadowRoot.activeElement;
+                }
+                return active;
             }
+            function contains(ancestor, node) {
+                while (node) {
+                    if (node === ancestor) return true;
+                    node = node.parentNode || (node.host ? node.host : null);
+                }
+                return false;
+            }
+            const element = findElementInShadowDOM('\(elementId)');
+            if (!element) return false;
+            const active = activeElement();
+            if (active && contains(element, active)) {
+                active.blur();
+            }
+            element.focus();
+            return true;
         })();
         """
-
-        webViewController?.evaluateJavaScript(script) { _, error in
-            if let error {
-                Current.Log.error("Error focusing element \(elementId): \(error)")
-            }
-        }
     }
 
     @discardableResult
@@ -308,34 +427,30 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             return
         }
 
-        if #available(iOS 16.4, *) {
-            let threadManagementView =
-                UIHostingController(
-                    rootView: ThreadCredentialsSharingView<ThreadTransferCredentialToHAViewModel>
-                        .buildTransferToHomeAssistant(server: webViewController.server)
-                )
-            threadManagementView.view.backgroundColor = .clear
-            threadManagementView.modalPresentationStyle = .overFullScreen
-            threadManagementView.modalTransitionStyle = .crossDissolve
-            webViewController.presentOverlayController(controller: threadManagementView, animated: true)
-        }
+        let threadManagementView =
+            UIHostingController(
+                rootView: ThreadCredentialsSharingView<ThreadTransferCredentialToHAViewModel>
+                    .buildTransferToHomeAssistant(server: webViewController.server)
+            )
+        threadManagementView.view.backgroundColor = .clear
+        threadManagementView.modalPresentationStyle = .overFullScreen
+        threadManagementView.modalTransitionStyle = .crossDissolve
+        webViewController.presentOverlayController(controller: threadManagementView, animated: true)
     }
 
     private func transferHAThreadCredentialsToKeychain(macExtendedAddress: String, activeOperationalDataset: String) {
-        if #available(iOS 16.4, *) {
-            let threadManagementView =
-                UIHostingController(
-                    rootView: ThreadCredentialsSharingView<ThreadTransferCredentialToKeychainViewModel>
-                        .buildTransferToAppleKeychain(
-                            macExtendedAddress: macExtendedAddress,
-                            activeOperationalDataset: activeOperationalDataset
-                        )
-                )
-            threadManagementView.view.backgroundColor = .clear
-            threadManagementView.modalPresentationStyle = .overFullScreen
-            threadManagementView.modalTransitionStyle = .crossDissolve
-            webViewController?.presentOverlayController(controller: threadManagementView, animated: true)
-        }
+        let threadManagementView =
+            UIHostingController(
+                rootView: ThreadCredentialsSharingView<ThreadTransferCredentialToKeychainViewModel>
+                    .buildTransferToAppleKeychain(
+                        macExtendedAddress: macExtendedAddress,
+                        activeOperationalDataset: activeOperationalDataset
+                    )
+            )
+        threadManagementView.view.backgroundColor = .clear
+        threadManagementView.modalPresentationStyle = .overFullScreen
+        threadManagementView.modalTransitionStyle = .crossDissolve
+        webViewController?.presentOverlayController(controller: threadManagementView, animated: true)
     }
 
     private func barcodeScannerRequested(
@@ -438,9 +553,9 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     @MainActor
     private func showToast(payload: ToastShowPayload) {
         if #available(iOS 18, *) {
-            ToastManager.shared.show(
+            ToastPresenter.shared.show(
                 id: payload.id,
-                symbol: SFSymbol.infoCircleFill.rawValue,
+                symbol: .infoCircleFill,
                 symbolForegroundStyle: (.white, .haPrimary),
                 title: payload.message,
                 message: "",
@@ -454,7 +569,7 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
     @MainActor
     private func hideToast(id: String) {
         if #available(iOS 18, *) {
-            ToastManager.shared.hide(id: id)
+            ToastPresenter.shared.hide(id: id)
         } else {
             Current.Log.verbose("Not hiding toast with id \(id), Toast not available on this OS version.")
         }
@@ -484,13 +599,19 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         sendExternalBus(message: .init(
             command: WebViewExternalBusOutgoingMessage.matterCommissionFinish.rawValue,
             payload: [
-                "name": deviceName,
+                "name": deviceName as Any,
                 "success": success,
             ]
         ))
     }
 
-    func showAssist(server: Server, pipeline: String = "", autoStartRecording: Bool = false) {
+    func showAssist(
+        server: Server,
+        pipeline: String = "",
+        autoStartRecording: Bool = false
+    ) {
+        let presentsAsSheet = webViewController?.presentsNextAssistAsSheet ?? false
+        webViewController?.presentsNextAssistAsSheet = false
         if AssistSession.shared.inProgress {
             AssistSession.shared.requestNewSession(.init(
                 server: server,
@@ -501,24 +622,39 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         }
 
         if Current.sceneManager.supportsMultipleScenes, Current.isCatalyst {
-            // On macOS, open Assist in a new window/scene
-            Current.sceneManager.activateAnyScene(
-                for: .assist,
-                with: [
-                    "server": server.identifier.rawValue,
-                    "pipelineId": pipeline,
-                    "autoStartRecording": autoStartRecording,
-                ]
-            )
-        } else {
-            // On iOS/iPad, present modally as before
-            let assistView = UIHostingController(rootView: AssistView.build(
+            // On macOS, open Assist in its own SwiftUI window (see `HAApp`). Its params can't be passed into
+            // a plain `WindowGroup`, so configure the shared model before activating the scene.
+            AssistWindowModel.shared.configure(
                 server: server,
                 preferredPipelineId: pipeline,
                 autoStartRecording: autoStartRecording
+            )
+            Current.sceneManager.activateAnyScene(for: .assist)
+        } else {
+            // On iOS/iPad, present modally as before. Closing it re-checks the frontend underneath, which a
+            // cold launch straight into Assist covered before it ever loaded.
+            let assistView = UIHostingController(rootView: AssistView.build(
+                server: server,
+                preferredPipelineId: pipeline,
+                autoStartRecording: autoStartRecording,
+                onDismiss: { [weak self] in
+                    self?.webViewController?.handleOverlayDismissed()
+                }
             ))
-            assistView.modalPresentationStyle = .fullScreen
-            assistView.modalTransitionStyle = .crossDissolve
+            let tappedSource = webViewController?.pendingAssistZoomSourceView
+            webViewController?.pendingAssistZoomSourceView = nil
+            if presentsAsSheet {
+                assistView.modalPresentationStyle = .automatic
+            } else if #available(iOS 18.0, *), tappedSource != nil || webViewController?.assistZoomAnchorView != nil {
+                assistView.modalPresentationStyle = .fullScreen
+                // Zoom out of the tapped tab bar spot when there is one, else the frontend's Assist anchor.
+                assistView.preferredTransition = .zoom { [weak self] _ in
+                    tappedSource ?? self?.webViewController?.assistZoomAnchorView
+                }
+            } else {
+                assistView.modalPresentationStyle = .fullScreen
+                assistView.modalTransitionStyle = .crossDissolve
+            }
             webViewController?.presentOverlayController(controller: assistView, animated: true)
         }
     }
@@ -552,10 +688,11 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
             ))
 
         guard let improvController else { return }
-        improvController.modalTransitionStyle = .crossDissolve
+        // The host stays transparent and unanimated: the view raises the system sheet itself once it is on
+        // screen, and dismissing that sheet dismisses this host.
         improvController.modalPresentationStyle = .overFullScreen
         improvController.view.backgroundColor = .clear
-        webViewController?.presentOverlayController(controller: improvController, animated: true)
+        webViewController?.presentOverlayController(controller: improvController, animated: false)
     }
 
     func stopImprovScanIfNeeded() {
@@ -615,20 +752,239 @@ final class WebViewExternalMessageHandler: @preconcurrency WebViewExternalMessag
         }
     }
 
-    @available(iOS 16.0, *)
+    @MainActor
+    private func reloadAndClearFrontendCache() {
+        Current.Log.info("Resetting frontend cache requested via external bus")
+        Current.websiteDataStoreHandler
+            .cleanCache(dataTypes: WebsiteDataStoreHandlerImpl.frontendAssetDataTypes) { [weak self] in
+                self?.webViewController?.refresh()
+            }
+    }
+
     private func showCameraPlayer(entityId: String, cameraName: String?) {
         guard let webViewController else {
             Current.Log.error("WebViewController not available while opening camera player")
             return
         }
 
-        let view = CameraPlayerView(
+        CameraOverlayPresenter.shared.show(
+            entityId: entityId,
             server: webViewController.server,
-            cameraEntityId: entityId,
-            cameraName: cameraName
-        ).embeddedInHostingController()
-        view.modalPresentationStyle = .overFullScreen
-        webViewController.presentOverlayController(controller: view, animated: true)
+            cameraName: cameraName,
+            on: webViewController
+        )
+    }
+
+    // MARK: - WebRTC streams
+
+    private func startWebRTCStream(incomingMessage: WebSocketMessage, server: Server) {
+        let messageId = incomingMessage.ID ?? -1
+        let streamType = incomingMessage.Payload?["stream_type"] as? String
+        guard streamType.flatMap(WebRTCStreamType.init(rawValue:)) == .microphone else {
+            Current.Log.error("Received webrtc/stream/start with an unsupported stream_type! \(incomingMessage)")
+            sendExternalBus(message: .init(
+                id: messageId,
+                errorCode: WebRTCStreamErrorCode.unsupportedStreamType.rawValue,
+                errorMessage: "Unsupported stream_type: \(streamType ?? "none")"
+            ))
+            return
+        }
+        guard let entityId = incomingMessage.Payload?["entity_id"] as? String else {
+            Current.Log.error("Received webrtc/stream/start but entity_id was not string! \(incomingMessage)")
+            sendExternalBus(message: .init(
+                id: messageId,
+                errorCode: WebRTCStreamErrorCode.invalidPayload.rawValue,
+                errorMessage: "entity_id is required"
+            ))
+            return
+        }
+        cameraMicrophoneBridge.start(cameraEntityId: entityId, server: server) { [weak self] result in
+            switch result {
+            case let .success(sessionId):
+                self?.sendExternalBus(message: .init(id: messageId, type: "result", result: ["session_id": sessionId]))
+            case let .failure(error):
+                self?.sendExternalBus(message: .init(
+                    id: messageId,
+                    errorCode: error.code.rawValue,
+                    errorMessage: error.message
+                ))
+            }
+        }
+    }
+
+    private func stopWebRTCStreamLeftByPreviousPage() {
+        cameraMicrophoneBridge.stopActiveSession()
+    }
+
+    private func notifyWebRTCStreamStopped(sessionId: String) {
+        sendExternalBus(message: .init(
+            command: WebViewExternalBusOutgoingMessage.webRTCStreamStopped.rawValue,
+            payload: ["session_id": sessionId]
+        ))
+    }
+}
+
+// MARK: - Acknowledged external bus commands
+
+private final class PendingExternalBusCommand {
+    let command: String
+    let payload: [String: Any]?
+    let retryDelay: DispatchTimeInterval
+    let acknowledgementTimeout: DispatchTimeInterval
+    let completion: ((Bool) -> Void)?
+    var attemptsRemaining: Int
+    /// A fresh id is assigned per attempt so a late error result for a previous attempt is ignored.
+    var messageID: Int
+    var acknowledgementWorkItem: DispatchWorkItem?
+
+    init(
+        command: String,
+        payload: [String: Any]?,
+        attemptsRemaining: Int,
+        retryDelay: DispatchTimeInterval,
+        acknowledgementTimeout: DispatchTimeInterval,
+        completion: ((Bool) -> Void)?,
+        messageID: Int
+    ) {
+        self.command = command
+        self.payload = payload
+        self.attemptsRemaining = attemptsRemaining
+        self.retryDelay = retryDelay
+        self.acknowledgementTimeout = acknowledgementTimeout
+        self.completion = completion
+        self.messageID = messageID
+    }
+}
+
+extension WebViewExternalMessageHandler {
+    /// Sends a command over the external bus and keeps retrying until the frontend acknowledges it,
+    /// rather than relying on a fixed delay to guess when the frontend is ready.
+    ///
+    /// The frontend only replies to a `command` when it could **not** handle it — the command handler
+    /// isn't registered yet, or it rejected the command (see `external_messaging.ts`); a handled command
+    /// produces no reply. So we retry whenever an error result is echoed back for our message id (or the
+    /// JavaScript evaluation itself fails), and treat the absence of any error within
+    /// `acknowledgementTimeout` as success. Main thread only.
+    func sendExternalBusCommandWithRetry(command: WebViewExternalBusOutgoingMessage, payload: [String: Any]?) {
+        sendExternalBusCommandWithRetry(command: command, payload: payload, completion: { _ in })
+    }
+
+    func sendExternalBusCommandWithRetry(
+        command: WebViewExternalBusOutgoingMessage,
+        payload: [String: Any]?,
+        completion: @escaping (Bool) -> Void
+    ) {
+        sendExternalBusCommandWithRetry(
+            command: command,
+            payload: payload,
+            maxAttempts: 6,
+            retryDelay: .milliseconds(300),
+            acknowledgementTimeout: .milliseconds(750),
+            completion: completion
+        )
+    }
+
+    func sendExternalBusCommandWithRetry(
+        command: WebViewExternalBusOutgoingMessage,
+        payload: [String: Any]?,
+        maxAttempts: Int,
+        retryDelay: DispatchTimeInterval,
+        acknowledgementTimeout: DispatchTimeInterval,
+        completion: ((Bool) -> Void)? = nil
+    ) {
+        // Supersede any in-flight attempt for the same command so the latest payload wins.
+        cancelPendingCommands(matching: command.rawValue)
+
+        let pending = PendingExternalBusCommand(
+            command: command.rawValue,
+            payload: payload,
+            attemptsRemaining: maxAttempts,
+            retryDelay: retryDelay,
+            acknowledgementTimeout: acknowledgementTimeout,
+            completion: completion,
+            messageID: nextOutgoingMessageID
+        )
+        nextOutgoingMessageID += 1
+        attemptExternalBusCommand(pending)
+    }
+
+    private func attemptExternalBusCommand(_ pending: PendingExternalBusCommand) {
+        guard pending.attemptsRemaining > 0 else {
+            Current.Log
+                .warning("External bus command \(pending.command) not acknowledged after retries, giving up")
+            pendingCommands[pending.messageID] = nil
+            pending.completion?(false)
+            return
+        }
+        pending.attemptsRemaining -= 1
+        let attemptID = pending.messageID
+        pendingCommands[attemptID] = pending
+
+        sendExternalBus(message: .init(
+            id: attemptID,
+            command: pending.command,
+            payload: pending.payload
+        )).done { [weak self, weak pending] in
+            // Start the acknowledgement timer only once the command actually reached the frontend, so a
+            // send failure always routes to `catch` below regardless of timing. The frontend stays
+            // silent on success, so no error result within the window counts as acknowledged.
+            guard let self, let pending, pendingCommands[attemptID] === pending else { return }
+            let acknowledgementWorkItem = DispatchWorkItem { [weak self, weak pending] in
+                guard let self, let pending, pendingCommands[attemptID] === pending else { return }
+                Current.Log.verbose("External bus command \(pending.command) (id \(attemptID)) acknowledged")
+                pendingCommands[attemptID] = nil
+                pending.completion?(true)
+            }
+            pending.acknowledgementWorkItem = acknowledgementWorkItem
+            DispatchQueue.main.asyncAfter(
+                deadline: .now() + pending.acknowledgementTimeout,
+                execute: acknowledgementWorkItem
+            )
+        }.catch { [weak self, weak pending] error in
+            // The frontend never saw the command, so no error result is coming — retry now.
+            guard let self, let pending, pendingCommands[attemptID] === pending else { return }
+            Current.Log.error("External bus command \(pending.command) failed to send: \(error)")
+            retryExternalBusCommand(pending)
+        }
+    }
+
+    private func retryExternalBusCommand(_ pending: PendingExternalBusCommand) {
+        guard pendingCommands[pending.messageID] === pending else { return }
+        pending.acknowledgementWorkItem?.cancel()
+        pendingCommands[pending.messageID] = nil
+
+        // Re-key under a fresh id and stay registered through the delay so a newer command can still
+        // supersede this one; the delayed attempt bails out if that happened.
+        pending.messageID = nextOutgoingMessageID
+        nextOutgoingMessageID += 1
+        let retryID = pending.messageID
+        pendingCommands[retryID] = pending
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + pending.retryDelay) { [weak self] in
+            guard let self, pendingCommands[retryID] === pending else { return }
+            attemptExternalBusCommand(pending)
+        }
+    }
+
+    private func cancelPendingCommands(matching command: String) {
+        let ids = pendingCommands.filter { $0.value.command == command }.map(\.key)
+        for id in ids {
+            pendingCommands[id]?.acknowledgementWorkItem?.cancel()
+            pendingCommands[id] = nil
+        }
+    }
+
+    private func handleExternalBusCommandResult(_ message: WebSocketMessage) {
+        guard let id = message.ID, let pending = pendingCommands[id] else { return }
+        guard message.Success != true else {
+            // Defensive: the frontend doesn't currently send a success ack, only failures.
+            pending.acknowledgementWorkItem?.cancel()
+            pendingCommands[id] = nil
+            pending.completion?(true)
+            return
+        }
+        Current.Log.verbose("External bus command \(pending.command) (id \(id)) rejected by frontend, retrying")
+        retryExternalBusCommand(pending)
     }
 }
 

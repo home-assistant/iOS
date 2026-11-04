@@ -75,6 +75,7 @@ env.sh
 push_certs/*
 Tools/*.ttf
 Tools/*.json
+!Tools/MaterialDesignIcons.json
 dSYMs/
 
 # Local configuration overrides
@@ -87,3 +88,6 @@ vendor/bundle
 .bundle/
 .claude/settings.local.json
 /.claude/worktrees
+
+# Local SPM package transient files
+Sources/HADesignSystem/Package.resolved

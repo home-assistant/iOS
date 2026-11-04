@@ -1,15 +1,25 @@
 import CallbackURLKit
+import CoreSpotlight
 import Foundation
+import HAKit
+import HAKit_PromiseKit
 import PromiseKit
 import SafariServices
 import Shared
 import SwiftUI
 
 class IncomingURLHandler {
-    private(set) weak var windowController: WebViewWindowController!
+    private(set) weak var coordinator: AppCoordinator!
+    /// Shows a camera in the native player over the frontend. Replaced by tests, which have no
+    /// frontend to present on.
+    lazy var presentCamera: (_ entityId: String, _ serverId: String?) -> Void = { [weak self] entityId, serverId in
+        self?.presentOverFrontend { webViewController in
+            CameraOverlayPresenter.shared.show(entityId: entityId, serverId: serverId, on: webViewController)
+        }
+    }
 
-    init(windowController: WebViewWindowController) {
-        self.windowController = windowController
+    init(coordinator: AppCoordinator) {
+        self.coordinator = coordinator
         registerCallbackURLKitHandlers()
     }
 
@@ -23,6 +33,7 @@ class IncomingURLHandler {
         case invite
         case createCustomWidget = "createcustomwidget"
         case camera
+        case settings
     }
 
     // swiftlint:disable cyclomatic_complexity
@@ -34,6 +45,18 @@ class IncomingURLHandler {
             serviceData = queryItems
         }
         guard let host = url.host else { return true }
+
+        // Universal / web links (e.g. `my.home-assistant.io`, including HACS "my" redirect links) can be
+        // delivered through `onOpenURL` as well as `onContinueUserActivity` under the SwiftUI lifecycle.
+        // They are not deep-link actions, so route them to the my-link handler instead of treating the
+        // host as an `IncomingURLAction` (which would otherwise show a "not a valid route" error).
+        // Restrict to web schemes since `showMy(for:)` presents an `SFSafariViewController`, which only
+        // supports http/https; this also prevents a crafted `homeassistant://my.home-assistant.io/...`
+        // from reaching Safari.
+        if ["http", "https"].contains(url.scheme?.lowercased()), host.lowercased() == "my.home-assistant.io" {
+            return showMy(for: url)
+        }
+
         if let requestedAction = IncomingURLAction(rawValue: host.lowercased()) {
             switch requestedAction {
             case .xCallbackURL:
@@ -60,33 +83,21 @@ class IncomingURLHandler {
                     handler: { self.sendLocationURLHandler() }
                 )
             case .camera:
-                guard #available(iOS 16.0, *),
-                      var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+                guard let entityId = serviceData["entityId"] else {
+                    Current.Log.error("No entity found for open camera URL: \(url)")
                     return false
                 }
-                components.scheme = nil
-                components.host = nil
-
-                let queryParameters = components.queryItems
-                let serverId = queryParameters?.first(where: { $0.name == "serverId" })?.value
-                let entityId = queryParameters?.first(where: { $0.name == "entityId" })?.value
-
-                guard let entityId,
-                      let server = Current.servers.all.first(where: { server in
-                          server.identifier.rawValue == serverId
-                      }) else {
-                    Current.Log.error("No server found for open camera URL: \(url)")
-                    return false
+                let serverId = serviceData["serverId"]
+                // Links made before the native player was reinstated can name any entity; anything that
+                // isn't a camera still opens its more-info dialog.
+                guard Domain(entityId: entityId) == .camera else {
+                    guard let destination = AppConstants.openEntityDestinationURL(
+                        entityId: entityId,
+                        serverId: serverId ?? ""
+                    ) else { return false }
+                    return handle(url: destination)
                 }
-                Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
-                    .done { webViewController in
-                        let view = CameraPlayerView(
-                            server: server,
-                            cameraEntityId: entityId
-                        ).embeddedInHostingController()
-                        view.modalPresentationStyle = .overFullScreen
-                        webViewController.present(view, animated: true)
-                    }
+                presentCamera(entityId, serverId)
             case .navigate: // homeassistant://navigate/lovelace/dashboard
                 guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
                     return false
@@ -98,8 +109,14 @@ class IncomingURLHandler {
                 let queryParameters = components.queryItems
                 let isFromWidget = components.popWidgetAuthenticity()
                 let serverId = components.queryItems?.first(where: { $0.name == "serverId" })?.value as? String
-                let server = components.popWidgetServer(isFromWidget: isFromWidget) ?? Current.servers.all
-                    .first(where: { $0.identifier.rawValue == serverId })
+                // Strip `webhook_id` (a sender that couldn't resolve the server defers it to here)
+                // so it doesn't leak into the navigated path.
+                let webhookId = queryParameters?.first(where: { $0.name == "webhook_id" })?.value
+                components.queryItems = components.queryItems?.filter { $0.name != "webhook_id" }
+                if components.queryItems?.isEmpty == true { components.queryItems = nil }
+                let server = components.popWidgetServer(isFromWidget: isFromWidget)
+                    ?? Current.servers.all.first(where: { $0.identifier.rawValue == serverId })
+                    ?? webhookId.flatMap { Current.servers.server(forWebhookID: $0) }
                 let isComingFromAppIntent: Bool = {
                     if let value = queryParameters?
                         .first(where: { $0.name == AppConstants.QueryItems.isComingFromAppIntent.rawValue })?.value {
@@ -109,16 +126,21 @@ class IncomingURLHandler {
                     }
                 }()
 
-                guard let rawURL = components.url?.absoluteString else {
-                    return false
-                }
+                // An explicit `url` query param (e.g. from a Live Activity tap) carries the raw
+                // destination so it resolves exactly like a notification's url: relative HA paths
+                // open in the frontend, external URLs open in the in-app browser.
+                let explicitDestination = queryParameters?.first(where: { $0.name == "url" })?.value
+
+                // A url-less tap (only a server, e.g. via webhook_id) opens that server's root
+                // instead of being dropped when `components.url` is nil.
+                let rawURL = explicitDestination ?? components.url?.absoluteString ?? ""
 
                 if
-                    let presenting = windowController.presentedViewController,
+                    let presenting = coordinator.presentedViewController,
                     presenting is SFSafariViewController {
                     // Dismiss my.* controller if it's on top - we don't get any other indication
-                    presenting.dismiss(animated: true, completion: { [windowController] in
-                        windowController?.openSelectingServer(
+                    presenting.dismiss(animated: true, completion: { [coordinator] in
+                        coordinator?.openSelectingServer(
                             from: .deeplink,
                             urlString: rawURL,
                             skipConfirm: true,
@@ -127,7 +149,7 @@ class IncomingURLHandler {
                         )
                     })
                 } else if let server {
-                    windowController.open(
+                    coordinator.open(
                         from: .deeplink,
                         server: server,
                         urlString: rawURL,
@@ -135,7 +157,7 @@ class IncomingURLHandler {
                         isComingFromAppIntent: isComingFromAppIntent
                     )
                 } else {
-                    windowController.openSelectingServer(
+                    coordinator.openSelectingServer(
                         from: .deeplink,
                         urlString: rawURL,
                         skipConfirm: isFromWidget,
@@ -160,43 +182,33 @@ class IncomingURLHandler {
                     $0.identifier.rawValue == serverId
                 }) ?? Current.servers.all.first else { return false }
 
-                Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
-                    .done { webViewController in
-                        webViewController.webViewExternalMessageHandler.showAssist(
-                            server: server,
-                            pipeline: pipelineId,
-                            autoStartRecording: startlistening
-                        )
-                    }
+                presentOverFrontend { webViewController in
+                    webViewController.webViewExternalMessageHandler.showAssist(
+                        server: server,
+                        pipeline: pipelineId,
+                        autoStartRecording: startlistening
+                    )
+                }
             case .createCustomWidget:
-                Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
-                    .done { webViewController in
-                        let mainView = CustomWidgetsListView()
-                            .toolbar {
-                                ToolbarItem(placement: .topBarTrailing) {
-                                    CloseButton {
-                                        webViewController.dismissOverlayController(
-                                            animated: true,
-                                            completion: nil
-                                        )
-                                    }
+                presentOverFrontend { webViewController in
+                    let mainView = CustomWidgetsListView()
+                        .toolbar {
+                            ToolbarItem(placement: .topBarTrailing) {
+                                CloseButton {
+                                    webViewController.dismissOverlayController(
+                                        animated: true,
+                                        completion: nil
+                                    )
                                 }
                             }
-                        let controller = UIHostingController(rootView: AnyView(
-                            Group {
-                                if #available(iOS 16.0, *) {
-                                    NavigationStack {
-                                        mainView
-                                    }
-                                } else {
-                                    NavigationView {
-                                        mainView
-                                    }
-                                }
-                            }
-                        ))
-                        webViewController.presentOverlayController(controller: controller, animated: true)
-                    }
+                        }
+                    let controller = UIHostingController(rootView: AnyView(
+                        NavigationStack {
+                            mainView
+                        }
+                    ))
+                    webViewController.presentOverlayController(controller: controller, animated: true)
+                }
             case .invite:
                 // homeassistant://invite#url=http%3A%2F%2Fhomeassistant.local%3A8123
                 Current.Log.verbose("Received Home Assistant invitation URL: \(url)")
@@ -211,9 +223,11 @@ class IncomingURLHandler {
 
                 let inviteUrl = URL(string: urlParam.orEmpty)
 
-                Current.sceneManager.webViewWindowControllerPromise.done { windowController in
-                    windowController.presentInvitation(url: inviteUrl)
+                Current.sceneManager.appCoordinator.done { coordinator in
+                    coordinator.presentInvitation(url: inviteUrl)
                 }
+            case .settings:
+                coordinator.showSettings()
             }
         } else {
             Current.Log.warning("Can't route incoming URL: \(url)")
@@ -226,25 +240,9 @@ class IncomingURLHandler {
     func handle(userActivity: NSUserActivity) -> Bool {
         Current.Log.info(userActivity)
 
-        if let assistInAppIntent = userActivity.interaction?.intent as? AssistInAppIntent {
-            guard let server = Current.servers.server(for: assistInAppIntent) ?? Current.servers.all.first else { return false }
-            let pipeline = assistInAppIntent.pipeline
-            let autoStartRecording = Bool(exactly: assistInAppIntent.withVoice ?? 0) ?? false
-
-            windowController.webViewControllerPromise.pipe { result in
-                switch result {
-                case let .fulfilled(webView):
-                    webView.webViewExternalMessageHandler.showAssist(
-                        server: server,
-                        pipeline: pipeline?.identifier ?? "",
-                        autoStartRecording: autoStartRecording
-                    )
-                case let .rejected(error):
-                    Current.Log.error("Failed to obtain webview to open Assist In App: \(error.localizedDescription)")
-                }
-            }
-
-            return true
+        if userActivity.activityType == CSSearchableItemActionType,
+           let identifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String {
+            return handleSpotlightEntity(identifier: identifier)
         }
 
         switch Current.tags.handle(userActivity: userActivity) {
@@ -261,37 +259,25 @@ class IncomingURLHandler {
             // not a tag
             if let url = userActivity.webpageURL, url.host?.lowercased() == "my.home-assistant.io" {
                 return showMy(for: url)
-            } else if let interaction = userActivity.interaction {
-                if
-                    let intent = interaction.intent as? OpenPageIntent,
-                    let panel = intent.page, let path = panel.identifier {
-                    Current.Log.info("launching from shortcuts with panel \(panel)")
-
-                    let urlString = "/" + path
-                    if let server = Current.servers.server(for: panel) {
-                        windowController.open(
-                            from: .deeplink,
-                            server: server,
-                            urlString: urlString,
-                            skipConfirm: true,
-                            isComingFromAppIntent: false
-                        )
-                    } else {
-                        windowController.openSelectingServer(
-                            from: .deeplink,
-                            urlString: urlString,
-                            skipConfirm: true,
-                            isComingFromAppIntent: false
-                        )
-                    }
-                    return true
-                }
-
-                return false
             } else {
                 return false
             }
         }
+    }
+
+    /// Opens the entity a tapped Spotlight result stands for. `ShowEntityDetailsAppIntent` handles this
+    /// for the system, so this is the fallback for when the tap arrives as a user activity instead. The
+    /// identifier is the indexed entity's id, which is what the local database keys its rows by.
+    private func handleSpotlightEntity(identifier: String) -> Bool {
+        guard let entity = HAAppEntity.entity(uniqueId: identifier),
+              let url = AppConstants.openEntityOrCameraDestinationURL(
+                  entityId: entity.entityId,
+                  serverId: entity.serverId
+              ) else {
+            Current.Log.error("Can't route Spotlight entity \(identifier)")
+            return false
+        }
+        return handle(url: url)
     }
 
     func handle(shortcutItem: UIApplicationShortcutItem) -> Promise<Void> {
@@ -308,14 +294,12 @@ class IncomingURLHandler {
             case HAApplicationShortcutItem.openSettings.rawValue:
                 if Current.isCatalyst, Current.settingsStore.macNativeFeaturesOnly {
                     // Close window to avoid empty window left behind
-                    for window in UIApplication.shared.windows {
-                        if let scene = window.windowScene {
-                            UIApplication.shared.requestSceneSessionDestruction(
-                                scene.session,
-                                options: nil,
-                                errorHandler: nil
-                            )
-                        }
+                    for scene in UIApplication.shared.connectedScenes where scene is UIWindowScene {
+                        UIApplication.shared.requestSceneSessionDestruction(
+                            scene.session,
+                            options: nil,
+                            errorHandler: nil
+                        )
                     }
                 }
                 Current.sceneManager.activateAnyScene(for: .settings)
@@ -365,7 +349,8 @@ class IncomingURLHandler {
     }
 
     private func performAppIconShortcut(_ item: MagicItem, provider: MagicItemProviderProtocol) -> Promise<Void> {
-        if item.customization?.requiresConfirmation == true {
+        // Opening the entity changes nothing, so it is never confirmed first.
+        if item.customization?.requiresConfirmation == true, !item.widgetInteractionType.opensEntityInApp {
             return confirmAppIconShortcut(item, provider: provider)
         } else {
             return runAppIconShortcut(item, provider: provider)
@@ -405,7 +390,8 @@ class IncomingURLHandler {
             return customAction
         }
 
-        if case let .widgetURL(url) = item.widgetInteractionType {
+        let interactionType = item.widgetInteractionType
+        if case let .widgetURL(url) = interactionType {
             _ = handle(url: url)
             return .value(())
         }
@@ -419,20 +405,58 @@ class IncomingURLHandler {
             return .init(error: HomeAssistantAPI.APIError.notConfigured)
         }
 
-        if let info = provider.getInfo(for: item) {
+        if let info = provider.getInfo(for: item), let window = coordinator.window {
             Current.sceneManager.showFullScreenConfirm(
                 icon: item.icon(info: info),
                 text: item.name(info: info),
-                onto: .value(windowController.window)
+                onto: .value(window)
             )
         }
 
-        return Promise { seal in
-            item.execute(on: server, source: .AppShortcut) { success in
-                if success {
-                    seal.fulfill(())
-                } else {
-                    seal.reject(HomeAssistantAPI.APIError.notConfigured)
+        switch interactionType {
+        case let .appIntent(.toggle(entityId, domainString, _)):
+            // The same state-aware toggle a widget tile runs, so a lock shortcut locks or unlocks
+            // by the lock's state instead of doing nothing for want of one.
+            guard let domain = Domain(rawValue: domainString),
+                  let connection = Current.api(for: server)?.connection else {
+                Current.Log.error("No connection to toggle App Icon Shortcut magic item id: \(item.id)")
+                return .init(error: HomeAssistantAPI.APIError.notConfigured)
+            }
+            return Promise { seal in
+                Task {
+                    do {
+                        try await EntityToggler.toggle(domain: domain, entityId: entityId, connection: connection)
+                        seal.fulfill(())
+                    } catch {
+                        Current.Log.error(
+                            "Failed to toggle App Icon Shortcut magic item id: \(item.id), error: \(error)"
+                        )
+                        seal.reject(error)
+                    }
+                }
+            }
+        case let .appIntent(.activate(entityId, domainString, _)):
+            // The same request a widget tile's "Press", "Run" or "Trigger" sends, rather than the
+            // item's own run, so an entity behaves the same from either place.
+            guard let domain = Domain(rawValue: domainString),
+                  let connection = Current.api(for: server)?.connection,
+                  let request = HATypedRequest<HAResponseVoid>.mainAction(domain: domain, entityId: entityId) else {
+                Current.Log.error("Cannot activate App Icon Shortcut magic item id: \(item.id)")
+                return .init(error: HomeAssistantAPI.APIError.notConfigured)
+            }
+            return connection.send(request).promise.asVoid()
+        case let .appIntent(.performAction(serverId, actionId, payload)):
+            return performAction(serverId: serverId, actionId: actionId, payload: payload)
+        case .appIntent(.refresh):
+            return .value(())
+        case .widgetURL, .appIntent:
+            return Promise { seal in
+                item.execute(on: server, source: .AppShortcut) { success, _ in
+                    if success {
+                        seal.fulfill(())
+                    } else {
+                        seal.reject(HomeAssistantAPI.APIError.notConfigured)
+                    }
                 }
             }
         }
@@ -444,14 +468,45 @@ class IncomingURLHandler {
         switch action {
         case .default:
             return nil
+        case .nothing:
+            // There is no widget to reload from an app icon shortcut, so the tap ends here rather
+            // than showing the confirmation overlay for a no-op.
+            return .value(())
+        case .toggle, .mainAction, .turnOn, .turnOff:
+            // These resolve through the item's interaction type, the way a widget tile's do, so
+            // falling through keeps the confirmation overlay and error handling.
+            return nil
         case .moreInfoDialog:
-            if let url = AppConstants.openEntityDeeplinkURL(entityId: item.id, serverId: item.serverId) {
+            if let url = AppConstants.openEntityDestinationURL(entityId: item.id, serverId: item.serverId) {
                 _ = handle(url: url)
             }
             return .value(())
+        case let .url(urlString):
+            guard let url = ItemAction.resolvedURL(from: urlString) else {
+                Current.Log.error("App Icon Shortcut url action has no usable URL: \(urlString)")
+                return .init(error: HomeAssistantAPI.APIError.notConfigured)
+            }
+            // The app's own deep links are handled in place; everything else belongs to whichever
+            // app owns the scheme, the way the frontend hands a `url` action to the browser.
+            if let scheme = url.scheme, AppConstants.deeplinkSchemes.contains(scheme) {
+                _ = handle(url: url)
+            } else {
+                URLOpener.shared.open(url, options: [:], completionHandler: nil)
+            }
+            return .value(())
+        case let .performAction(serverId, actionId, payload):
+            return performAction(serverId: serverId, actionId: actionId, payload: payload)
         case let .navigate(path):
+            var normalizedPath = path.trimmingCharacters(in: .whitespacesAndNewlines)
+
+            if URL(string: normalizedPath)?.scheme == nil {
+                while normalizedPath.hasPrefix("/") {
+                    normalizedPath.removeFirst()
+                }
+            }
+
             if let url = AppConstants.navigateDeeplinkURL(
-                path: path,
+                path: normalizedPath,
                 serverId: item.serverId,
                 avoidUnnecessaryReload: true
             ) {
@@ -465,7 +520,7 @@ class IncomingURLHandler {
             }
             return Promise { seal in
                 MagicItem(id: scriptId, serverId: serverId, type: .script)
-                    .execute(on: server, source: .AppShortcut) { success in
+                    .execute(on: server, source: .AppShortcut) { success, _ in
                         if !success {
                             Current.Log.error("Failed to execute App Icon Shortcut run script action id: \(scriptId)")
                             seal.reject(HomeAssistantAPI.APIError.notConfigured)
@@ -483,8 +538,85 @@ class IncomingURLHandler {
                 _ = handle(url: url)
             }
             return .value(())
-        case .nothing:
-            return .value(())
+        }
+    }
+
+    /// Calls `domain.service` with the action's stored JSON payload — the same work
+    /// `PerformActionAppIntent` does for Shortcuts, reached through the transport-agnostic API it
+    /// itself calls, since an app icon shortcut runs in the app rather than through App Intents.
+    private func performAction(serverId: String, actionId: String, payload: String) -> Promise<Void> {
+        guard let server = Current.servers.all.first(where: { $0.identifier.rawValue == serverId }) else {
+            Current.Log.error("Failed to get server for App Icon Shortcut perform action id: \(actionId)")
+            return .init(error: HomeAssistantAPI.APIError.notConfigured)
+        }
+        let components = actionId.split(separator: ".")
+        guard components.count == 2 else {
+            Current.Log.error("App Icon Shortcut perform action id is not domain.service: \(actionId)")
+            return .init(error: HomeAssistantAPI.APIError.notConfigured)
+        }
+
+        return Promise { seal in
+            Task {
+                do {
+                    _ = try await AppIntentServerAPI.callAction(
+                        server: server,
+                        domain: String(components[0]),
+                        service: String(components[1]),
+                        data: Self.actionPayload(from: payload),
+                        returnResponse: false
+                    )
+                    seal.fulfill(())
+                } catch {
+                    Current.Log.error(
+                        "Failed to execute App Icon Shortcut perform action id: \(actionId), error: \(error)"
+                    )
+                    seal.reject(error)
+                }
+            }
+        }
+    }
+
+    /// The action's data, as the JSON object the user typed. Anything unparseable sends no data
+    /// rather than failing the run — the same tolerance the payload field's default `{}` implies.
+    private static func actionPayload(from payload: String) -> [String: Any] {
+        let trimmed = payload.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return [:] }
+        guard let object = try? JSONSerialization.jsonObject(with: Data(trimmed.utf8)) as? [String: Any] else {
+            Current.Log.error("App Icon Shortcut perform action payload is not a JSON object, sending no data")
+            return [:]
+        }
+        return object
+    }
+
+    /// Clears whatever is on screen — SwiftUI sheets included — before handing the frontend to `present`.
+    /// A link that opens the app to launch something has to take over from the content the user had open,
+    /// otherwise presenting over the web view fails and the link looks ignored.
+    private func presentOverFrontend(_ present: @escaping (WebViewController) -> Void) {
+        // The handler is a throwaway created per incoming link, so the coordinator is captured up front
+        // rather than reached through `self`, which is gone by the time the promise resolves.
+        let appCoordinator: AppCoordinator? = coordinator
+        Current.sceneManager.webViewControllerPromise.done { webViewController in
+            guard let appCoordinator else {
+                present(webViewController)
+                return
+            }
+            appCoordinator.dismissPresentedContent {
+                present(webViewController)
+            }
+        }
+    }
+
+    /// Presents on top of everything currently on screen. Used for the transient prompts (confirmations,
+    /// results, tag approval) that only need to be seen — unlike `presentOverFrontend(_:)` they don't take
+    /// the screen over, so a sheet the user opened stays where it was.
+    private func presentOnTopmost(_ controller: UIViewController, animated: Bool = true) {
+        let appCoordinator: AppCoordinator? = coordinator
+        Current.sceneManager.webViewControllerPromise.done { webViewController in
+            guard let appCoordinator else {
+                webViewController.present(controller, animated: animated, completion: nil)
+                return
+            }
+            appCoordinator.present(controller, animated: animated, completion: nil)
         }
     }
 
@@ -516,32 +648,29 @@ class IncomingURLHandler {
             }
         ))
 
-        windowController?.webViewControllerPromise.done {
-            $0.present(alert, animated: true, completion: nil)
-        }
+        presentOnTopmost(alert)
     }
 
     private func showTagApproval(tag: String, type: TagManagerHandleResult.HandledType) {
-        windowController?.webViewControllerPromise.done { webViewController in
-            let view = TagApprovalBottomSheet(
-                tag: tag,
-                onAllowOnce: { [weak self] in
-                    self?.fireApprovedTag(tag, type: type)
-                },
-                onAllowAlways: { [weak self] in
-                    AllowedTag.add(tag)
-                    self?.fireApprovedTag(tag, type: type)
-                },
-                onDismiss: { [weak webViewController] in
-                    webViewController?.dismiss(animated: false)
-                }
-            )
-
-            let controller = UIHostingController(rootView: view)
-            controller.modalPresentationStyle = .overFullScreen
-            controller.view.backgroundColor = .clear
-            webViewController.present(controller, animated: false)
-        }
+        // Built empty first so `onDismiss` can weakly reference the controller it lives in: it has to dismiss
+        // this sheet specifically — not whatever is top-most, which may be an overlay that appeared above it.
+        let controller = UIHostingController(rootView: AnyView(EmptyView()))
+        controller.rootView = AnyView(TagApprovalBottomSheet(
+            tag: tag,
+            onAllowOnce: { [weak self] in
+                self?.fireApprovedTag(tag, type: type)
+            },
+            onAllowAlways: { [weak self] in
+                AllowedTag.add(tag)
+                self?.fireApprovedTag(tag, type: type)
+            },
+            onDismiss: { [weak controller] in
+                controller?.dismiss(animated: false)
+            }
+        ))
+        controller.modalPresentationStyle = .overFullScreen
+        controller.view.backgroundColor = .clear
+        presentOnTopmost(controller, animated: false)
     }
 
     private func fireApprovedTag(_ tag: String, type: TagManagerHandleResult.HandledType) {
@@ -551,10 +680,11 @@ class IncomingURLHandler {
 
     private func showTagReadConfirmation(type: TagManagerHandleResult.HandledType) {
         let (icon, text) = tagConfirmationContent(type: type)
+        guard let window = coordinator.window else { return }
         Current.sceneManager.showFullScreenConfirm(
             icon: icon,
             text: text,
-            onto: .value(windowController.window)
+            onto: .value(window)
         )
     }
 
@@ -576,9 +706,7 @@ class IncomingURLHandler {
             preferredStyle: .alert
         )
         alert.addAction(UIAlertAction(title: L10n.okLabel, style: .default, handler: nil))
-        windowController?.webViewControllerPromise.done {
-            $0.present(alert, animated: true, completion: nil)
-        }
+        presentOnTopmost(alert)
     }
 
     private func showMy(for url: URL) -> Bool {
@@ -596,7 +724,7 @@ class IncomingURLHandler {
         }
 
         // not animated in because it looks weird during the app launch animation
-        windowController?.present(SFSafariViewController(url: updatedURL), animated: false, completion: nil)
+        coordinator?.present(SFSafariViewController(url: updatedURL), animated: false, completion: nil)
 
         return true
     }

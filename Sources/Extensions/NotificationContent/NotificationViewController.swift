@@ -1,6 +1,5 @@
 import Alamofire
 import KeychainAccess
-import MBProgressHUD
 import PromiseKit
 import Shared
 import UIKit
@@ -91,7 +90,9 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
 
     func didReceive(_ notification: UNNotification) {
         let catID = notification.request.content.categoryIdentifier.lowercased()
-        Current.Log.verbose("Received a notif with userInfo \(notification.request.content.userInfo)")
+        Current.Log.verbose(
+            "Received a notif with userInfo \(LogRedaction.redactValues(in: notification.request.content.userInfo))"
+        )
 
         guard let server = Current.servers.server(for: notification.request.content) else {
             Current.Log.info("ignoring push when unable to find server")
@@ -108,9 +109,13 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
             extensionContext?.notificationActions = notification.request.content.userInfoActions
         }
 
+        load(notification, api: api)
+    }
+
+    private func load(_ notification: UNNotification, api: HomeAssistantAPI) {
         activeViewController = NotificationLoadingViewController()
 
-        var hud: MBProgressHUD?
+        var indicator: UIActivityIndicatorView?
 
         viewController(
             for: notification,
@@ -123,21 +128,31 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
                 return .value(())
             }
 
-            if controller.mediaPlayPauseButtonType == .none, let view = self?.view {
+            if controller.mediaPlayPauseButtonType == .none, !controller.hidesSystemLoadingIndicator,
+               let view = self?.view {
                 // don't show the HUD for a screen that has pause/play because it already acts like a loading indicator
-                hud = {
-                    let hud = MBProgressHUD.showAdded(to: view, animated: true)
-                    hud.offset = CGPoint(x: 0, y: -MBProgressMaxOffset + 50)
-                    return hud
+                indicator = {
+                    let indicator = UIActivityIndicatorView(style: .medium)
+                    indicator.translatesAutoresizingMaskIntoConstraints = false
+                    view.addSubview(indicator)
+                    NSLayoutConstraint.activate([
+                        indicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                        indicator.topAnchor.constraint(equalTo: view.topAnchor, constant: 50),
+                    ])
+                    indicator.startAnimating()
+                    return indicator
                 }()
             }
 
             return controller.start()
         }.ensure {
-            hud?.hide(animated: true)
+            indicator?.stopAnimating()
+            indicator?.removeFromSuperview()
         }.catch { [weak self] error in
             Current.Log.error("finally failed: \(error)")
-            self?.activeViewController = NotificationErrorViewController(error: error)
+            self?.activeViewController = NotificationErrorViewController(error: error, onRetry: { [weak self] in
+                self?.load(notification, api: api)
+            })
         }
     }
 
@@ -167,6 +182,9 @@ protocol NotificationCategory: NSObjectProtocol {
     init(api: HomeAssistantAPI, notification: UNNotification, attachmentURL: URL?) throws
     func start() -> Promise<Void>
 
+    // Return true to suppress the system loading HUD because the controller shows its own indicator.
+    var hidesSystemLoadingIndicator: Bool { get }
+
     // Implementing this method and returning a button type other that "None" will
     // make the notification attempt to draw a play/pause button correctly styled
     // for that type.
@@ -180,4 +198,8 @@ protocol NotificationCategory: NSObjectProtocol {
     // Called when the user taps the play or pause button.
     func mediaPlay()
     func mediaPause()
+}
+
+extension NotificationCategory {
+    var hidesSystemLoadingIndicator: Bool { false }
 }

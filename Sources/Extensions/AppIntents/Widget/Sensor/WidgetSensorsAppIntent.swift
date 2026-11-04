@@ -10,6 +10,10 @@ struct WidgetSensorsAppIntent: WidgetConfigurationIntent {
         .init("widgets.sensors.title", defaultValue: "Show sensor state.")
     )
 
+    @Parameter(
+        title: .init("app_intents.server.title", defaultValue: "Server")
+    )
+    var server: IntentServerAppEntity?
     // ATTENTION: Unfortunately these sizes below can't be retrieved dynamically from widget family sizes.
     // Check ``WidgetFamilySizes.swift`` as source of truth
     @Parameter(

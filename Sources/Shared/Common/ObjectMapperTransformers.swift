@@ -1,7 +1,6 @@
 import CoreLocation
 import Foundation
 import ObjectMapper
-import Version
 
 open class EntityIDToDomainTransform: TransformType {
     public typealias Object = String

@@ -11,6 +11,8 @@ struct HAButtonStylesTests {
             VStack {
                 Button("primaryButton") {}
                     .buttonStyle(.primaryButton)
+                Button("primaryQuietButton") {}
+                    .buttonStyle(.primaryQuietButton)
                 Button("outlinedButton") {}
                     .buttonStyle(.outlinedButton)
                 Button("secondaryButton") {}

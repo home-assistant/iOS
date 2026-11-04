@@ -2,13 +2,17 @@ import Combine
 import Foundation
 
 enum MagicItemAddType {
-    case scripts
-    case scenes
     case entities
+    case areas
     case assistPipelines
+    case complications
 }
 
 final class MagicItemAddViewModel: ObservableObject {
-    @Published var selectedItemType = MagicItemAddType.scripts
+    @Published var selectedItemType: MagicItemAddType
     @Published var selectedServerId: String?
+
+    init(selectedItemType: MagicItemAddType) {
+        self.selectedItemType = selectedItemType
+    }
 }

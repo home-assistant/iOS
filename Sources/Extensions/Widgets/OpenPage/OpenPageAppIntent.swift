@@ -5,13 +5,19 @@ import SwiftUI
 
 // AppIntent that open app needs to have it's target the widget extension AND app target!
 @available(iOS 18, *)
-struct OpenPageAppIntent: AppIntent {
+struct OpenPageAppIntent: AppIntent, CustomIntentMigratedAppIntent {
+    // Carries over shortcuts built with the deprecated SiriKit OpenPageIntent
+    static let intentClassName = "OpenPageIntent"
+
     static var title: LocalizedStringResource = .init(
         "widgets.controls.open_page.configuration.title",
         defaultValue: "Open Page"
     )
 
     static var openAppWhenRun: Bool = true
+    // `openAppWhenRun` is deprecated from iOS 26; both stay until the deployment target passes 26.
+    @available(iOS 26.0, watchOS 26.0, *)
+    static var supportedModes: IntentModes { .foreground }
 
     @Parameter(
         title: .init("widgets.controls.open_page.configuration.parameter.page", defaultValue: "Page")

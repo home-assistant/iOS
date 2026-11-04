@@ -1,0 +1,151 @@
+import Foundation
+import GRDB
+
+/// Persisted copy of a Home Assistant device registry entry, scoped to a server. The initializer
+/// that maps the `DeviceRegistryEntry` websocket payload and the `Current.database()`-backed
+/// queries live in extensions in the `Shared` module.
+public struct AppDeviceRegistry: Codable, FetchableRecord, PersistableRecord, Equatable {
+    public static var databaseTableName: String = GRDBDatabaseTable.deviceRegistry.rawValue
+
+    public let serverId: String
+    public let deviceId: String
+    public let areaId: String?
+    public let configurationURL: String?
+    public let configEntries: [String]?
+    public let configEntriesSubentries: [String: [String?]]?
+    public let connections: [[String]]?
+    public let createdAt: Double?
+    public let disabledBy: String?
+    public let entryType: String?
+    public let hwVersion: String?
+    public let identifiers: [[String]]?
+    public let labels: [String]?
+    public let manufacturer: String?
+    public let model: String?
+    public let modelID: String?
+    public let modifiedAt: Double?
+    public let nameByUser: String?
+    public let name: String?
+    /// Core's `next_name_part`: `area` when the device has an area of its own, `parent_device` for a
+    /// child without one. Older servers don't send it.
+    public let nextNamePart: String?
+    /// Identifier of the device this one is a logical part of (e.g. one outlet of a power strip),
+    /// `nil` for regular top-level devices.
+    public let parentDeviceId: String?
+    public let primaryConfigEntry: String?
+    public let serialNumber: String?
+    public let swVersion: String?
+    public let viaDeviceID: String?
+
+    public init(
+        serverId: String,
+        deviceId: String,
+        areaId: String?,
+        configurationURL: String?,
+        configEntries: [String]?,
+        configEntriesSubentries: [String: [String?]]?,
+        connections: [[String]]?,
+        createdAt: Double?,
+        disabledBy: String?,
+        entryType: String?,
+        hwVersion: String?,
+        identifiers: [[String]]?,
+        labels: [String]?,
+        manufacturer: String?,
+        model: String?,
+        modelID: String?,
+        modifiedAt: Double?,
+        nameByUser: String?,
+        name: String?,
+        nextNamePart: String? = nil,
+        parentDeviceId: String?,
+        primaryConfigEntry: String?,
+        serialNumber: String?,
+        swVersion: String?,
+        viaDeviceID: String?
+    ) {
+        self.serverId = serverId
+        self.deviceId = deviceId
+        self.areaId = areaId
+        self.configurationURL = configurationURL
+        self.configEntries = configEntries
+        self.configEntriesSubentries = configEntriesSubentries
+        self.connections = connections
+        self.createdAt = createdAt
+        self.disabledBy = disabledBy
+        self.entryType = entryType
+        self.hwVersion = hwVersion
+        self.identifiers = identifiers
+        self.labels = labels
+        self.manufacturer = manufacturer
+        self.model = model
+        self.modelID = modelID
+        self.modifiedAt = modifiedAt
+        self.nameByUser = nameByUser
+        self.name = name
+        self.nextNamePart = nextNamePart
+        self.parentDeviceId = parentDeviceId
+        self.primaryConfigEntry = primaryConfigEntry
+        self.serialNumber = serialNumber
+        self.swVersion = swVersion
+        self.viaDeviceID = viaDeviceID
+    }
+
+    public var id: String {
+        "\(serverId)-\(deviceId)"
+    }
+
+    // Computed helpers (same as DeviceRegistryEntry)
+    /// The device's name as a person reads it, or `nil` when the registry carries none. Blank names
+    /// count as none: integrations do send `""` (e.g. UniFi clients), and a blank must not win over
+    /// the fields after it.
+    public var resolvedName: String? {
+        for candidate in [nameByUser, name, model] {
+            if let candidate, !candidate.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                return candidate
+            }
+        }
+        return nil
+    }
+
+    public var displayName: String {
+        resolvedName ?? deviceId
+    }
+
+    public var isDisabled: Bool { disabledBy != nil }
+
+    /// Whether this device is a logical part of another device.
+    public var isChildDevice: Bool { parentDeviceId != nil }
+
+    /// The area this device belongs to, falling back to its parent's when a child has none of its
+    /// own (mirroring core's `async_get_effective_area_id`).
+    public func effectiveAreaId(in devicesById: [String: AppDeviceRegistry]) -> String? {
+        if let areaId {
+            return areaId
+        }
+        guard let parentDeviceId else { return nil }
+        return devicesById[parentDeviceId]?.areaId
+    }
+
+    public func parentDeviceName(in devicesById: [String: AppDeviceRegistry]) -> String? {
+        parentDeviceId.flatMap { devicesById[$0]?.resolvedName }
+    }
+
+    /// The parent each of an area's devices nests under in a device tree, keyed by child id. As in
+    /// the frontend's trees, a parent that is in the same area joins the tree for its children even
+    /// when it has no entities of its own there.
+    public static func treeParentIds(
+        of deviceIds: Set<String>,
+        inArea areaId: String,
+        devicesById: [String: AppDeviceRegistry]
+    ) -> [String: String] {
+        deviceIds.reduce(into: [:]) { parentIds, deviceId in
+            guard let parentDeviceId = devicesById[deviceId]?.parentDeviceId,
+                  let parent = devicesById[parentDeviceId],
+                  deviceIds.contains(parentDeviceId) || parent.effectiveAreaId(in: devicesById) == areaId else {
+                return
+            }
+            parentIds[deviceId] = parentDeviceId
+        }
+    }
+}

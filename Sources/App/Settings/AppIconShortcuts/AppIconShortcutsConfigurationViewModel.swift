@@ -11,8 +11,12 @@ final class AppIconShortcutsConfigurationViewModel: ObservableObject {
     private let magicItemProvider = Current.magicItemProvider()
     private var cancellables = Set<AnyCancellable>()
     private var isInitialLoad = true
+    /// Refreshes the app icon quick actions after the configuration changed; tests pass their own to
+    /// wait for the refreshes they started.
+    private let updateShortcutItems: () -> Void
 
-    init() {
+    init(updateShortcutItems: @escaping () -> Void = { AppIconShortcutItemsUpdater.update() }) {
+        self.updateShortcutItems = updateShortcutItems
         setupAutoSave()
     }
 
@@ -59,7 +63,7 @@ final class AppIconShortcutsConfigurationViewModel: ObservableObject {
             _ = try Current.database().write { db in
                 try AppIconShortcutConfig.deleteAll(db)
             }
-            AppIconShortcutItemsUpdater.update()
+            updateShortcutItems()
             completion(true)
         } catch {
             showError(message: L10n.Grdb.Config.MigrationError.failedToSave(error.localizedDescription))
@@ -86,7 +90,7 @@ final class AppIconShortcutsConfigurationViewModel: ObservableObject {
             try Current.database().write { db in
                 try config.insert(db, onConflict: .replace)
             }
-            AppIconShortcutItemsUpdater.update()
+            updateShortcutItems()
             return true
         } catch {
             Current.Log.error("Failed to save App Icon Shortcuts config, error: \(error.localizedDescription)")

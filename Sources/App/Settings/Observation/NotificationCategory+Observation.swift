@@ -1,14 +1,11 @@
 import Foundation
 import PromiseKit
-import RealmSwift
 import Shared
 import UserNotifications
 
 extension NotificationCategory {
     static func setupObserver() {
-        let categories = Current.realm().objects(NotificationCategory.self)
-
-        Current.modelManager.observe(for: AnyRealmCollection(categories)) { collection in
+        Current.modelManager.observe(for: NotificationCategory.self) { categories in
             let fastlane = Promise<Set<UNNotificationCategory>> { seal in
                 guard Current.appConfiguration == .fastlaneSnapshot else {
                     return seal.fulfill(Set())
@@ -49,7 +46,7 @@ extension NotificationCategory {
             }
 
             let persisted = Promise<Set<UNNotificationCategory>> { seal in
-                seal.fulfill(Set(collection.flatMap(\.categories)))
+                seal.fulfill(Set(categories.flatMap(\.categories)))
             }
 
             return when(fulfilled: [

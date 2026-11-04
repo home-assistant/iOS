@@ -60,15 +60,25 @@ struct DownloadManagerView: View {
         }
     }
 
-    private var successView: some View {
-        VStack(spacing: DesignSystem.Spaces.three) {
-            Image(systemSymbol: .checkmark)
-                .foregroundStyle(.green)
-                .font(.system(size: 100))
+    @ViewBuilder
+    private var successCheckmark: some View {
+        let checkmark = Image(systemSymbol: .checkmark)
+            .foregroundStyle(.green)
+            .font(.system(size: 100))
+        if #available(iOS 18, *) {
+            checkmark
                 .symbolEffect(
                     .bounce,
                     options: .nonRepeating
                 )
+        } else {
+            checkmark
+        }
+    }
+
+    private var successView: some View {
+        VStack(spacing: DesignSystem.Spaces.three) {
+            successCheckmark
             Text(verbatim: L10n.DownloadManager.Finished.title)
                 .font(.title.bold())
             if let url = viewModel.lastURLCreated {
@@ -91,9 +101,7 @@ struct DownloadManagerView: View {
                         .onAppear {
                             shareWrapper = .init(url: url)
                         }
-                        .sheet(item: $shareWrapper, onDismiss: {}, content: { data in
-                            ActivityViewController(shareWrapper: data)
-                        })
+                        .shareSheet(item: $shareWrapper)
                 }
             }
         }

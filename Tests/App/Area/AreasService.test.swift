@@ -11,7 +11,10 @@ extension AppDeviceRegistry {
         serverId: String = "test-server",
         configEntries: [String]? = [],
         identifiers: [[String]]? = [],
-        name: String? = nil
+        name: String? = nil,
+        nameByUser: String? = nil,
+        nextNamePart: String? = nil,
+        parentDeviceId: String? = nil
     ) -> AppDeviceRegistry {
         let entry = DeviceRegistryEntry(
             areaId: areaId,
@@ -30,8 +33,10 @@ extension AppDeviceRegistry {
             model: nil,
             modelID: nil,
             modifiedAt: 0.0,
-            nameByUser: nil,
+            nameByUser: nameByUser,
             name: name,
+            nextNamePart: nextNamePart,
+            parentDeviceId: parentDeviceId,
             primaryConfigEntry: nil,
             serialNumber: nil,
             swVersion: nil,
@@ -41,42 +46,23 @@ extension AppDeviceRegistry {
     }
 }
 
-extension AppEntityRegistry {
+extension EntityRegistryListForDisplay.Entity {
     static func makeTest(
         areaId: String?,
-        entityId: String?,
+        entityId: String,
         deviceId: String?,
         hiddenBy: String?,
-        disabledBy: String?,
-        serverId: String = "test-server",
-        uniqueId: String? = nil
-    ) -> AppEntityRegistry {
-        let entry = EntityRegistryEntry(
-            uniqueId: uniqueId ?? UUID().uuidString,
+        disabledBy: String? = nil,
+        serverId: String = "test-server"
+    ) -> EntityRegistryListForDisplay.Entity {
+        EntityRegistryListForDisplay.Entity(
+            serverId: serverId,
             entityId: entityId,
-            platform: nil,
-            configEntryId: nil,
             deviceId: deviceId,
-            areaId: areaId,
-            disabledBy: disabledBy,
-            hiddenBy: hiddenBy,
             entityCategory: nil,
-            name: nil,
-            originalName: nil,
-            icon: nil,
-            originalIcon: nil,
-            aliases: nil,
-            labels: nil,
-            deviceClass: nil,
-            originalDeviceClass: nil,
-            capabilities: nil,
-            supportedFeatures: nil,
-            unitOfMeasurement: nil,
-            options: nil,
-            translationKey: nil,
-            hasEntityName: nil
+            areaId: areaId,
+            hidden: hiddenBy != nil ? true : nil
         )
-        return AppEntityRegistry(serverId: serverId, registry: entry)
     }
 }
 
@@ -110,5 +96,70 @@ struct AreasServiceTests {
             "1": ["8", "12", "13", "9", "7"],
             "2": ["14", "11", "15", "10"],
         ])
+    }
+
+    @Test func childDeviceEntitiesLandInTheParentArea() async throws {
+        let result = AreasService().testGetAllEntitiesFromArea(
+            devicesAndAreas: [
+                .makeTest(areaId: "kitchen", deviceId: "strip"),
+                .makeTest(areaId: nil, deviceId: "outlet-1", parentDeviceId: "strip"),
+                .makeTest(areaId: "garage", deviceId: "outlet-2", parentDeviceId: "strip"),
+            ],
+            entitiesAndAreas: [
+                .makeTest(areaId: nil, entityId: "switch.strip", deviceId: "strip", hiddenBy: nil),
+                .makeTest(areaId: nil, entityId: "switch.outlet_1", deviceId: "outlet-1", hiddenBy: nil),
+                .makeTest(areaId: nil, entityId: "switch.outlet_2", deviceId: "outlet-2", hiddenBy: nil),
+            ]
+        )
+
+        #expect(result == [
+            "kitchen": ["switch.strip", "switch.outlet_1"],
+            "garage": ["switch.outlet_2"],
+        ])
+    }
+
+    @Test func entityAreaOverridesTheDeviceArea() async throws {
+        let result = AreasService().testGetAllEntitiesFromArea(
+            devicesAndAreas: [
+                .makeTest(areaId: "kitchen", deviceId: "strip"),
+                .makeTest(areaId: nil, deviceId: "outlet-1", parentDeviceId: "strip"),
+            ],
+            entitiesAndAreas: [
+                .makeTest(areaId: "garage", entityId: "switch.outlet_1", deviceId: "outlet-1", hiddenBy: nil),
+                .makeTest(areaId: nil, entityId: "switch.outlet_1_led", deviceId: "outlet-1", hiddenBy: nil),
+            ]
+        )
+
+        #expect(result == [
+            "garage": ["switch.outlet_1"],
+            "kitchen": ["switch.outlet_1_led"],
+        ])
+    }
+
+    @Test func floorLookupReturnsMatchingFloorForServer() {
+        let service = AreasService()
+        service.floors = [
+            "server-a": [
+                .init(aliases: [], floorId: "ground", name: "Ground Floor"),
+                .init(aliases: [], floorId: "first", name: "First Floor"),
+            ],
+            "server-b": [
+                .init(aliases: [], floorId: "ground", name: "Other Ground"),
+            ],
+        ]
+
+        #expect(service.floor(for: "first", serverId: "server-a")?.name == "First Floor")
+        // Same floorId on a different server resolves to that server's floor.
+        #expect(service.floor(for: "ground", serverId: "server-b")?.name == "Other Ground")
+    }
+
+    @Test func floorLookupReturnsNilForUnknownFloorOrServer() {
+        let service = AreasService()
+        service.floors = [
+            "server-a": [.init(aliases: [], floorId: "ground", name: "Ground Floor")],
+        ]
+
+        #expect(service.floor(for: "attic", serverId: "server-a") == nil)
+        #expect(service.floor(for: "ground", serverId: "unknown-server") == nil)
     }
 }

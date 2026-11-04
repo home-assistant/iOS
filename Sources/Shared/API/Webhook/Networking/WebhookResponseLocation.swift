@@ -11,9 +11,9 @@ struct WebhookResponseLocationLocalMetadata: ImmutableMappable {
     let trigger: LocationUpdateTrigger
     let zoneName: String
 
-    init(trigger: LocationUpdateTrigger, zone: RLMZone?) {
+    init(trigger: LocationUpdateTrigger, zone: AppZone?) {
         self.trigger = trigger
-        self.zoneName = zone?.Name ?? "(unknown)"
+        self.zoneName = zone?.name ?? "(unknown)"
     }
 
     init(map: Map) throws {
@@ -35,7 +35,7 @@ struct WebhookResponseLocation: WebhookResponseHandler {
 
     static func localMetdata(
         trigger: LocationUpdateTrigger,
-        zone: RLMZone?
+        zone: AppZone?
     ) -> [String: Any] {
         WebhookResponseLocationLocalMetadata(
             trigger: trigger,

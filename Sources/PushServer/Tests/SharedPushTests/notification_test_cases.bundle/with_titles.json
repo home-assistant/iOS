@@ -22,6 +22,7 @@
                 "title": "title test",
                 "subtitle": "subtitle test"
             },
+            "mutable-content": true,
             "sound": "default"
         }
     }

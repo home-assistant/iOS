@@ -2,6 +2,8 @@
 "NSCameraUsageDescription" = "Chụp ảnh và gửi chúng đến máy chủ Trợ lý gia đình của bạn.";
 "NSCrossWebsiteTrackingUsageDescription" = "Tùy chọn cho phép theo dõi trang web chéo nếu cấu hình của bạn yêu cầu.";
 "NSFocusStatusUsageDescription" = "Báo cáo trạng thái tập trung của bạn dưới dạng cảm biến.";
+"NSHealthShareUsageDescription" = "Read selected Apple Health metrics so they can be shared with Home Assistant as sensors.";
+"NSHealthUpdateUsageDescription" = "Home Assistant does not write any data to Apple Health.";
 "NSLocalNetworkUsageDescription" = "Locate and communicate with your Home Assistant instance.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "Chúng tôi khuyên bạn nên chọn \"Luôn cho phép\" để có trải nghiệm định vị tốt nhất. Chọn \"Chỉ khi sử dụng ứng dụng\" sẽ tắt iBeacon, hàng rào địa lý, cập nhật vị trí nền và báo cáo chính xác.";
 "NSLocationAlwaysUsageDescription" = "Chúng tôi luôn cần quyền truy cập vào vị trí của bạn để sử dụng các tính năng như iBeacons, hàng rào địa lý, cập nhật vị trí nền và báo cáo chính xác.";

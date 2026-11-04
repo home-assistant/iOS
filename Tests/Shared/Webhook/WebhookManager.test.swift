@@ -1,24 +1,39 @@
 import Foundation
 import ObjectMapper
 import OHHTTPStubs
+import OHHTTPStubsSwift
 import PromiseKit
 @testable import Shared
 import XCTest
 
 class WebhookManagerTests: XCTestCase {
+    private final class PassthroughBackgroundTaskRunner: HomeAssistantBackgroundTaskRunner {
+        func callAsFunction<PromiseValue>(
+            withName name: String,
+            requiringAssertion: Bool,
+            wrapping: (TimeInterval?) -> Promise<PromiseValue>
+        ) -> Promise<PromiseValue> {
+            wrapping(nil)
+        }
+    }
+
     private var manager: WebhookManager!
     private var api1: FakeHassAPI!
     private var api2: FakeHassAPI!
     private var webhookURL1: URL!
     private var webhookURL2: URL!
+    private var previousBackgroundTask: HomeAssistantBackgroundTaskRunner!
 
     override func setUp() {
         super.setUp()
 
+        previousBackgroundTask = Current.backgroundTask
+        Current.backgroundTask = PassthroughBackgroundTaskRunner()
+
         api1 = FakeHassAPI(server: .fake())
         api2 = FakeHassAPI(server: .fake())
-        webhookURL1 = api1.server.info.connection.webhookURL()
-        webhookURL2 = api2.server.info.connection.webhookURL()
+        webhookURL1 = api1.server.info.connection.evaluateWebhookURL()
+        webhookURL2 = api2.server.info.connection.evaluateWebhookURL()
 
         manager = WebhookManager()
     }
@@ -30,6 +45,7 @@ class WebhookManagerTests: XCTestCase {
         ReplacingTestHandler.reset()
 
         Current.isBackgroundRequestsImmediate = { true }
+        Current.backgroundTask = previousBackgroundTask
     }
 
     func testBackgroundHandlingCallsCompletionHandler() {
@@ -188,7 +204,7 @@ class WebhookManagerTests: XCTestCase {
             connectionAccessSecurityLevel: .undefined
         )
 
-        let nextAPIWebhookURL = nextConnectionInfo.webhookURL()
+        let nextAPIWebhookURL = nextConnectionInfo.evaluateWebhookURL()
         api1.server.info.connection = nextConnectionInfo
 
         stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { [api1] request in
@@ -202,6 +218,153 @@ class WebhookManagerTests: XCTestCase {
         })
 
         XCTAssertNoThrow(try hang(manager.sendEphemeral(server: api1.server, request: expectedRequest)))
+    }
+
+    func testSendingEphemeralFallsBackToActiveURLWhenCloudhookIsNotFound() throws {
+        try assertSendingEphemeralFallsBackToActiveURL(whenCloudhookAnswers: 404)
+    }
+
+    func testSendingEphemeralFallsBackToActiveURLWhenCloudhookIsUnavailable() throws {
+        try assertSendingEphemeralFallsBackToActiveURL(whenCloudhookAnswers: 503)
+    }
+
+    private func assertSendingEphemeralFallsBackToActiveURL(
+        whenCloudhookAnswers statusCode: Int32,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) throws {
+        let expectedRequest = WebhookRequest(type: "webhook_name", data: ["json": true])
+        let cloudhookURL = try XCTUnwrap(URL(string: "https://hooks.nabu.casa/cloudhook-id"))
+        api1.server.info.connection.cloudhookURL = cloudhookURL
+        useNetworkAwayFromHome()
+
+        var cloudhookRequests = 0
+        stub(condition: { req in req.url == cloudhookURL }, response: { _ in
+            cloudhookRequests += 1
+            return HTTPStubsResponse(data: Data(), statusCode: statusCode, headers: [:])
+        })
+
+        // Without the cloudhook the webhook goes to the active URL, which is where the fallback goes.
+        stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { [api1] request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest, server: api1!.server)
+            return HTTPStubsResponse(data: #""result""#.data(using: .utf8)!, statusCode: 200, headers: [:])
+        })
+
+        XCTAssertEqual(
+            try hang(manager.sendEphemeral(server: api1.server, request: expectedRequest)),
+            "result",
+            file: file,
+            line: line
+        )
+        XCTAssertEqual(cloudhookRequests, 1, file: file, line: line)
+    }
+
+    func testSendingEphemeralKeepsCloudhookErrorWhenFallbackFails() throws {
+        let expectedRequest = WebhookRequest(type: "webhook_name", data: ["json": true])
+        let cloudhookURL = try XCTUnwrap(URL(string: "https://hooks.nabu.casa/cloudhook-id"))
+        api1.server.info.connection.cloudhookURL = cloudhookURL
+        useNetworkAwayFromHome()
+
+        stub(condition: { req in req.url == cloudhookURL }, response: { _ in
+            HTTPStubsResponse(data: Data(), statusCode: 404, headers: [:])
+        })
+
+        stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { _ in
+            HTTPStubsResponse(data: Data(), statusCode: 500, headers: [:])
+        })
+
+        let promise: Promise<Any> = manager.sendEphemeral(server: api1.server, request: expectedRequest)
+        XCTAssertThrowsError(try hang(promise)) { error in
+            XCTAssertEqual(error as? WebhookError, .unacceptableStatusCode(404))
+        }
+    }
+
+    func testSendingEphemeralDoesNotFallBackForOtherCloudhookErrors() throws {
+        let expectedRequest = WebhookRequest(type: "webhook_name", data: ["json": true])
+        let cloudhookURL = try XCTUnwrap(URL(string: "https://hooks.nabu.casa/cloudhook-id"))
+        api1.server.info.connection.cloudhookURL = cloudhookURL
+        useNetworkAwayFromHome()
+
+        stub(condition: { req in req.url == cloudhookURL }, response: { _ in
+            HTTPStubsResponse(data: Data(), statusCode: 500, headers: [:])
+        })
+
+        var activeURLRequests = 0
+        stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { _ in
+            activeURLRequests += 1
+            return HTTPStubsResponse(jsonObject: [:], statusCode: 200, headers: [:])
+        })
+
+        let promise: Promise<Any> = manager.sendEphemeral(server: api1.server, request: expectedRequest)
+        XCTAssertThrowsError(try hang(promise)) { error in
+            XCTAssertEqual(error as? WebhookError, .unacceptableStatusCode(500))
+        }
+        XCTAssertEqual(activeURLRequests, 0)
+    }
+
+    /// Off the server's home Wi-Fi, so a cloudhook is what the webhook goes to.
+    private func useNetworkAwayFromHome() {
+        let connectivity = Current.connectivity
+        let previousCurrentNetworkState = connectivity.currentNetworkState
+        let previousLastKnownNetworkState = connectivity.lastKnownNetworkState
+        let previousRefreshNetworkInformation = connectivity.refreshNetworkInformation
+
+        connectivity.currentNetworkState = { NetworkState(ssid: "Elsewhere") }
+        connectivity.lastKnownNetworkState = { NetworkState(ssid: "Elsewhere") }
+        connectivity.refreshNetworkInformation = {}
+
+        addTeardownBlock {
+            connectivity.currentNetworkState = previousCurrentNetworkState
+            connectivity.lastKnownNetworkState = previousLastKnownNetworkState
+            connectivity.refreshNetworkInformation = previousRefreshNetworkInformation
+        }
+    }
+
+    func testSendingEphemeralKeepsCloudhookErrorWithoutAnActiveURL() throws {
+        let expectedRequest = WebhookRequest(type: "webhook_name", data: ["json": true])
+        let cloudhookURL = try XCTUnwrap(URL(string: "https://hooks.nabu.casa/cloudhook-id"))
+        api1.server.info.connection = ConnectionInfo(
+            externalURL: nil,
+            internalURL: nil,
+            cloudhookURL: cloudhookURL,
+            remoteUIURL: nil,
+            webhookID: "given_id",
+            webhookSecret: nil,
+            internalSSIDs: nil,
+            internalHardwareAddresses: nil,
+            isLocalPushEnabled: false,
+            securityExceptions: .init(),
+            connectionAccessSecurityLevel: .undefined
+        )
+        useNetworkAwayFromHome()
+
+        var cloudhookRequests = 0
+        stub(condition: { req in req.url == cloudhookURL }, response: { _ in
+            cloudhookRequests += 1
+            return HTTPStubsResponse(data: Data(), statusCode: 404, headers: [:])
+        })
+
+        let promise: Promise<Any> = manager.sendEphemeral(server: api1.server, request: expectedRequest)
+        XCTAssertThrowsError(try hang(promise)) { error in
+            XCTAssertEqual(error as? WebhookError, .unacceptableStatusCode(404))
+        }
+        XCTAssertEqual(cloudhookRequests, 1)
+    }
+
+    func testSendingEphemeralDoesNotFallBackWhenNotSentToCloudhook() {
+        let expectedRequest = WebhookRequest(type: "webhook_name", data: ["json": true])
+
+        var requests = 0
+        stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { _ in
+            requests += 1
+            return HTTPStubsResponse(data: Data(), statusCode: 404, headers: [:])
+        })
+
+        let promise: Promise<Any> = manager.sendEphemeral(server: api1.server, request: expectedRequest)
+        XCTAssertThrowsError(try hang(promise)) { error in
+            XCTAssertEqual(error as? WebhookError, .unacceptableStatusCode(404))
+        }
+        XCTAssertEqual(requests, 1)
     }
 
     func testSendingEphemeralExpectingString() throws {
@@ -425,6 +588,81 @@ class WebhookManagerTests: XCTestCase {
 
         XCTAssertThrowsError(try hang(promise)) { error in
             XCTAssertEqual((error as? URLError)?.code, expectedError.code)
+        }
+    }
+
+    private func withRegistrationOfAnotherDevice(_ server: Server, _ body: () throws -> Void) rethrows {
+        let prefs = Current.settingsStore.prefs
+        let keys = [
+            SettingsStore.integrationDeviceIDKey,
+            SettingsStore.integrationDeviceIDOwnerKey,
+            SettingsStore.registrationRecordsKey,
+            RegistrationOwnership.earlierRegistrationsAdoptedKey,
+        ]
+        let previousValues = keys.map { prefs.object(forKey: $0) }
+        let previousVendorID = Current.device.identifierForVendor
+        let previousIsCatalyst = Current.isCatalyst
+        defer {
+            Current.device.identifierForVendor = previousVendorID
+            Current.isCatalyst = previousIsCatalyst
+            for (key, value) in zip(keys, previousValues) {
+                prefs.set(value, forKey: key)
+            }
+        }
+        Current.device.identifierForVendor = { "this-device" }
+        Current.isCatalyst = false
+        keys.forEach(prefs.removeObject(forKey:))
+        prefs.set(true, forKey: RegistrationOwnership.earlierRegistrationsAdoptedKey)
+        Current.settingsStore.setRegistrationRecord(
+            RegistrationRecord(current: RegistrationIdentity(deviceID: "device-id", ownerVendorID: "other-device")),
+            for: server.identifier
+        )
+        try body()
+    }
+
+    func testReportsAreHeldBackWhileTheRegistrationIsAnotherDevices() throws {
+        try withRegistrationOfAnotherDevice(api1.server) {
+            for type in ["update_location", "update_sensor_states", "register_sensor"] {
+                let request = WebhookRequest(type: type, data: ["json": true])
+                for promise in [
+                    manager.send(server: api1.server, request: request),
+                    manager.sendPassive(server: api1.server, request: request),
+                ] {
+                    XCTAssertThrowsError(try hang(promise), type) { error in
+                        XCTAssertEqual(error as? RegistrationOwnershipError, .registeredByAnotherDevice)
+                    }
+                }
+            }
+        }
+    }
+
+    func testOtherRequestsStillGoOutWhileTheRegistrationIsAnotherDevices() throws {
+        let expectedRequest = WebhookRequest(type: "call_service", data: ["json": true])
+
+        stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { [api1] request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest, server: api1!.server)
+            return HTTPStubsResponse(jsonObject: ["hello": "goodbye"], statusCode: 200, headers: nil)
+        })
+
+        try withRegistrationOfAnotherDevice(api1.server) {
+            XCTAssertNoThrow(try hang(manager.send(server: api1.server, request: expectedRequest)))
+        }
+    }
+
+    func testReportsToAServerThisDeviceRegisteredWithGoOut() throws {
+        let expectedRequest = WebhookRequest(type: "update_location", data: ["json": true])
+
+        stub(condition: { [webhookURL2] req in req.url == webhookURL2 }, response: { [api2] request in
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest, server: api2!.server)
+            return HTTPStubsResponse(jsonObject: ["hello": "goodbye"], statusCode: 200, headers: nil)
+        })
+
+        try withRegistrationOfAnotherDevice(api1.server) {
+            Current.settingsStore.setRegistrationRecord(
+                RegistrationRecord(current: RegistrationIdentity(deviceID: "mine", ownerVendorID: "this-device")),
+                for: api2.server.identifier
+            )
+            XCTAssertNoThrow(try hang(manager.send(server: api2.server, request: expectedRequest)))
         }
     }
 

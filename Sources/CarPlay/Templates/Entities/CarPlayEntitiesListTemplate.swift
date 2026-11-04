@@ -7,12 +7,17 @@ enum CarPlayCondensedEntitiesGroup {
     static let size = 6
 }
 
-@available(iOS 16.0, *)
 final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
     private let viewModel: CarPlayEntitiesListViewModel
     var template: CPListTemplate
     weak var interfaceController: CPInterfaceController?
     private let paginatedListTemplate: CarPlayPaginatedListTemplate
+    /// Set only by tests, which cannot construct a `CPInterfaceController`.
+    var alertPresenterOverride: CarPlayAlertPresenting?
+    var alertPresenter: CarPlayAlertPresenting? { alertPresenterOverride ?? interfaceController }
+    /// Control screen pushed for domains that have one (climate); forwarded lifecycle and state
+    /// events like the domains/areas tabs forward to this list.
+    private var childTemplateProvider: (any CarPlayTemplateProvider)?
 
     init(
         viewModel: CarPlayEntitiesListViewModel,
@@ -33,16 +38,21 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
         if self.template == template {
             /* no-op */
         }
+        childTemplateProvider?.templateWillDisappear(template: template)
     }
 
     func templateWillAppear(template: CPTemplate) {
         if self.template == template {
+            // Returning to this list means any pushed control screen has been popped.
+            childTemplateProvider = nil
             update()
         }
+        childTemplateProvider?.templateWillAppear(template: template)
     }
 
     func entitiesStateChange(serverId: String, entities: HACachedStates) {
         viewModel.updateStates(entities: entities)
+        childTemplateProvider?.entitiesStateChange(serverId: serverId, entities: entities)
     }
 
     func update() {
@@ -57,11 +67,18 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
         }
     }
 
+    func displayControlScreen(entity: HAEntity, server: Server) {
+        guard var provider = CarPlayControlScreenFactory.template(entity: entity, server: server) else { return }
+        provider.interfaceController = interfaceController
+        childTemplateProvider = provider
+        interfaceController?.pushTemplate(provider.template, animated: true, completion: nil)
+    }
+
     func displayLockConfirmation(entity: HAEntity, completion: @escaping () -> Void) {
         CarPlayLockConfirmation.show(
             entityName: entity.attributes.friendlyName ?? entity.entityId,
             currentState: entity.state,
-            interfaceController: interfaceController,
+            interfaceController: alertPresenter,
             completion: completion
         )
     }
@@ -69,6 +86,11 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
     private func listItems(entityProviders: [CarPlayEntityListItem]) -> [CPListItem] {
         entityProviders.map { entityProvider in
             entityProvider.template.handler = { [weak self] _, completion in
+                // A repeat tap while the first call is still in flight would run the action twice.
+                guard !entityProvider.isOperationInFlight else {
+                    completion()
+                    return
+                }
                 self?.viewModel.handleEntityTap(
                     entity: entityProvider.entity,
                     executionStarted: { [weak self] in
@@ -110,6 +132,11 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
                     return
                 }
                 let selectedProvider = rowProviders[index]
+                // A repeat tap while the first call is still in flight would run the action twice.
+                guard !selectedProvider.isOperationInFlight else {
+                    completion()
+                    return
+                }
                 self?.viewModel.handleEntityTap(
                     entity: selectedProvider.entity,
                     executionStarted: { [weak self] in

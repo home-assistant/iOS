@@ -20,6 +20,7 @@ struct AssistConfigurationTable: DatabaseTableProtocol {
                     table.column(DatabaseTables.AssistConfiguration.muteTTS.rawValue, .boolean)
                     table.column(DatabaseTables.AssistConfiguration.enableOnDeviceTTS.rawValue, .boolean)
                     table.column(DatabaseTables.AssistConfiguration.onDeviceTTSVoiceIdentifier.rawValue, .text)
+                    table.column(DatabaseTables.AssistConfiguration.startMode.rawValue, .text)
                 }
             }
         } else {

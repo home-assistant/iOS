@@ -2,6 +2,8 @@
 "NSCameraUsageDescription" = "Feu fotos i envieu-les al servidor de Home Assistant.";
 "NSCrossWebsiteTrackingUsageDescription" = "Opcionalment, activeu el seguiment entre llocs web si la vostra configuració ho requereix.";
 "NSFocusStatusUsageDescription" = "Informa del teu estat de concentració com a un sensor.";
+"NSHealthShareUsageDescription" = "Read selected Apple Health metrics so they can be shared with Home Assistant as sensors.";
+"NSHealthUpdateUsageDescription" = "Home Assistant does not write any data to Apple Health.";
 "NSLocalNetworkUsageDescription" = "Cerqueu i comuniqueu-vos amb la vostra instància de Home Assistant.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "Us recomanem que seleccioneu \"Permet sempre\" per obtenir la millor experiència d'ubicació. Si seleccioneu \"Només mentre feu servir l'aplicació\", es desactivaran els iBeacons, les barres geogràfiques, les actualitzacions de la ubicació en segon pla i els informes precisos.";
 "NSLocationAlwaysUsageDescription" = "Sempre necessitem accés a la vostra ubicació per a funcions com ara iBeacons, geofences, actualitzacions de la ubicació en segon pla i informes precisos.";

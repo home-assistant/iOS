@@ -9,24 +9,16 @@ struct WidgetTodoList: Widget {
     var body: some WidgetConfiguration {
         AppIntentConfiguration(
             kind: WidgetsKind.todoList.rawValue,
-            provider: WidgetTodoListAppIntentTimelineProvider()
-        ) { timelineEntry in
-            WidgetTodoListView(
-                serverId: timelineEntry.serverId,
-                listId: timelineEntry.listId,
-                title: timelineEntry.listTitle,
-                items: timelineEntry.items,
-                isEmpty: timelineEntry.listId.isEmpty
-            )
-            .widgetBackground(.primaryBackground)
-        }
+            provider: WidgetTodoListAppIntentTimelineProvider(),
+            content: WidgetTodoListView.init(entry:)
+        )
         .configurationDisplayName(L10n.Widgets.TodoList.title)
         .description(L10n.Widgets.TodoList.description)
         .supportedFamilies(supportedFamilies)
     }
 
-    private var supportedFamilies: [WidgetFamily] {
-        [.systemSmall, .systemMedium, .systemLarge]
+    var supportedFamilies: [WidgetFamily] {
+        [.systemSmall, .systemMedium, .systemLarge] + WidgetFamily.extraLarges
     }
 }
 

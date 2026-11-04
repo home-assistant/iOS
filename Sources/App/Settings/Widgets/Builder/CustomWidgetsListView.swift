@@ -4,6 +4,9 @@ import SwiftUI
 struct CustomWidgetsListView: View {
     @StateObject private var viewModel = WidgetBuilderViewModel()
     @State private var showDeleteConfirmation = false
+    #if targetEnvironment(macCatalyst)
+    @State private var presentedWidget: CustomWidget?
+    #endif
     var body: some View {
         List {
             if #available(iOS 17, *) {
@@ -43,10 +46,23 @@ struct CustomWidgetsListView: View {
             Section {
                 WidgetDocumentationLink()
             }
+
+            DebugDatabaseTransferSection(part: .customWidgets) {
+                viewModel.loadWidgets()
+            }
         }
         .onAppear {
             viewModel.loadWidgets()
         }
+        #if targetEnvironment(macCatalyst)
+        .sheet(item: $presentedWidget) { widget in
+            WidgetCreationView(needsNavigationStack: true, widget: widget) {
+                viewModel.loadWidgets()
+            }
+            .frame(minWidth: 540, minHeight: 720)
+        }
+        #endif
+        .listTopContentMargin()
     }
 
     private var header: some View {
@@ -75,6 +91,13 @@ struct CustomWidgetsListView: View {
     private var yourWidgetsSection: some View {
         Section(L10n.Settings.Widgets.YourWidgets.title) {
             widgetsList
+            #if targetEnvironment(macCatalyst)
+            Button {
+                presentedWidget = CustomWidget(id: UUID().uuidString, name: "", items: [])
+            } label: {
+                Label(L10n.Settings.Widgets.Create.title, systemSymbol: .plus)
+            }
+            #else
             NavigationLink(destination: {
                 WidgetCreationView {
                     viewModel.loadWidgets()
@@ -82,19 +105,28 @@ struct CustomWidgetsListView: View {
             }) {
                 Label(L10n.Settings.Widgets.Create.title, systemSymbol: .plus)
             }
+            #endif
         }
     }
 
     private var widgetsList: some View {
         ForEach(viewModel.widgets, id: \.id) { widget in
             HStack {
+                #if targetEnvironment(macCatalyst)
+                Button {
+                    presentedWidget = widget
+                } label: {
+                    Text(widget.name)
+                }
+                #else
                 NavigationLink {
-                    WidgetCreationView(needsNavigationController: false, widget: widget) {
+                    WidgetCreationView(widget: widget) {
                         viewModel.loadWidgets()
                     }
                 } label: {
                     Text(widget.name)
                 }
+                #endif
                 Spacer()
                 #if targetEnvironment(macCatalyst)
                 Button {
@@ -133,5 +165,16 @@ struct CustomWidgetsListView: View {
 #Preview {
     NavigationView {
         CustomWidgetsListView()
+    }
+}
+
+extension CustomWidgetsListView: SettingsScreenSearchable {
+    static var settingsSearchEntries: [SettingsSearchEntry] {
+        [
+            SettingsSearchEntry(L10n.Settings.Widgets.YourWidgets.title),
+            SettingsSearchEntry(L10n.Settings.Widgets.Create.title),
+            SettingsSearchEntry(L10n.SettingsDetails.Widgets.ReloadAll.title),
+            SettingsSearchEntry(L10n.Settings.Widgets.Custom.DeleteAll.title),
+        ]
     }
 }

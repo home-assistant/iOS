@@ -2,5 +2,5 @@ import Foundation
 import Shared
 
 enum WidgetSensorsConfig {
-    static var domains: [Domain] = [.sensor, .binarySensor, .inputBoolean, .person, .lock]
+    static var domains: [Domain] { Domain.sensorWidgetSupported }
 }

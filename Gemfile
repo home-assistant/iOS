@@ -1,11 +1,8 @@
 source 'https://rubygems.org'
 
-gem 'cocoapods'
-gem 'cocoapods-acknowledgements'
-gem 'fastlane', '2.222.0'
+gem 'fastlane', '2.241.2'
 gem 'rubocop', require: false
 
 plugins_path = File.join(File.dirname(__FILE__), 'fastlane', 'Pluginfile')
-# rubocop:disable Security/Eval
+# rubocop:disable-next Security/Eval
 eval(File.read(plugins_path), binding) if File.exist?(plugins_path)
-# rubocop:enable Security/Eval

@@ -25,6 +25,7 @@
             "alert": {
                 "body": "test"
             },
+            "mutable-content": true,
             "sound": {
                 "critical": 1,
                 "name": "custom.wav",

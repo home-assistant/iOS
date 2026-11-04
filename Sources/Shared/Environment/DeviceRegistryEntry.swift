@@ -8,6 +8,9 @@ public struct DeviceRegistryEntry: Codable, HADataDecodable {
     public let configurationURL: String?
     public let configEntries: [String]?
     public let configEntriesSubentries: [String: [String?]]?
+    /// Only sent for child devices, which carry a single config entry instead of the full lists.
+    public let configEntryId: String?
+    public let configSubentryId: String?
     public let connections: [[String]]?
     public let createdAt: Double?
     public let disabledBy: String?
@@ -21,6 +24,9 @@ public struct DeviceRegistryEntry: Codable, HADataDecodable {
     public let modifiedAt: Double?
     public let nameByUser: String?
     public let name: String?
+    public let nextNamePart: String?
+    /// Identifier of the device this one is a logical part of, `nil` for regular top-level devices.
+    public let parentDeviceId: String?
     public let primaryConfigEntry: String?
     public let serialNumber: String?
     public let swVersion: String?
@@ -29,22 +35,26 @@ public struct DeviceRegistryEntry: Codable, HADataDecodable {
     public init(data: HAData) throws {
         self.areaId = try? data.decode("area_id")
         self.configurationURL = try? data.decode("configuration_url")
-        self.configEntries = try data.decode("config_entries")
-        self.configEntriesSubentries = try data.decode("config_entries_subentries")
-        self.connections = try data.decode("connections")
-        self.createdAt = try data.decode("created_at")
+        self.configEntries = try? data.decode("config_entries")
+        self.configEntriesSubentries = try? data.decode("config_entries_subentries")
+        self.configEntryId = try? data.decode("config_entry_id")
+        self.configSubentryId = try? data.decode("config_subentry_id")
+        self.connections = try? data.decode("connections")
+        self.createdAt = try? data.decode("created_at")
         self.disabledBy = try? data.decode("disabled_by")
         self.entryType = try? data.decode("entry_type")
         self.hwVersion = try? data.decode("hw_version")
         self.id = try data.decode("id")
-        self.identifiers = try data.decode("identifiers")
-        self.labels = try data.decode("labels")
+        self.identifiers = try? data.decode("identifiers")
+        self.labels = try? data.decode("labels")
         self.manufacturer = try? data.decode("manufacturer")
         self.model = try? data.decode("model")
         self.modelID = try? data.decode("model_id")
-        self.modifiedAt = try data.decode("modified_at")
+        self.modifiedAt = try? data.decode("modified_at")
         self.nameByUser = try? data.decode("name_by_user")
         self.name = try? data.decode("name")
+        self.nextNamePart = try? data.decode("next_name_part")
+        self.parentDeviceId = try? data.decode("parent_device_id")
         self.primaryConfigEntry = try? data.decode("primary_config_entry")
         self.serialNumber = try? data.decode("serial_number")
         self.swVersion = try? data.decode("sw_version")
@@ -52,11 +62,24 @@ public struct DeviceRegistryEntry: Codable, HADataDecodable {
     }
 
     // Computed helpers
+    var resolvedName: String? {
+        for candidate in [nameByUser, name, model] {
+            if let candidate, !candidate.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                return candidate
+            }
+        }
+        return nil
+    }
+
     var displayName: String {
-        nameByUser ?? name ?? model ?? id
+        resolvedName ?? id
     }
 
     var isDisabled: Bool { disabledBy != nil }
+
+    /// Whether this entry is a logical part of another device, sent over the wire stripped of the
+    /// fields it inherits from its parent.
+    var isChildDevice: Bool { parentDeviceId != nil }
 
     #if DEBUG
     // Test-only initializer
@@ -65,6 +88,8 @@ public struct DeviceRegistryEntry: Codable, HADataDecodable {
         configurationURL: String?,
         configEntries: [String]?,
         configEntriesSubentries: [String: [String?]]?,
+        configEntryId: String? = nil,
+        configSubentryId: String? = nil,
         connections: [[String]]?,
         createdAt: Double?,
         disabledBy: String?,
@@ -79,6 +104,8 @@ public struct DeviceRegistryEntry: Codable, HADataDecodable {
         modifiedAt: Double?,
         nameByUser: String?,
         name: String?,
+        nextNamePart: String? = nil,
+        parentDeviceId: String? = nil,
         primaryConfigEntry: String?,
         serialNumber: String?,
         swVersion: String?,
@@ -88,6 +115,8 @@ public struct DeviceRegistryEntry: Codable, HADataDecodable {
         self.configurationURL = configurationURL
         self.configEntries = configEntries
         self.configEntriesSubentries = configEntriesSubentries
+        self.configEntryId = configEntryId
+        self.configSubentryId = configSubentryId
         self.connections = connections
         self.createdAt = createdAt
         self.disabledBy = disabledBy
@@ -102,6 +131,8 @@ public struct DeviceRegistryEntry: Codable, HADataDecodable {
         self.modifiedAt = modifiedAt
         self.nameByUser = nameByUser
         self.name = name
+        self.nextNamePart = nextNamePart
+        self.parentDeviceId = parentDeviceId
         self.primaryConfigEntry = primaryConfigEntry
         self.serialNumber = serialNumber
         self.swVersion = swVersion
@@ -112,73 +143,61 @@ public struct DeviceRegistryEntry: Codable, HADataDecodable {
 
 // MARK: - Database Model
 
-public struct AppDeviceRegistry: Codable, FetchableRecord, PersistableRecord, Equatable {
-    public static var databaseTableName: String = GRDBDatabaseTable.deviceRegistry.rawValue
-    public let serverId: String
-
-    public let deviceId: String
-    public let areaId: String?
-    public let configurationURL: String?
-    public let configEntries: [String]?
-    public let configEntriesSubentries: [String: [String?]]?
-    public let connections: [[String]]?
-    public let createdAt: Double?
-    public let disabledBy: String?
-    public let entryType: String?
-    public let hwVersion: String?
-    public let identifiers: [[String]]?
-    public let labels: [String]?
-    public let manufacturer: String?
-    public let model: String?
-    public let modelID: String?
-    public let modifiedAt: Double?
-    public let nameByUser: String?
-    public let name: String?
-    public let primaryConfigEntry: String?
-    public let serialNumber: String?
-    public let swVersion: String?
-    public let viaDeviceID: String?
-
-    public init(serverId: String, registry: DeviceRegistryEntry) {
-        self.serverId = serverId
-
-        // Copy all fields from DeviceRegistry
-        self.areaId = registry.areaId
-        self.configurationURL = registry.configurationURL
-        self.configEntries = registry.configEntries
-        self.configEntriesSubentries = registry.configEntriesSubentries
-        self.connections = registry.connections
-        self.createdAt = registry.createdAt
-        self.disabledBy = registry.disabledBy
-        self.entryType = registry.entryType
-        self.hwVersion = registry.hwVersion
-        self.deviceId = registry.id
-        self.identifiers = registry.identifiers
-        self.labels = registry.labels
-        self.manufacturer = registry.manufacturer
-        self.model = registry.model
-        self.modelID = registry.modelID
-        self.modifiedAt = registry.modifiedAt
-        self.nameByUser = registry.nameByUser
-        self.name = registry.name
-        self.primaryConfigEntry = registry.primaryConfigEntry
-        self.serialNumber = registry.serialNumber
-        self.swVersion = registry.swVersion
-        self.viaDeviceID = registry.viaDeviceID
+// `AppDeviceRegistry` itself lives in the `HAModels` package; these map the websocket registry
+// payload and provide its database-backed queries.
+public extension AppDeviceRegistry {
+    /// Resolve the mixed list returned by `config/device_registry/list` into complete devices: a
+    /// child device inherits the hardware and display fields it was sent stripped of, keeps its own
+    /// config entry, and inherits no identity field. Nesting is single-level.
+    static func resolvingChildDevices(
+        _ entries: [DeviceRegistryEntry],
+        serverId: String
+    ) -> [AppDeviceRegistry] {
+        let parents = Dictionary(
+            entries.lazy.filter { !$0.isChildDevice }.map { ($0.id, $0) },
+            uniquingKeysWith: { first, _ in first }
+        )
+        return entries.map { entry in
+            AppDeviceRegistry(
+                serverId: serverId,
+                registry: entry,
+                parent: entry.parentDeviceId.flatMap { parents[$0] }
+            )
+        }
     }
 
-    public var id: String {
-        "\(serverId)-\(deviceId)"
+    init(serverId: String, registry: DeviceRegistryEntry, parent: DeviceRegistryEntry? = nil) {
+        self.init(
+            serverId: serverId,
+            deviceId: registry.id,
+            areaId: registry.areaId,
+            configurationURL: registry.configurationURL ?? parent?.configurationURL,
+            configEntries: registry.configEntries ?? registry.configEntryId.map { [$0] },
+            configEntriesSubentries: registry.configEntriesSubentries ?? registry.configEntryId
+                .map { [$0: [registry.configSubentryId]] },
+            connections: registry.connections,
+            createdAt: registry.createdAt,
+            disabledBy: registry.disabledBy,
+            entryType: registry.entryType ?? parent?.entryType,
+            hwVersion: registry.hwVersion ?? parent?.hwVersion,
+            identifiers: registry.identifiers,
+            labels: registry.labels,
+            manufacturer: registry.manufacturer ?? parent?.manufacturer,
+            model: registry.model ?? parent?.model,
+            modelID: registry.modelID ?? parent?.modelID,
+            modifiedAt: registry.modifiedAt,
+            nameByUser: registry.nameByUser,
+            name: registry.name,
+            nextNamePart: registry.nextNamePart,
+            parentDeviceId: registry.parentDeviceId,
+            primaryConfigEntry: registry.primaryConfigEntry ?? registry.configEntryId,
+            serialNumber: registry.serialNumber ?? parent?.serialNumber,
+            swVersion: registry.swVersion ?? parent?.swVersion,
+            viaDeviceID: registry.viaDeviceID
+        )
     }
 
-    // Computed helpers (same as DeviceRegistry)
-    public var displayName: String {
-        nameByUser ?? name ?? model ?? deviceId
-    }
-
-    public var isDisabled: Bool { disabledBy != nil }
-
-    public static func config(serverId: String) throws -> [AppDeviceRegistry] {
+    static func config(serverId: String) throws -> [AppDeviceRegistry] {
         try Current.database().read { db in
             try AppDeviceRegistry
                 .filter(

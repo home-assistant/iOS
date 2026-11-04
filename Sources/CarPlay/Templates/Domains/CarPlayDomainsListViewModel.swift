@@ -4,7 +4,6 @@ import HAKit
 import SFSafeSymbols
 import Shared
 
-@available(iOS 16.0, *)
 final class CarPlayDomainsListViewModel {
     private let overrideCoverIcon = MaterialDesignIcons.garageLockIcon
     private var entities: HACachedStates?
@@ -13,10 +12,6 @@ final class CarPlayDomainsListViewModel {
     weak var templateProvider: CarPlayDomainsListTemplate?
 
     var entitiesListTemplate: CarPlayEntitiesListTemplate?
-
-    private var preferredServerId: String {
-        prefs.string(forKey: CarPlayServersListTemplate.carPlayPreferredServerKey) ?? ""
-    }
 
     func update(entities: HACachedStates) {
         guard !Current.servers.all.isEmpty else {
@@ -49,7 +44,7 @@ final class CarPlayDomainsListViewModel {
     }
 
     func listItemHandler(domain: String) {
-        guard let server = Current.servers.server(forServerIdentifier: preferredServerId) ?? Current.servers.all.first,
+        guard let server = CarPlayPreferredServer.current,
               let entitiesCachedStates = entities else { return }
         entitiesListTemplate = CarPlayEntitiesListTemplate.build(
             title: Domain(rawValue: domain)?.localizedDescription ?? domain,

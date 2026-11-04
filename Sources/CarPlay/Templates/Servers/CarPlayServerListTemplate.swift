@@ -3,11 +3,12 @@ import Foundation
 import HAKit
 import Shared
 
-@available(iOS 16.0, *)
 final class CarPlayServersListTemplate: CarPlayTemplateProvider {
-    static let carPlayPreferredServerKey = "carPlay-server"
-
     private let viewModel: CarPlayServerListViewModel
+    private let assistSettingsTemplate = CarPlayAssistSettingsTemplate()
+    private weak var tabsSelectionTemplate: CPListTemplate?
+    private weak var layoutSelectionTemplate: CPListTemplate?
+    private weak var serverSelectionTemplate: CPListTemplate?
 
     var template: CPListTemplate
     weak var sceneDelegate: CarPlaySceneDelegate?
@@ -17,9 +18,13 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
         }
     }
 
+    /// Set only by tests, which cannot construct a `CPInterfaceController`.
+    var navigatorOverride: CarPlayNavigationPresenting?
+    private var navigator: CarPlayNavigationPresenting? { navigatorOverride ?? interfaceController }
+
     init(viewModel: CarPlayServerListViewModel) {
         self.viewModel = viewModel
-        self.template = CPListTemplate(title: "", sections: [])
+        self.template = CPListTemplate(title: L10n.CarPlay.Navigation.Tab.settings, sections: [])
         template.tabTitle = L10n.CarPlay.Labels.Tab.settings
         template.tabImage = MaterialDesignIcons.cogIcon.carPlayIcon()
 
@@ -27,6 +32,21 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
     }
 
     func templateWillDisappear(template: CPTemplate) {
+        if template == tabsSelectionTemplate {
+            viewModel.commitTabSelection()
+            tabsSelectionTemplate = nil
+        }
+
+        if template == layoutSelectionTemplate {
+            viewModel.commitLayoutSelection()
+            layoutSelectionTemplate = nil
+        }
+
+        if template == serverSelectionTemplate {
+            viewModel.commitServerSelection()
+            serverSelectionTemplate = nil
+        }
+
         if template == self.template {
             viewModel.removeServerObserver()
         }
@@ -44,60 +64,290 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
     }
 
     @objc func update() {
-        let serverList: [CPListItem] = Current.servers.all.filter({
-            // Only display servers that can be used in the user current environment
-            $0.info.connection.activeURL() != nil
-        }).compactMap { server in
-            serverItem(server: server)
-        }
-        let serversSection = CPListSection(
-            items: serverList,
-            header: L10n.CarPlay.Labels.selectServer,
-            sectionIndexTitle: nil
-        )
-
-        let advancedSection = CPListSection(
-            items: [restartItem],
-            header: L10n.CarPlay.Labels.Settings.Advanced.Section.title,
-            sectionIndexTitle: nil
-        )
-
         template.updateSections([
-            serversSection,
-            advancedSection,
+            CPListSection(items: [
+                mainServerItem,
+                layoutItem,
+                tabsItem,
+                showAddEditButtonsItem,
+                assistSettingsItem,
+                troubleshootingItem,
+            ]),
         ])
     }
 
     func showNoServerAlert() {
-        guard interfaceController?.presentedTemplate == nil else {
+        guard navigator?.presentedTemplate == nil else {
             return
         }
 
         let alertTemplate = CarPlayNoServerAlert()
-        alertTemplate.interfaceController = interfaceController
+        alertTemplate.interfaceController = navigator
         alertTemplate.present()
     }
 
-    private func serverItem(server: Server) -> CPListItem {
-        let serverItem = CPListItem(
-            text: server.info.name,
-            detailText: nil
+    private var mainServerItem: CPListItem {
+        let item = CPListItem(
+            text: L10n.CarPlay.Labels.Settings.MainServer.title,
+            detailText: CarPlayPreferredServer.current?.info.name
         )
-        serverItem.handler = { [weak self] _, completion in
-            self?.viewModel.setServer(server: server)
+        item.accessoryType = .disclosureIndicator
+        item.handler = { [weak self] _, completion in
+            self?.presentServerSelection()
             completion()
         }
-        serverItem.accessoryType = viewModel.preferredServerId == server.identifier.rawValue ? .cloud : .none
+        return item
+    }
+
+    private var layoutItem: CPListItem {
+        let item = CPListItem(
+            text: L10n.Carplay.Tab.QuickAccess.layout,
+            detailText: viewModel.quickAccessLayout.name
+        )
+        item.accessoryType = .disclosureIndicator
+        item.handler = { [weak self] _, completion in
+            self?.presentLayoutSelection()
+            completion()
+        }
+        return item
+    }
+
+    private var tabsItem: CPListItem {
+        let item = CPListItem(
+            text: L10n.CarPlay.Config.Tabs.title,
+            detailText: viewModel.tabsSummary
+        )
+        item.accessoryType = .disclosureIndicator
+        item.handler = { [weak self] _, completion in
+            self?.presentTabsSelection()
+            completion()
+        }
+        return item
+    }
+
+    private var showAddEditButtonsItem: CPListItem {
+        let item = CPListItem(
+            text: L10n.CarPlay.Config.QuickAccess.ShowAddEditButtons.title,
+            detailText: nil,
+            image: viewModel.showAddEditButtons ? MaterialDesignIcons.checkIcon.carPlayIcon() : nil
+        )
+        item.accessoryType = .none
+        item.handler = { [weak self] _, completion in
+            self?.viewModel.toggleShowAddEditButtons()
+            completion()
+        }
+        return item
+    }
+
+    private var assistSettingsItem: CPListItem {
+        let item = CPListItem(
+            text: L10n.Assist.Settings.title,
+            detailText: nil
+        )
+        item.accessoryType = .disclosureIndicator
+        item.handler = { [weak self] _, completion in
+            self?.assistSettingsTemplate.present(using: self?.navigator)
+            completion()
+        }
+        return item
+    }
+
+    private var troubleshootingItem: CPListItem {
+        let item = CPListItem(
+            text: L10n.CarPlay.Labels.Settings.Troubleshooting.title,
+            detailText: nil
+        )
+        item.accessoryType = .disclosureIndicator
+        item.handler = { [weak self] _, completion in
+            self?.presentTroubleshooting()
+            completion()
+        }
+        return item
+    }
+
+    private func serverItem(server: Server, template: CPListTemplate) -> CPListItem {
+        let serverItem = CPListItem(
+            text: server.info.name,
+            detailText: nil,
+            image: viewModel.isServerActive(server) ? MaterialDesignIcons.checkIcon.carPlayIcon() : nil
+        )
+        serverItem.handler = { [weak self, weak template] _, completion in
+            guard let self, let template else {
+                completion()
+                return
+            }
+
+            viewModel.setServer(server)
+            Task { @MainActor [weak self] in
+                guard let self else {
+                    completion()
+                    return
+                }
+                await template.updateSections([serverSelectionSection(template: template)])
+                completion()
+            }
+        }
+        serverItem.accessoryType = .none
         return serverItem
     }
 
-    private var restartItem: CPListItem {
+    private func presentServerSelection() {
+        viewModel.beginServerSelection()
+        let selectionTemplate = CPListTemplate(title: L10n.CarPlay.Labels.Settings.MainServer.title, sections: [])
+        serverSelectionTemplate = selectionTemplate
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            await selectionTemplate.updateSections([serverSelectionSection(template: selectionTemplate)])
+        }
+        navigator?.pushTemplate(selectionTemplate, animated: true, completion: nil)
+    }
+
+    private func serverSelectionSection(template: CPListTemplate) async -> CPListSection {
+        var servers = [CPListItem]()
+        for server in Current.servers.all {
+            guard await server.activeURL() != nil else { continue }
+            servers.append(serverItem(server: server, template: template))
+        }
+
+        guard !servers.isEmpty else {
+            return CPListSection(items: [
+                CPListItem(text: L10n.CarPlay.Labels.noServersAvailable, detailText: nil),
+            ])
+        }
+
+        return CPListSection(items: servers, header: L10n.CarPlay.Labels.selectServer, sectionIndexTitle: nil)
+    }
+
+    private func presentLayoutSelection() {
+        viewModel.beginLayoutSelection()
+        let selectionTemplate = CPListTemplate(title: L10n.Carplay.Tab.QuickAccess.layout, sections: [])
+        layoutSelectionTemplate = selectionTemplate
+        selectionTemplate.updateSections([layoutSelectionSection(template: selectionTemplate)])
+        navigator?.pushTemplate(selectionTemplate, animated: true, completion: nil)
+    }
+
+    private func layoutSelectionSection(template: CPListTemplate) -> CPListSection {
+        CPListSection(items: CarPlayQuickAccessLayout.allCases.map { layoutItem(layout: $0, template: template) })
+    }
+
+    private func layoutItem(layout: CarPlayQuickAccessLayout, template: CPListTemplate) -> CPListItem {
         let item = CPListItem(
-            text: L10n.CarPlay.Labels.Settings.Advanced.Section.Button.title,
-            detailText: L10n.CarPlay.Labels.Settings.Advanced.Section.Button.detail
+            text: layout.name,
+            detailText: nil,
+            image: viewModel.isLayoutActive(layout) ? MaterialDesignIcons.checkIcon.carPlayIcon() : nil
+        )
+        item.accessoryType = .none
+        item.handler = { [weak self, weak template] _, completion in
+            guard let self, let template else {
+                completion()
+                return
+            }
+
+            viewModel.setLayout(layout)
+            template.updateSections([layoutSelectionSection(template: template)])
+            completion()
+        }
+        return item
+    }
+
+    private func presentTabsSelection() {
+        viewModel.beginTabSelection()
+        let selectionTemplate = CPListTemplate(title: L10n.CarPlay.Config.Tabs.title, sections: [])
+        tabsSelectionTemplate = selectionTemplate
+        selectionTemplate.updateSections([tabsSelectionSection(template: selectionTemplate)])
+        navigator?.pushTemplate(selectionTemplate, animated: true, completion: nil)
+    }
+
+    private func tabsSelectionSection(template: CPListTemplate) -> CPListSection {
+        // Fetch the folders once and resolve tab names in-memory instead of per row.
+        let folders = viewModel.tabFolderItems
+        return CPListSection(items: viewModel.selectableTabs.map { tab in
+            tabItem(tab: tab, name: tab.name(folders: folders), template: template)
+        })
+    }
+
+    private func tabItem(tab: CarPlayTab, name: String, template: CPListTemplate) -> CPListItem {
+        let item = CPListItem(
+            text: name,
+            detailText: nil,
+            image: viewModel.isTabActive(tab) ? MaterialDesignIcons.checkIcon.carPlayIcon() : nil
+        )
+        item.accessoryType = .none
+        item.handler = { [weak self, weak template] _, completion in
+            guard let self, let template else {
+                completion()
+                return
+            }
+
+            if tab != .settings {
+                viewModel.setTab(tab, active: !viewModel.isTabActive(tab))
+                template.updateSections([tabsSelectionSection(template: template)])
+            }
+            completion()
+        }
+        return item
+    }
+
+    private func presentTroubleshooting() {
+        let troubleshootingTemplate = CPListTemplate(
+            title: L10n.CarPlay.Labels.Settings.Troubleshooting.title,
+            sections: [
+                CPListSection(items: [
+                    assistAudioItem,
+                    forceCloseItem,
+                ]),
+            ]
+        )
+        navigator?.pushTemplate(troubleshootingTemplate, animated: true, completion: nil)
+    }
+
+    private var assistAudioItem: CPListItem {
+        let item = CPListItem(
+            text: L10n.CarPlay.Labels.Settings.Troubleshooting.AssistAudio.title,
+            detailText: viewModel.ttsPlaybackStrategy.title
+        )
+        item.accessoryType = .disclosureIndicator
+        item.handler = { [weak self] _, completion in
+            self?.presentAssistAudioSelection()
+            completion()
+        }
+        return item
+    }
+
+    private func presentAssistAudioSelection() {
+        let selectionTemplate = CPListTemplate(
+            title: L10n.CarPlay.Labels.Settings.Troubleshooting.AssistAudio.title,
+            sections: [
+                CPListSection(items: CarPlayAssistTTSPlaybackStrategy.allCases.map {
+                    ttsPlaybackStrategyItem(strategy: $0)
+                }),
+            ]
+        )
+        navigator?.pushTemplate(selectionTemplate, animated: true, completion: nil)
+    }
+
+    private func ttsPlaybackStrategyItem(strategy: CarPlayAssistTTSPlaybackStrategy) -> CPListItem {
+        let item = CPListItem(
+            text: strategy.title,
+            detailText: nil,
+            image: viewModel.ttsPlaybackStrategy == strategy ? MaterialDesignIcons.checkIcon.carPlayIcon() : nil
+        )
+        item.accessoryType = .none
+        item.handler = { [weak self] _, completion in
+            self?.viewModel.setTTSPlaybackStrategy(strategy)
+            self?.navigator?.popTemplate(animated: true, completion: nil)
+            completion()
+        }
+        return item
+    }
+
+    private var forceCloseItem: CPListItem {
+        let item = CPListItem(
+            text: L10n.CarPlay.Labels.Settings.Troubleshooting.ForceClose.title,
+            detailText: nil
         )
         item.handler = { _, _ in
-            fatalError("Intentional crash, triggered from CarPlay advanced option to restart App.")
+            fatalError("Intentional crash, triggered from CarPlay Troubleshooting option to restart App.")
         }
         return item
     }

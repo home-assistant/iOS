@@ -1,4 +1,3 @@
-import AuthenticationServices
 import Foundation
 import PromiseKit
 import Shared
@@ -10,35 +9,22 @@ struct OnboardingAuthLoginResult {
 }
 
 protocol OnboardingAuthLogin {
-    func open(authDetails: OnboardingAuthDetails, sender: UIViewController) -> Promise<OnboardingAuthLoginResult>
+    func open(authDetails: OnboardingAuthDetails, presenter: OnboardingAuthPresenter)
+        -> Promise<OnboardingAuthLoginResult>
 }
 
 class OnboardingAuthLoginImpl: OnboardingAuthLogin {
-    enum OnboardingAuthLoginError: Error {
-        case invalidURL
-    }
-
-    var loginViewControllerClass: OnboardingAuthLoginViewController.Type = OnboardingAuthLoginViewControllerImpl.self
-
-    func open(authDetails: OnboardingAuthDetails, sender: UIViewController) -> Promise<OnboardingAuthLoginResult> {
+    func open(
+        authDetails: OnboardingAuthDetails,
+        presenter: OnboardingAuthPresenter
+    ) -> Promise<OnboardingAuthLoginResult> {
         Current.Log.verbose(authDetails.url)
 
-        let controller = loginViewControllerClass.init(authDetails: authDetails)
-        let navigationController = UINavigationController(rootViewController: controller)
-        sender.present(navigationController, animated: true, completion: nil)
+        let viewModel = OnboardingAuthLoginViewModel(authDetails: authDetails)
+        presenter.push(.login(viewModel))
 
-        return controller.promise.map { url in
-            if let code = url.queryItems?["code"] {
-                return OnboardingAuthLoginResult(code: code, resolvedURL: controller.resolvedServerURL)
-            } else {
-                throw OnboardingAuthLoginError.invalidURL
-            }
-        }.ensureThen {
-            Guarantee<Void> { seal in
-                navigationController.dismiss(animated: true, completion: {
-                    seal(())
-                })
-            }
-        }
+        // Deliberately not popping here: on success the flow advances by replacing the pushed
+        // destination (device naming, permissions); the servers list pops only when the flow ends.
+        return viewModel.resultPromise
     }
 }

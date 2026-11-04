@@ -10,6 +10,9 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
         case disclaimer
         /// Location permission request step for sharing location with Home Assistant
         case location
+        /// Privacy choices step, replacing the location permission step for every server added
+        /// after the first one
+        case privacy
         /// Local access permission step for secure local connections
         case localAccess
         /// Home network SSID input step for trusted network configuration
@@ -65,20 +68,30 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
 
     // MARK: - Private Properties
 
-    /// Tracks the previous step index for determining animation direction
-    private var lastStepIndex: Int = 0
-
     private let locationManager = CLLocationManager()
     private let onboardingServer: Server
+
+    /// What the location permission grants once it is answered. The location step only ever shares
+    /// the exact location; the privacy step sets whichever level the user picked there.
+    private var grantedLocationPrivacy: ServerLocationPrivacy = .exact
+
+    /// The security level the most secure choice replaced, restored when the user goes back to change it.
+    private var replacedSecurityLevel: ConnectionSecurityLevel?
 
     // MARK: - Step Management
 
     /// Returns all available steps in the onboarding flow
     let steps: [StepID]
 
-    /// Determines if the user is advancing forward through the steps (for animation purposes)
-    var isAdvancing: Bool {
-        currentStepIndex >= lastStepIndex
+    /// Only the home network step offers going back: it is the one step that strands the user, and
+    /// the steps before it do not undo what they set.
+    var canGoBack: Bool {
+        canGoBack(fromStepAt: currentStepIndex)
+    }
+
+    func canGoBack(fromStepAt index: Int) -> Bool {
+        steps.indices.contains(index) && steps[index] == .homeNetwork
+            && steps[..<index].contains(.localAccess)
     }
 
     /// Returns the current step based on the current step index
@@ -103,9 +116,35 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
                 defaultSteps = StepID.remoteConnectionCompatible
             }
 
-            if connection.hasOnlyHTTPSURLOptions {
-                defaultSteps.removeAll { $0 == .localAccess }
+            // Local network configuration (security level and home network name) is only
+            // relevant when the server can exclusively be reached over non-HTTPS URLs;
+            // with an HTTPS URL available the active URL always has a secure option to use
+            if connection.hasHTTPSURLOption {
+                defaultSteps.removeAll { $0 == .localAccess || $0 == .homeNetwork }
+
+                onboardingServer.update { info in
+                    // Since the user is not asked, auto select the most secure level:
+                    // non-HTTPS URLs are only used when the device is on the home network
+                    if info.connection.connectionAccessSecurityLevel == .undefined {
+                        info.connection.connectionAccessSecurityLevel = .mostSecure
+                    }
+
+                    if info.connection.overrideActiveURLType == .internal {
+                        info.connection.overrideActiveURLType = nil
+                    }
+                }
             }
+
+            // The location permission screen is the first server's way of settling what this device
+            // sends; a server added next to an existing one asks for the privacy choices instead,
+            // rather than silently starting on the defaults with the permission already answered.
+            // The server being onboarded is registered before this flow starts, so it is the other
+            // entries in the registry that say whether the app already had a server.
+            let isAdditionalServer = Current.servers.all.contains { $0.identifier != onboardingServer.identifier }
+            if isAdditionalServer {
+                defaultSteps = defaultSteps.map { $0 == .location ? .privacy : $0 }
+            }
+
             self.steps = defaultSteps
         }
 
@@ -125,8 +164,6 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
             Current.impactFeedback.impactOccurred()
         }
 
-        // Update the last step after deciding transition direction
-        lastStepIndex = currentStepIndex
         currentStepIndex = index
     }
 
@@ -143,6 +180,21 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
         navigateToStep(at: currentStepIndex + 1)
     }
 
+    /// Goes back from the home network input to the local access choice, undoing that choice.
+    func previousStep() {
+        guard canGoBack else { return }
+        if let replacedSecurityLevel {
+            onboardingServer.update { info in
+                info.connection.connectionAccessSecurityLevel = replacedSecurityLevel
+            }
+            self.replacedSecurityLevel = nil
+        }
+        locationPermissionContext = .notRequested
+        // A save that already succeeded must not carry over, so the next save moves on again.
+        storedSSIDSuccessfully = false
+        navigateToStep(.localAccess)
+    }
+
     // MARK: - Step-Specific Actions
 
     /// Saves the home network SSID to the onboarding server configuration
@@ -157,16 +209,45 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
                 info.connection.internalHardwareAddresses = [hardwareAddress]
             }
             DispatchQueue.main.async {
+                // The network is saved either way, but only moves the flow on while the step is shown.
+                guard self?.currentStep == .homeNetwork else { return }
                 self?.storedSSIDSuccessfully = true
             }
         }
     }
 
-    /// Completes the onboarding process after a brief delay
-    /// - Note: Called from the completion step to finalize the onboarding flow
-    func completeOnboarding() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            Current.onboardingObservation.complete()
+    // MARK: - Privacy Choices
+
+    /// Stores what an additional server receives from this device and moves on.
+    /// - Note: A location choice other than `never` only produces anything once iOS has granted the
+    ///         permission, so it is requested here when the user has not answered it yet. When it
+    ///         was already denied the choice is still stored, so it takes effect as soon as the
+    ///         permission is granted in the Settings app, and the flow moves on rather than
+    ///         stranding the user on this step.
+    func savePrivacyChoices(locationPrivacy: ServerLocationPrivacy, sensorPrivacy: ServerSensorPrivacy) {
+        onboardingServer.info.setSetting(value: sensorPrivacy, for: .sensorPrivacy)
+        onboardingServer.info.setSetting(value: locationPrivacy, for: .locationPrivacy)
+
+        if sensorPrivacy == .all, let api = Current.api(for: onboardingServer) {
+            // Onboarding held the sensors back until this choice (see `OnboardingAuth`), so this is
+            // what registers them, the same way changing the setting later in the server's settings
+            // does.
+            Task {
+                try? await api.registerSensors().asyncValue()
+            }
+        }
+
+        guard locationPrivacy != .never else {
+            nextStep()
+            return
+        }
+
+        switch Current.location.permissionStatus() {
+        case .denied, .restricted:
+            nextStep()
+        default:
+            grantedLocationPrivacy = locationPrivacy
+            requestLocationPermissionToShareWithHomeAssistant()
         }
     }
 
@@ -198,6 +279,7 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
     func setLessSecureLocalConnection() {
         onboardingServer.update { info in
             info.connection.connectionAccessSecurityLevel = .lessSecure
+            info.connection.overrideActiveURLType = nil
         }
     }
 
@@ -212,14 +294,14 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
     /// Enables location-related sensors when permission is granted
     /// - Note: Affects geocoded location, WiFi BSSID, and SSID sensors
     private func enableLocationSensor() {
-        onboardingServer.info.setSetting(value: ServerLocationPrivacy.exact, for: .locationPrivacy)
+        onboardingServer.info.setSetting(value: grantedLocationPrivacy, for: .locationPrivacy)
     }
 
     /// Handles the actual location permission request based on current authorization status
     /// - Note: Opens settings if denied/restricted, grants immediately if already authorized,
     ///         or requests permission if not determined
     private func requestLocationPermission() {
-        switch Current.location.permissionStatus {
+        switch Current.location.permissionStatus() {
         case .denied, .restricted:
             guard locationPermissionContext != .lessSecureLocalConnection else {
                 applyLocationPermissionNeeds()
@@ -242,6 +324,9 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
     /// Applies the appropriate configuration based on the location permission context
     /// - Note: Enables sensors for Home Assistant sharing or sets security level for local connections
     private func applyLocationPermissionNeeds() {
+        // Going back clears the request; a late grant must not move the flow on by itself.
+        guard locationPermissionContext != .notRequested else { return }
+
         if locationPermissionContext == .shareWithHomeAssistant {
             // Enable location sensors for sharing with Home Assistant
             enableLocationSensor()
@@ -249,6 +334,7 @@ final class OnboardingPermissionsNavigationViewModel: NSObject, ObservableObject
 
         if locationPermissionContext == .secureLocalConnection {
             // Configure most secure local connection using location data
+            replacedSecurityLevel = onboardingServer.info.connection.connectionAccessSecurityLevel
             onboardingServer.update { info in
                 info.connection.connectionAccessSecurityLevel = .mostSecure
             }
@@ -293,6 +379,11 @@ extension OnboardingPermissionsNavigationViewModel: CLLocationManagerDelegate {
             disableLocationSensor()
             if locationPermissionContext == .lessSecureLocalConnection {
                 applyLocationPermissionNeeds()
+            } else if currentStep == .privacy {
+                // Unlike the location step, the privacy step has no skip action to fall back on.
+                // The refusal answers its location question as `never` (just stored above), so the
+                // flow moves on instead of leaving the user on a screen that looks unanswered.
+                nextStep()
             }
         case .authorizedAlways:
             // Full location access granted - no additional action needed

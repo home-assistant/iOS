@@ -1,6 +1,6 @@
-import CoreServices
 import Foundation
 import PromiseKit
+import UniformTypeIdentifiers
 import UserNotifications
 
 protocol NotificationAttachmentParser {
@@ -64,34 +64,34 @@ struct NotificationAttachmentInfo: Equatable {
     }
 
     static func contentType(for contentTypeString: String) -> CFString {
-        let contentType: CFString
+        let contentType: UTType?
         switch contentTypeString.lowercased() {
         case "aiff":
-            contentType = kUTTypeAudioInterchangeFileFormat
+            contentType = .aiff
         case "avi":
-            contentType = kUTTypeAVIMovie
+            contentType = .avi
         case "gif":
-            contentType = kUTTypeGIF
+            contentType = .gif
         case "jpeg", "jpg":
-            contentType = kUTTypeJPEG
+            contentType = .jpeg
         case "mp3":
-            contentType = kUTTypeMP3
+            contentType = .mp3
         case "mpeg":
-            contentType = kUTTypeMPEG
+            contentType = .mpeg
         case "mpeg2":
-            contentType = kUTTypeMPEG2Video
+            contentType = .mpeg2Video
         case "mpeg4":
-            contentType = kUTTypeMPEG4
+            contentType = .mpeg4Movie
         case "mpeg4audio":
-            contentType = kUTTypeMPEG4Audio
+            contentType = .mpeg4Audio
         case "png":
-            contentType = kUTTypePNG
+            contentType = .png
         case "waveformaudio":
-            contentType = kUTTypeWaveformAudio
+            contentType = .wav
         default:
-            contentType = contentTypeString as CFString
+            contentType = nil
         }
 
-        return contentType
+        return (contentType?.identifier ?? contentTypeString) as CFString
     }
 }

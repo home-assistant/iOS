@@ -5,7 +5,6 @@ import Shared
 import SwiftUI
 import WidgetKit
 
-@available(iOS 16.4, *)
 struct CustomWidgetToggleAppIntent: AppIntent {
     static var title: LocalizedStringResource = "Toggle"
     static var isDiscoverable: Bool = false
@@ -19,6 +18,8 @@ struct CustomWidgetToggleAppIntent: AppIntent {
     var entityId: String?
     @Parameter(title: "Is widget showing states?")
     var widgetShowingStates: Bool?
+    @Parameter(title: "Target state")
+    var targetValue: Bool?
 
     func perform() async throws -> some IntentResult {
         Current.Log.verbose(
@@ -44,38 +45,43 @@ struct CustomWidgetToggleAppIntent: AppIntent {
         ) else {
             return .result()
         }
-        guard let request = HATypedRequest<HAResponseVoid>.executeMainAction(domain: domain, entityId: entityId) else {
-            Current.Log
-                .error(
-                    "ToggleAppIntent: no main action for domain \(domain.rawValue), entityId: \(entityId), serverId: \(serverId)"
-                )
+        guard domain.canToggle else {
+            Current.Log.error(
+                "ToggleAppIntent: \(domain.rawValue) cannot be toggled, entityId: \(entityId), serverId: \(serverId)"
+            )
             return .result()
         }
         Current.Log.verbose(
-            "ToggleAppIntent: sending main action, serverId: \(serverId), domain: \(domain.rawValue), entityId: \(entityId)"
+            "ToggleAppIntent: toggling, serverId: \(serverId), domain: \(domain.rawValue), entityId: \(entityId)"
         )
         AppIntentHaptics.notify()
-        await withCheckedContinuation { continuation in
-            connection.send(request).promise.pipe { result in
-                switch result {
-                case .fulfilled:
-                    Current.Log.verbose(
-                        "ToggleAppIntent: main action succeeded, serverId: \(serverId), domain: \(domain.rawValue), entityId: \(entityId)"
-                    )
-                    continuation.resume()
-                case let .rejected(error):
-                    Current.Log
-                        .error(
-                            "Failed to execute ToggleAppIntent, serverId: \(serverId), domain: \(domain), entityId: \(entityId), error: \(error)"
-                        )
-                    Current.notificationDispatcher.send(.init(
-                        id: .intentToggleFailed,
-                        title: L10n.Widgets.Custom.IntentToggleFailed.title,
-                        body: L10n.Widgets.Custom.IntentToggleFailed.body
-                    ))
-                    continuation.resume()
+        do {
+            if let targetValue {
+                guard WidgetOptimisticToggle.supports(domain) else {
+                    throw EntityToggler.ToggleError.domainNotToggleable(domain)
                 }
+                // A repeated tap on the same timeline must not undo the first request.
+                try await connection.send(.callService(
+                    domain: .init(stringLiteral: domain.rawValue),
+                    service: .init(stringLiteral: targetValue ? Service.turnOn.rawValue : Service.turnOff.rawValue),
+                    data: ["entity_id": entityId]
+                )).promise.asyncValue(timeout: 10)
+            } else {
+                try await EntityToggler.toggle(domain: domain, entityId: entityId, connection: connection)
             }
+            Current.Log.verbose(
+                "ToggleAppIntent: toggled, serverId: \(serverId), domain: \(domain.rawValue), entityId: \(entityId)"
+            )
+        } catch {
+            Current.Log
+                .error(
+                    "Failed to execute ToggleAppIntent, serverId: \(serverId), domain: \(domain), entityId: \(entityId), error: \(error)"
+                )
+            Current.notificationDispatcher.send(.init(
+                id: .intentToggleFailed,
+                title: L10n.Widgets.Custom.IntentToggleFailed.title,
+                body: L10n.Widgets.Custom.IntentToggleFailed.body
+            ))
         }
         _ = try await ResetAllCustomWidgetConfirmationAppIntent().perform()
         if widgetShowingStates {

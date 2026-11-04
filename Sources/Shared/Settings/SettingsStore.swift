@@ -7,13 +7,18 @@ import UIKit
 #else
 import AppKit
 #endif
-import Version
 
 public class SettingsStore {
     let keychain = AppConstants.Keychain
-    let prefs = UserDefaults(suiteName: AppConstants.AppGroupID)!
+    let prefs: UserDefaults
     private let seenWhatsNewReleaseIDsKey = "seenWhatsNewReleaseIDs"
     private let seenTestFlightMessageIDsKey = "seenTestFlightMessageIDs"
+
+    /// - Parameter prefs: the app group defaults. Tests pass a suite of their own, because every
+    ///   process on a simulator shares the app group's, including test processes running at once.
+    init(prefs: UserDefaults = UserDefaults(suiteName: AppConstants.AppGroupID)!) {
+        self.prefs = prefs
+    }
 
     /// These will only be posted on the main thread
     public static let webViewRelatedSettingDidChange: Notification.Name = .init("webViewRelatedSettingDidChange")
@@ -29,12 +34,22 @@ public class SettingsStore {
         }
     }
 
-    public var integrationDeviceID: String {
-        let baseString = Current.device.identifierForVendor() ?? deviceID
+    static let integrationDeviceIDKey = "integrationDeviceID"
 
+    /// The identifier the server knows this installation by. It is taken from the platform's vendor
+    /// identifier the first time it is needed and kept from then on, so a build that derives it
+    /// differently (the Mac moving from Catalyst to the native app) keeps the registration it has
+    /// rather than registering a second device.
+    public var integrationDeviceID: String {
+        Self.integrationDeviceID(from: persistedIntegrationDeviceID ?? deviceID)
+    }
+
+    public func newIntegrationDeviceID() -> String {
+        Self.integrationDeviceID(from: UUID().uuidString)
+    }
+
+    private static func integrationDeviceID(from baseString: String) -> String {
         switch Current.appConfiguration {
-        case .beta:
-            return "beta_" + baseString
         case .debug:
             return "debug_" + baseString
         case .fastlaneSnapshot, .release:
@@ -49,6 +64,89 @@ public class SettingsStore {
         set {
             keychain["deviceID"] = newValue
         }
+    }
+
+    /// The vendor identifier as first seen, stored alongside the other registration data in the app group.
+    /// Nothing is stored while the platform has no identifier to give, so a later read can still pick it up.
+    private var persistedIntegrationDeviceID: String? {
+        if let stored = prefs.string(forKey: Self.integrationDeviceIDKey) {
+            return stored
+        }
+        guard let current = Current.device.identifierForVendor() else {
+            return nil
+        }
+        prefs.set(current, forKey: Self.integrationDeviceIDKey)
+        return current
+    }
+
+    static let integrationDeviceIDOwnerKey = "integrationDeviceIDOwner"
+
+    public var integrationDeviceIDOwnerVendorID: String? {
+        prefs.string(forKey: Self.integrationDeviceIDOwnerKey) ?? persistedIntegrationDeviceID
+    }
+
+    public func takeOverIntegrationDeviceID(for vendorID: String) {
+        prefs.set(vendorID, forKey: Self.integrationDeviceIDOwnerKey)
+    }
+
+    /// Home Assistant replaces a `mobile_app` registration whose app and device identifiers match an existing one,
+    /// so only a fresh identifier makes the next registration a new device rather than taking over an existing one.
+    public func adoptNewIntegrationDeviceID(ownedBy vendorID: String) {
+        prefs.set(UUID().uuidString, forKey: Self.integrationDeviceIDKey)
+        prefs.set(vendorID, forKey: Self.integrationDeviceIDOwnerKey)
+    }
+
+    public var integrationDeviceIdentity: RegistrationIdentity {
+        RegistrationIdentity(deviceID: integrationDeviceID, ownerVendorID: integrationDeviceIDOwnerVendorID)
+    }
+
+    static let registrationRecordsKey = "registrationRecords"
+    private static let registrationRecordsLock = NSLock()
+
+    /// Kept in the app group rather than the Keychain, which outlives a reinstall: the reinstalled app's own
+    /// registrations would otherwise look like another device's.
+    public func registrationRecord(for server: Identifier<Server>) -> RegistrationRecord {
+        registrationRecords[server.rawValue] ?? RegistrationRecord()
+    }
+
+    public func currentRegistrationIdentity(for server: Server) -> RegistrationIdentity {
+        if let current = registrationRecord(for: server.identifier).current {
+            return current
+        }
+        guard let deviceID = server.info.setting(for: .registeredDeviceID) else {
+            return integrationDeviceIdentity
+        }
+        return RegistrationIdentity(deviceID: deviceID, ownerVendorID: integrationDeviceIDOwnerVendorID)
+    }
+
+    public func registrationIdentity(for server: Server) -> RegistrationIdentity {
+        if let pending = registrationRecord(for: server.identifier).pending,
+           pending.ownerVendorID == Current.device.identifierForVendor() {
+            return pending
+        }
+        return currentRegistrationIdentity(for: server)
+    }
+
+    public func setRegistrationRecord(_ record: RegistrationRecord, for server: Identifier<Server>) {
+        updateRegistrationRecord(for: server) { $0 = record }
+    }
+
+    public func updateRegistrationRecord(
+        for server: Identifier<Server>,
+        _ update: (inout RegistrationRecord) -> Void
+    ) {
+        Self.registrationRecordsLock.lock()
+        defer { Self.registrationRecordsLock.unlock() }
+        var records = registrationRecords
+        var record = records[server.rawValue] ?? RegistrationRecord()
+        update(&record)
+        records[server.rawValue] = record == RegistrationRecord() ? nil : record
+        prefs.set(try? JSONEncoder().encode(records), forKey: Self.registrationRecordsKey)
+    }
+
+    private var registrationRecords: [String: RegistrationRecord] {
+        guard let data = prefs.data(forKey: Self.registrationRecordsKey) else { return [:] }
+        return (try? JSONDecoder().decode([String: RegistrationRecord].self, from: data)) ?? [:]
     }
 
     private var seenWhatsNewReleaseIDs: Set<String> {
@@ -163,6 +261,20 @@ public class SettingsStore {
         ]
     }
 
+    public enum MediaTypeRequiringUserActionForPlayback: String, CaseIterable, Hashable {
+        case audio
+        case video
+
+        public var title: String {
+            switch self {
+            case .audio:
+                return "Audio"
+            case .video:
+                return "Video"
+            }
+        }
+    }
+
     public var pageZoom: PageZoom {
         get {
             if let pageZoom = PageZoom(preference: prefs.integer(forKey: "page_zoom")) {
@@ -188,16 +300,85 @@ public class SettingsStore {
         }
     }
 
-    public var restoreLastURL: Bool {
+    /// Greets the user (toast + in-flight empty state) when flight detection determines they are on a plane.
+    /// Enabled by default; toggled in App settings > Greetings.
+    public var flightGreetingsEnabled: Bool {
         get {
-            if let value = prefs.object(forKey: "restoreLastURL") as? NSNumber {
+            if let value = prefs.object(forKey: "flightGreetingsEnabled") as? NSNumber {
                 return value.boolValue
             } else {
                 return true
             }
         }
         set {
+            prefs.set(newValue, forKey: "flightGreetingsEnabled")
+        }
+    }
+
+    /// Reopens the last page visited in the frontend when the app launches.
+    /// Disabled by default (opt-in); toggled in Settings > Server Switching.
+    /// Installs that predate the opt-in default keep the old behavior via
+    /// `migrateRestoreLastURLToOptInIfNeeded`. Catalyst hides the toggle (macOS
+    /// owns state restoration there), so it keeps the enabled default.
+    public var restoreLastURL: Bool {
+        get {
+            if let value = prefs.object(forKey: "restoreLastURL") as? NSNumber {
+                return value.boolValue
+            } else {
+                return Current.isCatalyst
+            }
+        }
+        set {
             prefs.set(newValue, forKey: "restoreLastURL")
+        }
+    }
+
+    /// Remember Last Page used to be enabled by default; existing installs keep that
+    /// behavior by persisting the old default once, unless the user had explicitly
+    /// turned it off. Fresh installs get the new disabled default.
+    public func migrateRestoreLastURLToOptInIfNeeded(hasExistingServers: Bool) {
+        guard !migratedRestoreLastURLOptIn else { return }
+        if hasExistingServers, prefs.object(forKey: "restoreLastURL") == nil {
+            restoreLastURL = true
+        }
+        migratedRestoreLastURLOptIn = true
+    }
+
+    private var migratedRestoreLastURLOptIn: Bool {
+        get {
+            prefs.bool(forKey: "migratedRestoreLastURLOptIn")
+        }
+        set {
+            prefs.set(newValue, forKey: "migratedRestoreLastURLOptIn")
+        }
+    }
+
+    /// Switches the active server to the one whose zone the user is in when the app is opened
+    /// (e.g. arriving at a second home). Off by default; toggled in Settings > Servers.
+    public var locationBasedServerSwitching: Bool {
+        get {
+            prefs.bool(forKey: "locationBasedServerSwitching")
+        }
+        set {
+            prefs.set(newValue, forKey: "locationBasedServerSwitching")
+        }
+    }
+
+    public var lastActiveServerIdentifier: String? {
+        get {
+            prefs.string(forKey: "lastActiveServerIdentifier")
+        }
+        set {
+            prefs.set(newValue, forKey: "lastActiveServerIdentifier")
+        }
+    }
+
+    public var lastActiveURLPath: String? {
+        get {
+            prefs.string(forKey: "lastActiveURLPath")
+        }
+        set {
+            prefs.set(newValue, forKey: "lastActiveURLPath")
         }
     }
 
@@ -227,13 +408,29 @@ public class SettingsStore {
         }
     }
 
-    public var edgeToEdge: Bool {
+    /// Debug override: always draw the web view below the iPhone status bar, even on cores that
+    /// support edge-to-edge display (2026.8+).
+    public var webViewAlwaysBelowStatusBar: Bool {
         get {
-            prefs.bool(forKey: "edgeToEdge_experimental")
+            prefs.bool(forKey: "webViewAlwaysBelowStatusBar")
         }
         set {
-            prefs.set(newValue, forKey: "edgeToEdge_experimental")
+            prefs.set(newValue, forKey: "webViewAlwaysBelowStatusBar")
             NotificationCenter.default.post(name: Self.webViewRelatedSettingDidChange, object: nil)
+        }
+    }
+
+    /// Whether to leave WebKit's Enhanced Security heuristic alone on plain-HTTP connections.
+    ///
+    /// Off by default: on iOS 27 that heuristic renders `http://` pages in a hardened, much slower
+    /// process, which is what makes local dashboards lag. Users who would rather keep Apple's
+    /// hardening than the frame rate can switch it back on.
+    public var enhancedWebSecurityEnabled: Bool {
+        get {
+            prefs.bool(forKey: "enhancedWebSecurityEnabled")
+        }
+        set {
+            prefs.set(newValue, forKey: "enhancedWebSecurityEnabled")
         }
     }
 
@@ -277,6 +474,16 @@ public class SettingsStore {
         }
         set {
             prefs.set(newValue, forKey: "migratedOptInLocalPush")
+        }
+    }
+
+    /// Shake gesture no longer opens debug by default; users who had it set to debug are reset once to none.
+    public var migratedShakeGestureToNone: Bool {
+        get {
+            prefs.bool(forKey: "migratedShakeGestureToNone")
+        }
+        set {
+            prefs.set(newValue, forKey: "migratedShakeGestureToNone")
         }
     }
 
@@ -492,6 +699,29 @@ public class SettingsStore {
         }
     }
 
+    /// Warn via local notification when the app appears to have been force-closed,
+    /// since force closing stops location and sensor updates until reopened.
+    public var forceCloseWarningEnabled: Bool {
+        get {
+            prefs.bool(forKey: "forceCloseWarningEnabled")
+        }
+        set {
+            prefs.set(newValue, forKey: "forceCloseWarningEnabled")
+        }
+    }
+
+    /// Whether tapping a notification offers the actions it carries, which iOS otherwise only reveals
+    /// once the notification is pressed and held. Opt-in: a tap normally just opens the app, and
+    /// turning a tap into a question is a change of habit the user asks for.
+    public var notificationTapActionsEnabled: Bool {
+        get {
+            prefs.bool(forKey: "notificationTapActionsEnabled")
+        }
+        set {
+            prefs.set(newValue, forKey: "notificationTapActionsEnabled")
+        }
+    }
+
     public var widgetAuthenticityToken: String {
         let key = "widgetAuthenticityToken"
 
@@ -538,13 +768,51 @@ public class SettingsStore {
         }
     }
 
-    /// Debug option to enable toasts handled by the app instead of the web frontend
-    public var toastsHandledByApp: Bool {
+    public var notifyOnLocalPushStateChanges: Bool {
         get {
-            prefs.bool(forKey: "toastsHandledByApp")
+            prefs.bool(forKey: "notifyOnLocalPushStateChanges")
         }
         set {
-            prefs.set(newValue, forKey: "toastsHandledByApp")
+            prefs.set(newValue, forKey: "notifyOnLocalPushStateChanges")
+        }
+    }
+
+    public static let defaultRegionEnterMaximumFuzzDistance: CLLocationDistance = 100
+
+    /// The farthest outside a monitored region a one-shot fix may be and still have its accuracy widened
+    /// to reach the region on a region-enter event. Tuned from the hidden developer section of Debug settings.
+    public var regionEnterMaximumFuzzDistance: CLLocationDistance {
+        get {
+            (prefs.object(forKey: "regionEnterMaximumFuzzDistance") as? Double)
+                ?? Self.defaultRegionEnterMaximumFuzzDistance
+        }
+        set {
+            prefs.set(newValue, forKey: "regionEnterMaximumFuzzDistance")
+        }
+    }
+
+    public static let defaultWebViewEmptyStateTimeout = 5
+
+    /// Seconds the frontend can stay disconnected before the web view shows its empty state
+    public var webViewEmptyStateTimeout: Int {
+        get {
+            (prefs.object(forKey: "webViewEmptyStateTimeout") as? Int) ?? Self.defaultWebViewEmptyStateTimeout
+        }
+        set {
+            prefs.set(newValue, forKey: "webViewEmptyStateTimeout")
+        }
+    }
+
+    public var mediaTypesRequiringUserActionForPlayback: Set<MediaTypeRequiringUserActionForPlayback> {
+        get {
+            let rawValues = prefs.stringArray(forKey: "mediaTypesRequiringUserActionForPlayback") ?? [
+                MediaTypeRequiringUserActionForPlayback.audio.rawValue,
+            ]
+            return Set(rawValues.compactMap(MediaTypeRequiringUserActionForPlayback.init(rawValue:)))
+        }
+        set {
+            let rawValues = newValue.map(\.rawValue).sorted()
+            prefs.set(rawValues, forKey: "mediaTypesRequiringUserActionForPlayback")
         }
     }
 

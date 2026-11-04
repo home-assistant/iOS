@@ -12,10 +12,61 @@ public struct WebhookSensorSetting {
             step: Double = 1,
             displayValueFor: ((Double?) -> String?)?
         )
+        case slider(
+            getter: () -> Double,
+            setter: (Double) -> Void,
+            minimum: Double = 0,
+            maximum: Double = 100,
+            step: Double = 1,
+            displayValueFor: ((Double?) -> String?)?
+        )
+        case options(
+            getter: () -> Double,
+            setter: (Double) -> Void,
+            values: [Double],
+            displayValueFor: (Double) -> String
+        )
+        case numericField(
+            getter: () -> Double,
+            setter: (Double) -> Void,
+            minimum: Double = 0,
+            maximum: Double = 100
+        )
+        case credentials(fields: [CredentialField])
+    }
+
+    public struct CredentialField {
+        public let title: String
+        public let placeholder: String?
+        public let isSecure: Bool
+        public let getter: () -> String
+        public let setter: (String) -> Void
+
+        public init(
+            title: String,
+            placeholder: String? = nil,
+            isSecure: Bool = false,
+            getter: @escaping () -> String,
+            setter: @escaping (String) -> Void
+        ) {
+            self.title = title
+            self.placeholder = placeholder
+            self.isSecure = isSecure
+            self.getter = getter
+            self.setter = setter
+        }
     }
 
     public let type: SettingType
     public let title: String
+    /// Optional caption shown under the row, e.g. a performance warning.
+    public let subtitle: String?
+
+    public init(type: SettingType, title: String, subtitle: String? = nil) {
+        self.type = type
+        self.title = title
+        self.subtitle = subtitle
+    }
 }
 
 public class WebhookSensor: Mappable, Equatable, Comparable {
@@ -24,12 +75,21 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
     public var Icon: String?
     public var Name: String?
     public var State: Any? = "Initial"
+    public var StateClass: SensorStateClass?
     public var `Type`: String = "sensor"
     public var UniqueID: String?
     public var UnitOfMeasurement: String?
-    public var entityCategory: String?
+    public private(set) var entityCategory: SensorEntityCategory?
+
+    /// Whether Home Assistant should disable the matching entity. Only `register_sensor` acts on
+    /// this, so it's left out of state updates.
+    public var Disabled: Bool?
 
     public var Settings: [WebhookSensorSetting] = []
+
+    /// Optional footer shown at the bottom of the sensor detail screen, e.g. setup
+    /// instructions or usage caveats. Local-only: never sent to the server.
+    public var detailFooter: String?
 
     init() {}
 
@@ -39,6 +99,7 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
         self.init()
         self.Name = sensor.Name
         self.UniqueID = sensor.UniqueID
+        self.entityCategory = sensor.entityCategory
         self.State = "unavailable"
         self.Icon = "mdi:dots-square"
         self.Type = sensor.Type
@@ -48,13 +109,35 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
         self.init()
         self.Name = name
         self.UniqueID = uniqueID
+        self.entityCategory = SensorEntityCategory.category(forSensorUniqueID: uniqueID)
     }
 
-    convenience init(name: String, uniqueID: String, state: Any, unit: String? = nil, entityCategory: String? = nil) {
+    /// A sensor the app knows but cannot read, because the user has not granted the permission it
+    /// needs.
+    ///
+    /// Reported rather than left out: sensors are opt-in, and switching one on is what asks for its
+    /// permission, so a sensor that disappeared until the permission was granted would have no row
+    /// left to switch on. Explicitly unavailable rather than a value it hasn't read.
+    convenience init(awaitingPermissionNamed name: String, uniqueID: String, type: String? = nil) {
+        self.init(name: name, uniqueID: uniqueID)
+        self.State = "unavailable"
+        self.Icon = "mdi:dots-square"
+        if let type {
+            self.Type = type
+        }
+    }
+
+    convenience init(
+        name: String,
+        uniqueID: String,
+        state: Any,
+        unit: String? = nil,
+        stateClass: SensorStateClass? = nil
+    ) {
         self.init(name: name, uniqueID: uniqueID)
         self.State = state
         self.UnitOfMeasurement = unit
-        self.entityCategory = entityCategory
+        self.StateClass = stateClass
     }
 
     convenience init(
@@ -63,9 +146,15 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
         icon: String?,
         state: Any,
         unit: String? = nil,
-        entityCategory: String? = nil
+        stateClass: SensorStateClass? = nil
     ) {
-        self.init(name: name, uniqueID: uniqueID, state: state, unit: unit, entityCategory: entityCategory)
+        self.init(
+            name: name,
+            uniqueID: uniqueID,
+            state: state,
+            unit: unit,
+            stateClass: stateClass
+        )
         self.Icon = icon
     }
 
@@ -74,16 +163,14 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
         uniqueID: String,
         icon: MaterialDesignIcons,
         state: Any,
-        unit: String? = nil,
-        entityCategory: String? = nil
+        unit: String? = nil
     ) {
         self.init(
             name: name,
             uniqueID: uniqueID,
             icon: "mdi:\(icon.name)",
             state: state,
-            unit: unit,
-            entityCategory: entityCategory
+            unit: unit
         )
     }
 
@@ -93,10 +180,9 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
         icon: String,
         deviceClass: DeviceClass,
         state: Any,
-        unit: String? = nil,
-        entityCategory: String? = nil
+        unit: String? = nil
     ) {
-        self.init(name: name, uniqueID: uniqueID, icon: icon, state: state, unit: unit, entityCategory: entityCategory)
+        self.init(name: name, uniqueID: uniqueID, icon: icon, state: state, unit: unit)
         self.DeviceClass = deviceClass
     }
 
@@ -112,8 +198,10 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
 
         if !isUpdate {
             DeviceClass <- map["device_class"]
-            entityCategory <- map["entity_category"]
+            Disabled <- map["disabled"]
+            entityCategory?.rawValue >>> map["entity_category"]
             Name <- map["name"]
+            StateClass <- map["state_class"]
             UnitOfMeasurement <- map["unit_of_measurement"]
         }
     }

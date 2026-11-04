@@ -5,16 +5,20 @@ on:
       version:
         required: true
         description: "New Version Number"
+
+permissions:
+  contents: read
+
 jobs:
   bump:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6.0.3
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
           ssh-key: ${{ secrets.HOMEASSISTANT_SSH_DEPLOY_KEY }}
-      - uses: ruby/setup-ruby@afeafc3d1ab54a631816aba4c914a0081c12ff2f  # v1.310.0
+      - uses: ruby/setup-ruby@de492cf36cbab201753d720ce4f4e336cd688c94  # v1.336.0
         with:
-          ruby-version: '3.1'
+          ruby-version: .ruby-version
           bundler-cache: true
       - run: "bundle exec fastlane set_version version:${{ github.event.inputs.version }}"
       - name: Commit changes

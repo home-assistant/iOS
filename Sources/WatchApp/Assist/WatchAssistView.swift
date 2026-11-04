@@ -1,0 +1,334 @@
+import Shared
+import SwiftUI
+
+struct WatchAssistView: View {
+    // MARK: - Constants
+
+    private enum Constants {
+        static let micButtonFontSize: CGFloat = 11
+        static let micButtonOffsetY: CGFloat = 22
+        static let micButtonProgressScale: CGFloat = 1.5
+        static let micButtonProgressHeight: CGFloat = 40
+        static let micButtonProgressPadding: CGFloat = DesignSystem.Spaces.half
+        static let micRecordingTextFontSize: CGFloat = 11
+        static let progressViewScale: CGFloat = 2
+    }
+
+    @StateObject private var viewModel: WatchAssistViewModel
+    @State private var isInitialAppearance = true
+    private let progressViewId = "progressViewId"
+
+    init(
+        viewModel: @autoclosure @escaping () -> WatchAssistViewModel
+    ) {
+        // Deferred: `fullScreenCover` re-invokes `WatchAssistView.build` on every parent
+        // re-render, and the view model's init has side effects (communicator observer
+        // registration) — so it must only run when @StateObject actually creates storage.
+        self._viewModel = StateObject(wrappedValue: viewModel())
+    }
+
+    var body: some View {
+        NavigationView {
+            Button(action: {
+                viewModel.assist()
+            }, label: {
+                ZStack(alignment: .bottom) {
+                    micButton
+                    chatList
+                    stateView
+                    inlineLoading
+                }
+                .modify({ view in
+                    if #available(watchOS 10, *) {
+                        view.toolbar(content: {
+                            ToolbarItem(placement: .topBarTrailing) {
+                                volumeButton
+                            }
+                        })
+                    } else {
+                        view.toolbar(content: {
+                            ToolbarItem {
+                                volumeButton
+                            }
+                        })
+                    }
+                })
+            })
+            // Touch either taps or holds: a tap starts a recording and the next tap sends it, while a
+            // hold records until the finger lifts. A press that turns into a scroll of the chat is
+            // dropped. The button's action is left to the Double Tap hand gesture below, which has
+            // no finger to lift and so keeps the tap-to-send flow.
+            .buttonStyle(WatchPushToTalkButtonStyle(onPhaseChange: { phase in
+                switch phase {
+                case let .began(time): viewModel.beginPushToTalk(at: time)
+                case let .released(time): viewModel.endPushToTalk(at: time)
+                case .cancelled: viewModel.cancelPushToTalk()
+                }
+            }))
+            .modify { view in
+                if #available(watchOS 11, *) {
+                    view.handGestureShortcut(.primaryAction)
+                } else {
+                    view
+                }
+            }
+        }
+        .animation(.easeInOut, value: viewModel.state)
+        .animation(.easeInOut, value: viewModel.recordingSubmission)
+        .onAppear {
+            // Always re-subscribe: `endRoutine()` (onDisappear — e.g. pushing the volume screen)
+            // unsubscribes the view model from responses, and without this the screen comes back
+            // permanently deaf: TTS may still play elsewhere but the chat never updates.
+            viewModel.reconnectObserver()
+            viewModel.beginExtendedRuntime()
+            // Avoid re-trigger when coming back from audio volume screen
+            if isInitialAppearance {
+                isInitialAppearance = false
+                viewModel.initialRoutine()
+            }
+        }
+        .onDisappear {
+            viewModel.endRoutine()
+        }
+        .onChange(of: viewModel.state) { newValue in
+            // TODO: On watchOS 10 this can be replaced by '.sensoryFeedback' modifier
+            let currentDevice = WKInterfaceDevice.current()
+            switch newValue {
+            case .recording:
+                currentDevice.play(.start)
+            case .waitingForPipelineResponse:
+                currentDevice.play(.start)
+                viewModel.startPingPong()
+            case .idle:
+                viewModel.stopPingPong()
+            default:
+                break
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: AssistDefaultComplication.launchNotification)) { _ in
+            viewModel.initialRoutine()
+        }
+    }
+
+    private var volumeButton: some View {
+        NavigationLink(destination: VolumeView()) {
+            Image(systemSymbol: .speakerWave2Fill)
+        }
+        .modify { view in
+            if #available(watchOS 26.0, *) {
+                view
+                    .tint(.green)
+            } else {
+                view
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var stateView: some View {
+        // Only built while recording: the orb draws from a `TimelineView`, so keeping it in the
+        // hierarchy behind a zero opacity would have it redrawing every frame for as long as the
+        // screen is open.
+        if viewModel.state == .recording {
+            micRecording
+                .transition(.opacity)
+        }
+        ProgressView()
+            .progressViewStyle(.circular)
+            // This could also be achieved using .controlSize(.large) on watchOS 9+
+            .scaleEffect(Constants.progressViewScale)
+            .ignoresSafeArea()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .modify {
+                if #available(watchOS 26.0, *) {
+                    $0.glassEffect(.clear, in: .circle)
+                } else if #available(watchOS 10, *) {
+                    $0.background(.regularMaterial)
+                } else {
+                    $0.background(.black.opacity(0.5))
+                }
+            }
+            .opacity(viewModel.state == .loading ? 1 : 0)
+    }
+
+    @ViewBuilder
+    private var micButton: some View {
+        if ![.loading, .recording].contains(viewModel.state), !viewModel.showChatLoader {
+            HStack(spacing: DesignSystem.Spaces.micro) {
+                if viewModel.assistService.deviceReachable {
+                    Text(verbatim: L10n.Assist.Watch.MicButton.TapOrHold.title)
+                    Image(systemSymbol: .micFill)
+                } else {
+                    Image(systemSymbol: .iphoneSlash)
+                        .foregroundStyle(.red)
+                        .padding(.trailing)
+                }
+            }
+            .font(.system(size: Constants.micButtonFontSize))
+            .foregroundStyle(.gray)
+            .offset(y: Constants.micButtonOffsetY)
+        }
+    }
+
+    @ViewBuilder
+    private var inlineLoading: some View {
+        if ![.loading, .recording].contains(viewModel.state) {
+            if viewModel.showChatLoader {
+                micButtonProgressView
+            }
+        }
+    }
+
+    private var micButtonProgressView: some View {
+        ProgressView()
+            .progressViewStyle(.circular)
+            // This could also be achieved using .controlSize(.large) on watchOS 9+
+            .scaleEffect(Constants.micButtonProgressScale)
+            .frame(maxWidth: .infinity, alignment: .center)
+            .frame(height: Constants.micButtonProgressHeight)
+            .padding(Constants.micButtonProgressPadding)
+            .modify {
+                if #available(watchOS 10, *) {
+                    $0.background(.regularMaterial)
+                } else {
+                    $0.background(.black.opacity(0.3))
+                }
+            }
+            .clipShape(Circle())
+    }
+
+    // Not a button of its own: the tap that sends the recording belongs to the push-to-talk screen
+    // around it, which would otherwise compete with it for the touch.
+    private var micRecording: some View {
+        VStack(spacing: DesignSystem.Spaces.one) {
+            if viewModel.recordingSubmission == .release {
+                releaseToSendPill
+                    .transition(.opacity)
+                    .padding(.bottom, DesignSystem.Spaces.two)
+            }
+            AssistVoiceOrbView(
+                level: viewModel.audioLevel,
+                size: .watch,
+                accessibilityLabel: L10n.Assist.Button.Listening.title
+            )
+            if viewModel.recordingSubmission == .tap {
+                VStack(spacing: .zero) {
+                    Text(verbatim: L10n.Watch.Assist.Button.Recording.title)
+                        .font(.system(size: Constants.micRecordingTextFontSize))
+                        .foregroundStyle(.gray)
+                    Text(verbatim: L10n.Watch.Assist.Button.SendRequest.title)
+                        .font(.footnote.bold())
+                }
+            }
+        }
+        .ignoresSafeArea()
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .modify {
+            if #available(watchOS 10, *) {
+                $0.background(.regularMaterial)
+            } else {
+                $0.background(.black.opacity(0.5))
+            }
+        }
+    }
+
+    private var releaseToSendPill: some View {
+        Text(verbatim: L10n.Watch.Assist.Button.ReleaseToSend.title)
+            .font(.footnote.bold())
+            .foregroundStyle(.white)
+            .padding(.horizontal, DesignSystem.Spaces.two)
+            .padding(.vertical, DesignSystem.Spaces.half)
+            .modify { view in
+                if #available(watchOS 26.0, *) {
+                    view.glassEffect(.regular, in: .capsule)
+                } else {
+                    view
+                        .background(Color.gray.opacity(0.3))
+                        .clipShape(Capsule())
+                }
+            }
+    }
+
+    private var chatList: some View {
+        ScrollViewReader { proxy in
+            ScrollView {
+                // Using LazyVStack instead of List to avoid List minimum row height
+                LazyVStack(spacing: DesignSystem.Spaces.one) {
+                    ForEach(viewModel.chatItems, id: \.id) { item in
+                        ChatBubbleView(item: item)
+                    }
+                }
+                .frame(maxHeight: .infinity)
+                .padding(.horizontal)
+                .animation(.easeInOut, value: viewModel.chatItems)
+                .onChange(of: viewModel.chatItems) { _ in
+                    if let lastItem = viewModel.chatItems.last {
+                        proxy.scrollTo(lastItem.id, anchor: .bottom)
+                    }
+                }
+            }
+        }
+        .frame(maxHeight: .infinity)
+    }
+}
+
+#if DEBUG
+#Preview {
+    WatchAssistView(viewModel: .preview)
+}
+
+#Preview("Recording, tap to send") {
+    WatchAssistView(viewModel: .previewRecording(submission: .tap))
+}
+
+#Preview("Recording, release to send") {
+    WatchAssistView(viewModel: .previewRecording(submission: .release))
+}
+
+private extension WatchAssistViewModel {
+    static func previewRecording(submission: RecordingSubmission) -> WatchAssistViewModel {
+        let viewModel = WatchAssistViewModel.preview
+        // The preview recorder does nothing, so an unreachable phone would be the only thing to move
+        // the session out of the state this preview is here to show.
+        viewModel.assistService.deviceReachable = true
+        viewModel.state = .recording
+        viewModel.recordingSubmission = submission
+        viewModel.audioLevel = 0.6
+        return viewModel
+    }
+
+    static var preview: WatchAssistViewModel {
+        let viewModel = WatchAssistViewModel(
+            assistService: WatchAssistService(serverId: "preview-server", pipelineId: "preview-pipeline"),
+            audioRecorder: PreviewWatchAudioRecorder(),
+            audioPlayer: PreviewAudioPlayer(),
+            immediateCommunicatorService: ImmediateCommunicatorService()
+        )
+        viewModel.chatItems = [
+            .init(content: "Turn on the kitchen lights", itemType: .input),
+            .init(content: "Done, 3 lights are now on.", itemType: .output),
+        ]
+        viewModel.assistService.deviceReachable = false
+        return viewModel
+    }
+}
+
+private final class PreviewWatchAudioRecorder: ObservableObject, WatchAudioRecorderProtocol {
+    weak var delegate: WatchAudioRecorderDelegate?
+
+    func startRecording() {}
+
+    func stopRecording() {}
+
+    func cancelRecording() {}
+}
+
+private final class PreviewAudioPlayer: AudioPlayerProtocol {
+    weak var delegate: AudioPlayerDelegate?
+
+    func play(url: URL, server: Server?) {}
+
+    func pause() {}
+}
+
+#endif

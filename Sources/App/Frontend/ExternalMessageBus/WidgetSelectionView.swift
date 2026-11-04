@@ -36,15 +36,6 @@ struct WidgetSelectionView: View {
             }
             .navigationTitle(L10n.Settings.Widgets.Select.title)
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    if #unavailable(iOS 16.0) {
-                        Button(L10n.cancelLabel) {
-                            dismiss()
-                        }
-                    }
-                }
-            }
             .onAppear {
                 viewModel.loadWidgets()
             }

@@ -1,7 +1,6 @@
 import CoreLocation
 import Foundation
 import PromiseKit
-import Version
 
 public struct SensorProviderRequest {
     public enum Reason: Equatable {

@@ -7,6 +7,7 @@ ENABLE_CRITICAL_ALERTS_QMQYCKL255 = 1
 ENABLE_PUSH_PROVIDER_QMQYCKL255 = 1
 ENABLE_DEVICE_NAME_QMQYCKL255 = 1
 ENABLE_THREAD_NETWORK_CREDENTIALS_QMQYCKL255 = 1
+ENABLE_MATTER_SHARE_QMQYCKL255 = 1
 ENABLE_CARPLAY_QMQYCKL255 = 1
 
 // cascades down
@@ -14,9 +15,6 @@ PRODUCT_BUNDLE_IDENTIFIER = ${BUNDLE_ID_PREFIX}.HomeAssistant${BUNDLE_ID_SUFFIX}
 
 // resolves some catalyst build-time issues with frameworks and @importing in the objc header we never use
 SWIFT_INSTALL_OBJC_HEADER=NO
-
-// works around a realm crash on series 1-3 watches, see https://github.com/home-assistant/iOS/issues/1058
-DEAD_CODE_STRIPPING[sdk=watchos*] = NO
 
 // release builds override this
 CODE_SIGN_IDENTITY = Apple Development
@@ -32,6 +30,7 @@ ENABLE_PUSH_PROVIDER[sdk=iphoneos*] = $(ENABLE_PUSH_PROVIDER_$(DEVELOPMENT_TEAM)
 ENABLE_DEVICE_NAME[sdk=iphoneos*] = $(ENABLE_DEVICE_NAME_$(DEVELOPMENT_TEAM))
 ENABLE_THREAD_NETWORK_CREDENTIALS[sdk=iphoneos*] = $(ENABLE_THREAD_NETWORK_CREDENTIALS_$(DEVELOPMENT_TEAM))
 ENABLE_CARPLAY[sdk=iphoneos*] = $(ENABLE_CARPLAY_$(DEVELOPMENT_TEAM))
+ENABLE_MATTER_SHARE[sdk=iphoneos*] = $(ENABLE_MATTER_SHARE_$(DEVELOPMENT_TEAM))
 
 // We mutate the entitlements at build time to support other development teams
 CODE_SIGN_ALLOW_ENTITLEMENTS_MODIFICATION = YES
@@ -44,9 +43,9 @@ PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*] = $(PROVISIONING_PROFILE_SPECIFIER
 SDKROOT = iphoneos
 SWIFT_VERSION = 5.0
 TARGETED_DEVICE_FAMILY = 1,2,6
-IPHONEOS_DEPLOYMENT_TARGET = 15.0
-MACOSX_DEPLOYMENT_TARGET = 10.15
-WATCHOS_DEPLOYMENT_TARGET = 8.0
+IPHONEOS_DEPLOYMENT_TARGET = 16.4
+MACOSX_DEPLOYMENT_TARGET = 12.0
+WATCHOS_DEPLOYMENT_TARGET = 9.0
 
 CLANG_ENABLE_MODULES = YES
 CLANG_ENABLE_OBJC_ARC = YES
@@ -99,6 +98,6 @@ CLANG_ANALYZER_NONNULL = YES
 CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES
 GCC_NO_COMMON_BLOCKS = YES
 
-// Add ThreadNetwork weak reference for iOS and macOS
-OTHER_LDFLAGS[sdk=iphoneos*] = $(inherited) -weak_framework ThreadNetwork
-OTHER_LDFLAGS[sdk=macosx*] = $(inherited) -weak_framework ThreadNetwork
+// Add ThreadNetwork and MatterSupport weak references for iOS and macOS (MatterSupport is macOS 14+ on Catalyst)
+OTHER_LDFLAGS[sdk=iphoneos*] = $(inherited) -weak_framework ThreadNetwork -weak_framework MatterSupport
+OTHER_LDFLAGS[sdk=macosx*] = $(inherited) -weak_framework ThreadNetwork -weak_framework MatterSupport

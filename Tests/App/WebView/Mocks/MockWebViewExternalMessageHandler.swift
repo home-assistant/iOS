@@ -8,24 +8,49 @@ final class MockWebViewExternalMessageHandler: WebViewExternalMessageHandlerProt
 
     var handleExternalMessageCalled = false
     var handleExternalMessageParams: [String: Any]?
+    var handledExternalMessages: [[String: Any]] = []
     var sendExternalBusCalled = false
     var sendExternalBusMessage: Shared.WebSocketMessage?
+    var sendExternalBusCommandWithRetryCalled = false
+    var sendExternalBusCommandWithRetryCommand: WebViewExternalBusOutgoingMessage?
+    var sendExternalBusCommandWithRetryPayload: [String: Any]?
+    var sendExternalBusCommandWithRetryCompletion: ((Bool) -> Void)?
     var scanImprovCalled = false
     var stopImprovScanIfNeededCalled = false
     var showAssistCalled = false
-    var showAssistParams: (server: Shared.Server, pipeline: String, autoStartRecording: Bool)?
+    var showAssistParams: (
+        server: Shared.Server,
+        pipeline: String,
+        autoStartRecording: Bool
+    )?
 
     var sendExternalBusReturnValue: PromiseKit.Promise<Void> = PromiseKit.Promise.value(())
 
     func handleExternalMessage(_ dictionary: [String: Any]) {
         handleExternalMessageCalled = true
         handleExternalMessageParams = dictionary
+        handledExternalMessages.append(dictionary)
     }
 
     func sendExternalBus(message: Shared.WebSocketMessage) -> PromiseKit.Promise<Void> {
         sendExternalBusCalled = true
         sendExternalBusMessage = message
         return sendExternalBusReturnValue
+    }
+
+    func sendExternalBusCommandWithRetry(command: WebViewExternalBusOutgoingMessage, payload: [String: Any]?) {
+        sendExternalBusCommandWithRetryCalled = true
+        sendExternalBusCommandWithRetryCommand = command
+        sendExternalBusCommandWithRetryPayload = payload
+    }
+
+    func sendExternalBusCommandWithRetry(
+        command: WebViewExternalBusOutgoingMessage,
+        payload: [String: Any]?,
+        completion: @escaping (Bool) -> Void
+    ) {
+        sendExternalBusCommandWithRetry(command: command, payload: payload)
+        sendExternalBusCommandWithRetryCompletion = completion
     }
 
     func scanImprov() {

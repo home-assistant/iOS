@@ -2,8 +2,10 @@ import AppIntents
 import CoreLocation
 import Shared
 
-@available(iOS 16.4, *)
-struct UpdateLocationAppIntent: AppIntent {
+struct UpdateLocationAppIntent: AppIntent, CustomIntentMigratedAppIntent {
+    // Carries over shortcuts built with the deprecated SiriKit SendLocationIntent
+    static let intentClassName = "SendLocationIntent"
+
     static var title: LocalizedStringResource = .init(
         "app_intents.update_location.title",
         defaultValue: "Update location"
@@ -18,7 +20,7 @@ struct UpdateLocationAppIntent: AppIntent {
     var location: CLPlacemark
 
     func perform() async throws -> some IntentResult & ReturnsValue<String> {
-        await Current.connectivity.syncNetworkInformation()
+        await Current.connectivity.refreshNetworkInformation()
         let failedServers = try await Current.apis.asyncCompactMap { api -> String? in
             do {
                 try await api.SubmitLocation(

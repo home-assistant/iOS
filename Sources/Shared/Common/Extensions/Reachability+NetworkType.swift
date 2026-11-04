@@ -1,7 +1,7 @@
 import Foundation
 #if os(iOS)
 import CoreTelephony
-import Reachability
+import Network
 #endif
 
 public enum NetworkType: Int, CaseIterable {
@@ -96,38 +96,82 @@ public enum NetworkType: Int, CaseIterable {
 }
 
 #if os(iOS)
-public extension Reachability {
-    func getSimpleNetworkType() -> NetworkType {
-        try? startNotifier()
+public final class NetworkReachability {
+    /// Posted when connectivity actually changed, which `ConnectivityWrapper` decides after refreshing
+    /// network information: the network type changed, or the device moved to a different Wi-Fi network.
+    public static let didChangeNotification = Notification.Name("NetworkReachabilityChanged")
 
+    /// Posted for every path update, including the Wi-Fi to Wi-Fi transitions that leave the network
+    /// type unchanged but make the cached SSID stale.
+    public static let pathDidUpdateNotification = Notification.Name("NetworkReachabilityPathDidUpdate")
+
+    /// Internal so tests can map one fixed reading through both `getSimpleNetworkType()` and
+    /// `getNetworkType()`; the live path can't be built or held still in a test.
+    enum Connection {
+        case unavailable
+        case wifi
+        case cellular
+    }
+
+    private let monitor = NWPathMonitor()
+    private let queue = DispatchQueue(label: "io.home-assistant.reachability")
+
+    public init() {
+        monitor.pathUpdateHandler = { _ in
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: NetworkReachability.pathDidUpdateNotification, object: nil)
+            }
+        }
+        monitor.start(queue: queue)
+    }
+
+    deinit {
+        monitor.cancel()
+    }
+
+    private static func connection(for path: NWPath) -> Connection {
+        guard path.status == .satisfied else { return .unavailable }
+        if path.usesInterfaceType(.cellular) {
+            return .cellular
+        }
+        return .wifi
+    }
+
+    private var connection: Connection {
+        Self.connection(for: monitor.currentPath)
+    }
+
+    public func getSimpleNetworkType() -> NetworkType {
+        Self.simpleNetworkType(for: connection)
+    }
+
+    static func simpleNetworkType(for connection: Connection) -> NetworkType {
         switch connection {
-        case .none:
+        case .unavailable:
             return .noConnection
         case .wifi:
             return .wifi
         case .cellular:
             return .cellular
-        case .unavailable:
-            return .noConnection
         }
     }
 
-    func getNetworkType() -> NetworkType {
-        try? startNotifier()
+    public func getNetworkType() -> NetworkType {
+        Self.networkType(for: connection)
+    }
 
+    static func networkType(for connection: Connection) -> NetworkType {
         switch connection {
-        case .none:
+        case .unavailable:
             return .noConnection
         case .wifi:
             return .wifi
         case .cellular:
             #if !targetEnvironment(macCatalyst)
-            return Reachability.getWWANNetworkType()
+            return getWWANNetworkType()
             #else
             return .cellular
             #endif
-        case .unavailable:
-            return .noConnection
         }
     }
 

@@ -1,7 +1,6 @@
 import Foundation
 import PromiseKit
 import Shared
-import SwiftUI
 import UniformTypeIdentifiers
 
 /// Pre-step that detects if server requires client certificate and prompts user to import
@@ -9,16 +8,16 @@ final class OnboardingAuthStepClientCertificate: OnboardingAuthPreStep {
     static let supportedPoints: Set<OnboardingAuthStepPoint> = [.beforeAuth]
 
     let authDetails: OnboardingAuthDetails
-    weak var sender: UIViewController?
+    let presenter: OnboardingAuthPresenter
 
-    required init(authDetails: OnboardingAuthDetails, sender: UIViewController) {
+    required init(authDetails: OnboardingAuthDetails, presenter: OnboardingAuthPresenter) {
         self.authDetails = authDetails
-        self.sender = sender
+        self.presenter = presenter
     }
 
     func perform(point: OnboardingAuthStepPoint) -> Promise<Void> {
         Current.Log.info("[mTLS] OnboardingAuthStepClientCertificate starting")
-        return testConnection().then { [self] requiresClientCert -> Promise<Void> in
+        return Self.requiresClientCertificate(at: authDetails.url).then { [self] requiresClientCert -> Promise<Void> in
             Current.Log.info("[mTLS] Test result: requiresClientCert = \(requiresClientCert)")
             if requiresClientCert {
                 return promptForCertificate()
@@ -28,10 +27,10 @@ final class OnboardingAuthStepClientCertificate: OnboardingAuthPreStep {
         }
     }
 
-    private func testConnection() -> Promise<Bool> {
+    static func requiresClientCertificate(at url: URL) -> Promise<Bool> {
         Promise { seal in
             // Get base URL
-            var components = URLComponents(url: authDetails.url, resolvingAgainstBaseURL: false)
+            var components = URLComponents(url: url, resolvingAgainstBaseURL: false)
             components?.path = "/"
             components?.queryItems = nil
 
@@ -103,41 +102,25 @@ final class OnboardingAuthStepClientCertificate: OnboardingAuthPreStep {
     private func promptForCertificate() -> Promise<Void> {
         Current.Log.info("[mTLS] Showing certificate import prompt")
         return Promise { [weak self] seal in
-            guard let self, let sender else {
+            guard let self else {
                 seal.reject(OnboardingAuthError(kind: .clientCertificateRequired))
                 return
             }
 
-            DispatchQueue.main.async {
-                let view = ClientCertificateOnboardingView(
-                    onImport: { [weak self] certificate in
-                        Current.Log.info("[mTLS] Certificate imported: \(certificate.displayName)")
-                        self?.authDetails.clientCertificate = certificate
-                        sender.dismiss(animated: true) {
-                            seal.fulfill(())
-                        }
-                    },
-                    onCancel: {
-                        Current.Log.info("[mTLS] Certificate import cancelled")
-                        sender.dismiss(animated: true) {
-                            seal.reject(OnboardingAuthError(kind: .clientCertificateRequired))
-                        }
-                    }
-                )
-
-                let hostingController = UIHostingController(
-                    rootView: NavigationView { view }
-                        .navigationViewStyle(.stack)
-                )
-                hostingController.modalPresentationStyle = .pageSheet
-
-                if let sheet = hostingController.sheetPresentationController {
-                    sheet.detents = [.medium()]
-                    sheet.prefersGrabberVisible = false
+            let presenter = presenter
+            presenter.present(clientCertificateRequest: OnboardingClientCertificateRequest(
+                onImport: { certificate in
+                    Current.Log.info("[mTLS] Certificate imported: \(certificate.displayName)")
+                    self.authDetails.clientCertificate = certificate
+                    presenter.dismissClientCertificateRequest()
+                    seal.fulfill(())
+                },
+                onCancel: {
+                    Current.Log.info("[mTLS] Certificate import cancelled")
+                    presenter.dismissClientCertificateRequest()
+                    seal.reject(OnboardingAuthError(kind: .clientCertificateRequired))
                 }
-
-                sender.present(hostingController, animated: true)
-            }
+            ))
         }
     }
 }

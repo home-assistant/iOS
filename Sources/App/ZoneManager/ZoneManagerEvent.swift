@@ -28,11 +28,11 @@ struct ZoneManagerEvent: Equatable, CustomStringConvertible {
     }
 
     var eventType: EventType
-    var associatedZone: RLMZone?
+    var associatedZone: AppZone?
 
     init(
         eventType: ZoneManagerEvent.EventType,
-        associatedZone: RLMZone? = nil
+        associatedZone: AppZone? = nil
     ) {
         self.eventType = eventType
         self.associatedZone = associatedZone
@@ -49,11 +49,7 @@ struct ZoneManagerEvent: Equatable, CustomStringConvertible {
         attributes.append(String(describing: eventType))
 
         if let zone = associatedZone {
-            if zone.isInvalidated {
-                attributes.append("zone deleted")
-            } else {
-                attributes.append(zone.identifier)
-            }
+            attributes.append(zone.identifier)
         }
 
         return "ZoneManagerEvent(\(attributes.joined(separator: ", ")))"
@@ -75,6 +71,13 @@ struct ZoneManagerEvent: Equatable, CustomStringConvertible {
         case .region:
             return nil
         }
+    }
+
+    var isMultiRegionExit: Bool {
+        guard case let .region(region as CLCircularRegion, .outside) = eventType, let associatedZone else {
+            return false
+        }
+        return region.identifier != associatedZone.identifier
     }
 
     var backgroundTaskDescription: String {

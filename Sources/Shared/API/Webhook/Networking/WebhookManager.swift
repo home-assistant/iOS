@@ -171,9 +171,9 @@ public class WebhookManager: NSObject {
             }
 
             if self.currentBackgroundSessionInfo != sessionInfo {
-                sessionInfo.eventGroup.notify(queue: dataQueue) { [weak self] in
+                sessionInfo.eventGroup.notify(queue: dataQueue) {
                     Current.Log.info("removing session info \(sessionInfo)")
-                    self?.sessionInfos.remove(sessionInfo)
+                    self.sessionInfos.remove(sessionInfo)
                 }
             }
         }
@@ -188,9 +188,10 @@ public class WebhookManager: NSObject {
 
     public func sendEphemeral<MappableResult: BaseMappable>(
         server: Server,
-        request: WebhookRequest
+        request: WebhookRequest,
+        overrideURL: URL? = nil
     ) -> Promise<MappableResult> {
-        let promise: Promise<Any> = sendEphemeral(server: server, request: request)
+        let promise: Promise<Any> = sendEphemeral(server: server, request: request, overrideURL: overrideURL)
         return promise.map {
             if let result = Mapper<MappableResult>().map(JSONObject: $0) {
                 return result
@@ -219,11 +220,16 @@ public class WebhookManager: NSObject {
         request: WebhookRequest,
         overrideURL: URL? = nil
     ) -> Promise<ResponseType> {
-        Current.backgroundTask(withName: BackgroundTask.webhookSendEphemeral.rawValue) { [self, dataQueue] _ in
+        var requestURL: URL?
+
+        let promise: Promise<ResponseType> = Current.backgroundTask(
+            withName: BackgroundTask.webhookSendEphemeral.rawValue
+        ) { [self, dataQueue] _ in
             attemptNetworking {
                 firstly {
                     Self.urlRequest(for: request, server: server, baseURL: overrideURL)
-                }.get { _, _ in
+                }.get { urlRequest, _ in
+                    requestURL = urlRequest.url
                     Current.Log.info("sending to \(server.identifier): \(request)")
                 }.then(on: dataQueue) { [self] urlRequest, data -> Promise<(Data, URLResponse)> in
                     let (promise, seal) = Promise<(Data, URLResponse)>.pending()
@@ -263,36 +269,72 @@ public class WebhookManager: NSObject {
                     desire: String(describing: ResponseType.self)
                 )
             }
-        }.tap { [weak self] result in
+        }.tap { result in
             switch result {
             case let .fulfilled(response):
-                Current.Log.info("got successful response from \(server.identifier) for \(request.type): \(response)")
+                Current.Log.info(
+                    "got successful response from \(server.identifier) for \(request.type): " +
+                        "\(LogRedaction.redactValues(in: response))"
+                )
             case let .rejected(error):
                 Current.Log.error("got failure from \(server.identifier) for \(request.type): \(error)")
+            }
+        }
 
-                /* If user's cloud subscription expired or account was signed out, retry with activeURL
-                 instad of cloud hook */
-                if let self,
-                   let error = error as? WebhookError,
-                   error == WebhookError.unacceptableStatusCode(503),
-                   overrideURL == nil,
-                   let activeURL = server.info.connection.activeURL() {
-                    let event = ClientEvent(
-                        text: "Retrying with active URL - \(activeURL.absoluteString)",
-                        type: .networkRequest
-                    )
-                    Current.clientEventStore.addEvent(event)
-                    let promise: Promise<Any> = sendEphemeral(
-                        server: server,
-                        request: request,
-                        overrideURL: activeURL
-                    )
-                    promise.cauterize()
-                } else {
-                    Current.Log.error(
-                        "Not retrying with active URL, error: \(error), overrideURL: \(overrideURL?.absoluteString ?? "--"), activeURL: \(server.info.connection.activeURL()?.absoluteString ?? "Unknown")"
-                    )
-                }
+        return promise.recover { [self] error -> Promise<ResponseType> in
+            guard overrideURL == nil,
+                  let requestURL,
+                  requestURL == server.info.connection.cloudhookURL,
+                  Self.isCloudhookUnavailable(error) else {
+                throw error
+            }
+
+            return sendEphemeralBypassingCloudhook(server: server, request: request, cloudhookError: error)
+        }
+    }
+
+    /// Whether the cloudhook turned a request away without it reaching Home Assistant: 503 when the
+    /// cloud subscription expired or the account signed out, 404 when Home Assistant Link doesn't
+    /// know the cloudhook. Home Assistant itself never answers a webhook with either.
+    static func isCloudhookUnavailable(_ error: Error) -> Bool {
+        switch error as? WebhookError {
+        case .unacceptableStatusCode(404), .unacceptableStatusCode(503):
+            return true
+        default:
+            return false
+        }
+    }
+
+    /// Resends a request the cloudhook turned away to the server's active URL, the webhook URL the
+    /// app would use without Home Assistant Link. When that fails too, the cloudhook's error is what
+    /// the caller sees, so handling built on it (such as re-registering on a 404) is unchanged.
+    private func sendEphemeralBypassingCloudhook<ResponseType>(
+        server: Server,
+        request: WebhookRequest,
+        cloudhookError: Error
+    ) -> Promise<ResponseType> {
+        Promise<URL?> { seal in
+            Task {
+                await seal.fulfill(server.activeURL())
+            }
+        }.then { [self] activeURL -> Promise<ResponseType> in
+            guard let activeURL else {
+                Current.Log.error("Not retrying \(request.type) without the cloudhook, no active URL")
+                throw cloudhookError
+            }
+
+            Current.clientEventStore.addEvent(ClientEvent(
+                text: "Retrying with active URL - \(activeURL.absoluteString)",
+                type: .networkRequest
+            ))
+
+            let fallback: Promise<ResponseType> = sendEphemeral(
+                server: server,
+                request: request,
+                overrideURL: activeURL
+            )
+            return fallback.recover { _ -> Promise<ResponseType> in
+                throw cloudhookError
             }
         }
     }
@@ -304,6 +346,10 @@ public class WebhookManager: NSObject {
         server: Server,
         request: WebhookRequest
     ) -> Promise<Void> {
+        if let held = heldBack(request, to: server) {
+            return held
+        }
+
         let (promise, seal) = Promise<Void>.pending()
 
         dataQueue.async { [dataQueue] in
@@ -355,6 +401,10 @@ public class WebhookManager: NSObject {
         server: Server,
         request: WebhookRequest
     ) -> Promise<Void> {
+        if let held = heldBack(request, to: server) {
+            return held
+        }
+
         let (promise, seal) = Promise<Void>.pending()
 
         dataQueue.async { [self] in
@@ -369,6 +419,14 @@ public class WebhookManager: NSObject {
         }
 
         return promise
+    }
+
+    private func heldBack(_ request: WebhookRequest, to server: Server) -> Promise<Void>? {
+        let ownership = RegistrationOwnership()
+        guard ownership.holdsBack(request, to: server) else { return nil }
+        Current.Log.info("holding back \(request.type) to \(server.identifier): its registration is another device's")
+        ownership.noteHeldBack(by: server)
+        return Promise(error: RegistrationOwnershipError.registeredByAnotherDevice)
     }
 
     private func send(
@@ -463,6 +521,10 @@ public class WebhookManager: NSObject {
 
     // MARK: - Testing Connection Info
 
+    /// How long the URL check behind Save waits before giving up. The person is looking at a spinner, so an
+    /// unreachable address should fail in seconds rather than after the system default of a minute.
+    static let sendTestTimeout: TimeInterval = 15
+
     public func sendTest(server: Server, baseURL: URL) -> Promise<Void> {
         firstly {
             Self.urlRequest(
@@ -470,8 +532,27 @@ public class WebhookManager: NSObject {
                 server: server,
                 baseURL: baseURL
             )
-        }.then(on: dataQueue) { urlRequest, data in
-            self.currentRegularSessionInfo.session.uploadTask(.promise, with: urlRequest, from: data)
+        }.then(on: dataQueue) { [self] urlRequest, data -> Promise<(Data, URLResponse)> in
+            var urlRequest = urlRequest
+            urlRequest.timeoutInterval = Self.sendTestTimeout
+            let (promise, seal) = Promise<(Data, URLResponse)>.pending()
+            let task = currentRegularSessionInfo.session.uploadTask(
+                with: urlRequest,
+                from: data,
+                completionHandler: { data, response, error in
+                    if let data, let response {
+                        seal.fulfill((data, response))
+                    } else {
+                        seal.resolve(nil, error)
+                    }
+                }
+            )
+            let taskKey = TaskKey(sessionInfo: currentRegularSessionInfo, task: task)
+            serverForEphemeralTask[taskKey] = server
+            task.resume()
+            return promise.ensure(on: dataQueue) { [self] in
+                serverForEphemeralTask[taskKey] = nil
+            }
         }.then { data, response in
             Promise.value(data).webhookJson(
                 on: DispatchQueue.global(qos: .utility),
@@ -536,29 +617,37 @@ public class WebhookManager: NSObject {
         baseURL: URL? = nil
     ) -> Promise<(URLRequest, Data)> {
         Promise { seal in
-            let webhookURL: URL
+            Task {
+                do {
+                    let webhookURL: URL
 
-            if let baseURL {
-                webhookURL = baseURL.appendingPathComponent(server.info.connection.webhookPath, isDirectory: false)
-            } else {
-                if let url = server.info.connection.webhookURL() {
-                    webhookURL = url
-                } else {
-                    seal.resolve(.rejected(ServerConnectionError.noActiveURL(server.info.name)))
-                    return
+                    if let baseURL {
+                        webhookURL = baseURL.appendingPathComponent(
+                            server.info.connection.webhookPath,
+                            isDirectory: false
+                        )
+                    } else if let url = await server.webhookURL() {
+                        webhookURL = url
+                    } else {
+                        seal.resolve(.rejected(ServerConnectionError.noActiveURL(server.info.name)))
+                        return
+                    }
+
+                    var urlRequest = try URLRequest(url: webhookURL, method: .post)
+                    urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+                    let jsonObject = Mapper<WebhookRequest>(context: WebhookRequestContext.server(server))
+                        .toJSON(request)
+                    let data = try JSONSerialization.data(withJSONObject: jsonObject, options: [.sortedKeys])
+
+                    // httpBody is ignored by URLSession but is made available in tests
+                    urlRequest.httpBody = data
+
+                    seal.fulfill((urlRequest, data))
+                } catch {
+                    seal.reject(error)
                 }
             }
-
-            var urlRequest = try URLRequest(url: webhookURL, method: .post)
-            urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-            let jsonObject = Mapper<WebhookRequest>(context: WebhookRequestContext.server(server)).toJSON(request)
-            let data = try JSONSerialization.data(withJSONObject: jsonObject, options: [.sortedKeys])
-
-            // httpBody is ignored by URLSession but is made available in tests
-            urlRequest.httpBody = data
-
-            seal.fulfill((urlRequest, data))
         }
     }
 
@@ -663,7 +752,7 @@ extension WebhookManager: URLSessionDataDelegate, URLSessionTaskDelegate {
                         "server(\(server.identifier))",
                         "request(\(persisted.request))",
                         "statusCode(\(statusCode.flatMap { String(describing: $0) } ?? "none"))",
-                        "body(\(body))",
+                        "body(\(LogRedaction.redactValues(in: body)))",
                     ]
 
                     return "got response: " + values.joined(separator: ", ")

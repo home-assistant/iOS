@@ -2,6 +2,7 @@
 import CarPlay
 #endif
 import Foundation
+import HADesignSystem
 #if canImport(UIKit)
 import UIKit
 #else

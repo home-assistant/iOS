@@ -30,14 +30,18 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
 
     /// Whether the entity has a dynamic icon that changes based on state
     private var entityHasDynamicIcon: Bool {
-        guard let entityDomain = Domain(entityId: entity.entityId) else { return false }
-        return [.cover, .inputBoolean, .light, .lock, .switch].contains(entityDomain)
+        Domain(entityId: entity.entityId)?.hasStateDependentIcon ?? false
     }
 
     /// Whether the entity has a state that doesnt bring value to the user when accessing from the car
     private var entityHasIrrelevantState: Bool {
-        guard let entityDomain = Domain(entityId: entity.entityId) else { return false }
-        return [.script, .scene].contains(entityDomain)
+        Domain(entityId: entity.entityId)?.hasIrrelevantState ?? false
+    }
+
+    /// Whether tapping this entity opens a control screen (climate) rather than executing — such
+    /// rows carry a chevron, like folders, to signal the navigation.
+    private var entityHasControlScreen: Bool {
+        Domain(entityId: entity.entityId)?.hasControlScreen ?? false
     }
 
     init(
@@ -69,7 +73,13 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
         refreshTemplate()
     }
 
+    /// Whether an action started from this row is still in flight, so a repeat tap doesn't run it
+    /// a second time. Deliberately not the "Executing…" subtitle, which lingers a moment past the
+    /// call so it doesn't flash by — a tap in that window is a legitimate second action.
+    private(set) var isOperationInFlight = false
+
     func setExecutingState(_ isExecuting: Bool) {
+        isOperationInFlight = isExecuting
         if isExecuting {
             pendingExecutingClearWorkItem?.cancel()
             pendingExecutingClearWorkItem = nil
@@ -113,6 +123,7 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
         template.setText(content.text)
         template.setDetailText(content.detailText)
         template.setImage(content.image)
+        template.accessoryType = entityHasControlScreen ? .disclosureIndicator : .none
     }
 
     @available(iOS 26.0, *)
@@ -123,7 +134,7 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
             imageShape: .circular,
             title: content.text,
             subtitle: content.detailText,
-            accessorySymbolName: accessorySymbolName
+            accessorySymbolName: accessorySymbolName ?? (entityHasControlScreen ? "chevron.forward" : nil)
         )
     }
 
@@ -144,35 +155,29 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
 
     private func displayContent() -> DisplayContent {
         var displayText = entity.attributes.friendlyName ?? entity.entityId
-        var iconColor = entity.carPlayIconColor()
-        var image = entity.getMDI().carPlayIcon(color: iconColor)
+        let componentIcons = Current.entityComponentIcons().iconsMap(for: serverId)
 
+        let customIconColor = (magicItem?.customization?.customIconColor).map { UIColor(hex: $0) }
+        let iconColor = entity.stateIconColor(customColor: customIconColor)
+
+        var icon = entity.getMDI(componentIcons: componentIcons)
         if let magicItem, let magicItemInfo {
             displayText = magicItem.name(info: magicItemInfo)
 
-            // Check if user has customized the icon color
-            let customIconColor: UIColor? = {
-                if let iconColorString = magicItem.customization?.iconColor {
-                    return UIColor(hex: iconColorString)
-                }
-                return nil
-            }()
-
             let userHasCustomizedIcon = magicItem.customization?.iconIsCustomized == true
             if !entityHasDynamicIcon || userHasCustomizedIcon {
-                // Use the configured icon, respecting any explicit user customization
-                iconColor = customIconColor ?? .haPrimary
-                image = magicItem.icon(info: magicItemInfo).carPlayIcon(color: iconColor)
-            } else {
-                // Dynamic entity icons should reflect the live server-provided color,
-                // matching the main entities/controls views instead of saved quick-access tint.
-                iconColor = entity.carPlayIconColor()
-                image = entity.getMDI().carPlayIcon(color: iconColor)
+                // Use the configured icon, respecting any explicit user customization.
+                icon = magicItem.icon(info: magicItemInfo)
             }
         }
+        let image = icon.carPlayIcon(color: iconColor)
 
         var detailText: String?
-        if !entityHasIrrelevantState {
+        if entityHasIrrelevantState {
+            // No state worth showing, but where the item lives still is: keep the area on its own
+            // rather than dropping the line entirely.
+            detailText = area
+        } else {
             var renderedDetailText = getContextualStateDescription()
             if let area, !renderedDetailText.isEmpty {
                 renderedDetailText += Self.detailTextSeparator + area
@@ -195,7 +200,7 @@ final class CarPlayEntityListItem: CarPlayListItemProvider {
     /// Returns a context-aware state description based on entity domain and device class
     private func getContextualStateDescription() -> String {
         if let domain = Domain(entityId: entity.entityId) {
-            return domain.contextualStateDescription(for: entity)
+            return domain.contextualStateDescription(for: entity, serverId: serverId)
         }
 
         let baseState = entity.localizedState.leadingCapitalized

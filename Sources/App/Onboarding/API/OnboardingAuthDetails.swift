@@ -21,10 +21,6 @@ class OnboardingAuthDetails: Equatable {
             clientID = "https://home-assistant.io/iOS/dev-auth"
             redirectURI = "homeassistant-dev://auth-callback"
             scheme = "homeassistant-dev"
-        } else if Current.appConfiguration == .beta {
-            clientID = "https://home-assistant.io/iOS/beta-auth"
-            redirectURI = "homeassistant-beta://auth-callback"
-            scheme = "homeassistant-beta"
         } else {
             clientID = "https://home-assistant.io/iOS"
             redirectURI = "homeassistant://auth-callback"

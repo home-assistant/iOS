@@ -4,8 +4,7 @@ import PromiseKit
 import Shared
 import SwiftUI
 
-@available(iOS 16.4, *)
-final class SceneAppIntent: AppIntent {
+final class SceneAppIntent: AppIntent, @unchecked Sendable {
     static let title: LocalizedStringResource = .init("widgets.scene.activate.title", defaultValue: "Activate scene")
 
     @Parameter(title: LocalizedStringResource("app_intents.scenes.parameter.scene.title", defaultValue: "Scene"))
@@ -33,8 +32,8 @@ final class SceneAppIntent: AppIntent {
     )
     var hapticConfirmation: Bool
 
-    func perform() async throws -> some IntentResult & ReturnsValue<Bool> {
-        await Current.connectivity.syncNetworkInformation()
+    func perform() async throws -> some IntentResult & ReturnsValue<Bool> & ProvidesDialog {
+        await Current.connectivity.refreshNetworkInformation()
         if hapticConfirmation {
             AppIntentHaptics.notify()
         }
@@ -74,6 +73,9 @@ final class SceneAppIntent: AppIntent {
 
         DataWidgetsUpdater.update()
 
-        return .result(value: success)
+        let dialog = success
+            ? L10n.AppIntents.Scenes.SuccessMessage.content(scene.displayString)
+            : L10n.AppIntents.Scenes.FailureMessage.content(scene.displayString)
+        return .result(value: success, dialog: .init(stringLiteral: dialog))
     }
 }

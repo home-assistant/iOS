@@ -21,6 +21,7 @@
             "alert": {
                 "body": "test"
             },
+            "mutable-content": true,
             "category": "CUSTOM_CATEGORY",
             "sound": "default"
         }

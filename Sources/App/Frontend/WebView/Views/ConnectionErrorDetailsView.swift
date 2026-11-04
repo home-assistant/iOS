@@ -4,7 +4,7 @@ import SwiftUI
 
 struct ConnectionErrorDetailsView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var exportLogsArchiveURL: URL?
+    @State private var logsShare: ShareWrapper?
     @StateObject private var connectivityState = ConnectivityCheckState()
 
     private let feedbackGenerator = UINotificationFeedbackGenerator()
@@ -36,14 +36,7 @@ struct ConnectionErrorDetailsView: View {
                     }
                 }
             }
-            .sheet(isPresented: Binding(
-                get: { exportLogsArchiveURL != nil },
-                set: { if !$0 { exportLogsArchiveURL = nil } }
-            ), content: {
-                if let archiveURL = exportLogsArchiveURL {
-                    ShareActivityView(activityItems: [archiveURL])
-                }
-            })
+            .shareSheet(item: $logsShare)
         }
         .navigationViewStyle(.stack)
     }
@@ -134,7 +127,7 @@ struct ConnectionErrorDetailsView: View {
     private var cloudStatusView: some View {
         if let server, server.info.connection.canUseCloud,
            let cloudText = try? AttributedString(
-               markdown: L10n.Connection.Error.FailedConnect.Cloud.title
+               markdown: L10n.Connection.Error.FailedConnect.CloudLink.title(AppConstants.homeAssistantLinkName)
            ) {
             if server.info.connection.useCloud {
                 Text(cloudText)
@@ -142,9 +135,12 @@ struct ConnectionErrorDetailsView: View {
                     .foregroundStyle(.secondary)
             } else {
                 // Alert user when it has deactivated cloud usage in the App
-                Text(verbatim: L10n.Connection.Error.FailedConnect.CloudInactive.title)
-                    .font(.callout)
-                    .foregroundStyle(.secondary)
+                Text(
+                    verbatim: L10n.Connection.Error.FailedConnect.CloudInactiveLink
+                        .title(AppConstants.homeAssistantLinkName)
+                )
+                .font(.callout)
+                .foregroundStyle(.secondary)
             }
         }
     }
@@ -155,7 +151,7 @@ struct ConnectionErrorDetailsView: View {
                 .font(.callout.bold())
         } expandedContent: {
             VStack(alignment: .leading, spacing: DesignSystem.Spaces.three) {
-                advancedContent
+                errorDetailsContent
                 troubleShootingView
             }
         }
@@ -176,7 +172,7 @@ struct ConnectionErrorDetailsView: View {
     }
 
     @ViewBuilder
-    private var advancedContent: some View {
+    private var errorDetailsContent: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spaces.two) {
             makeRow(title: L10n.Connection.Error.Details.Label.description, body: error.localizedDescription)
             makeRow(title: L10n.Connection.Error.Details.Label.domain, body: (error as NSError).domain)
@@ -233,7 +229,7 @@ struct ConnectionErrorDetailsView: View {
     }
 
     private func openSettings() {
-        Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise).done { controller in
+        Current.sceneManager.webViewControllerPromise.done { controller in
             controller.showSettingsViewController()
         }
     }
@@ -287,7 +283,7 @@ struct ConnectionErrorDetailsView: View {
             if Current.isCatalyst, let logsURL = Current.Log.archiveURL() {
                 URLOpener.shared.open(logsURL, options: [:], completionHandler: nil)
             } else if let logsURL = Current.Log.archiveURL() {
-                exportLogsArchiveURL = logsURL
+                logsShare = ShareWrapper(url: logsURL)
                 feedbackGenerator.notificationOccurred(.success)
             }
         }

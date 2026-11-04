@@ -1,9 +1,56 @@
 import PromiseKit
 @testable import Shared
-import Version
+import SharedTesting
 import XCTest
 
 class DeviceSensorTests: XCTestCase {
+    /// Enablement is per server, so the device-level observation these cover only starts while
+    /// there is a server to report to.
+    private var previousServers: ServerManager!
+    private var previousSensors: SensorContainer!
+    private var previousDevice: DeviceWrapper!
+    /// Enablement lives in the app group defaults, which other test processes on the simulator
+    /// reset while this class runs.
+    private var settingsStore: PrivateSettingsStore!
+
+    override func setUp() {
+        super.setUp()
+
+        settingsStore = PrivateSettingsStore()
+        previousServers = Current.servers
+        previousSensors = Current.sensors
+        previousDevice = Current.device
+        let servers = FakeServerManager()
+        servers.addFake()
+        Current.servers = servers
+        // The signaler starts observing once the container has produced a display sensor a server
+        // wants, so the container is this class's own rather than whatever an earlier one left.
+        let sensors = SensorContainer()
+        sensors.register(provider: DisplaySensor.self)
+        Current.sensors = sensors
+        Current.device = DeviceWrapper()
+        // Stated rather than inherited: the observation only runs while a server wants the sensor,
+        // and what an earlier test left in the shared selection is not this test's premise.
+        SensorEnablementStore.resetForTesting()
+        Current.sensors.setEnabledForAllServers(true, forUniqueIDs: [
+            WebhookSensorId.displaysCount.rawValue,
+            WebhookSensorId.primaryDisplayName.rawValue,
+            WebhookSensorId.primaryDisplayId.rawValue,
+        ])
+    }
+
+    override func tearDown() {
+        Current.device = previousDevice
+        Current.sensors = previousSensors
+        Current.servers = previousServers
+        previousDevice = nil
+        previousSensors = nil
+        previousServers = nil
+        settingsStore?.restore()
+        settingsStore = nil
+        super.tearDown()
+    }
+
     private var request: SensorProviderRequest = .init(
         reason: .trigger("unit-test"),
         dependencies: .init(),
@@ -48,15 +95,17 @@ class DeviceSensorTests: XCTestCase {
             expectation1.fulfill()
         }
 
-        await fulfillment(of: [expectation1], timeout: 2)
+        await fulfillment(of: [expectation1], timeout: 10)
 
         NotificationCenter.default.post(name: DisplaySensorUpdateSignaler.notificationName, object: nil)
 
-        await fulfillment(of: [expectation2], timeout: 2)
+        await fulfillment(of: [expectation2], timeout: 10)
     }
 
     func testUpdateSignalerCreated() throws {
-        Current.device.batteries = { [DeviceBattery(level: 100, state: .unplugged, attributes: [:])] }
+        // Stated rather than left behind by `testSignaler`: without screens the sensor is
+        // unsupported and never gets as far as creating its signaler.
+        Current.device.screens = { [] }
 
         let dependencies = SensorProviderDependencies()
         let provider = DisplaySensor(request: .init(

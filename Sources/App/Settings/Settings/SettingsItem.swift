@@ -1,3 +1,4 @@
+import SFSafeSymbols
 import Shared
 import SwiftUI
 
@@ -5,85 +6,113 @@ enum SettingsItem: String, Hashable, CaseIterable {
     case servers
     case general
     case gestures
+    case greetings
     case kiosk
     case location
+    case remindersSync
+    case voiceToolsServer
     case notifications
     case liveActivities
     case sensors
     case nfc
+    case macToolbar
     case widgets
     case appIconShortcuts
+    case siri
     case watch
     case carPlay
     case complications
     case help
+    case permissions
     case privacy
     case debugging
+    case appLabs
     case whatsNew
 
     var title: String {
         switch self {
         case .servers: return L10n.Settings.ConnectionSection.servers
         case .general: return L10n.SettingsDetails.General.title
+        case .macToolbar: return L10n.Settings.MacToolbar.title
         case .gestures: return L10n.Gestures.Screen.title
+        case .greetings: return L10n.Settings.Greetings.title
         case .kiosk: return L10n.Kiosk.title
         case .location: return L10n.Settings.DetailsSection.LocationSettingsRow.title
+        case .remindersSync: return L10n.Settings.RemindersSync.title
+        case .voiceToolsServer: return L10n.Settings.VoiceToolsServer.title
         case .notifications: return L10n.Settings.DetailsSection.NotificationSettingsRow.title
         case .liveActivities: return L10n.LiveActivity.title
         case .sensors: return L10n.SettingsSensors.title
         case .nfc: return L10n.Tags.title
         case .widgets: return L10n.Settings.Widgets.title
         case .appIconShortcuts: return L10n.Settings.AppIconShortcuts.title
+        case .siri: return L10n.Settings.Siri.title
         case .watch: return L10n.Settings.DetailsSection.WatchRowConfiguration.title
         case .carPlay: return "CarPlay"
         case .complications: return L10n.Settings.DetailsSection.WatchRowComplications.title
         case .help: return L10n.helpLabel
+        case .permissions: return L10n.SettingsSensors.Permissions.header
         case .privacy: return L10n.SettingsDetails.Privacy.title
         case .debugging: return L10n.Settings.Debugging.title
+        case .appLabs: return L10n.Settings.AppLabs.title
         case .whatsNew: return L10n.Settings.WhatsNew.title
         }
     }
 
+    /// Explanatory text shown under the title in the settings list, for entries whose
+    /// title alone does not convey what they are.
+    var subtitle: String? {
+        switch self {
+        case .appLabs: return L10n.Settings.AppLabs.SettingsRow.subtitle
+        default: return nil
+        }
+    }
+
+    static let iconSize: CGFloat = 24
+
+    var materialIcon: MaterialDesignIcons {
+        switch self {
+        case .servers: return .serverIcon
+        case .general: return .paletteOutlineIcon
+        case .macToolbar: return .dockWindowIcon
+        case .gestures: return .gestureIcon
+        case .greetings: return .airplaneIcon
+        case .kiosk: return .tabletDashboardIcon
+        case .location: return .crosshairsGpsIcon
+        case .remindersSync: return .formatListChecksIcon
+        case .voiceToolsServer: return .accountVoiceIcon
+        case .notifications: return .bellOutlineIcon
+        case .liveActivities: return .playBoxOutlineIcon
+        case .sensors: return .formatListBulletedIcon
+        case .nfc: return .nfcVariantIcon
+        case .widgets: return .widgetsIcon
+        case .appIconShortcuts: return .applicationIcon
+        case .siri: return .microphoneMessageIcon
+        case .watch: return .watchVariantIcon
+        case .carPlay: return .carBackIcon
+        case .complications: return .chartDonutIcon
+        case .help: return .helpCircleOutlineIcon
+        case .permissions: return .shieldKeyOutlineIcon
+        case .privacy: return .lockOutlineIcon
+        case .debugging: return .bugIcon
+        case .appLabs: return .flaskOutlineIcon
+        case .whatsNew: return .starIcon
+        }
+    }
+
     var icon: some View {
-        Group {
-            switch self {
-            case .servers:
-                MaterialDesignIconsImage(icon: .serverIcon, size: 24)
-            case .general:
-                MaterialDesignIconsImage(icon: .paletteOutlineIcon, size: 24)
-            case .gestures:
-                MaterialDesignIconsImage(icon: .gestureIcon, size: 24)
-            case .kiosk:
-                MaterialDesignIconsImage(icon: .tabletIcon, size: 24)
-            case .location:
-                MaterialDesignIconsImage(icon: .crosshairsGpsIcon, size: 24)
-            case .notifications:
-                MaterialDesignIconsImage(icon: .bellOutlineIcon, size: 24)
-            case .liveActivities:
-                MaterialDesignIconsImage(icon: .playBoxOutlineIcon, size: 24)
-            case .sensors:
-                MaterialDesignIconsImage(icon: .formatListBulletedIcon, size: 24)
-            case .nfc:
-                MaterialDesignIconsImage(icon: .nfcVariantIcon, size: 24)
-            case .widgets:
-                MaterialDesignIconsImage(icon: .widgetsIcon, size: 24)
-            case .appIconShortcuts:
-                MaterialDesignIconsImage(icon: .applicationIcon, size: 24)
-            case .watch:
-                MaterialDesignIconsImage(icon: .watchVariantIcon, size: 24)
-            case .carPlay:
-                MaterialDesignIconsImage(icon: .carBackIcon, size: 24)
-            case .complications:
-                MaterialDesignIconsImage(icon: .chartDonutIcon, size: 24)
-            case .help:
-                MaterialDesignIconsImage(icon: .helpCircleOutlineIcon, size: 24)
-            case .privacy:
-                MaterialDesignIconsImage(icon: .lockOutlineIcon, size: 24)
-            case .debugging:
-                MaterialDesignIconsImage(icon: .bugIcon, size: 24)
-            case .whatsNew:
-                MaterialDesignIconsImage(icon: .starIcon, size: 24)
-            }
+        icon(size: Self.iconSize)
+    }
+
+    @ViewBuilder
+    func icon(size: CGFloat) -> some View {
+        if self == .siri, #available(iOS 26.0, *) {
+            Image(systemSymbol: SFSymbol(rawValue: "siri"))
+                .resizable()
+                .scaledToFit()
+                .frame(width: size, height: size)
+        } else {
+            MaterialDesignIconsImage(icon: materialIcon, size: size)
         }
     }
 
@@ -103,12 +132,20 @@ enum SettingsItem: String, Hashable, CaseIterable {
             SettingsServersView()
         case .general:
             GeneralSettingsView()
+        case .macToolbar:
+            MacToolbarSettingsView()
         case .gestures:
             GesturesSetupView()
+        case .greetings:
+            GreetingsSettingsView()
         case .kiosk:
             KioskSettingsView()
         case .location:
             LocationSettingsView()
+        case .remindersSync:
+            RemindersSyncSettingsView()
+        case .voiceToolsServer:
+            VoiceToolsServerSettingsView()
         case .notifications:
             SettingsNotificationsView()
         case .liveActivities:
@@ -127,91 +164,204 @@ enum SettingsItem: String, Hashable, CaseIterable {
             CustomWidgetsListView()
         case .appIconShortcuts:
             AppIconShortcutsConfigurationView()
+        case .siri:
+            SiriSettingsView()
         case .watch:
             WatchConfigurationView()
-                .environment(\.colorScheme, .dark)
         case .carPlay:
-            CarPlayConfigurationView(needsNavigationController: false)
+            CarPlayConfigurationView()
         case .complications:
             SettingsComplicationsView()
         case .help:
             EmptyView()
+        case .permissions:
+            SensorPermissionsView()
         case .privacy:
             PrivacyView()
         case .debugging:
             DebugView()
+        case .appLabs:
+            AppLabsView()
         case .whatsNew:
             EmptyView()
         }
     }
 
-    static var allVisibleCases: [SettingsItem] {
-        allCases.filter { item in
-            // Filter based on platform
-            #if targetEnvironment(macCatalyst)
-            if item == .servers || item == .gestures || item == .kiosk || item == .watch || item == .carPlay ||
-                item == .appIconShortcuts ||
-                item == .complications || item == .nfc || item == .help ||
-                item == .whatsNew {
-                return false
-            }
-            #endif
-            // Live Activities are shown in DebugView
-            if item == .liveActivities {
-                return false
-            }
+    var isVisible: Bool {
+        // Filter based on platform
+        #if targetEnvironment(macCatalyst)
+        // Kiosk mode is unsupported on macOS.
+        let hiddenItems: [SettingsItem] = [
+            .servers,
+            .gestures,
+            .kiosk,
+            .watch,
+            .carPlay,
+            .appIconShortcuts,
+            .complications,
+            .nfc,
+            .help,
+            .whatsNew,
+            // Sandboxed Catalyst builds lack the calendars entitlement EventKit needs.
+            .remindersSync,
+        ]
+
+        if hiddenItems.contains(self) {
+            return false
+        }
+        #endif
+
+        switch self {
+        case .liveActivities:
+            return Self.canShowLiveActivities
+        case .macToolbar:
+            // Managing toolbar entities only makes sense on macOS, where the toolbar exists.
+            return Current.isCatalyst
+        case .watch, .complications:
+            return Self.isWatchAvailable
+        case .carPlay:
+            return UIDevice.current.userInterfaceIdiom == .phone
+        case .appLabs:
+            // App Labs is limited to TestFlight builds while its features mature.
+            return AppLabsFeature.isLabsAvailable
+        default:
             return true
         }
     }
 
-    static var generalItems: [SettingsItem] {
-        [.general, .gestures, .location, .notifications, .kiosk]
+    /// Localized synonyms used by the settings search index, in addition to the item title.
+    var searchKeywords: [String] {
+        guard let keywords = localizedSearchKeywords else { return [] }
+        return keywords
+            .components(separatedBy: ",")
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { !$0.isEmpty }
     }
 
-    static var integrationItems: [SettingsItem] {
-        [.sensors, .nfc, .widgets, .appIconShortcuts]
+    private var localizedSearchKeywords: String? {
+        switch self {
+        case .servers: return L10n.Settings.SearchKeywords.servers
+        case .general: return L10n.Settings.SearchKeywords.general
+        case .macToolbar: return L10n.Settings.SearchKeywords.macToolbar
+        case .gestures: return L10n.Settings.SearchKeywords.gestures
+        case .greetings: return L10n.Settings.SearchKeywords.greetings
+        case .kiosk: return L10n.Settings.SearchKeywords.kiosk
+        case .location: return L10n.Settings.SearchKeywords.location
+        case .remindersSync: return L10n.Settings.SearchKeywords.remindersSync
+        case .voiceToolsServer: return L10n.Settings.SearchKeywords.voiceToolsServer
+        case .notifications: return L10n.Settings.SearchKeywords.notifications
+        case .liveActivities: return L10n.Settings.SearchKeywords.liveActivities
+        case .sensors: return L10n.Settings.SearchKeywords.sensors
+        case .nfc: return L10n.Settings.SearchKeywords.nfc
+        case .widgets: return L10n.Settings.SearchKeywords.widgets
+        case .appIconShortcuts: return L10n.Settings.SearchKeywords.appIconShortcuts
+        case .siri: return L10n.Settings.SearchKeywords.siri
+        case .watch: return L10n.Settings.SearchKeywords.watch
+        case .carPlay: return L10n.Settings.SearchKeywords.carPlay
+        case .complications: return L10n.Settings.SearchKeywords.complications
+        case .help: return L10n.Settings.SearchKeywords.help
+        case .permissions: return L10n.Settings.SearchKeywords.permissions
+        case .privacy: return L10n.Settings.SearchKeywords.privacy
+        case .debugging: return L10n.Settings.SearchKeywords.debugging
+        case .appLabs: return L10n.Settings.SearchKeywords.appLabs
+        case .whatsNew: return nil
+        }
     }
 
-    static var watchItems: [SettingsItem] {
-        [.watch, .complications]
+    /// Searchable rows provided by the destination screen, so screen content is
+    /// indexed by the root settings search.
+    var contentSearchEntries: [SettingsSearchEntry] {
+        switch self {
+        case .servers: return SettingsServersView.settingsSearchEntries
+        case .general: return GeneralSettingsView.settingsSearchEntries
+        case .macToolbar: return MacToolbarSettingsView.settingsSearchEntries
+        case .gestures: return GesturesSetupView.settingsSearchEntries
+        case .greetings: return GreetingsSettingsView.settingsSearchEntries
+        case .kiosk: return KioskSettingsView.settingsSearchEntries
+        case .location: return LocationSettingsView.settingsSearchEntries
+        case .remindersSync: return RemindersSyncSettingsView.settingsSearchEntries
+        case .voiceToolsServer: return VoiceToolsServerSettingsView.settingsSearchEntries
+        case .notifications: return NotificationSettingsView.settingsSearchEntries
+        case .liveActivities:
+            #if os(iOS) && !targetEnvironment(macCatalyst)
+            if #available(iOS 17.2, *) {
+                return LiveActivitySettingsView.settingsSearchEntries
+            }
+            return []
+            #else
+            return []
+            #endif
+        case .sensors: return SensorListView.settingsSearchEntries
+        case .nfc: return TagsView.settingsSearchEntries
+        case .widgets: return CustomWidgetsListView.settingsSearchEntries
+        case .appIconShortcuts: return AppIconShortcutsConfigurationView.settingsSearchEntries
+        case .siri: return SiriSettingsView.settingsSearchEntries
+        case .watch: return WatchConfigurationView.settingsSearchEntries
+        case .carPlay: return CarPlayConfigurationView.settingsSearchEntries
+        case .complications: return ComplicationsRootView.settingsSearchEntries
+        case .permissions: return SensorPermissionsView.settingsSearchEntries
+        case .privacy: return PrivacyView.settingsSearchEntries
+        case .debugging: return DebugView.settingsSearchEntries
+        case .appLabs: return AppLabsView.settingsSearchEntries
+        case .help, .whatsNew: return []
+        }
     }
 
-    static var carPlayItems: [SettingsItem] {
-        [.carPlay]
+    /// The destination screen rows matching the given query, surfaced as the
+    /// subtitle of this item in search results.
+    func contentMatches(searchQuery: String) -> [SettingsSearchEntry] {
+        let query = searchQuery.trimmingCharacters(in: .whitespaces)
+        guard !query.isEmpty else { return [] }
+        return contentSearchEntries.filter { $0.matches(searchQuery: query) }
     }
 
-    static var helpItems: [SettingsItem] {
-        [.help, .privacy, .debugging]
+    /// A short listing of matched screen rows, shown as the row subtitle in
+    /// search results, or nil when the query matches no screen content.
+    func contentMatchesSubtitle(searchQuery: String) -> String? {
+        let matched = contentMatches(searchQuery: searchQuery)
+        guard !matched.isEmpty else { return nil }
+        return matched.prefix(3).map(\.title).joined(separator: ", ")
     }
-}
 
-// MARK: - Material Design Icons Image
+    func matches(searchQuery: String) -> Bool {
+        let query = searchQuery.trimmingCharacters(in: .whitespaces)
+        guard !query.isEmpty else { return true }
+        if title.localizedStandardContains(query) {
+            return true
+        }
+        if searchKeywords.contains(where: { $0.localizedStandardContains(query) }) {
+            return true
+        }
+        return !contentMatches(searchQuery: query).isEmpty
+    }
 
-struct MaterialDesignIconsImage: View {
-    let icon: MaterialDesignIcons
-    let size: CGFloat
+    private static var isWatchAvailable: Bool {
+        guard UIDevice.current.userInterfaceIdiom == .phone else { return false }
+        if Current.isDebug {
+            return true
+        } else if case .paired = Communicator.shared.lastKnownWatchState {
+            // The cached state, not `currentWatchState`: `isVisible` runs on the main thread for
+            // every settings list evaluation, and the live getters synchronously wait on WCSession's
+            // internal operation queue, which can stall while the session is busy.
+            return true
+        }
+        return false
+    }
 
-    var body: some View {
-        Image(uiImage: icon.image(ofSize: CGSize(width: size, height: size), color: .label))
-            .renderingMode(.template)
+    private static var canShowLiveActivities: Bool {
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        if #available(iOS 17.2, *) {
+            return true
+        } else {
+            return false
+        }
+        #else
+        return false
+        #endif
     }
 }
 
 // MARK: - Wrapper Views for UIKit Controllers
-
-struct SettingsServersView: View {
-    var body: some View {
-        List {
-            Section(
-                header: Text(L10n.Settings.ConnectionSection.serversHeader),
-                footer: Text(L10n.Settings.ConnectionSection.serversFooter)
-            ) {
-                ServersListView()
-            }
-        }
-        .navigationTitle(L10n.Settings.ConnectionSection.servers)
-    }
-}
 
 struct SettingsNotificationsView: View {
     var body: some View {
@@ -221,7 +371,7 @@ struct SettingsNotificationsView: View {
 
 struct SettingsComplicationsView: View {
     var body: some View {
-        ComplicationListView()
+        ComplicationsRootView()
             .navigationTitle(L10n.Settings.DetailsSection.WatchRowComplications.title)
     }
 }

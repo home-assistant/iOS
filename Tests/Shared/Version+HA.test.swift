@@ -1,6 +1,5 @@
 import Foundation
 @testable import Shared
-import Version
 import XCTest
 
 class VersionHATests: XCTestCase {

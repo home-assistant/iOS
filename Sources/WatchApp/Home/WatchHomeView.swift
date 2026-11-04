@@ -1,0 +1,612 @@
+import SFSafeSymbols
+import Shared
+import SwiftUI
+
+struct WatchHomeView: View {
+    @Environment(\.scenePhase) private var scenePhase
+    @StateObject private var viewModel: WatchHomeViewModel
+    /// When false, the view skips the network/database refresh on appear. Used by previews to render
+    /// injected sample data.
+    private let autoLoad: Bool
+    /// The Assist session on screen, if any: the toolbar button and the complication run the
+    /// configured pipeline, while Assist items run their own (see `WatchAssistItemRow`).
+    @State private var assistPresentation: WatchAssistPresentation?
+    @State private var showSettings = false
+    @State private var isEditing = false
+    /// The stack's path. Rows push by appending through the `watchNavigate` environment action —
+    /// see `WatchNavigateAction` for why links aren't used.
+    @State private var navigationPath: [WatchHomeNavigation] = []
+    @State private var activeSheet: HomeSheet?
+    @State private var iPhoneNotReachable = false
+    @State private var reachabilityToken: HAWatchConnectivity.ObservationToken?
+    /// Latched copy of the sync error so the alert stays up until the user acts. The view model's
+    /// `showError` gets cleared by later syncs (`clearError()`/`loadCache`), which would otherwise
+    /// auto-dismiss the alert and make it flash by.
+    @State private var latchedSyncError: String?
+
+    init(viewModel: WatchHomeViewModel = WatchHomeViewModel(), autoLoad: Bool = true) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+        self.autoLoad = autoLoad
+    }
+
+    /// Identifiable wrapper so a `MagicItem` can drive a `.sheet(item:)`.
+    struct EditableItem: Identifiable {
+        let id: String
+        let item: MagicItem
+    }
+
+    /// A single sheet enum avoids stacking multiple `.sheet` modifiers on one view, which is
+    /// unreliable on older watchOS.
+    enum HomeSheet: Identifiable {
+        case add
+        case edit(EditableItem)
+
+        var id: String {
+            switch self {
+            case .add: return "__add__"
+            case let .edit(editable): return editable.id
+            }
+        }
+    }
+
+    var body: some View {
+        // Standard path-driven navigation: every pushable screen (folders, a light's controls) is
+        // registered once here at the root, and rows push by appending to the path through the
+        // `watchNavigate` environment action. The home and folder screens hide the navigation bar
+        // themselves, so visually nothing changes at the root; the entity screens keep the system
+        // bar, and ask for it explicitly with `watchNativeNavigationBar()` — before watchOS 26 they
+        // would otherwise inherit the bar this root hides and be left with no back button at all.
+        NavigationStack(path: $navigationPath) {
+            content
+                .navigationDestination(for: WatchHomeNavigation.self) { destination in
+                    switch destination {
+                    case let .folder(folderId):
+                        WatchFolderContentView(folderId: folderId, viewModel: viewModel)
+                    case let .lightControls(item):
+                        WatchLightControlsView(item: item, itemInfo: viewModel.info(for: item))
+                    case let .coverControls(item):
+                        WatchCoverControlsView(item: item, itemInfo: viewModel.info(for: item))
+                    case let .fanControls(item):
+                        WatchFanControlsView(item: item, itemInfo: viewModel.info(for: item))
+                    case let .lockControls(item):
+                        WatchLockControlsView(item: item, itemInfo: viewModel.info(for: item))
+                    case let .climateControls(item):
+                        WatchClimateControlView(item: item, itemInfo: viewModel.info(for: item))
+                    case let .vacuumControls(item):
+                        WatchVacuumControlsView(item: item, itemInfo: viewModel.info(for: item))
+                    case let .areasServerPicker(serverIds):
+                        WatchAreasServerPickerView(serverIds: serverIds)
+                    case let .areasList(serverId):
+                        WatchAreasListView(serverId: serverId)
+                    case let .areaEntities(areaId, serverId):
+                        WatchAreaEntitiesView(areaId: areaId, serverId: serverId)
+                    case let .deviceEntities(deviceId, serverId, name):
+                        WatchDeviceEntitiesView(deviceId: deviceId, serverId: serverId, name: name)
+                    }
+                }
+        }
+        .environment(\.watchNavigate, WatchNavigateAction { destination in
+            navigationPath.append(destination)
+        })
+        .environment(\.watchPresentAssist, WatchPresentAssistAction { presentation in
+            assistPresentation = presentation
+        })
+        ._statusBarHidden(true)
+        .onReceive(NotificationCenter.default.publisher(for: AssistDefaultComplication.launchNotification)) { _ in
+            presentConfiguredAssist()
+        }
+        // The Assist complication opens the app via a `homeassistant://assist` widget URL. Depending on
+        // launch state watchOS delivers this either as an opened URL or as a browsing-web user activity.
+        .onOpenURL { url in
+            if isAssistDeepLink(url) { presentConfiguredAssist() }
+        }
+        .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { activity in
+            if isAssistDeepLink(activity.webpageURL) { presentConfiguredAssist() }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .watchConfigDidChange)) { _ in
+            viewModel.loadCache()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: WatchSettingsLaunch.launchNotification)) { _ in
+            WatchSettingsLaunch.pendingLaunch = false
+            showSettings = true
+        }
+        .onReceive(NotificationCenter.default.publisher(for: WatchAssistLaunch.launchNotification)) { _ in
+            guard let presentation = WatchAssistLaunch.pendingPresentation else { return }
+            WatchAssistLaunch.pendingPresentation = nil
+            assistPresentation = presentation
+        }
+        .fullScreenCover(item: $assistPresentation, content: { presentation in
+            switch presentation {
+            case let .session(serverId, pipelineId, prompt):
+                WatchAssistView.build(
+                    serverId: serverId,
+                    pipelineId: pipelineId,
+                    prompt: prompt
+                )
+            case .unconfigured:
+                // Assist isn't configured yet (e.g. cold launch before the config synced). Surface a
+                // message instead of crashing; the user can retry once configuration is available.
+                Text(verbatim: L10n.Watch.Assist.LackConfig.Error.title)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding()
+            }
+        })
+        .sheet(isPresented: $showSettings) {
+            WatchSettingsView()
+        }
+        .onChange(of: showSettings) { isPresented in
+            if !isPresented {
+                viewModel.loadCache()
+            }
+        }
+        .alert(
+            Text(verbatim: L10n.Watch.Config.Conflict.title),
+            isPresented: Binding(
+                get: { viewModel.pendingConflict != nil },
+                set: { if !$0 { viewModel.pendingConflict = nil } }
+            )
+        ) {
+            Button(L10n.Watch.Config.Conflict.keepWatch) {
+                viewModel.resolveConflictKeepingWatch()
+            }
+            Button(L10n.Watch.Config.Conflict.useIphone) {
+                viewModel.resolveConflictUsingiPhone()
+            }
+        } message: {
+            Text(verbatim: L10n.Watch.Config.Conflict.message)
+        }
+        // Sync failures are shown as a full-screen alert (not a fleeting banner) so the reason is
+        // actually readable, with a one-tap retry. The message is latched into local state so the alert
+        // only dismisses on a button tap — not when a later sync clears the view model's `showError`.
+        .onChange(of: viewModel.showError) { show in
+            if show, !viewModel.errorMessage.isEmpty {
+                latchedSyncError = viewModel.errorMessage
+            }
+        }
+        .alert(
+            Text(verbatim: L10n.Watch.Sync.Error.title),
+            isPresented: Binding(
+                get: { latchedSyncError != nil },
+                set: { if !$0 { latchedSyncError = nil; viewModel.showError = false } }
+            )
+        ) {
+            Button(L10n.Watch.Sync.retry) {
+                latchedSyncError = nil
+                viewModel.showError = false
+                viewModel.requestConfig(userInitiated: true)
+            }
+            Button(role: .cancel) {
+                latchedSyncError = nil
+                viewModel.showError = false
+            } label: { Text(verbatim: L10n.okLabel) }
+        } message: {
+            Text(verbatim: latchedSyncError ?? viewModel.errorMessage)
+        }
+        // Explicit reload while the iPhone isn't reachable: explain why (the data still refreshes in the
+        // background once the phone is reachable).
+        .alert(
+            Text(verbatim: L10n.Watch.Sync.NotReachable.title),
+            isPresented: $viewModel.showNotReachableAlert
+        ) {
+            Button(role: .cancel) {} label: { Text(verbatim: L10n.okLabel) }
+        } message: {
+            Text(verbatim: L10n.Watch.Sync.NotReachable.message)
+        }
+        .onAppear {
+            // Consume a launch requested from the complication before this view existed (cold launch).
+            if AssistDefaultComplication.pendingLaunch {
+                AssistDefaultComplication.pendingLaunch = false
+                presentConfiguredAssist()
+            }
+            // Same for the App Intents that open the app: settings, and a specific Assist pipeline.
+            if WatchSettingsLaunch.pendingLaunch {
+                WatchSettingsLaunch.pendingLaunch = false
+                showSettings = true
+            }
+            if let presentation = WatchAssistLaunch.pendingPresentation {
+                WatchAssistLaunch.pendingPresentation = nil
+                assistPresentation = presentation
+            }
+            updateIPhoneReachability(Communicator.shared.currentReachability)
+            startReachabilityObservation()
+            Communicator.shared.refreshConnectivityState()
+            guard autoLoad else { return }
+            // Cache-first: render the last-known configuration from GRDB before anything
+            // asynchronous, so a cold open never waits on network state or the sync.
+            viewModel.initialRoutine()
+        }
+        .onDisappear {
+            stopReachabilityObservation()
+        }
+        .onChange(of: scenePhase) { newValue in
+            switch newValue {
+            case .active:
+                Communicator.shared.refreshConnectivityState()
+            case .background:
+                break
+            case .inactive:
+                break
+            @unknown default:
+                break
+            }
+        }
+    }
+
+    private func startReachabilityObservation() {
+        guard reachabilityToken == nil else { return }
+        reachabilityToken = Communicator.shared.reachability.observe { reachability in
+            updateIPhoneReachability(reachability)
+            // On a cold launch WCSession often reports the phone unreachable until activation
+            // finishes, which skips the automatic sync. With an empty database (no config row —
+            // not merely a config without items) there is nothing cached to show, so retry the
+            // sync as soon as the phone becomes reachable.
+            if reachability == .immediatelyReachable, !viewModel.hasCachedConfig {
+                Task { @MainActor in viewModel.requestConfig() }
+            }
+        }
+    }
+
+    private func stopReachabilityObservation() {
+        guard let reachabilityToken else { return }
+        Communicator.shared.reachability.unobserve(reachabilityToken)
+        self.reachabilityToken = nil
+    }
+
+    private func updateIPhoneReachability(_ reachability: HAWatchConnectivity.Reachability) {
+        withAnimation(.easeInOut(duration: 0.2)) {
+            // The header's iPhone-with-a-slash icon is a developer option, off by default —
+            // magic items run over the watch's own networking, so an unreachable iPhone is
+            // not worth alarming users about.
+            iPhoneNotReachable = WatchUserDefaults.shared.showIPhoneUnreachableIcon
+                && reachability == .notReachable
+        }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        List {
+            WatchHomeHeaderView(
+                viewModel: viewModel,
+                isEditing: $isEditing,
+                iPhoneNotReachable: $iPhoneNotReachable,
+                onAssist: { presentConfiguredAssist() },
+                onAdd: { activeSheet = .add }
+            )
+            listContent
+            if !isEditing {
+                areasContent
+            }
+            if !isEditing, viewModel.showAssist {
+                addRow
+            }
+            WatchHomeFooterView(
+                viewModel: viewModel,
+                isEditing: isEditing,
+                onEdit: { enterEditMode() },
+                onDone: { finishEditing() },
+                onSettings: { showSettings = true }
+            )
+        }
+        .id(viewModel.configVersion)
+        // Removing the safe area so our fake navigation bar buttons (header) can be place correctly
+        .ignoresSafeArea([.all], edges: .top)
+        .navigationTitle("")
+        .navigationBarBackButtonHidden(true)
+        .modify { view in
+            if #available(watchOS 11.0, *) {
+                view.toolbarVisibility(.hidden, for: .navigationBar)
+            } else {
+                view.toolbar(.hidden, for: .navigationBar)
+            }
+        }
+        .sheet(item: $activeSheet) { sheet in
+            switch sheet {
+            case .add:
+                WatchConfigAddView(viewModel: viewModel, folderId: nil)
+            case let .edit(editable):
+                NavigationView {
+                    WatchConfigItemEditView(
+                        mode: .edit,
+                        placeholderName: viewModel.info(for: editable.item).name,
+                        item: editable.item,
+                        info: viewModel.info(for: editable.item)
+                    ) { item in
+                        viewModel.updateItem(item, info: viewModel.info(for: editable.item))
+                        activeSheet = nil
+                    } onDelete: {
+                        viewModel.removeItem(editable.item)
+                        viewModel.saveConfig()
+                        activeSheet = nil
+                    }
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var listContent: some View {
+        if viewModel.watchConfig.items.isEmpty {
+            // The areas rows fill the screen on their own, so the "add items with +" hint only
+            // shows when there is genuinely nothing else. It also stays out of edit mode, where the
+            // header swaps the + for Done and the hint would point at a button that isn't there.
+            if !isEditing, !viewModel.showsAreasContent {
+                Text(verbatim: L10n.Watch.Labels.noConfigAddPlus)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .listRowBackground(Color.clear)
+            }
+        } else if !isEditing, viewModel.watchConfig.resolvedLayout == .grid {
+            gridContent
+        } else {
+            mainContent
+        }
+    }
+
+    // A rectangular complication has nothing to show inside a 60-point square tile, so the grid holds
+    // only the tileable items and the complications follow it as full-width rows.
+    @ViewBuilder
+    private var gridContent: some View {
+        LazyVGrid(
+            columns: [GridItem(.adaptive(minimum: 60), spacing: DesignSystem.Spaces.one)],
+            spacing: DesignSystem.Spaces.one
+        ) {
+            ForEach(viewModel.watchConfig.items.filter { $0.type != .complication }, id: \.serverUniqueId) { item in
+                if item.type == .folder {
+                    WatchFolderRow(item: item, itemInfo: viewModel.info(for: item), layout: .grid)
+                } else if item.type == .area {
+                    WatchAreaItemRow(item: item, itemInfo: viewModel.info(for: item), layout: .grid)
+                } else if item.isAssist {
+                    WatchAssistItemRow(item: item, itemInfo: viewModel.info(for: item), layout: .grid)
+                } else {
+                    WatchMagicViewRow(item: item, itemInfo: viewModel.info(for: item), layout: .grid)
+                }
+            }
+        }
+        .listRowBackground(Color.clear)
+        .listRowInsets(EdgeInsets())
+        ForEach(viewModel.watchConfig.items.filter { $0.type == .complication }, id: \.serverUniqueId) { item in
+            WatchComplicationRow(item: item, itemInfo: viewModel.info(for: item))
+        }
+    }
+
+    /// The automatic area rows: each area directly when there are few on a single server, or one
+    /// grouped "Areas" row that drills into the server picker / area list. In the grid layout the
+    /// areas render as icon-only tiles so the home screen stays a single visual style.
+    @ViewBuilder
+    private var areasContent: some View {
+        switch viewModel.areasMode {
+        case .hidden:
+            EmptyView()
+        case let .inline(areas):
+            if viewModel.watchConfig.resolvedLayout == .grid {
+                LazyVGrid(
+                    columns: [GridItem(.adaptive(minimum: 60), spacing: DesignSystem.Spaces.one)],
+                    spacing: DesignSystem.Spaces.one
+                ) {
+                    ForEach(areas, id: \.id) { area in
+                        WatchAreaRow(area: area, layout: .grid)
+                    }
+                }
+                .listRowBackground(Color.clear)
+                .listRowInsets(EdgeInsets())
+            } else {
+                ForEach(areas, id: \.id) { area in
+                    WatchAreaRow(area: area)
+                }
+            }
+        case .grouped:
+            if let destination = viewModel.groupedAreasDestination() {
+                if viewModel.watchConfig.resolvedLayout == .grid {
+                    LazyVGrid(
+                        columns: [GridItem(.adaptive(minimum: 60), spacing: DesignSystem.Spaces.one)],
+                        spacing: DesignSystem.Spaces.one
+                    ) {
+                        WatchAreasGroupRow(destination: destination, layout: .grid)
+                    }
+                    .listRowBackground(Color.clear)
+                    .listRowInsets(EdgeInsets())
+                } else {
+                    WatchAreasGroupRow(destination: destination)
+                }
+            }
+        }
+    }
+
+    private var addRow: some View {
+        Button {
+            activeSheet = .add
+        } label: {
+            Label(L10n.Watch.Config.Add.title, systemSymbol: .plus)
+                .frame(maxWidth: .infinity)
+                .contentShape(Rectangle())
+        }
+        .watchItemRowStyle()
+    }
+
+    @ViewBuilder
+    private var mainContent: some View {
+        // No long-press-to-edit here: a gesture on the row swallows the tap of the `Button` it is built
+        // from on watchOS before 26, which left every item unresponsive. Edit mode is entered from the
+        // footer's edit button instead.
+        ForEach(Array(viewModel.watchConfig.items.enumerated()), id: \.offset) { index, item in
+            rowContent(for: item, at: index)
+        }
+        .onMove(perform: isEditing ? moveItems : nil)
+        .onDelete(perform: isEditing ? deleteItems : nil)
+    }
+
+    @ViewBuilder
+    private func rowContent(for item: MagicItem, at index: Int) -> some View {
+        if isEditing {
+            VStack(spacing: DesignSystem.Spaces.half) {
+                Button {
+                    activeSheet = .edit(.init(id: item.serverUniqueId, item: item))
+                } label: {
+                    WatchConfigItemRow(item: item, itemInfo: viewModel.info(for: item))
+                }
+                .buttonStyle(.plain)
+                WatchReorderControls(
+                    upDisabled: index == 0,
+                    downDisabled: index == viewModel.watchConfig.items.count - 1,
+                    onUp: { viewModel.moveItemUp(at: index) },
+                    onDown: { viewModel.moveItemDown(at: index) }
+                )
+            }
+            .watchConfigRowBackground()
+        } else if item.type == .folder {
+            WatchFolderRow(item: item, itemInfo: viewModel.info(for: item))
+        } else if item.type == .area {
+            WatchAreaItemRow(
+                item: item,
+                itemInfo: viewModel.info(for: item),
+                subtitle: viewModel.serverName(for: item)
+            )
+        } else if item.type == .complication {
+            WatchComplicationRow(item: item, itemInfo: viewModel.info(for: item))
+        } else if item.isAssist {
+            WatchAssistItemRow(item: item, itemInfo: viewModel.info(for: item))
+        } else {
+            WatchMagicViewRow(
+                item: item,
+                itemInfo: viewModel.info(for: item),
+                subtitle: viewModel.serverName(for: item),
+                areaName: viewModel.areaName(for: item)
+            )
+        }
+    }
+
+    /// Open Assist with the pipeline chosen in the watch configuration — the toolbar button, the
+    /// complication and the `homeassistant://assist` deep link all land here.
+    private func presentConfiguredAssist() {
+        if let serverId = viewModel.watchConfig.assist.serverId,
+           let pipelineId = viewModel.watchConfig.assist.pipelineId {
+            assistPresentation = .session(serverId: serverId, pipelineId: pipelineId, prompt: nil)
+        } else {
+            assistPresentation = .unconfigured
+        }
+    }
+
+    private func isAssistDeepLink(_ url: URL?) -> Bool {
+        guard let url else { return false }
+        return ["homeassistant", "homeassistant-dev"].contains(url.scheme) && url.host == "assist"
+    }
+
+    private func enterEditMode() {
+        withAnimation { isEditing = true }
+    }
+
+    /// Same as the header's Done: leave edit mode and persist the reordering.
+    private func finishEditing() {
+        withAnimation { isEditing = false }
+        viewModel.saveConfig()
+    }
+
+    private func moveItems(from source: IndexSet, to destination: Int) {
+        viewModel.moveItem(from: source, to: destination)
+    }
+
+    private func deleteItems(at offsets: IndexSet) {
+        viewModel.deleteItem(at: offsets)
+    }
+}
+
+#Preview("Populated") {
+    MaterialDesignIcons.register()
+    let viewModel = WatchHomeViewModel()
+    viewModel.showAssist = true
+    viewModel.watchConfig = WatchConfig(items: [
+        MagicItem(
+            id: "script.good_morning",
+            serverId: "1",
+            type: .script,
+            customization: .init(iconColor: "#FFB300", icon: "weather_sunny"),
+            displayText: "Good Morning"
+        ),
+        MagicItem(
+            id: "scene.movie_time",
+            serverId: "1",
+            type: .scene,
+            customization: .init(icon: "movie_open"),
+            displayText: "Movie Time"
+        ),
+        MagicItem(
+            id: "script.goodnight",
+            serverId: "1",
+            type: .script,
+            customization: .init(backgroundColor: "#3F51B5", icon: "weather_night"),
+            displayText: "Goodnight"
+        ),
+        MagicItem(
+            id: "folder1",
+            serverId: "",
+            type: .folder,
+            customization: .init(iconColor: "#4FC3F7"),
+            displayText: "Lights",
+            items: [
+                MagicItem(
+                    id: "light.kitchen",
+                    serverId: "1",
+                    type: .entity,
+                    customization: .init(icon: "ceiling_light"),
+                    displayText: "Kitchen"
+                ),
+            ]
+        ),
+    ])
+    return WatchHomeView(viewModel: viewModel, autoLoad: false)
+}
+
+#Preview("Empty") {
+    MaterialDesignIcons.register()
+    let viewModel = WatchHomeViewModel()
+    viewModel.watchConfig = WatchConfig(items: [])
+    return WatchHomeView(viewModel: viewModel, autoLoad: false)
+}
+
+#Preview("Grid") {
+    MaterialDesignIcons.register()
+    let viewModel = WatchHomeViewModel()
+    viewModel.showAssist = true
+    viewModel.watchConfig = WatchConfig(items: [
+        MagicItem(
+            id: "script.good_morning",
+            serverId: "1",
+            type: .script,
+            customization: .init(iconColor: "#FFB300", icon: "weather_sunny"),
+            displayText: "Good Morning"
+        ),
+        MagicItem(
+            id: "scene.movie_time",
+            serverId: "1",
+            type: .scene,
+            customization: .init(icon: "movie_open"),
+            displayText: "Movie Time"
+        ),
+        MagicItem(
+            id: "script.goodnight",
+            serverId: "1",
+            type: .script,
+            customization: .init(backgroundColor: "#3F51B5", icon: "weather_night"),
+            displayText: "Goodnight"
+        ),
+        MagicItem(
+            id: "folder1",
+            serverId: "",
+            type: .folder,
+            customization: .init(iconColor: "#4FC3F7"),
+            displayText: "Lights",
+            items: [
+                MagicItem(
+                    id: "light.kitchen",
+                    serverId: "1",
+                    type: .entity,
+                    customization: .init(icon: "ceiling_light"),
+                    displayText: "Kitchen"
+                ),
+            ]
+        ),
+    ], layout: .grid)
+    return WatchHomeView(viewModel: viewModel, autoLoad: false)
+}

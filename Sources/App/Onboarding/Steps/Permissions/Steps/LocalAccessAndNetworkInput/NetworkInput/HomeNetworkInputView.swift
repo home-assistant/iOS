@@ -27,6 +27,7 @@ struct HomeNetworkInputView: View {
             },
             primaryActionTitle: L10n.Onboarding.NetworkInput.PrimaryButton.title,
             primaryAction: handlePrimaryAction,
+            primaryActionIdentifier: AccessibilityIdentifier.onboardingHomeNetworkNext.rawValue,
             secondaryActionTitle: L10n.SettingsDetails.learnMore,
             secondaryAction: {
                 showLearnMore = true
@@ -120,9 +121,10 @@ struct HomeNetworkInputView: View {
     }
 
     private func loadCurrentNetworkInfo() {
-        Current.connectivity.syncNetworkInformation {
-            networkName = Current.connectivity.currentWiFiSSID() ?? ""
-            hardwareAddress = Current.connectivity.currentNetworkHardwareAddress() ?? ""
+        Task { @MainActor in
+            let networkState = await Current.connectivity.currentNetworkState()
+            networkName = networkState.ssid ?? ""
+            hardwareAddress = networkState.hardwareAddress ?? ""
         }
     }
 }

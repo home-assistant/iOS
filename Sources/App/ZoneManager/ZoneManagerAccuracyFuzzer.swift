@@ -37,13 +37,34 @@ extension Sequence<ZoneManagerAccuracyFuzzer> {
 
 /// if we're getting a region monitoring event saying that we're inside, but we're not from GPS perspective
 struct ZoneManagerAccuracyFuzzerRegionEnter: ZoneManagerAccuracyFuzzer {
+    /// The farthest outside the region a fix may be and still have its accuracy widened to reach it.
+    ///
+    /// With Wi-Fi off, region monitoring falls back to cell positioning and reports "inside" for every
+    /// monitored region within roughly a kilometre, while the one-shot GPS fix that follows is precise.
+    /// Widening that fix by the full distance sends a gps_accuracy of up to 1.5 km, and core derives
+    /// in_zones from that radius, so the device shows up in every zone it covers. A fix much farther out
+    /// than GPS error is evidence the region event is wrong, not the fix, so it is sent unchanged.
+    /// Defaults to `SettingsStore.defaultRegionEnterMaximumFuzzDistance` and is tunable in Debug settings.
+    var maximumDistance: CLLocationDistance {
+        Current.settingsStore.regionEnterMaximumFuzzDistance
+    }
+
     func fuzz(for location: CLLocation, for event: ZoneManagerEvent) -> ZoneManagerAccuracyFuzzerChange? {
         guard case let .region(region as CLCircularRegion, .inside) = event.eventType,
               !region.containsWithAccuracy(location) else {
             return nil
         }
 
-        return .accuracy(region.distanceWithAccuracy(from: location))
+        let distance = region.distanceWithAccuracy(from: location)
+
+        guard distance <= maximumDistance else {
+            Current.Log.info(
+                "not fuzzing accuracy for \(region.identifier): fix is \(distance)m outside the region"
+            )
+            return nil
+        }
+
+        return .accuracy(distance)
     }
 }
 
@@ -86,7 +107,7 @@ struct ZoneManagerAccuracyFuzzerMultiZone: ZoneManagerAccuracyFuzzer {
         }
 
         let coordinate = location.coordinate
-        let distance = zone.location.distance(from: location) - zone.Radius
+        let distance = zone.location.distance(from: location) - zone.radius
 
         guard !zone.circularRegion.contains(coordinate), distance > 0 else {
             // this fuzzing is only necessary if the region doesn't contain without accuracy
@@ -94,12 +115,11 @@ struct ZoneManagerAccuracyFuzzerMultiZone: ZoneManagerAccuracyFuzzer {
             return nil
         }
 
-        let containedZones = Current.realm()
-            .objects(RLMZone.self)
+        let containedZones = AppZone.all()
             .filter {
                 // ignoring accuracy because that is not what matters for this case
                 // allowing the zone we're entering since we know we're not in it but we should be
-                $0.circularRegion.contains(coordinate) || $0 == zone
+                $0.circularRegion.contains(coordinate) || $0.identifier == zone.identifier
             }
 
         guard containedZones.count > 1 else {

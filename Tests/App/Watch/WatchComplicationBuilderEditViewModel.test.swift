@@ -1,0 +1,460 @@
+import Foundation
+import GRDB
+@testable import HomeAssistant
+@testable import Shared
+import SharedTesting
+import Testing
+
+@MainActor
+@Suite(.sharedState)
+struct WatchComplicationBuilderEditViewModelTests {
+    // MARK: - Initial state
+
+    @Test func newConfigStartsWithNoSourceAndFirstServerPreselected() throws {
+        try withBuilderTestWorld(serverIds: ["server-1", "server-2"]) { _ in
+            let viewModel = WatchComplicationBuilderEditViewModel(existing: nil)
+
+            #expect(viewModel.isNew)
+            #expect(viewModel.selectedSource == nil)
+            #expect(viewModel.config.serverId == "server-1")
+            #expect(!viewModel.isSourceConfigured)
+            #expect(!viewModel.isValid)
+        }
+    }
+
+    @Test func existingConfigStartsWithItsKindSelected() throws {
+        try withBuilderTestWorld { _ in
+            let existing = WatchComplicationConfig(
+                serverId: "server-1",
+                kind: .customTemplate,
+                customTextTemplate: "{{ states('sensor.x') }}"
+            )
+            let viewModel = WatchComplicationBuilderEditViewModel(existing: existing)
+
+            #expect(!viewModel.isNew)
+            #expect(viewModel.selectedSource == .customTemplate)
+            #expect(viewModel.isSourceConfigured)
+            #expect(viewModel.isValid)
+        }
+    }
+
+    // MARK: - Pre-filled entity
+
+    @Test func prefilledEntityOpensAsNewEntityComplicationWithAutoDesignDefaults() throws {
+        try withBuilderTestWorld(serverIds: ["server-1", "server-2"]) { database in
+            let entity = Self.batteryEntity(serverId: "server-2", icon: nil)
+            try database.write { db in
+                try entity.insert(db)
+            }
+
+            let viewModel = WatchComplicationBuilderEditViewModel(
+                prefilledEntityId: "sensor.battery",
+                serverId: "server-2"
+            )
+
+            // Still a new complication, just with the source and entity steps already answered.
+            #expect(viewModel.isNew)
+            #expect(viewModel.selectedSource == .entity)
+            #expect(viewModel.config.kind == .entity)
+            #expect(viewModel.config.serverId == "server-2")
+            #expect(viewModel.config.entityId == "sensor.battery")
+            #expect(viewModel.config.entityDisplayName == "Battery")
+            #expect(viewModel.selectedEntity?.id == entity.id)
+            #expect(viewModel.isSourceConfigured)
+            #expect(viewModel.isValid)
+            // The entity picker's auto-design runs too: battery gets the ring range and a domain icon.
+            #expect(viewModel.config.gaugeMin == 0)
+            #expect(viewModel.config.gaugeMax == 100)
+            #expect(viewModel.config.iconName == Domain(rawValue: "sensor")?.icon(deviceClass: "battery").name)
+            #expect(viewModel.entityRowTitle == "Battery")
+        }
+    }
+
+    @Test func prefilledEntityUnknownToTheAppStillOpensWithItsId() throws {
+        try withBuilderTestWorld { _ in
+            // No registry row mirrored for this entity yet, so there is nothing to auto-design from.
+            let viewModel = WatchComplicationBuilderEditViewModel(
+                prefilledEntityId: "light.kitchen",
+                serverId: "server-1"
+            )
+
+            #expect(viewModel.isNew)
+            #expect(viewModel.selectedSource == .entity)
+            #expect(viewModel.config.entityId == "light.kitchen")
+            #expect(viewModel.config.entityDisplayName == nil)
+            #expect(viewModel.selectedEntity == nil)
+            #expect(viewModel.config.iconName == Domain.light.icon().name)
+            #expect(viewModel.isSourceConfigured)
+            // The row shows what was pre-filled rather than asking to pick an entity.
+            #expect(viewModel.entityRowTitle == "light.kitchen")
+        }
+    }
+
+    @Test func entityRowTitleFallsBackToThePickerPromptWithoutAnEntity() throws {
+        try withBuilderTestWorld { _ in
+            let viewModel = WatchComplicationBuilderEditViewModel(existing: nil)
+            viewModel.selectSource(.entity)
+
+            #expect(viewModel.entityRowTitle == L10n.EntityPicker.placeholder)
+        }
+    }
+
+    // MARK: - Source selection
+
+    @Test func selectSourceUpdatesConfigKind() throws {
+        try withBuilderTestWorld { _ in
+            let viewModel = WatchComplicationBuilderEditViewModel(existing: nil)
+
+            viewModel.selectSource(.customTemplate)
+            #expect(viewModel.selectedSource == .customTemplate)
+            #expect(viewModel.config.kind == .customTemplate)
+
+            viewModel.selectSource(.entity)
+            #expect(viewModel.selectedSource == .entity)
+            #expect(viewModel.config.kind == .entity)
+        }
+    }
+
+    @Test func switchingSourceKeepsPreviouslyEnteredValues() throws {
+        try withBuilderTestWorld { _ in
+            let viewModel = WatchComplicationBuilderEditViewModel(existing: nil)
+            viewModel.selectSource(.entity)
+            viewModel.config.entityId = "sensor.battery"
+
+            viewModel.selectSource(.customTemplate)
+            #expect(viewModel.config.entityId == "sensor.battery")
+            // Template not entered yet, so the template flow is not configured/valid…
+            #expect(!viewModel.isSourceConfigured)
+            #expect(!viewModel.isValid)
+
+            // …but switching back to entity is immediately configured again.
+            viewModel.selectSource(.entity)
+            #expect(viewModel.isSourceConfigured)
+            #expect(viewModel.isValid)
+        }
+    }
+
+    // MARK: - Server selection
+
+    @Test func selectServerClearsEntityFromPreviousServer() throws {
+        try withBuilderTestWorld(serverIds: ["server-1", "server-2"]) { _ in
+            let viewModel = WatchComplicationBuilderEditViewModel(existing: nil)
+            viewModel.selectSource(.entity)
+            viewModel.selectedEntity = Self.batteryEntity(serverId: "server-1")
+            viewModel.applySelectedEntity()
+            #expect(viewModel.config.entityId == "sensor.battery")
+
+            viewModel.selectServer("server-2")
+            #expect(viewModel.config.serverId == "server-2")
+            #expect(viewModel.config.entityId == nil)
+            #expect(viewModel.config.entityDisplayName == nil)
+            #expect(viewModel.selectedEntity == nil)
+        }
+    }
+
+    @Test func pickingEntityFromAnotherServerAdoptsItsServer() throws {
+        try withBuilderTestWorld(serverIds: ["server-1", "server-2"]) { _ in
+            // The entity flow has no separate server picker: the entity picker's own server filter
+            // decides, so a picked entity carries its server into the config.
+            let viewModel = WatchComplicationBuilderEditViewModel(existing: nil)
+            viewModel.selectSource(.entity)
+            #expect(viewModel.config.serverId == "server-1")
+
+            viewModel.selectedEntity = Self.batteryEntity(serverId: "server-2")
+            viewModel.applySelectedEntity()
+
+            #expect(viewModel.config.serverId == "server-2")
+            #expect(viewModel.config.entityId == "sensor.battery")
+        }
+    }
+
+    @Test func reselectingSameServerKeepsEntity() throws {
+        try withBuilderTestWorld { _ in
+            let viewModel = WatchComplicationBuilderEditViewModel(existing: nil)
+            viewModel.selectSource(.entity)
+            viewModel.selectedEntity = Self.batteryEntity(serverId: "server-1")
+            viewModel.applySelectedEntity()
+
+            viewModel.selectServer("server-1")
+            #expect(viewModel.config.entityId == "sensor.battery")
+            #expect(viewModel.selectedEntity != nil)
+        }
+    }
+
+    // MARK: - Entity auto-design
+
+    @Test func pickingEntityAppliesAutoDesignDefaults() throws {
+        try withBuilderTestWorld { _ in
+            // No gauge range set, so the battery device class should default to 0–100.
+            let existing = WatchComplicationConfig(serverId: "server-1")
+            let viewModel = WatchComplicationBuilderEditViewModel(existing: existing)
+            viewModel.config.valueAttribute = "voltage"
+
+            viewModel.selectedEntity = Self.batteryEntity(serverId: "server-1", icon: nil)
+            viewModel.applySelectedEntity()
+
+            #expect(viewModel.config.entityId == "sensor.battery")
+            #expect(viewModel.config.entityDisplayName == "Battery")
+            // The old value source no longer applies to the new entity.
+            #expect(viewModel.config.valueAttribute == nil)
+            // No entity icon, so the domain/device-class fallback is applied.
+            let fallbackIcon = Domain(rawValue: "sensor")?.icon(deviceClass: "battery").name
+            #expect(viewModel.config.iconName == fallbackIcon)
+            #expect(viewModel.config.iconName != nil)
+            // Percentage-like device class defaults to a 0–100 gauge.
+            #expect(viewModel.config.gaugeMin == 0)
+            #expect(viewModel.config.gaugeMax == 100)
+        }
+    }
+
+    @Test func pickingEntityPrefersItsOwnIcon() throws {
+        try withBuilderTestWorld { _ in
+            let viewModel = WatchComplicationBuilderEditViewModel(existing: nil)
+
+            viewModel.selectedEntity = Self.batteryEntity(serverId: "server-1", icon: "mdi:flash")
+            viewModel.applySelectedEntity()
+
+            #expect(viewModel.config.iconName == "mdi:flash")
+        }
+    }
+
+    @Test func pickingEntityKeepsUserGaugeRange() throws {
+        try withBuilderTestWorld { _ in
+            // The new-config defaults include a 0–100 range; picking a battery must not reset a range
+            // the config already has.
+            let existing = WatchComplicationConfig(serverId: "server-1", gaugeMin: 20, gaugeMax: 80)
+            let viewModel = WatchComplicationBuilderEditViewModel(existing: existing)
+
+            viewModel.selectedEntity = Self.batteryEntity(serverId: "server-1")
+            viewModel.applySelectedEntity()
+
+            #expect(viewModel.config.gaugeMin == 20)
+            #expect(viewModel.config.gaugeMax == 80)
+        }
+    }
+
+    @Test func rehydratingSameEntityDoesNotClobberSavedDesign() throws {
+        try withBuilderTestWorld { _ in
+            // Reopening the editor hydrates `selectedEntity` for the already-configured entity; that
+            // must not re-run the auto-design and overwrite the user's saved icon/name.
+            let existing = WatchComplicationConfig(
+                serverId: "server-1",
+                entityId: "sensor.battery",
+                entityDisplayName: "My custom name",
+                iconName: "mdi:custom-icon"
+            )
+            let viewModel = WatchComplicationBuilderEditViewModel(existing: existing)
+
+            viewModel.selectedEntity = Self.batteryEntity(serverId: "server-1", icon: "mdi:battery")
+            viewModel.applySelectedEntity()
+
+            #expect(viewModel.config.iconName == "mdi:custom-icon")
+            #expect(viewModel.config.entityDisplayName == "My custom name")
+        }
+    }
+
+    @Test func clearingEntityClearsSubtitle() throws {
+        try withBuilderTestWorld { _ in
+            let viewModel = WatchComplicationBuilderEditViewModel(existing: nil)
+            viewModel.selectedEntity = Self.batteryEntity(serverId: "server-1")
+            viewModel.applySelectedEntity()
+
+            viewModel.selectedEntity = nil
+            viewModel.applySelectedEntity()
+            #expect(viewModel.entitySubtitle == nil)
+        }
+    }
+
+    // MARK: - Hydration
+
+    @Test func hydrateSelectedEntityFetchesFromDatabase() throws {
+        try withBuilderTestWorld { database in
+            let entity = Self.batteryEntity(serverId: "server-1")
+            try database.write { db in try entity.insert(db) }
+
+            let existing = WatchComplicationConfig(serverId: "server-1", entityId: "sensor.battery")
+            let viewModel = WatchComplicationBuilderEditViewModel(existing: existing)
+            viewModel.hydrateSelectedEntity()
+
+            #expect(viewModel.selectedEntity == entity)
+        }
+    }
+
+    // MARK: - Template color
+
+    @Test func templateColorOptInFollowsExistingConfig() throws {
+        try withBuilderTestWorld { _ in
+            // Any one of the three color templates counts as opted in.
+            let existing = WatchComplicationConfig(
+                serverId: "server-1",
+                kind: .customTemplate,
+                customTextTemplate: "{{ 1 }}",
+                customIconColorTemplate: "{{ '#FF0000' }}"
+            )
+            let viewModel = WatchComplicationBuilderEditViewModel(existing: existing)
+            #expect(viewModel.useTemplateColor)
+            #expect(WatchComplicationBuilderEditViewModel(existing: nil).useTemplateColor == false)
+        }
+    }
+
+    @Test func disablingTemplateColorClearsAllColorTemplates() throws {
+        try withBuilderTestWorld { _ in
+            let existing = WatchComplicationConfig(
+                serverId: "server-1",
+                kind: .customTemplate,
+                customTextTemplate: "{{ 1 }}",
+                customGaugeColorTemplate: "{{ '#00FF00' }}",
+                customIconColorTemplate: "{{ '#0000FF' }}",
+                customTextColorTemplate: "{{ '#FF0000' }}"
+            )
+            let viewModel = WatchComplicationBuilderEditViewModel(existing: existing)
+
+            viewModel.useTemplateColor = false
+            #expect(viewModel.config.customGaugeColorTemplate == nil)
+            #expect(viewModel.config.customIconColorTemplate == nil)
+            #expect(viewModel.config.customTextColorTemplate == nil)
+        }
+    }
+
+    // MARK: - Template colors
+
+    @Test func customColorsSurviveSaveAndReopen() throws {
+        try withBuilderTestWorld { database in
+            // Colors are always applied now (no opt-in toggle), so a stored color must round-trip
+            // through save and reopen untouched.
+            let viewModel = WatchComplicationBuilderEditViewModel(existing: nil)
+            viewModel.selectSource(.entity)
+            viewModel.selectedEntity = Self.batteryEntity(serverId: "server-1")
+            viewModel.applySelectedEntity()
+            viewModel.config.iconColor = "#FF0000"
+            viewModel.save()
+
+            let saved = try database.read { db in
+                try WatchComplicationConfig.fetchOne(db, key: viewModel.config.id)
+            }
+            #expect(saved?.iconColor == "#FF0000")
+        }
+    }
+
+    @Test func normalizedHexColorAcceptsValidHexOnly() {
+        #expect(WatchComplicationConfig.normalizedHexColor(from: "#ff9500") == "#FF9500")
+        #expect(WatchComplicationConfig.normalizedHexColor(from: "ff9500") == "#FF9500")
+        #expect(WatchComplicationConfig.normalizedHexColor(from: "  '#FF9500AA'  ") == "#FF9500AA")
+        #expect(WatchComplicationConfig.normalizedHexColor(from: "\"#64D2FF\"") == "#64D2FF")
+        #expect(WatchComplicationConfig.normalizedHexColor(from: "red") == nil)
+        #expect(WatchComplicationConfig.normalizedHexColor(from: "#FF95") == nil)
+        #expect(WatchComplicationConfig.normalizedHexColor(from: "") == nil)
+    }
+
+    // MARK: - Save
+
+    @Test func savePersistsConfigAndPostsChangeNotification() throws {
+        try withBuilderTestWorld { database in
+            let viewModel = WatchComplicationBuilderEditViewModel(existing: nil)
+            viewModel.selectSource(.entity)
+            viewModel.selectedEntity = Self.batteryEntity(serverId: "server-1")
+            viewModel.applySelectedEntity()
+
+            var notified = false
+            let token = NotificationCenter.default.addObserver(
+                forName: WatchComplicationConfig.didChangeNotification,
+                object: nil,
+                queue: nil
+            ) { _ in notified = true }
+            defer { NotificationCenter.default.removeObserver(token) }
+
+            viewModel.save()
+
+            let saved = try database.read { db in
+                try WatchComplicationConfig.fetchOne(db, key: viewModel.config.id)
+            }
+            #expect(saved?.entityId == "sensor.battery")
+            #expect(saved?.kind == .entity)
+            #expect(notified)
+        }
+    }
+
+    /// A template complication saved without a name takes the first free "Complication-N".
+    @Test func unnamedTemplateTakesTheFirstFreeNumber() throws {
+        try withBuilderTestWorld { database in
+            for number in [1, 2, 4] {
+                try WatchComplicationConfig(serverId: "server-1", kind: .customTemplate, name: "Complication-\(number)")
+                    .save()
+            }
+            let viewModel = WatchComplicationBuilderEditViewModel(existing: nil)
+            viewModel.selectSource(.customTemplate)
+            viewModel.config.name = "  "
+
+            viewModel.save()
+
+            let saved = try database.read { db in
+                try WatchComplicationConfig.fetchOne(db, key: viewModel.config.id)
+            }
+            #expect(saved?.name == "Complication-3")
+        }
+    }
+
+    /// A save the database rejects is logged; the change notification still goes out.
+    @Test func saveFailureStillPostsTheChangeNotification() async throws {
+        let previousServers = Current.servers
+        Current.servers = FakeServerManager(initial: 0)
+        defer { Current.servers = previousServers }
+        try await SettingsTestDatabase.withoutTables { _ in
+            let viewModel = WatchComplicationBuilderEditViewModel(
+                existing: WatchComplicationConfig(serverId: "server-1", name: "Named")
+            )
+            var notified = false
+            let token = NotificationCenter.default.addObserver(
+                forName: WatchComplicationConfig.didChangeNotification,
+                object: nil,
+                queue: nil
+            ) { _ in notified = true }
+            defer { NotificationCenter.default.removeObserver(token) }
+
+            viewModel.save()
+            #expect(notified)
+        }
+    }
+
+    // MARK: - Helpers
+
+    private static func batteryEntity(serverId: String, icon: String? = nil) -> HAAppEntity {
+        HAAppEntity(
+            id: "\(serverId)-sensor.battery",
+            entityId: "sensor.battery",
+            serverId: serverId,
+            domain: "sensor",
+            name: "Battery",
+            icon: icon,
+            rawDeviceClass: "battery"
+        )
+    }
+
+    private func withBuilderTestWorld<T>(
+        serverIds: [String] = ["server-1"],
+        perform work: @MainActor (DatabaseQueue) throws -> T
+    ) throws -> T {
+        let database = try DatabaseQueue(path: ":memory:")
+        for table in DatabaseQueue.tables() {
+            try table.createIfNeeded(database: database)
+        }
+
+        let previousDatabase = Current.database
+        let previousServers = Current.servers
+
+        let servers = FakeServerManager(initial: 0)
+        for serverId in serverIds {
+            servers.add(identifier: .init(rawValue: serverId), serverInfo: .fake())
+        }
+
+        Current.database = { database }
+        Current.servers = servers
+
+        defer {
+            Current.database = previousDatabase
+            Current.servers = previousServers
+        }
+
+        return try work(database)
+    }
+}

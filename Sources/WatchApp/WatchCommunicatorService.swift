@@ -1,0 +1,94 @@
+import Foundation
+import Shared
+
+struct ImmediateCommunicatorServiceObserver {
+    weak var delegate: (any ImmediateCommunicatorServiceDelegate)?
+}
+
+protocol ImmediateCommunicatorServiceDelegate: AnyObject {
+    func didReceiveChatItem(_ item: AssistChatItem)
+    func didReceiveTTS(url: URL)
+    func didReceiveOnDeviceTTS(_ payload: AssistOnDeviceTTSPayload)
+    func didReceiveError(code: String, message: String)
+    /// The iPhone stopped listening to the audio stream `streamId`: the user stopped speaking.
+    func didReceiveAudioStreamStop(streamId: String)
+}
+
+final class ImmediateCommunicatorService {
+    static var shared = ImmediateCommunicatorService()
+    private var observers: [ImmediateCommunicatorServiceObserver] = []
+
+    func addObserver(_ observer: ImmediateCommunicatorServiceObserver) {
+        // Prune released delegates: a deallocated observer can't unregister itself (its weak
+        // delegate is already nil during deinit, so `removeObserver` matches nothing).
+        observers.removeAll { $0.delegate == nil }
+        observers.append(observer)
+    }
+
+    func removeObserver(_ observerDelegate: ImmediateCommunicatorServiceDelegate) {
+        observers.removeAll { $0.delegate === observerDelegate }
+    }
+
+    func evaluatePong(_ pong: HAWatchConnectivity.ImmediateMessage) {
+        let messages = PongPayload(content: pong.content).assistMessages
+        guard !messages.isEmpty else { return }
+        Current.Log.info("Received \(messages.map(\.identifier)) with the iPhone's pong")
+        for message in messages {
+            evaluateMessage(.init(identifier: message.identifier, content: message.content))
+        }
+    }
+
+    func evaluateMessage(_ message: HAWatchConnectivity.ImmediateMessage) {
+        guard let messageId = InteractiveImmediateResponses(rawValue: message.identifier) else {
+            Current.Log.error("Received communicator message that cant be mapped to messages responses enum")
+            return
+        }
+
+        switch messageId {
+        case .assistSTTResponse:
+            guard let payload = AssistTextResponsePayload(content: message.content) else {
+                Current.Log.error("Received assistSTTResponse without content")
+                return
+            }
+            for observer in observers {
+                observer.delegate?
+                    .didReceiveChatItem(AssistChatItem(content: payload.text, itemType: .input))
+            }
+        case .assistIntentEndResponse:
+            guard let payload = AssistTextResponsePayload(content: message.content) else {
+                Current.Log.error("Received assistIntentEndResponse without content")
+                return
+            }
+            for observer in observers {
+                observer.delegate?
+                    .didReceiveChatItem(AssistChatItem(content: payload.text, itemType: .output))
+            }
+        case .assistTTSResponse:
+            guard let payload = AssistTTSResponsePayload(content: message.content) else {
+                Current.Log.error("Received assistTTSResponse without valid media URL")
+                return
+            }
+            observers.forEach({ $0.delegate?.didReceiveTTS(url: payload.mediaURL) })
+        case .assistOnDeviceTTS:
+            guard let payload = AssistOnDeviceTTSPayload(content: message.content) else {
+                Current.Log.error("Received assistOnDeviceTTS without text")
+                return
+            }
+            observers.forEach({ $0.delegate?.didReceiveOnDeviceTTS(payload) })
+        case .assistError:
+            guard let payload = AssistErrorPayload(content: message.content) else {
+                Current.Log.error("Received assistError without valid code/message")
+                return
+            }
+            observers.forEach({ $0.delegate?.didReceiveError(code: payload.code, message: payload.message) })
+        case .assistAudioStreamStop:
+            guard let payload = AssistAudioStreamEndPayload(content: message.content) else {
+                Current.Log.error("Received assistAudioStreamStop without a stream id")
+                return
+            }
+            observers.forEach({ $0.delegate?.didReceiveAudioStreamStop(streamId: payload.streamId) })
+        default:
+            break
+        }
+    }
+}

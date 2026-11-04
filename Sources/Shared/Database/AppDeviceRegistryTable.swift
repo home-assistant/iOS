@@ -46,11 +46,13 @@ final class AppDeviceRegistryTable: DatabaseTableProtocol {
                     // Display fields
                     t.column(DatabaseTables.DeviceRegistry.name.rawValue, .text)
                     t.column(DatabaseTables.DeviceRegistry.nameByUser.rawValue, .text)
+                    t.column(DatabaseTables.DeviceRegistry.nextNamePart.rawValue, .text)
                     t.column(DatabaseTables.DeviceRegistry.labels.rawValue, .jsonText)
 
                     // Relationships
                     t.column(DatabaseTables.DeviceRegistry.primaryConfigEntry.rawValue, .text)
                     t.column(DatabaseTables.DeviceRegistry.viaDeviceID.rawValue, .text)
+                    t.column(DatabaseTables.DeviceRegistry.parentDeviceId.rawValue, .text).indexed()
 
                     // ID
                     t.uniqueKey([

@@ -24,6 +24,7 @@
             "alert": {
                 "body": "test"
             },
+            "mutable-content": true,
             "category": "DYNAMIC",
             "sound": "default"
         },

@@ -1,21 +1,158 @@
 import Foundation
 import GRDB
 
-public extension HAAppEntity {
-    var registryTitle: String? {
-        do {
-            let registryEntity = try Current.database().read { db in
-                try AppEntityRegistry
-                    .filter(Column(DatabaseTables.EntityRegistry.serverId.rawValue) == serverId)
-                    .filter(Column(DatabaseTables.EntityRegistry.entityId.rawValue) == entityId)
-                    .fetchOne(db)
-            }
-            return registryEntity?.name
-        } catch {
-            return nil
-        }
+/// Builds the secondary "context" line (e.g. `Area ▸ Device`, optionally prefixed with the server
+/// name) shown under an entity name in pickers and configuration screens.
+///
+/// This is the single source of truth shared by the in-app `EntityPicker`, every AppIntent based
+/// picker (widgets, controls, App Shortcuts) and the Watch/Widgets/CarPlay/App-Icon configuration
+/// screens, so the context shown stays consistent across the whole app, matching how Home Assistant
+/// core/frontend present entities.
+public enum EntityContextSubtitle {
+    /// The separator the frontend joins context with, pointing the other way in right-to-left languages.
+    public static var separator: String {
+        separator(for: .current)
     }
 
+    static func separator(for locale: Locale) -> String {
+        locale.language.characterDirection == .rightToLeft ? " ◂ " : " ▸ "
+    }
+
+    /// - Parameters:
+    ///   - serverName: The server the entity belongs to. Pass this only when more than one server is
+    ///     configured — it's prepended as the first segment; pass `nil` to omit it (single-server).
+    ///   - floorName: The floor the entity's area belongs to. Pass this only when it's needed to
+    ///     disambiguate two areas that share the same name; pass `nil` to omit it otherwise.
+    ///   - areaName: The area the entity belongs to, if any.
+    ///   - parentDeviceName: The device the entity's device is a part of, if any.
+    ///   - deviceName: The device the entity belongs to, if any. Omitted when it merely repeats the entity name.
+    ///   - contextReach: How many of those devices the line names, following core's `next_name_part`.
+    ///   - entityName: The entity's resolved display name (used to avoid echoing it as the device name).
+    ///   - entityId: The entity id, used as a last-resort context when no other context is available.
+    ///   - domain: The entity's domain. Used to decide whether the entity id fallback is meaningful.
+    ///   - fallbackToEntityId: When `true`, returns the entity id if no other context exists.
+    /// - Returns: The context line (e.g. `Home ▸ Living Room ▸ Thermostat`), or `nil` when there's
+    ///   nothing meaningful to show (so callers can omit the subtitle entirely — e.g. a
+    ///   script/scene/automation with no server/area/device context).
+    public static func make(
+        serverName: String? = nil,
+        floorName: String? = nil,
+        areaName: String?,
+        parentDeviceName: String? = nil,
+        deviceName: String?,
+        contextReach: EntityContextReach = .parentDevice,
+        entityName: String,
+        entityId: String,
+        domain: Domain?,
+        fallbackToEntityId: Bool = true
+    ) -> String? {
+        var parts: [String] = []
+        if let serverName, !serverName.isEmpty {
+            parts.append(serverName)
+        }
+        if let floorName, !floorName.isEmpty {
+            parts.append(floorName)
+        }
+        if let areaName, !areaName.isEmpty {
+            parts.append(areaName)
+        }
+        if contextReach == .parentDevice, let parentDeviceName, !parentDeviceName.isEmpty {
+            parts.append(parentDeviceName)
+        }
+        if contextReach != .area, let deviceName, !deviceName.isEmpty,
+           deviceName.range(of: entityName, options: [.caseInsensitive, .diacriticInsensitive]) == nil {
+            parts.append(deviceName)
+        }
+        // Collapse segments that resolve to the same label so the line doesn't repeat one twice — a
+        // device named after its area is common (e.g. a "Sala" camera in the "Sala" area) and would
+        // otherwise render as "Sala ▸ Sala". Compared in the trimmed, case-/diacritic-insensitive form,
+        // which also drops whitespace-only segments that would show as a blank piece.
+        var seenNormalizedParts = Set<String>()
+        parts = parts.filter { part in
+            let normalized = part.normalizedForAreaComparison
+            guard !normalized.isEmpty else { return false }
+            return seenNormalizedParts.insert(normalized).inserted
+        }
+        guard parts.isEmpty else {
+            return parts.joined(separator: separator)
+        }
+        // No area/device context available.
+        if let domain, [.script, .scene, .automation].contains(domain) {
+            return nil
+        }
+        // Fall back to the entity id, but only when it carries something to show — placeholders and
+        // pending-configuration entities pass an empty id, which would otherwise render a blank line.
+        guard fallbackToEntityId, !entityId.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            return nil
+        }
+        return entityId
+    }
+}
+
+/// A type that carries enough about an entity to render the shared context line (`Area ▸ Device`).
+///
+/// Conformers get `contextSubtitle` for free, so every AppIntent entity / picker row produces the
+/// exact same context — there's no per-type reimplementation to drift out of sync. The formatting
+/// itself still lives in `EntityContextSubtitle.make` (the single source of truth); this protocol is
+/// just the shared, hard-to-get-wrong way to call it.
+public protocol EntityContextRepresentable {
+    /// The entity id (e.g. `light.kitchen`). Also used to derive the domain.
+    var entityId: String { get }
+    /// The entity's resolved display name.
+    var displayString: String { get }
+    /// The area the entity belongs to, if known.
+    var areaName: String? { get }
+    /// The device the entity belongs to, if known.
+    var deviceName: String? { get }
+    /// The device that one is a part of, if any.
+    var parentDeviceName: String? { get }
+    /// How many of those devices the context line names.
+    var contextReach: EntityContextReach { get }
+    /// The floor the entity's area belongs to, set only when it's needed to disambiguate two areas
+    /// that share the same name. Defaults to `nil` so most conformers don't need to provide it.
+    var floorName: String? { get }
+}
+
+public extension EntityContextRepresentable {
+    var floorName: String? { nil }
+
+    /// The shared `Floor ▸ Area ▸ Device` context line for this entity. See `EntityContextSubtitle.make`.
+    var contextSubtitle: String? {
+        EntityContextSubtitle.make(
+            floorName: floorName,
+            areaName: areaName,
+            parentDeviceName: parentDeviceName,
+            deviceName: deviceName,
+            contextReach: contextReach,
+            entityName: displayString,
+            entityId: entityId,
+            domain: Domain(entityId: entityId)
+        )
+    }
+}
+
+public extension EntityContextRepresentable {
+    /// The context line, led by the server when more than one is configured: a picker groups by
+    /// server, but a row stands alone in Siri's disambiguation, where two homes can share a name.
+    func contextSubtitle(serverName: String) -> String? {
+        guard Current.servers.all.count > 1 else {
+            return contextSubtitle
+        }
+        return EntityContextSubtitle.make(
+            serverName: serverName,
+            floorName: floorName,
+            areaName: areaName,
+            parentDeviceName: parentDeviceName,
+            deviceName: deviceName,
+            contextReach: contextReach,
+            entityName: displayString,
+            entityId: entityId,
+            domain: Domain(entityId: entityId)
+        )
+    }
+}
+
+public extension HAAppEntity {
     var area: AppArea? {
         do {
             let areas = try AppArea.fetchAreas(for: serverId)
@@ -32,9 +169,9 @@ public extension HAAppEntity {
     var device: AppDeviceRegistry? {
         do {
             let entityRegistry = try Current.database().read { db in
-                try AppEntityRegistry
-                    .filter(Column(DatabaseTables.EntityRegistry.serverId.rawValue) == serverId)
-                    .filter(Column(DatabaseTables.EntityRegistry.entityId.rawValue) == entityId)
+                try EntityRegistryListForDisplay.Entity
+                    .filter(Column(DatabaseTables.DisplayEntityRegistry.serverId.rawValue) == serverId)
+                    .filter(Column(DatabaseTables.DisplayEntityRegistry.entityId.rawValue) == entityId)
                     .fetchOne(db)
             }
             let deviceId = entityRegistry?.deviceId
@@ -51,28 +188,84 @@ public extension HAAppEntity {
         }
     }
 
-    /// area name -> device name
+    /// The glyph shown next to the entity: its own icon override, then the frontend-matching default
+    /// resolved from the backend `entity_component` map at sync time, then the domain fallback.
+    var materialDesignIcon: MaterialDesignIcons {
+        let fallback = Domain(entityId: entityId)?.icon(deviceClass: rawDeviceClass) ?? .dotsGridIcon
+        let iconName = icon?.isEmpty == false ? icon : resolvedIcon
+        return MaterialDesignIcons(serversideValueNamed: iconName.orEmpty, fallback: fallback)
+    }
+
+    private func registryDevice(id deviceId: String) -> AppDeviceRegistry? {
+        try? Current.database().read { db in
+            try AppDeviceRegistry
+                .filter(Column(DatabaseTables.DeviceRegistry.serverId.rawValue) == serverId)
+                .filter(Column(DatabaseTables.DeviceRegistry.deviceId.rawValue) == deviceId)
+                .fetchOne(db)
+        }
+    }
+
+    /// The secondary context line shown under the entity name (`Floor ▸ Area ▸ Device`).
     var contextualSubtitle: String? {
-        var subtitle = ""
-        if let areaName = area?.name, !areaName.isEmpty {
-            subtitle = areaName
+        let allAreas = (try? AppArea.fetchAreas(for: serverId)) ?? []
+        let entityArea = allAreas.first { $0.entities.contains(entityId) }
+        let floorName = entityArea.flatMap { area in
+            allAreas.disambiguatingFloorName(for: area)
         }
-        if let deviceName = device?.name,
-           !deviceName.isEmpty,
-           deviceName.range(of: name, options: [.caseInsensitive, .diacriticInsensitive]) == nil {
-            if !subtitle.isEmpty {
-                subtitle += " • "
-            }
-            subtitle += deviceName
+        let registryEntry = try? Current.database().read { db in
+            try EntityRegistryListForDisplay.Entity
+                .filter(Column(DatabaseTables.DisplayEntityRegistry.serverId.rawValue) == serverId)
+                .filter(Column(DatabaseTables.DisplayEntityRegistry.entityId.rawValue) == entityId)
+                .fetchOne(db)
         }
-        if subtitle.isEmpty {
-            if let domain = Domain(rawValue: domain), [.script, .scene, .automation].contains(domain) {
-                return nil
-            } else {
-                subtitle = entityId
-            }
+        let entityDevice = registryEntry?.deviceId.flatMap(registryDevice(id:))
+        let parentDevice = entityDevice?.parentDeviceId.flatMap(registryDevice(id:))
+        return EntityContextSubtitle.make(
+            floorName: floorName,
+            areaName: entityArea?.name,
+            parentDeviceName: parentDevice?.resolvedName,
+            deviceName: entityDevice?.resolvedName,
+            contextReach: EntityContextReach(
+                entityNextNamePart: registryEntry?.nextNamePart,
+                entityAreaId: registryEntry?.areaId,
+                device: entityDevice
+            ),
+            entityName: name,
+            entityId: entityId,
+            domain: Domain(rawValue: domain)
+        )
+    }
+}
+
+public extension [AppArea] {
+    /// The normalized set of area names that occur in more than one area, i.e. the names that are
+    /// ambiguous on their own and need the floor to tell them apart.
+    func duplicatedAreaNames() -> Set<String> {
+        var counts: [String: Int] = [:]
+        for area in self {
+            counts[area.name.normalizedForAreaComparison, default: 0] += 1
         }
-        return subtitle
+        return Set(counts.filter { $0.value > 1 }.keys)
+    }
+
+    /// The floor name to display for `area`, but only when its name collides with another area on the
+    /// same server (so the floor disambiguates them). Returns `nil` when the area name is unique or has
+    /// no floor.
+    func disambiguatingFloorName(for area: AppArea) -> String? {
+        guard let floorName = area.floorName, !floorName.isEmpty,
+              duplicatedAreaNames().contains(area.name.normalizedForAreaComparison) else {
+            return nil
+        }
+        return floorName
+    }
+}
+
+private extension String {
+    /// Case- and diacritic-insensitive, whitespace-trimmed form used to compare area names so that
+    /// "Bedroom" and "bedroom " count as the same name when detecting collisions.
+    var normalizedForAreaComparison: String {
+        folding(options: [.caseInsensitive, .diacriticInsensitive], locale: nil)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
 
@@ -80,6 +273,16 @@ public extension [HAAppEntity] {
     /// Creates a mapping from entity IDs to their associated areas for a given server.
     /// - Parameter serverId: The server identifier to filter areas by.
     /// - Returns: A dictionary mapping entity IDs to their corresponding `AppArea` objects.
+    /// The entities worth offering to a spoken command: user-facing rather than configuration or
+    /// diagnostic, not hidden, and in an area. An entity with no room is one nobody asks for by name,
+    /// whatever its domain, and an entity inherits its device's area, which `areasMap` already resolves.
+    func userFacingInAreas(serverId: String) -> [HAAppEntity] {
+        let areas = areasMap(for: serverId)
+        return filter { entity in
+            entity.entityCategory == nil && entity.isHidden != true && areas[entity.entityId] != nil
+        }
+    }
+
     func areasMap(for serverId: String) -> [String: AppArea] {
         do {
             let areas = try AppArea.fetchAreas(for: serverId)
@@ -100,44 +303,126 @@ public extension [HAAppEntity] {
         }
     }
 
+    /// Creates a mapping from entity IDs to the floor name that disambiguates their area, for a given
+    /// server. Only entities whose area name collides with another area on the same server are present
+    /// — for everything else the floor is omitted (so callers pass `nil`). Mirrors `areasMap`.
+    /// - Parameter serverId: The server identifier to filter areas by.
+    /// - Returns: A dictionary mapping entity IDs to their disambiguating floor name.
+    func floorNamesMap(for serverId: String) -> [String: String] {
+        do {
+            let areas = try AppArea.fetchAreas(for: serverId)
+            let duplicated = areas.duplicatedAreaNames()
+            var entityToFloorMap: [String: String] = [:]
+            for area in areas {
+                guard let floorName = area.floorName, !floorName.isEmpty,
+                      duplicated.contains(area.name.normalizedForAreaComparison) else {
+                    continue
+                }
+                for entityId in area.entities {
+                    entityToFloorMap[entityId] = floorName
+                }
+            }
+            return entityToFloorMap
+        } catch {
+            Current.Log.error("Failed to fetch areas for floor mapping: \(error)")
+            return [:]
+        }
+    }
+
+    /// The `Floor ▸ Area ▸ Device` line for every entity, built from one pass over the area, floor
+    /// and device lookups instead of the per-entity database reads `contextualSubtitle` performs.
+    func contextualSubtitles(for serverId: String) -> [String: String] {
+        let areas = areasMap(for: serverId)
+        let floorNames = floorNamesMap(for: serverId)
+        let contexts = deviceContexts(for: serverId)
+
+        var subtitles: [String: String] = [:]
+        for entity in self {
+            let deviceContext = contexts[entity.entityId]
+            guard let subtitle = EntityContextSubtitle.make(
+                floorName: floorNames[entity.entityId],
+                areaName: areas[entity.entityId]?.name,
+                parentDeviceName: deviceContext?.parentDeviceName,
+                deviceName: deviceContext?.deviceName,
+                contextReach: deviceContext?.reach ?? .device,
+                entityName: entity.name,
+                entityId: entity.entityId,
+                domain: Domain(rawValue: entity.domain)
+            ) else { continue }
+            subtitles[entity.entityId] = subtitle
+        }
+        return subtitles
+    }
+
+    /// The devices each entity belongs to, named for its context line, from one pair of database reads.
+    func deviceContexts(for serverId: String) -> [String: EntityDeviceContext] {
+        do {
+            let (entityRegistries, devicesById) = try registryEntriesAndDevices(for: serverId)
+            return entityRegistries.reduce(into: [:]) { contexts, entry in
+                let device = entry.deviceId.flatMap { devicesById[$0] }
+                contexts[entry.entityId] = EntityDeviceContext(
+                    deviceName: device?.resolvedName,
+                    parentDeviceName: device?.parentDeviceName(in: devicesById),
+                    reach: EntityContextReach(
+                        entityNextNamePart: entry.nextNamePart,
+                        entityAreaId: entry.areaId,
+                        device: device
+                    )
+                )
+            }
+        } catch {
+            Current.Log.error("Failed to fetch device contexts: \(error)")
+            return [:]
+        }
+    }
+
     /// Creates a mapping from entity IDs to their associated devices for a given server.
     /// - Parameter serverId: The server identifier to filter entities and devices by.
     /// - Returns: A dictionary mapping entity IDs to their corresponding `AppDeviceRegistry` objects.
     func devicesMap(for serverId: String) -> [String: AppDeviceRegistry] {
+        deviceMaps(for: serverId).byEntityId
+    }
+
+    /// The server's devices keyed both ways in a single pair of database reads: by the id of every
+    /// entity they own, and by their own device id (which also covers devices owning no entity, such
+    /// as a parent whose entities all live on its children).
+    func deviceMaps(
+        for serverId: String
+    ) -> (byEntityId: [String: AppDeviceRegistry], byDeviceId: [String: AppDeviceRegistry]) {
         do {
-            // Fetch all entity registries for the server
-            let entityRegistries = try Current.database().read { db in
-                try AppEntityRegistry
-                    .filter(Column(DatabaseTables.EntityRegistry.serverId.rawValue) == serverId)
-                    .fetchAll(db)
-            }
-
-            // Fetch all devices for the server
-            let devices = try Current.database().read { db in
-                try AppDeviceRegistry
-                    .filter(Column(DatabaseTables.DeviceRegistry.serverId.rawValue) == serverId)
-                    .fetchAll(db)
-            }
-
-            // Create device lookup by deviceId
-            let devicesByDeviceId = Dictionary(uniqueKeysWithValues: devices.map { ($0.deviceId, $0) })
+            let (entityRegistries, devicesByDeviceId) = try registryEntriesAndDevices(for: serverId)
 
             // Map entity IDs to devices
             var entityToDeviceMap: [String: AppDeviceRegistry] = [:]
 
             for entityRegistry in entityRegistries {
-                guard let entityId = entityRegistry.entityId,
-                      let deviceId = entityRegistry.deviceId,
+                guard let deviceId = entityRegistry.deviceId,
                       let device = devicesByDeviceId[deviceId] else {
                     continue
                 }
-                entityToDeviceMap[entityId] = device
+                entityToDeviceMap[entityRegistry.entityId] = device
             }
 
-            return entityToDeviceMap
+            return (entityToDeviceMap, devicesByDeviceId)
         } catch {
             Current.Log.error("Failed to fetch devices for mapping: \(error)")
-            return [:]
+            return ([:], [:])
         }
+    }
+
+    private func registryEntriesAndDevices(
+        for serverId: String
+    ) throws -> ([EntityRegistryListForDisplay.Entity], [String: AppDeviceRegistry]) {
+        let entityRegistries = try Current.database().read { db in
+            try EntityRegistryListForDisplay.Entity
+                .filter(Column(DatabaseTables.DisplayEntityRegistry.serverId.rawValue) == serverId)
+                .fetchAll(db)
+        }
+        let devices = try Current.database().read { db in
+            try AppDeviceRegistry
+                .filter(Column(DatabaseTables.DeviceRegistry.serverId.rawValue) == serverId)
+                .fetchAll(db)
+        }
+        return (entityRegistries, Dictionary(uniqueKeysWithValues: devices.map { ($0.deviceId, $0) }))
     }
 }

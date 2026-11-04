@@ -16,7 +16,7 @@ struct GeneralSettingsView: View {
             AppleLikeListTopRowHeader(
                 image: .cogIcon,
                 title: L10n.SettingsDetails.General.title,
-                subtitle: L10n.SettingsDetails.General.body
+                subtitle: Current.isCatalyst ? L10n.SettingsDetails.General.bodyMac : L10n.SettingsDetails.General.body
             )
             appIconSelection
 
@@ -31,6 +31,8 @@ struct GeneralSettingsView: View {
             }
             Section {
                 macNativeFeaturesOnly
+            } footer: {
+                Text(L10n.SettingsDetails.MacOpenInBrowser.footer)
             }
             #endif
 
@@ -40,15 +42,32 @@ struct GeneralSettingsView: View {
             }
 
             Section(L10n.SettingsDetails.General.Page.title) {
-                rememberLastPage
                 pageZoomPicker
                 pinchZoom
                 fullScreen
                 refreshAfterInactive
+                rememberLastPage
             }
-            edgeToEdge
+
+            EnhancedWebSecuritySettingsRow(viewModel: .init())
         }
         .id(redrawHelper)
+        .listTopContentMargin()
+    }
+
+    @ViewBuilder
+    private var rememberLastPage: some View {
+        // Mac has a system-level setting for state restoration
+        if !Current.isCatalyst {
+            Toggle(isOn: .init(get: {
+                Current.settingsStore.restoreLastURL
+            }, set: { newValue in
+                Current.settingsStore.restoreLastURL = newValue
+                redrawView()
+            })) {
+                Text(L10n.SettingsDetails.General.Restoration.title)
+            }
+        }
     }
 
     @ViewBuilder
@@ -114,21 +133,6 @@ struct GeneralSettingsView: View {
         }
     }
 
-    @ViewBuilder
-    private var rememberLastPage: some View {
-        // Mac has a system-level setting for state restoration
-        if !Current.isCatalyst {
-            Toggle(isOn: .init(get: {
-                Current.settingsStore.restoreLastURL
-            }, set: { newValue in
-                Current.settingsStore.restoreLastURL = newValue
-                redrawView()
-            })) {
-                Text(L10n.SettingsDetails.General.Restoration.title)
-            }
-        }
-    }
-
     private var pageZoomPicker: some View {
         Picker(
             L10n.SettingsDetails.General.PageZoom.title,
@@ -171,28 +175,6 @@ struct GeneralSettingsView: View {
             })) {
                 Text(L10n.SettingsDetails.General.FullScreen.title)
             }
-        }
-    }
-
-    @ViewBuilder
-    private var edgeToEdge: some View {
-        Section {
-            if !Current.isCatalyst {
-                Toggle(isOn: .init(get: {
-                    Current.settingsStore.edgeToEdge
-                }, set: { newValue in
-                    Current.settingsStore.edgeToEdge = newValue
-                    redrawView()
-                })) {
-                    Text("Edge to edge display")
-                }
-            }
-        } header: {
-            Text("Experimental")
-        } footer: {
-            Text(
-                "Display Home Assistant UI from edge to edge on devices that support it. This is an experimental feature which can be removed at any time and also may cause layout issues."
-            )
         }
     }
 
@@ -274,7 +256,11 @@ struct GeneralSettingsView: View {
             Current.settingsStore.macNativeFeaturesOnly = newValue
             redrawView()
         })) {
-            Text(L10n.SettingsDetails.MacNativeFeatures.title)
+            HStack {
+                Text(L10n.SettingsDetails.MacOpenInBrowser.title)
+                Spacer()
+                LabsLabel()
+            }
         }
     }
 
@@ -311,4 +297,23 @@ struct GeneralSettingsView: View {
         GeneralSettingsView()
     }
     .navigationViewStyle(.stack)
+}
+
+extension GeneralSettingsView: SettingsScreenSearchable {
+    /// "Remember last page" is a system setting on Catalyst, so it is only indexed where the toggle shows.
+    static var settingsSearchEntries: [SettingsSearchEntry] {
+        var entries = [
+            SettingsSearchEntry(L10n.SettingsDetails.General.AppIcon.title),
+            SettingsSearchEntry(L10n.SettingsDetails.General.OpenInBrowser.title),
+            SettingsSearchEntry(L10n.SettingsDetails.General.OpenInPrivateTab.title),
+            SettingsSearchEntry(L10n.SettingsDetails.Notifications.PromptToOpenUrls.title),
+            SettingsSearchEntry(L10n.SettingsDetails.General.PageZoom.title),
+            SettingsSearchEntry(L10n.SettingsDetails.General.PinchToZoom.title),
+            SettingsSearchEntry(L10n.SettingsDetails.General.FullScreen.title),
+        ]
+        if !Current.isCatalyst {
+            entries.append(SettingsSearchEntry(L10n.SettingsDetails.General.Restoration.title))
+        }
+        return entries
+    }
 }

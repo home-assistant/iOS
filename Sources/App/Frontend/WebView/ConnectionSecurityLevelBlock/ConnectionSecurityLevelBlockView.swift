@@ -1,12 +1,13 @@
+import PromiseKit
 import SFSafeSymbols
 import Shared
 import SwiftUI
 
 struct ConnectionSecurityLevelBlockView: View {
-    @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: ConnectionSecurityLevelBlockViewModel
 
-    @State private var showSettings = false
+    @Environment(\.appSettingsPresenter) private var appSettingsPresenter
+
     @State private var showHomeNetworkSettings = false
     @State private var showConnectionSecurityPreferences = false
 
@@ -47,6 +48,10 @@ struct ConnectionSecurityLevelBlockView: View {
             .onAppear {
                 viewModel.loadRequirements()
             }
+            .dismissesOnAppNavigation {
+                showHomeNetworkSettings = false
+                showConnectionSecurityPreferences = false
+            }
             #if targetEnvironment(macCatalyst)
             .fullScreenCover(isPresented: $showHomeNetworkSettings) {
                 homeNetworkView
@@ -54,18 +59,12 @@ struct ConnectionSecurityLevelBlockView: View {
             .fullScreenCover(isPresented: $showConnectionSecurityPreferences) {
                 connectionPreferencesView
             }
-            .fullScreenCover(isPresented: $showSettings) {
-                settingsView
-            }
             #else
             .sheet(isPresented: $showHomeNetworkSettings) {
                     homeNetworkView
                 }
                 .sheet(isPresented: $showConnectionSecurityPreferences) {
                     connectionPreferencesView
-                }
-                .sheet(isPresented: $showSettings) {
-                    settingsView
                 }
             #endif
                 .onReceive(NotificationCenter.default.publisher(for: .locationPermissionDidChange)) { notification in
@@ -88,17 +87,6 @@ struct ConnectionSecurityLevelBlockView: View {
                 }
         }
         .navigationViewStyle(.stack)
-    }
-
-    private var settingsView: some View {
-        SettingsView()
-            .onDisappear {
-                Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise)
-                    .done { webView in
-                        dismiss()
-                        webView.refresh()
-                    }
-            }
     }
 
     private var content: some View {
@@ -161,11 +149,9 @@ struct ConnectionSecurityLevelBlockView: View {
     }
 
     private func openSettings() {
-        if Current.isCatalyst {
-            Current.sceneManager.activateAnyScene(for: .settings)
-        } else {
-            showSettings = true
-        }
+        // This scene's presenter, so Settings opens in this window alone; it handles Catalyst (where
+        // Settings is a separate window) vs. the in-app sheet.
+        appSettingsPresenter?.presentSettings()
     }
 
     private func requirementItem(systemSymbol: SFSymbol, title: String) -> some View {
@@ -237,7 +223,8 @@ struct ConnectionSecurityLevelBlockView: View {
         NavigationView {
             OnboardingPermissionsNavigationView(
                 onboardingServer: server,
-                steps: [.localAccess, .updatePreferencesSuccess]
+                steps: [.localAccess, .updatePreferencesSuccess],
+                onDismiss: { showConnectionSecurityPreferences = false }
             )
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -254,7 +241,7 @@ struct ConnectionSecurityLevelBlockView: View {
     }
 
     private func reload() {
-        Current.sceneManager.webViewWindowControllerPromise.then(\.webViewControllerPromise).done { webView in
+        Current.sceneManager.webViewControllerPromise.done { webView in
             webView.refresh()
         }
     }

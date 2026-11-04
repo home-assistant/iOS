@@ -1,5 +1,6 @@
 import Foundation
 import Network
+import os
 
 @MainActor
 class ConnectivityChecker {
@@ -84,7 +85,7 @@ class ConnectivityChecker {
                 }
                 var storage = sockaddr_storage()
                 data.withUnsafeBytes { bytes in
-                    memcpy(&storage, bytes.baseAddress!, min(bytes.count, MemoryLayout<sockaddr_storage>.size))
+                    _ = memcpy(&storage, bytes.baseAddress!, min(bytes.count, MemoryLayout<sockaddr_storage>.size))
                 }
 
                 var hostname = [CChar](repeating: 0, count: Int(NI_MAXHOST))
@@ -140,35 +141,34 @@ class ConnectivityChecker {
                 using: .tcp
             )
 
-            var completed = false
-            let timeoutTask = DispatchWorkItem {
-                if !completed {
-                    completed = true
-                    connection.cancel()
-                    continuation.resume(throwing: NSError(
-                        domain: "ConnectivityChecker",
-                        code: -1,
-                        userInfo: [NSLocalizedDescriptionKey: "Connection timeout"]
-                    ))
+            // Returns true only on the first call, so the continuation is resumed exactly once
+            let completed = OSAllocatedUnfairLock(initialState: false)
+            let markCompleted: @Sendable () -> Bool = {
+                completed.withLock { done in
+                    if done { return false }
+                    done = true
+                    return true
                 }
+            }
+            let timeoutTask = DispatchWorkItem {
+                guard markCompleted() else { return }
+                connection.cancel()
+                continuation.resume(throwing: NSError(
+                    domain: "ConnectivityChecker",
+                    code: -1,
+                    userInfo: [NSLocalizedDescriptionKey: "Connection timeout"]
+                ))
             }
 
             connection.stateUpdateHandler = { state in
-                guard !completed else { return }
-
                 switch state {
                 case .ready:
-                    completed = true
+                    guard markCompleted() else { return }
                     timeoutTask.cancel()
                     connection.cancel()
                     continuation.resume()
-                case let .failed(error):
-                    completed = true
-                    timeoutTask.cancel()
-                    connection.cancel()
-                    continuation.resume(throwing: error)
-                case let .waiting(error):
-                    completed = true
+                case let .failed(error), let .waiting(error):
+                    guard markCompleted() else { return }
                     timeoutTask.cancel()
                     connection.cancel()
                     continuation.resume(throwing: error)

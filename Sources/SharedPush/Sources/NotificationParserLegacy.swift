@@ -116,7 +116,7 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
         }
 
         var needsCategory = false
-        var needsMutableContent = false
+        var needsMutableContent = true
 
         var payload: [String: Any] = [
             "aps": [
@@ -136,6 +136,20 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
             needsCategory = true
             needsMutableContent = true
             payload["entity_id"] = entityId
+        }
+
+        // Pass kiosk command values (kiosk_set_brightness / kiosk_set_volume /
+        // kiosk_set_screensaver_mode) through to the client.
+        if let level = data["level"] {
+            payload["level"] = level
+        }
+
+        if let volume = data["volume"] {
+            payload["volume"] = volume
+        }
+
+        if let mode = data["mode"] {
+            payload["mode"] = mode
         }
 
         if let actionData = data["action_data"] {
@@ -169,6 +183,16 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
         addAttachment(key: "video", contentType: "mpeg4")
         addAttachment(key: "image", contentType: "jpeg")
         addAttachment(key: "audio", contentType: "waveformaudio")
+
+        for key in NotificationPayloadKey.notificationDecorationKeys {
+            if let value = data[key.rawValue] {
+                payload[key.rawValue] = value
+            }
+        }
+        if payload[NotificationPayloadKey.iconURL.rawValue] != nil ||
+            payload[NotificationPayloadKey.notificationIcon.rawValue] != nil {
+            needsMutableContent = true
+        }
 
         payload["url"] = data["url"]
         payload["shortcut"] = data["shortcut"]
@@ -231,7 +255,12 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
             homeassistant["live_update"] = true
             for key in [
                 "tag", "critical_text", "progress", "progress_max", "chronometer",
-                "when", "when_relative", "notification_icon", "notification_icon_color",
+                "when", "when_relative",
+                NotificationPayloadKey.notificationIcon.rawValue,
+                NotificationPayloadKey.notificationIconColor.rawValue,
+                "background_color", "text_color", "progress_bar_color",
+                "progress_bar_direction",
+                "silent", "url", "relevance_score",
             ] {
                 if let value = data[key] {
                     homeassistant[key] = value
@@ -244,6 +273,16 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
                 homeassistant["message"] = message
             }
             payload["homeassistant"] = homeassistant
+
+            if data["silent"] as? Bool == true {
+                payload.mutateInside("aps") { aps in
+                    aps.mutateInside("alert") { alert in
+                        alert["body"] = nil
+                        alert["title"] = ""
+                    }
+                    aps["sound"] = nil
+                }
+            }
         }
 
         if registrationInfo["os_version"]?.starts(with: "10.15") == true {
@@ -291,6 +330,20 @@ enum LegacyNotificationCommandType: String {
     case updateWidgets = "update_widgets"
     case showCamera = "show_camera"
     case hideCamera = "hide_camera"
+}
+
+public enum NotificationPayloadKey: String, CaseIterable {
+    case iconURL = "icon_url"
+    case notificationIcon = "notification_icon"
+    case notificationIconColor = "notification_icon_color"
+    case color
+
+    public static let notificationDecorationKeys: [Self] = [
+        .iconURL,
+        .notificationIcon,
+        .notificationIconColor,
+        .color,
+    ]
 }
 
 private extension Dictionary where Value == Any {

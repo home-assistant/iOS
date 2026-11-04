@@ -1,20 +1,17 @@
-import RealmSwift
 import Shared
 import SwiftUI
 
-/// SwiftUI replacement for `NotificationActionConfigurator`.
-///
 /// Edits a `NotificationAction` belonging to an owning `NotificationCategory`.
 /// Changes are kept in local view state until the user taps Save, at which
-/// point they are written back into the Realm-managed action (if managed) and
-/// appended to the owning category if new. Matches the original Eureka
-/// behaviour, including conditional text-input rows, YAML trigger preview and
-/// read-only mode for server-controlled actions.
+/// point the edited value is handed back via `onDismiss`; the category editor
+/// owns persistence. Matches the original Eureka behaviour, including
+/// conditional text-input rows, YAML trigger preview and read-only mode for
+/// server-controlled actions.
 struct NotificationActionEditorView: View {
     let category: NotificationCategory
     let existingAction: NotificationAction?
 
-    /// Called with the persisted action when the user finishes editing.
+    /// Called with the edited action when the user finishes editing.
     /// `nil` is passed if the user cancelled without saving.
     let onDismiss: (NotificationAction?) -> Void
 
@@ -48,14 +45,14 @@ struct NotificationActionEditorView: View {
         self.isNewAction = (action == nil)
         self.isServerControlled = resolved.isServerControlled
 
-        _title = State(initialValue: resolved.Title)
-        _identifier = State(initialValue: resolved.Identifier)
-        _textInput = State(initialValue: resolved.TextInput)
-        _textInputButtonTitle = State(initialValue: resolved.TextInputButtonTitle)
-        _textInputPlaceholder = State(initialValue: resolved.TextInputPlaceholder)
-        _foreground = State(initialValue: resolved.Foreground)
-        _destructive = State(initialValue: resolved.Destructive)
-        _authenticationRequired = State(initialValue: resolved.AuthenticationRequired)
+        _title = State(initialValue: resolved.title)
+        _identifier = State(initialValue: resolved.identifier)
+        _textInput = State(initialValue: resolved.textInput)
+        _textInputButtonTitle = State(initialValue: resolved.textInputButtonTitle)
+        _textInputPlaceholder = State(initialValue: resolved.textInputPlaceholder)
+        _foreground = State(initialValue: resolved.foreground)
+        _destructive = State(initialValue: resolved.destructive)
+        _authenticationRequired = State(initialValue: resolved.authenticationRequired)
     }
 
     var body: some View {
@@ -207,7 +204,7 @@ struct NotificationActionEditorView: View {
         return NotificationAction.exampleTrigger(
             api: api,
             identifier: identifier,
-            category: category.Identifier,
+            category: category.identifier,
             textInput: textInput
         )
     }
@@ -222,27 +219,18 @@ struct NotificationActionEditorView: View {
     }
 
     private func save() {
-        let realm = Current.realm()
-        let action = existingAction ?? NotificationAction()
+        var action = existingAction ?? NotificationAction()
 
-        realm.reentrantWrite {
-            if isNewAction {
-                action.Identifier = identifier
-            }
-            action.Title = title
-            action.TextInput = textInput
-            action.TextInputButtonTitle = textInputButtonTitle
-            action.TextInputPlaceholder = textInputPlaceholder
-            action.Foreground = foreground
-            action.Destructive = destructive
-            action.AuthenticationRequired = authenticationRequired
-
-            // Only add into Realm if the category is already persisted.
-            category.realm?.add(action, update: .all)
-            if category.Actions.contains(action) == false {
-                category.Actions.append(action)
-            }
+        if isNewAction {
+            action.identifier = identifier
         }
+        action.title = title
+        action.textInput = textInput
+        action.textInputButtonTitle = textInputButtonTitle
+        action.textInputPlaceholder = textInputPlaceholder
+        action.foreground = foreground
+        action.destructive = destructive
+        action.authenticationRequired = authenticationRequired
 
         onDismiss(action)
         dismiss()

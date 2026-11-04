@@ -10,6 +10,7 @@ enum ZoneManagerIgnoreReason: LocalizedError, Equatable {
     case ignoredSSID(String)
     case beaconExitIgnored
     case recentlyUpdated
+    case zoneAlreadyExited
 
     var errorDescription: String? {
         switch self {
@@ -31,6 +32,8 @@ enum ZoneManagerIgnoreReason: LocalizedError, Equatable {
             return "beacon exit ignored"
         case .recentlyUpdated:
             return "recent location update already occurred"
+        case .zoneAlreadyExited:
+            return "zone already exited through another of its regions"
         }
     }
 }

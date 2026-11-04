@@ -117,4 +117,45 @@ class HomeAssistantBackgroundTaskTests: XCTestCase {
 
         XCTAssertEqual(try hang(promise), "dogs")
     }
+
+    func testDeniedAssertionSkipsWorkThatRequiresIt() {
+        var didRunWork = false
+
+        let promise: Promise<String> = HomeAssistantBackgroundTask.execute(
+            withName: "name",
+            beginBackgroundTask: { _, _ -> (Int?, TimeInterval?) in (nil, nil) },
+            endBackgroundTask: { (_: Int) in XCTFail("nothing to end") },
+            requiresAssertion: true,
+            wrapping: { _ in
+                didRunWork = true
+                return .value("hello!")
+            }
+        )
+
+        XCTAssertThrowsError(try hang(promise)) { error in
+            XCTAssertEqual(error as? BackgroundTaskError, BackgroundTaskError.denied)
+        }
+        XCTAssertFalse(didRunWork)
+    }
+
+    func testDeniedAssertionStillRunsWorkThatDoesNotRequireIt() {
+        let promise: Promise<String> = HomeAssistantBackgroundTask.execute(
+            withName: "name",
+            beginBackgroundTask: { _, _ -> (Int?, TimeInterval?) in (nil, nil) },
+            endBackgroundTask: { (_: Int) in XCTFail("nothing to end") },
+            wrapping: { _ in .value("hello!") }
+        )
+
+        XCTAssertEqual(try hang(promise), "hello!")
+    }
+
+    func testProcessInfoRunnerRunsRequiredWorkOnceTheActivityIsGranted() {
+        let promise: Promise<String> = ProcessInfoBackgroundTaskRunner()(
+            withName: "name",
+            requiringAssertion: true,
+            wrapping: { _ in .value("granted") }
+        )
+
+        XCTAssertEqual(try hang(promise), "granted")
+    }
 }

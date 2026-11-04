@@ -2,6 +2,8 @@
 "NSCameraUsageDescription" = "Tee fotosid ja saada need Home Assistant serverisse.";
 "NSCrossWebsiteTrackingUsageDescription" = "Luba veebisaidiülene jälgimine kui konfiguratsioon seda nõuab.";
 "NSFocusStatusUsageDescription" = "Teata oma fookuse olekust andurina.";
+"NSHealthShareUsageDescription" = "Read selected Apple Health metrics so they can be shared with Home Assistant as sensors.";
+"NSHealthUpdateUsageDescription" = "Home Assistant does not write any data to Apple Health.";
 "NSLocalNetworkUsageDescription" = "Leia Home Assistanti eksemplar ja suhtle sellega.";
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "\n 🔵 Samuti vajame luba asukohale juurde pääseda valikuga „Alati”, et rakendus saaks taustal toiminguid teha. \n\n ⚠️ Ilma selleta ei saa rakendus otsustada, millist ühendust (kohalik või kaugühendus) taustal kasutada ja kasutab alati kaugühendust.";
 "NSLocationAlwaysUsageDescription" = "Meil on alati vaja juurdepääsu asukohale, et kasutada selliseid funktsioone nagu iBeacons, geofüüsilised piirded, asukoha taustauuendused ja täpne aruandlus.";

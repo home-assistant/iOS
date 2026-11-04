@@ -3,8 +3,11 @@ import Shared
 import UIKit
 import UniformTypeIdentifiers
 
-@available(iOS 17.0, *)
-struct GetCameraSnapshotAppIntent: AppIntent {
+@available(iOS 17.0, watchOS 10.0, *)
+struct GetCameraSnapshotAppIntent: AppIntent, CustomIntentMigratedAppIntent {
+    // Carries over shortcuts built with the deprecated SiriKit GetCameraImageIntent
+    static let intentClassName = "GetCameraImageIntent"
+
     static var title: LocalizedStringResource = .init(
         "app_intents.get_camera_snapshot.title",
         defaultValue: "Get camera snapshot"
@@ -29,9 +32,9 @@ struct GetCameraSnapshotAppIntent: AppIntent {
     var camera: IntentCameraEntity
 
     func perform() async throws -> some IntentResult & ReturnsValue<IntentFile> {
-        await Current.connectivity.syncNetworkInformation()
-        guard camera.serverId == server.id,
-              let server = server.getServer(),
+        await Current.connectivity.refreshNetworkInformation()
+        guard let server = server.shortcutServer(),
+              IntentServerAppEntity.shortcutServer(for: camera.serverId)?.identifier == server.identifier,
               let api = Current.api(for: server) else {
             throw ShortcutAppIntentError(L10n.AppIntents.Error.noServer)
         }

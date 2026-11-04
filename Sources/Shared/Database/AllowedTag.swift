@@ -1,16 +1,9 @@
 import Foundation
 import GRDB
 
-public struct AllowedTag: Codable, FetchableRecord, PersistableRecord {
-    public static let databaseTableName = GRDBDatabaseTable.allowedTags.rawValue
-
-    public var tag: String
-
-    public init(tag: String) {
-        self.tag = tag
-    }
-
-    public static func contains(_ tag: String) -> Bool {
+// `AllowedTag` itself lives in the `HAModels` package; these are its database-backed helpers.
+public extension AllowedTag {
+    static func contains(_ tag: String) -> Bool {
         do {
             return try Current.database().read { db in
                 try AllowedTag.fetchOne(db, key: tag) != nil
@@ -21,7 +14,7 @@ public struct AllowedTag: Codable, FetchableRecord, PersistableRecord {
         }
     }
 
-    public static func all() -> [AllowedTag] {
+    static func all() -> [AllowedTag] {
         do {
             return try Current.database().read { db in
                 try AllowedTag
@@ -34,7 +27,7 @@ public struct AllowedTag: Codable, FetchableRecord, PersistableRecord {
         }
     }
 
-    public static func add(_ tag: String) {
+    static func add(_ tag: String) {
         guard !tag.isEmpty else { return }
 
         do {
@@ -46,7 +39,7 @@ public struct AllowedTag: Codable, FetchableRecord, PersistableRecord {
         }
     }
 
-    public static func delete(_ tag: String) {
+    static func delete(_ tag: String) {
         do {
             try Current.database().write { db in
                 _ = try AllowedTag.deleteOne(db, key: tag)
@@ -56,7 +49,7 @@ public struct AllowedTag: Codable, FetchableRecord, PersistableRecord {
         }
     }
 
-    public static func clearAll() {
+    static func clearAll() {
         do {
             try Current.database().write { db in
                 _ = try AllowedTag.deleteAll(db)

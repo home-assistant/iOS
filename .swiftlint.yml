@@ -67,9 +67,11 @@ custom_rules:
     severity: error
     excluded:
       - "Tests"
+      # Test support compiled into the test bundles only; it swaps `Current` the way tests do.
+      - "Sources/SharedTesting"
   sf_safe_symbol:
     name: "Safe SFSymbol"
     message: "Use `SFSafeSymbols` via `systemSymbol` parameters for type safety."
-    regex: >
-     (Image\\(systemName:)|(NSImage\\(symbolName:)|(Label[^,]+?,\\s*systemImage:)|(UIApplicationShortcutIcon\\(systemImageName:)
+    regex: >-
+      (\bImage\(systemName:)|(\bNSImage\(symbolName:)|(\bLabel[^,]+?,\s*systemImage:)|(\bUIApplicationShortcutIcon\(systemImageName:)
     severity: warning

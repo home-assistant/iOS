@@ -17,11 +17,16 @@ enum SceneActivity: CaseIterable {
     }
 
     var activity: NSUserActivity {
-        .init(activityType: activityIdentifier)
+        let activity = NSUserActivity(activityType: activityIdentifier)
+        // `targetContentIdentifier` is what SwiftUI `handlesExternalEvents(matching:)` matches against, so
+        // scenes activated for this activity route to the right `WindowGroup` (e.g. Settings) in `HAApp`.
+        activity.targetContentIdentifier = activityIdentifier
+        return activity
     }
 
     func activity(with userInfo: [AnyHashable: Any]) -> NSUserActivity {
         let activity = NSUserActivity(activityType: activityIdentifier)
+        activity.targetContentIdentifier = activityIdentifier
         activity.userInfo = userInfo
         return activity
     }
@@ -50,11 +55,30 @@ enum SceneActivity: CaseIterable {
 
     var configuration: UISceneConfiguration {
         switch self {
-        case .webView, .settings, .about, .assist, .onboarding: return .init(
-                name: configurationName,
-                sessionRole: .windowApplication
-            )
+        case .webView, .settings, .about, .assist, .onboarding:
+            let configuration = UISceneConfiguration(name: configurationName, sessionRole: .windowApplication)
+            configuration.delegateClass = sceneDelegateClass
+            return configuration
         case .carPlay: return .init(name: configurationName, sessionRole: .carTemplateApplication)
+        }
+    }
+
+    /// The size a window of this kind opens at before the user has ever placed it. `nil` leaves the window to
+    /// macOS, which opens it at the frontmost window's frame.
+    var defaultMacWindowSize: CGSize? {
+        switch self {
+        case .assist: return .init(width: 400, height: 600)
+        case .webView, .settings, .about, .carPlay, .onboarding: return nil
+        }
+    }
+
+    /// Windows that remember their geometry need a scene delegate to receive the lifecycle callbacks
+    /// `WindowScenesManager` acts on. The main window's delegate is attached in `AppDelegate` instead, since it
+    /// also carries quick-action and browser-launch behaviour.
+    private var sceneDelegateClass: AnyClass? {
+        switch self {
+        case .assist: return AssistWindowSceneDelegate.self
+        case .webView, .settings, .about, .carPlay, .onboarding: return nil
         }
     }
 }
