@@ -36,6 +36,7 @@ struct NativeTabBarFrontendTabViewSnapshotTests {
             frontendOpacity: 1,
             frontendIgnoredSafeAreaEdges: .all,
             showsBarItems: true,
+            avatar: NativeTabBarAvatarImage.circular(nil, initial: "B", size: NativeTabBarAvatarImage.barButtonSize),
             onNeedsWebViewController: {}
         )
     }
