@@ -198,7 +198,7 @@ final class CarPlayVacuumControlTemplate: CarPlayTemplateProvider {
         let selectionTemplate = CPListTemplate(title: L10n.Vacuum.Control.CleanAreas.title, sections: [])
         selectionTemplate.emptyViewSubtitleVariants = [L10n.CarPlay.State.Loading.title]
         areaSelectionTemplate = selectionTemplate
-        navigator?.pushTemplate(selectionTemplate, animated: true, completion: nil)
+        navigator?.pushTemplateWithinDepthLimit(selectionTemplate, animated: true, completion: nil)
         viewModel.loadCleanableAreas { [weak self] in
             self?.refreshAreaSelection()
         }
@@ -273,6 +273,6 @@ final class CarPlayVacuumControlTemplate: CarPlayTemplateProvider {
             title: L10n.Vacuum.Control.FanSpeed.title,
             sections: [CPListSection(items: items)]
         )
-        navigator?.pushTemplate(selectionTemplate, animated: true, completion: nil)
+        navigator?.pushTemplateWithinDepthLimit(selectionTemplate, animated: true, completion: nil)
     }
 }

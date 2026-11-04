@@ -59,7 +59,7 @@ class CarPlayDomainsListTemplate: CarPlayTemplateProvider {
         template.interfaceController = interfaceController
 
         childTemplateProvider = template
-        interfaceController?.pushTemplate(
+        interfaceController?.pushTemplateWithinDepthLimit(
             template.template,
             animated: true,
             completion: nil

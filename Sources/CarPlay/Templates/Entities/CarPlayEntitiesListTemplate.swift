@@ -71,7 +71,7 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
         guard var provider = CarPlayControlScreenFactory.template(entity: entity, server: server) else { return }
         provider.interfaceController = interfaceController
         childTemplateProvider = provider
-        interfaceController?.pushTemplate(provider.template, animated: true, completion: nil)
+        interfaceController?.pushTemplateWithinDepthLimit(provider.template, animated: true, completion: nil)
     }
 
     func displayLockConfirmation(entity: HAEntity, completion: @escaping () -> Void) {

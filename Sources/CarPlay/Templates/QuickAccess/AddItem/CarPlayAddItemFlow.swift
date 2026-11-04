@@ -37,7 +37,7 @@ final class CarPlayAddItemFlow {
             return
         }
         steps = [servers.count > 1 ? .servers : .category(servers[0])]
-        interfaceController?.pushTemplate(template, animated: true, completion: nil)
+        interfaceController?.pushTemplateWithinDepthLimit(template, animated: true, completion: nil)
         render()
     }
 

@@ -32,7 +32,7 @@ final class CarPlayEditItemFlow {
             return
         }
 
-        interfaceController?.pushTemplate(template, animated: true, completion: nil)
+        interfaceController?.pushTemplateWithinDepthLimit(template, animated: true, completion: nil)
         render(items: items)
     }
 

@@ -199,7 +199,7 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
             guard let self else { return }
             await selectionTemplate.updateSections([serverSelectionSection(template: selectionTemplate)])
         }
-        navigator?.pushTemplate(selectionTemplate, animated: true, completion: nil)
+        navigator?.pushTemplateWithinDepthLimit(selectionTemplate, animated: true, completion: nil)
     }
 
     private func serverSelectionSection(template: CPListTemplate) async -> CPListSection {
@@ -223,7 +223,7 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
         let selectionTemplate = CPListTemplate(title: L10n.Carplay.Tab.QuickAccess.layout, sections: [])
         layoutSelectionTemplate = selectionTemplate
         selectionTemplate.updateSections([layoutSelectionSection(template: selectionTemplate)])
-        navigator?.pushTemplate(selectionTemplate, animated: true, completion: nil)
+        navigator?.pushTemplateWithinDepthLimit(selectionTemplate, animated: true, completion: nil)
     }
 
     private func layoutSelectionSection(template: CPListTemplate) -> CPListSection {
@@ -255,7 +255,7 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
         let selectionTemplate = CPListTemplate(title: L10n.CarPlay.Config.Tabs.title, sections: [])
         tabsSelectionTemplate = selectionTemplate
         selectionTemplate.updateSections([tabsSelectionSection(template: selectionTemplate)])
-        navigator?.pushTemplate(selectionTemplate, animated: true, completion: nil)
+        navigator?.pushTemplateWithinDepthLimit(selectionTemplate, animated: true, completion: nil)
     }
 
     private func tabsSelectionSection(template: CPListTemplate) -> CPListSection {
@@ -298,7 +298,7 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
                 ]),
             ]
         )
-        navigator?.pushTemplate(troubleshootingTemplate, animated: true, completion: nil)
+        navigator?.pushTemplateWithinDepthLimit(troubleshootingTemplate, animated: true, completion: nil)
     }
 
     private var assistAudioItem: CPListItem {
@@ -323,7 +323,7 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
                 }),
             ]
         )
-        navigator?.pushTemplate(selectionTemplate, animated: true, completion: nil)
+        navigator?.pushTemplateWithinDepthLimit(selectionTemplate, animated: true, completion: nil)
     }
 
     private func ttsPlaybackStrategyItem(strategy: CarPlayAssistTTSPlaybackStrategy) -> CPListItem {

@@ -24,7 +24,7 @@ final class CarPlayAssistSettingsTemplate {
         self.template = template
         template.updateSections(makeSections())
         loadSelectedVoiceDisplayName()
-        interfaceController?.pushTemplate(template, animated: true, completion: nil)
+        interfaceController?.pushTemplateWithinDepthLimit(template, animated: true, completion: nil)
     }
 
     private func reload() {
@@ -103,7 +103,7 @@ final class CarPlayAssistSettingsTemplate {
     @available(iOS 17.0, *)
     private func presentSTTLanguageSelection() {
         let selectionTemplate = CPListTemplate(title: L10n.Assist.Settings.OnDeviceStt.language, sections: [])
-        interfaceController?.pushTemplate(selectionTemplate, animated: true, completion: nil)
+        interfaceController?.pushTemplateWithinDepthLimit(selectionTemplate, animated: true, completion: nil)
 
         // Pushed empty on purpose: the supported locales come from a probe that would otherwise
         // hang the main thread while the template is built.
@@ -174,7 +174,7 @@ final class CarPlayAssistSettingsTemplate {
 
     private func presentTTSVoiceSelection() {
         let selectionTemplate = CPListTemplate(title: L10n.Assist.Settings.OnDeviceTts.voice, sections: [])
-        interfaceController?.pushTemplate(selectionTemplate, animated: true, completion: nil)
+        interfaceController?.pushTemplateWithinDepthLimit(selectionTemplate, animated: true, completion: nil)
 
         // Pushed empty on purpose: reading the installed voices waits on the TextToSpeech daemon
         // and would hang the main thread while the template is built.

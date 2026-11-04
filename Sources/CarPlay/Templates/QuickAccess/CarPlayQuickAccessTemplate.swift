@@ -525,7 +525,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         let listTemplate = CPListTemplate(title: folder.name(info: folderInfo), sections: [])
         openFolderTemplates.append((folderId: folder.id, template: listTemplate))
         updateFolderContents(folder: folder, in: listTemplate)
-        navigator?.pushTemplate(listTemplate, animated: true, completion: nil)
+        navigator?.pushTemplateWithinDepthLimit(listTemplate, animated: true, completion: nil)
     }
 
     private func updateFolderContents(folder: MagicItem, in template: CPListTemplate) {
@@ -785,7 +785,7 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         guard var provider = CarPlayControlScreenFactory.template(entity: entity, server: server) else { return }
         provider.interfaceController = interfaceController
         controlScreenTemplate = provider
-        navigator?.pushTemplate(provider.template, animated: true, completion: nil)
+        navigator?.pushTemplateWithinDepthLimit(provider.template, animated: true, completion: nil)
     }
 
     private func executeMagicItem(
