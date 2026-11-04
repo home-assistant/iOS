@@ -145,7 +145,7 @@ public class AppEnvironment {
         if isFastlaneSnapshot,
            let path = UserDefaults(suiteName: AppConstants.AppGroupID)!.string(forKey: "E2E_CLIENT_CERTIFICATE_FILE"),
            !path.isEmpty {
-            e2eClientCertificateFile = URL(fileURLWithPath: path)
+            self.e2eClientCertificateFile = URL(fileURLWithPath: path)
         }
     }
 
