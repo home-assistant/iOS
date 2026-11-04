@@ -26,7 +26,8 @@ struct OnboardingServersListView: View {
     @State private var screenLoaded = false
     @State private var autoConnectWorkItem: DispatchWorkItem?
     @State private var autoConnectInstance: DiscoveredHomeAssistant?
-    @State private var autoConnectBottomSheetState: AppleLikeBottomSheetViewState?
+    @State private var pendingAutoConnectInstance: DiscoveredHomeAssistant?
+    @State private var isAutoConnectPresented = false
     @State private var rejectedInvitation = false
     @State private var headerHeight: CGFloat = 0
     @State private var contentHeight: CGFloat = 0
@@ -78,7 +79,6 @@ struct OnboardingServersListView: View {
             content
             if !shouldShowInvitation {
                 centerLoader
-                autoConnectView
             }
         }
         .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
@@ -156,6 +156,28 @@ struct OnboardingServersListView: View {
                 startPendingManualConnection()
             }
         }
+        .sheet(isPresented: autoConnectPresented(onCatalyst: false), onDismiss: finishAutoConnectPrompt) {
+            autoConnectSheet
+        }
+        .navigationDestination(isPresented: autoConnectPresented(onCatalyst: true)) {
+            autoConnectPage
+                .onDisappear {
+                    finishAutoConnectPrompt()
+                }
+        }
+    }
+
+    private func autoConnectPresented(onCatalyst: Bool) -> Binding<Bool> {
+        guard Current.isCatalyst == onCatalyst else { return .constant(false) }
+        return $isAutoConnectPresented
+    }
+
+    private func finishAutoConnectPrompt() {
+        autoConnectInstance = nil
+        hideCenterLoader()
+        guard let instance = pendingAutoConnectInstance else { return }
+        pendingAutoConnectInstance = nil
+        viewModel.selectInstance(instance, presenter: presenter)
     }
 
     /// Runs after manual URL entry goes away (sheet dismissed / page popped) so the flow never
@@ -167,26 +189,35 @@ struct OnboardingServersListView: View {
         viewModel.selectInstance(.init(manualURL: connectURL), presenter: presenter)
     }
 
-    @ViewBuilder
-    private var autoConnectView: some View {
-        if autoConnectInstance != nil {
-            AppleLikeBottomSheet(
-                title: autoConnectInstance?.bonjourName ?? autoConnectInstance?.locationName ?? L10n.unknownLabel,
-                content: {
-                    autoConnectViewContent(instance: autoConnectInstance)
-                },
-                state: $autoConnectBottomSheetState,
-                customDismiss: {
-                    autoConnectInstance = nil
-                },
-                willDismiss: {
-                    autoConnectInstance = nil
+    private var autoConnectTitle: String {
+        autoConnectInstance?.bonjourName ?? autoConnectInstance?.locationName ?? L10n.unknownLabel
+    }
+
+    private var autoConnectSheet: some View {
+        NavigationStack {
+            autoConnectViewContent(instance: autoConnectInstance)
+                .padding(.horizontal, DesignSystem.Spaces.two)
+                .padding(.bottom, DesignSystem.Spaces.two)
+                .navigationTitle(autoConnectTitle)
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        CloseButton(size: .medium) {
+                            isAutoConnectPresented = false
+                        }
+                    }
                 }
-            )
-            .onDisappear {
-                hideCenterLoader()
-            }
         }
+        .presentationDetents([.medium])
+        .presentationDragIndicator(.visible)
+    }
+
+    private var autoConnectPage: some View {
+        autoConnectViewContent(instance: autoConnectInstance)
+            .padding(.horizontal, DesignSystem.Spaces.two)
+            .padding(.bottom, DesignSystem.Spaces.two)
+            .navigationTitle(autoConnectTitle)
+            .navigationBarTitleDisplayMode(.inline)
     }
 
     private func hideCenterLoader() {
@@ -207,9 +238,8 @@ struct OnboardingServersListView: View {
                 .foregroundStyle(.secondary)
                 .screenCaptureProtected()
             Button {
-                autoConnectInstance = nil
-                guard let instance else { return }
-                viewModel.selectInstance(instance, presenter: presenter)
+                pendingAutoConnectInstance = instance
+                isAutoConnectPresented = false
             } label: {
                 Text(L10n.Onboarding.Servers.AutoConnect.button)
             }
@@ -223,6 +253,7 @@ struct OnboardingServersListView: View {
             guard let viewModel else { return }
             if viewModel.discoveredInstances.count == 1 {
                 autoConnectInstance = viewModel.discoveredInstances.first
+                isAutoConnectPresented = true
             } else if viewModel.discoveredInstances.count > 1 {
                 hideCenterLoader()
             }
@@ -344,10 +375,8 @@ struct OnboardingServersListView: View {
         // Pinned to the measured content height so the overlay never grows the stack and
         // feeds back into its own measurement.
         .frame(height: contentHeight > 0 ? contentHeight : nil)
-        .offset(y: autoConnectInstance == nil ? 0 : -100)
         .opacity(viewModel.showCenterLoader && !viewModel.invitationLoading ? 1 : 0)
         .animation(.easeInOut, value: viewModel.showCenterLoader)
-        .animation(.easeInOut, value: autoConnectInstance)
     }
 
     private func startDiscoveryIfNeeded() {

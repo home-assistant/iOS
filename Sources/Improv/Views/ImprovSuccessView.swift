@@ -35,7 +35,7 @@ struct ImprovSuccessView: View {
             Text(verbatim: L10n.Improv.Button.continue)
         }
         .buttonStyle(.primaryButton)
-        .padding()
+        .padding(.bottom, DesignSystem.Spaces.two)
     }
 }
 
