@@ -17,18 +17,23 @@ struct TagApprovalSheet: View {
             }
             .sheet(isPresented: $isSheetPresented, onDismiss: onDismiss) {
                 NavigationStack {
-                    content
-                        .padding(.horizontal, DesignSystem.Spaces.two)
-                        .padding(.bottom, DesignSystem.Spaces.two)
-                        .navigationTitle(L10n.Nfc.TagApproval.title)
-                        .navigationBarTitleDisplayMode(.inline)
-                        .toolbar {
-                            ToolbarItem(placement: .topBarLeading) {
-                                CloseButton(size: .medium) {
-                                    isSheetPresented = false
-                                }
+                    GeometryReader { proxy in
+                        ScrollView {
+                            content
+                                .padding(.horizontal, DesignSystem.Spaces.two)
+                                .padding(.bottom, DesignSystem.Spaces.two)
+                                .frame(minHeight: proxy.size.height)
+                        }
+                    }
+                    .navigationTitle(L10n.Nfc.TagApproval.title)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .topBarLeading) {
+                            CloseButton(size: .medium) {
+                                isSheetPresented = false
                             }
                         }
+                    }
                 }
                 .presentationDetents([.medium])
                 .presentationDragIndicator(.visible)

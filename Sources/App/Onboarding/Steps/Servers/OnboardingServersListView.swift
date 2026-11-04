@@ -195,9 +195,7 @@ struct OnboardingServersListView: View {
 
     private var autoConnectSheet: some View {
         NavigationStack {
-            autoConnectViewContent(instance: autoConnectInstance)
-                .padding(.horizontal, DesignSystem.Spaces.two)
-                .padding(.bottom, DesignSystem.Spaces.two)
+            autoConnectPage
                 .navigationTitle(autoConnectTitle)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
@@ -213,11 +211,14 @@ struct OnboardingServersListView: View {
     }
 
     private var autoConnectPage: some View {
-        autoConnectViewContent(instance: autoConnectInstance)
-            .padding(.horizontal, DesignSystem.Spaces.two)
-            .padding(.bottom, DesignSystem.Spaces.two)
-            .navigationTitle(autoConnectTitle)
-            .navigationBarTitleDisplayMode(.inline)
+        GeometryReader { proxy in
+            ScrollView {
+                autoConnectViewContent(instance: autoConnectInstance)
+                    .padding(.horizontal, DesignSystem.Spaces.two)
+                    .padding(.bottom, DesignSystem.Spaces.two)
+                    .frame(minHeight: proxy.size.height)
+            }
+        }
     }
 
     private func hideCenterLoader() {
@@ -250,7 +251,7 @@ struct OnboardingServersListView: View {
     private func scheduleAutoConnect() {
         autoConnectWorkItem?.cancel()
         let workItem = DispatchWorkItem { [weak viewModel] in
-            guard let viewModel else { return }
+            guard let viewModel, !shouldShowInvitation else { return }
             if viewModel.discoveredInstances.count == 1 {
                 autoConnectInstance = viewModel.discoveredInstances.first
                 isAutoConnectPresented = true
