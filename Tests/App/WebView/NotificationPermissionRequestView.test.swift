@@ -16,4 +16,15 @@ struct NotificationPermissionRequestViewTests {
             named: "notification-permission-sheet"
         )
     }
+
+    /// In compact height the sheet fills the screen, so the content keeps the horizontal safe area.
+    @MainActor @Test func compactHeightSnapshot() async throws {
+        guard #available(iOS 18.0, *) else { return }
+
+        assertLightDarkSnapshots(
+            of: AnyView(NotificationPermissionRequestView().environment(\.verticalSizeClass, .compact)),
+            layout: .fixed(width: 390, height: 420),
+            named: "notification-permission-sheet-compact"
+        )
+    }
 }
