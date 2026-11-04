@@ -60,6 +60,14 @@ public struct CircularComplicationRenderModel {
         return !hasIcon && !hasName
     }
 
+    /// Whether the center renders only the icon (no value and no name). Alone in the inner circle the
+    /// glyph has nothing to share the space with, so it can render well above the shared-center size.
+    public var isIconOnly: Bool {
+        let hasValue = showsValue && !valueText.isEmpty
+        let hasName = showsName && !title.isEmpty
+        return showsIcon && iconImage != nil && !hasValue && !hasName
+    }
+
     /// Whether the face leads with a large centered icon and renders the value in the open gauge's
     /// bottom label instead of stacking the two in the middle.
     ///

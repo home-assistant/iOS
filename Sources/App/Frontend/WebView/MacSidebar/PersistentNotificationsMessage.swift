@@ -10,6 +10,7 @@ struct PersistentNotificationsMessage: HADataDecodable, Equatable {
         case added
         case updated
         case removed
+        case unknown
     }
 
     var type: ChangeType
@@ -22,10 +23,7 @@ struct PersistentNotificationsMessage: HADataDecodable, Equatable {
 
     init(data: HAData) throws {
         let rawType: String = try data.decode("type")
-        guard let type = ChangeType(rawValue: rawType) else {
-            throw HADataError.couldntTransform(key: "type")
-        }
-        self.type = type
+        self.type = ChangeType(rawValue: rawType) ?? .unknown
         let notifications: [String: Any] = data.decode("notifications", fallback: [:])
         self.notificationIds = Set(notifications.keys)
     }
@@ -38,6 +36,8 @@ struct PersistentNotificationsMessage: HADataDecodable, Equatable {
             return current.union(notificationIds)
         case .removed:
             return current.subtracting(notificationIds)
+        case .unknown:
+            return current
         }
     }
 }

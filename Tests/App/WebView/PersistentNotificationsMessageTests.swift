@@ -28,11 +28,14 @@ struct PersistentNotificationsMessageTests {
         #expect(ids == ["b", "c"])
     }
 
-    @Test("Unknown change types fail to decode")
-    func unknownType() {
-        #expect(throws: (any Error).self) {
-            try PersistentNotificationsMessage(data: .dictionary(["type": "bogus", "notifications": [:]]))
-        }
+    @Test("Unknown change types decode and leave the notifications alone")
+    func unknownType() throws {
+        let message = try PersistentNotificationsMessage(data: .dictionary([
+            "type": "bogus",
+            "notifications": ["a": [:]],
+        ]))
+        #expect(message.type == .unknown)
+        #expect(message.apply(to: ["b"]) == ["b"])
     }
 
     @Test("Sidebar user data decodes its envelope and tolerates a null value")
