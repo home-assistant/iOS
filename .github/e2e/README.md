@@ -114,8 +114,8 @@ The `mtls_certificates:` option is what makes the lane trust the CA on the simul
 `client.p12` to the flow, and verify the instance through the proxy, since the check script
 presents `client.pem` when given `--ca-certificate`, `--client-certificate` and `--client-key`.
 Without the client certificate the proxy must answer 400; with it the instance answers through it.
-Apple's bundled `curl` cannot run the first check (its SecureTransport backend aborts the handshake
-with exit code 35 when a client certificate is requested), so use Homebrew's `curl` or Python for it:
+Not every `curl` reports the 400: the one on the CI runner exits 35 as soon as the proxy asks for a
+client certificate it does not have, which is why the workflow runs the first check through Python:
 
 ```bash
 python3 -c 'import ssl,urllib.request,urllib.error;c=ssl.create_default_context(cafile="/tmp/mtls/ca.pem")

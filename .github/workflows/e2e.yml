@@ -224,8 +224,8 @@ jobs:
       - name: Verify mTLS proxy
         if: env.E2E_TEST == 'MTLSOnboardingE2ETests'
         run: |
-          # Apple's curl (SecureTransport) aborts the handshake when a client certificate is
-          # requested and none is configured, so the no-certificate probe goes through Python.
+          # The runner's curl exits 35 instead of reporting the 400 when the proxy asks for a client
+          # certificate it does not have, so the no-certificate probe goes through Python.
           python3 - "$E2E_MTLS_URL/api/" "$RUNNER_TEMP/mtls/ca.pem" <<'EOF'
           import ssl, sys, urllib.error, urllib.request
           url, ca = sys.argv[1:3]
