@@ -6,11 +6,11 @@ import WidgetKit
 /// A grid of entity tiles the user picks one by one: a server, then as many of its entities as
 /// the family holds.
 ///
-/// Each tile behaves like the frontend's tile card. The icon runs the entity's main action when
-/// the widget can perform it in place (toggle a light, press a button, activate a scene), and the
-/// rest of the tile opens the entity in the app. Entities with no single main action — sensors,
-/// locks, media players — open in the app from both halves. States are always shown; the only
-/// display option the configuration offers is the last update time.
+/// Each tile behaves like the frontend's tile card. The icon runs the entity's own action when
+/// the widget can perform it in place (toggle a light, lock or unlock a lock by its state, press
+/// a button, activate a scene), and the rest of the tile opens the entity in the app. Entities
+/// the widget can't act on — sensors, media players — open in the app from both halves. States
+/// are always shown; the only display option the configuration offers is the last update time.
 @available(iOS 17, *)
 struct WidgetEntities: Widget {
     var body: some WidgetConfiguration {
