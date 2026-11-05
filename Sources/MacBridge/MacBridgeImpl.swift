@@ -101,6 +101,10 @@ import SystemConfiguration
         MacBridgeAppDelegateHandler.reopenHandler = handler
     }
 
+    func startUpdateRelauncher() -> Bool {
+        MacBridgeUpdateRelauncher.shared.start()
+    }
+
     func configureStatusItem(using configuration: MacBridgeStatusItemConfiguration) {
         statusItem?.configure(using: configuration)
     }
