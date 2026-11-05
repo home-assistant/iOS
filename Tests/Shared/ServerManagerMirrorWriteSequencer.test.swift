@@ -62,7 +62,10 @@ class ServerManagerMirrorWriteSequencerTests: XCTestCase {
         var cleared = false
         var written = false
 
-        XCTAssertTrue(sequencer.applyClear(clear) { cleared = true })
+        XCTAssertTrue(sequencer.applyClear(clear) { keeping in
+            XCTAssertTrue(keeping.isEmpty)
+            cleared = true
+        })
         XCTAssertFalse(sequencer.apply(write, key: "server") { written = true })
         XCTAssertTrue(cleared)
         XCTAssertFalse(written)
@@ -73,19 +76,27 @@ class ServerManagerMirrorWriteSequencerTests: XCTestCase {
         let write = sequencer.ticket()
         var written = false
 
-        XCTAssertTrue(sequencer.applyClear(clear) {})
+        XCTAssertTrue(sequencer.applyClear(clear) { _ in })
         XCTAssertTrue(sequencer.apply(write, key: "server") { written = true })
         XCTAssertTrue(written)
     }
 
-    func testClearIsSkippedWhenALaterWriteAlreadyLanded() {
+    func testClearAfterALaterWriteKeepsThatWriteAndClearsTheRest() {
+        // removeAll commits before add(B), but B's mirror write lands first: the clear still runs so the
+        // rows of the removed servers go, while B, which is newer than the clear, stays.
+        let olderWrite = sequencer.ticket()
         let clear = sequencer.ticket()
-        let write = sequencer.ticket()
-        var cleared = false
+        let newerWrite = sequencer.ticket()
+        var kept: Set<String>?
 
-        XCTAssertTrue(sequencer.apply(write, key: "server") {})
-        XCTAssertFalse(sequencer.applyClear(clear) { cleared = true })
-        XCTAssertFalse(cleared)
+        XCTAssertTrue(sequencer.apply(olderWrite, key: "a") {})
+        XCTAssertTrue(sequencer.apply(newerWrite, key: "b") {})
+        XCTAssertTrue(sequencer.applyClear(clear) { kept = $0 })
+        XCTAssertEqual(kept, ["b"])
+
+        // the clear is now the barrier for everything older than it, "a" included
+        XCTAssertFalse(sequencer.apply(olderWrite, key: "a") {})
+        XCTAssertFalse(sequencer.apply(clear, key: "c") {})
     }
 
     func testClearIsSkippedWhenALaterClearAlreadyLanded() {
@@ -93,8 +104,8 @@ class ServerManagerMirrorWriteSequencerTests: XCTestCase {
         let second = sequencer.ticket()
         var count = 0
 
-        XCTAssertTrue(sequencer.applyClear(second) { count += 1 })
-        XCTAssertFalse(sequencer.applyClear(first) { count += 1 })
+        XCTAssertTrue(sequencer.applyClear(second) { _ in count += 1 })
+        XCTAssertFalse(sequencer.applyClear(first) { _ in count += 1 })
         XCTAssertEqual(count, 1)
     }
 }

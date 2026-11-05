@@ -323,8 +323,14 @@ public final class ServerManagerImpl: ServerManager {
             return mirrorWrites.ticket()
         }
 
-        mirrorWrites.applyClear(mirrorTicket) {
-            mirrorStore.removeAll()
+        mirrorWrites.applyClear(mirrorTicket) { keeping in
+            if keeping.isEmpty {
+                mirrorStore.removeAll()
+            } else {
+                for key in mirrorStore.allKeys() where !keeping.contains(key) {
+                    mirrorStore.remove(key)
+                }
+            }
         }
         restoredMirroredServers = []
 

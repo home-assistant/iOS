@@ -786,6 +786,33 @@ class ServerManagerTests: XCTestCase {
         XCTAssertEqual(mirrorStore.data["fake1"]?.token, ServerInfo.mirrorPlaceholderToken)
     }
 
+    func testRuntimeURLStateDoesNotRewriteMirrorStore() throws {
+        // Extensions read the Keychain on every access and the setter re-evaluates the active URL on
+        // every save, so without ignoring that runtime state a token refresh there would hit GRDB.
+        let wasAppExtension = Current.isAppExtension
+        Current.isAppExtension = true
+        defer { Current.isAppExtension = wasAppExtension }
+
+        servers = ServerManagerImpl(keychain: keychain, historicKeychain: historicKeychain, mirrorStore: mirrorStore)
+        servers.setup()
+
+        let info = with(ServerInfo.fake()) {
+            $0.connection.set(address: URL(string: "http://192.168.1.2:8123")!, for: .internal)
+            $0.connection.overrideActiveURLType = .internal
+        }
+        let server = servers.add(identifier: "fake1", serverInfo: info)
+        let setCountAfterAdd = mirrorStore.setCount
+
+        // the override is runtime state that a Keychain round trip drops, so this save differs from
+        // the added value in the override and the token only
+        server.update { $0.token.accessToken = "refreshed" }
+        XCTAssertEqual(server.info.token.accessToken, "refreshed")
+        XCTAssertEqual(mirrorStore.setCount, setCountAfterAdd)
+
+        server.update { $0.connection.isLocalPushEnabled = false }
+        XCTAssertEqual(mirrorStore.setCount, setCountAfterAdd + 1)
+    }
+
     func testDeletingLastServerDoesNotDeadlockWhenMirrorSnapshotExists() throws {
         let info = ServerInfo.fake()
         try keychain.set(encoder.encode(info), key: "fake1")

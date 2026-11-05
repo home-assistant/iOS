@@ -47,22 +47,23 @@ public final class ServerManagerMirrorWriteSequencer {
         return true
     }
 
-    /// Runs `clear` for the whole mirror unless a later ticket already wrote any key or cleared it.
-    /// Returns whether it ran.
+    /// Clears the whole mirror unless a later clear already landed. `clear` receives the keys a later ticket
+    /// already wrote, which it must keep: those rows are newer than this clear. Returns whether it ran.
     @discardableResult
-    public func applyClear(_ ticket: Ticket, clear: () -> Void) -> Bool {
+    public func applyClear(_ ticket: Ticket, clear: (_ keeping: Set<String>) -> Void) -> Bool {
         writeLock.lock()
         defer { writeLock.unlock() }
 
-        let superseded = state.read { state in
-            state.clearedAt >= ticket || state.applied.values.contains { $0 >= ticket }
+        let keeping = state.read { state -> Set<String>? in
+            guard state.clearedAt < ticket else { return nil }
+            return Set(state.applied.filter { $0.value > ticket }.keys)
         }
-        guard !superseded else { return false }
+        guard let keeping else { return false }
 
-        clear()
+        clear(keeping)
         state.mutate { state in
             state.clearedAt = ticket
-            state.applied = [:]
+            state.applied = state.applied.filter { keeping.contains($0.key) }
         }
         return true
     }
