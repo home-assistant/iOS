@@ -102,10 +102,12 @@ jobs:
         env:
           AI_RESPONSE: ${{ steps.ai_language_detection.outputs.response }}
           ISSUE_NUMBER: ${{ steps.detect_language.outputs.issue_number }}
+          CLASSIFIED_TEXT: ${{ steps.detect_language.outputs.issue_text }}
         with:
           script: |
             const issueNumber = parseInt(process.env.ISSUE_NUMBER);
             const aiResponse = process.env.AI_RESPONSE ?? '';
+            const classifiedText = process.env.CLASSIFIED_TEXT ?? '';
 
             console.log('AI language detection response:', aiResponse);
 
@@ -131,6 +133,22 @@ jobs:
             }
 
             console.log(`Issue detected as non-English: ${languageResult.detected_language}`);
+
+            const { data: issue } = await github.rest.issues.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+            });
+
+            if (issue.state !== 'open') {
+              console.log('Issue is already closed, nothing to do');
+              return;
+            }
+
+            if (`${issue.title}\n\n${issue.body ?? ''}` !== classifiedText) {
+              console.log('Issue was edited after it was classified, skipping');
+              return;
+            }
 
             const commentBody = [
               '<!-- workflow: detect-non-english-issues -->',
@@ -179,5 +197,5 @@ jobs:
 
               console.log('Commented, labeled and closed the non-English issue');
             } catch (error) {
-              core.error(`Failed to process non-English issue: ${error.message}`);
+              core.setFailed(`Failed to process non-English issue: ${error.message}`);
             }
