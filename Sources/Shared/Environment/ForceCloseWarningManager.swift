@@ -35,8 +35,7 @@ public final class ForceCloseWarningManager {
         return readBackgroundLocationEnabled()
     }
 
-    /// Injectable (`Current.location.permissionStatus`) so tests can stub it, unlike
-    /// `SettingsStore.isLocationEnabled`, which builds its own `CLLocationManager`.
+    /// Injectable (`Current.location.permissionStatus`) so tests can stub it.
     public static func readBackgroundLocationEnabled() -> Bool {
         Current.location.permissionStatus() == .authorizedAlways
     }

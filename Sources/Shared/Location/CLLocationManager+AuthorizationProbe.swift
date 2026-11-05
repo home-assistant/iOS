@@ -11,13 +11,22 @@ public extension CLLocationManager {
     /// window scenes and is only safe on the main thread. So the manager is built on main, once,
     /// and the status reads keep happening wherever the caller is.
     static var authorizationProbe: CLLocationManager {
-        if let existing = authorizationProbeStorage.read({ $0 }) {
+        authorizationProbe(in: authorizationProbeStorage, make: CLLocationManager.init)
+    }
+
+    /// `authorizationProbe` with its storage and the manager's construction explicit, so a test
+    /// can watch a background first access build on the main thread.
+    internal static func authorizationProbe(
+        in storage: HAProtected<CLLocationManager?>,
+        make: () -> CLLocationManager
+    ) -> CLLocationManager {
+        if let existing = storage.read({ $0 }) {
             return existing
         }
         // Built outside the lock so a thread hopping to main never holds it: the first instance
         // stored wins and a loser is simply dropped.
-        let made = Thread.isMainThread ? CLLocationManager() : DispatchQueue.main.sync { CLLocationManager() }
-        return authorizationProbeStorage.mutate { storage in
+        let made = Thread.isMainThread ? make() : DispatchQueue.main.sync(execute: make)
+        return storage.mutate { storage in
             if let existing = storage {
                 return existing
             }

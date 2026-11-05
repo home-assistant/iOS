@@ -794,7 +794,7 @@ public class HomeAssistantAPI {
             let location = privacy == .exact ? reportedLocation : nil
 
             return firstly { () -> Promise<Void> in
-                let accuracyAuthorization = CLLocationManager.authorizationProbe.accuracyAuthorization
+                let accuracyAuthorization = Current.locationManager.accuracyAuthorization
 
                 LocationHistoryEntry(
                     updateType: updateType,
@@ -1365,7 +1365,9 @@ public class HomeAssistantAPI {
             }
 
             guard let self else {
-                if cached == nil { completion(nil) }
+                if cached == nil {
+                    completion(nil)
+                }
                 return
             }
 
@@ -1397,14 +1399,18 @@ public class HomeAssistantAPI {
             let hasCachedFallback = cached != nil
 
             guard let self else {
-                if !hasCachedFallback { completion(nil) }
+                if !hasCachedFallback {
+                    completion(nil)
+                }
                 return
             }
 
             cancellable.add(currentUser { [weak self] user in
                 guard !cancellable.isCancelled else { return }
                 guard let self, let user else {
-                    if !hasCachedFallback { completion(nil) }
+                    if !hasCachedFallback {
+                        completion(nil)
+                    }
                     return
                 }
 
@@ -1429,7 +1435,9 @@ public class HomeAssistantAPI {
         cancellable.add(resolveProfilePictureURL(for: user) { [weak self] result in
             guard !cancellable.isCancelled else { return }
             guard let self else {
-                if !hasCachedFallback { completion(nil) }
+                if !hasCachedFallback {
+                    completion(nil)
+                }
                 return
             }
 
