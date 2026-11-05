@@ -268,15 +268,10 @@ struct CameraPlayerView: View {
         // mid-fetch still lands here; a stale answer must not decide the plan for the camera now
         // on screen.
         guard entityId == cameraEntityId else { return }
-        let capabilities: CameraCapabilities? = if case let .answered(capabilities) = outcome {
-            capabilities
-        } else {
-            nil
-        }
         // Core only reports two-way audio for a camera it can stream over WebRTC with the Labs
         // preview switched on, so nothing else needs checking here. Catalyst has no microphone
         // stream, as the frontend is told through `hasCameraMicrophoneStream`.
-        supportsTwoWayAudio = (capabilities?.twoWayAudio ?? false) && !Current.isCatalyst
+        supportsTwoWayAudio = (outcome.capabilities?.twoWayAudio ?? false) && !Current.isCatalyst
         playback.start(with: CameraStreamPlan.players(for: outcome))
     }
 

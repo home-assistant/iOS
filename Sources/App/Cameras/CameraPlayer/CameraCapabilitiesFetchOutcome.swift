@@ -10,4 +10,14 @@ enum CameraCapabilitiesFetchOutcome: Equatable {
     case answered(CameraCapabilities?)
     /// The request went into the WebSocket and nothing came back within the timeout.
     case unanswered
+
+    /// The capabilities the server reported, if it reported any.
+    var capabilities: CameraCapabilities? {
+        switch self {
+        case let .answered(capabilities):
+            return capabilities
+        case .unanswered:
+            return nil
+        }
+    }
 }

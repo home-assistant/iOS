@@ -50,4 +50,12 @@ final class CameraStreamPlanTests: XCTestCase {
     func testAnUnansweredRequestSkipsWebRTC() {
         XCTAssertEqual(CameraStreamPlan.players(for: .unanswered), [.hls, .mjpeg])
     }
+
+    /// Only an answered request carries capabilities the player can read two-way audio from.
+    func testOnlyAnAnsweredRequestExposesCapabilities() {
+        let capabilities = CameraCapabilities(frontendStreamTypes: [.webRTC], twoWayAudio: true)
+        XCTAssertEqual(CameraCapabilitiesFetchOutcome.answered(capabilities).capabilities, capabilities)
+        XCTAssertNil(CameraCapabilitiesFetchOutcome.answered(nil).capabilities)
+        XCTAssertNil(CameraCapabilitiesFetchOutcome.unanswered.capabilities)
+    }
 }
