@@ -22,13 +22,13 @@ body:
         Open your Home Assistant URL in Safari on the same device and try to reproduce the problem.
         If it happens there too, the bug is in the Home Assistant frontend and belongs in the
         [frontend repository][frontend-issue] instead. Native app features such as notifications,
-        widgets, sensors, location or the watch app cannot be tested in Safari.
+        widgets, sensors, location or the watch app cannot be tested in Safari. Select one answer.
 
         [frontend-issue]: https://github.com/home-assistant/frontend/issues/new?labels=bug&template=bug_report.yml
       options:
         - "No"
         - "Yes"
-        - Not applicable, this is a native app feature
+        - Not applicable (native app feature)
   - type: textarea
     id: problem
     validations:

@@ -96,12 +96,19 @@ jobs:
             }
 
             const body = issue.body ?? '';
-            const answer = (body
+            const section = body
               .split('### Does the issue also happen in Safari?')[1]
-              ?.split('\n### ')[0] ?? '').trim();
+              ?.split('\n### ')[0] ?? '';
 
-            if (answer !== 'Yes') {
-              console.log(`Safari answer is "${answer}", nothing to do`);
+            const answers = new Set(
+              section
+                .split(/[,\n]/)
+                .map(value => value.trim())
+                .filter(Boolean)
+            );
+
+            if (answers.size !== 1 || !answers.has('Yes')) {
+              console.log(`Safari answers are [${[...answers]}], nothing to do`);
               return;
             }
 
