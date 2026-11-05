@@ -658,9 +658,9 @@ class IncomingURLHandler {
 
     private func showTagApproval(tag: String, type: TagManagerHandleResult.HandledType) {
         // Built empty first so `onDismiss` can weakly reference the controller it lives in: it has to dismiss
-        // this sheet specifically — not whatever is top-most, which may be an overlay that appeared above it.
+        // this host specifically — not whatever is top-most, which may be an overlay that appeared above it.
         let controller = UIHostingController(rootView: AnyView(EmptyView()))
-        controller.rootView = AnyView(TagApprovalBottomSheet(
+        controller.rootView = AnyView(TagApprovalSheet(
             tag: tag,
             onAllowOnce: { [weak self] in
                 self?.fireApprovedTag(tag, type: type)
