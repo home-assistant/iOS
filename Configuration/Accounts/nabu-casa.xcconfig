@@ -1,0 +1,33 @@
+// Nabu Casa Apple account.
+// Everything that differs between the Apple accounts the app can be built for lives in this folder;
+// HomeAssistant.xcconfig derives the rest from these values.
+
+DEVELOPMENT_TEAM = QMQYCKL255
+BUNDLE_ID_PREFIX = io.robbie
+APP_BUNDLE_ID_BASE = $(BUNDLE_ID_PREFIX).HomeAssistant
+APP_GROUP_ID_BASE = group.io.robbie.homeassistant
+APP_DISPLAY_NAME_BASE = Home Assistant NC
+MIGRATION_URL_HANDLER_BASE = homeassistant-nc
+BACKGROUND_TASK_ID_PREFIX = io.robbie.homeassistant
+CRASH_REPORTING_BUNDLE_ID_PREFIX = io.robbie.
+
+ENABLE_CRITICAL_ALERTS_QMQYCKL255 = 1
+ENABLE_PUSH_PROVIDER_QMQYCKL255 = 1
+ENABLE_DEVICE_NAME_QMQYCKL255 = 1
+ENABLE_THREAD_NETWORK_CREDENTIALS_QMQYCKL255 = 1
+ENABLE_MATTER_SHARE_QMQYCKL255 = 1
+ENABLE_CARPLAY_QMQYCKL255 = 1
+
+// Release (App Store / Developer ID) profiles, named "<prefix> - <target>"
+APP_STORE_PROFILE_PREFIX = iOS App Store
+MAC_DEV_ID_PROFILE_PREFIX = Mac Dev ID
+
+// Debug profiles for targets that need manual signing on device
+CODE_SIGN_STYLE_QMQYCKL255_App = Manual
+CODE_SIGN_STYLE_QMQYCKL255_Extensions_PushProvider = Manual
+PROVISIONING_PROFILE_SPECIFIER_QMQYCKL255_App = Local Developer: Main App
+PROVISIONING_PROFILE_SPECIFIER_QMQYCKL255_Extensions_PushProvider = Local Developer: Push Provider
+
+// Account-specific files, relative to the repository root
+PROVISIONING_PROFILES_DIR = Configuration/Provisioning/nabu-casa
+GOOGLE_SERVICE_INFO_DIR = Configuration/Firebase/nabu-casa

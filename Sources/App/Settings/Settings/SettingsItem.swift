@@ -28,6 +28,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
     case debugging
     case appLabs
     case whatsNew
+    case transferToNewApp
 
     var title: String {
         switch self {
@@ -56,6 +57,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .debugging: return L10n.Settings.Debugging.title
         case .appLabs: return L10n.Settings.AppLabs.title
         case .whatsNew: return L10n.Settings.WhatsNew.title
+        case .transferToNewApp: return L10n.Settings.TransferToNewApp.title
         }
     }
 
@@ -97,6 +99,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .debugging: return .bugIcon
         case .appLabs: return .flaskOutlineIcon
         case .whatsNew: return .starIcon
+        case .transferToNewApp: return .cellphoneArrowDownIcon
         }
     }
 
@@ -182,7 +185,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
             DebugView()
         case .appLabs:
             AppLabsView()
-        case .whatsNew:
+        case .whatsNew, .transferToNewApp:
             EmptyView()
         }
     }
@@ -264,7 +267,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .privacy: return L10n.Settings.SearchKeywords.privacy
         case .debugging: return L10n.Settings.SearchKeywords.debugging
         case .appLabs: return L10n.Settings.SearchKeywords.appLabs
-        case .whatsNew: return nil
+        case .whatsNew, .transferToNewApp: return nil
         }
     }
 
@@ -303,7 +306,7 @@ enum SettingsItem: String, Hashable, CaseIterable {
         case .privacy: return PrivacyView.settingsSearchEntries
         case .debugging: return DebugView.settingsSearchEntries
         case .appLabs: return AppLabsView.settingsSearchEntries
-        case .help, .whatsNew: return []
+        case .help, .whatsNew, .transferToNewApp: return []
         }
     }
 

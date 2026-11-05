@@ -3178,30 +3178,9 @@ Amíg egyetlen URL sem minősül biztonságosnak, a szerver adatai nem szinkroni
 "web_view.server_selection.title" = "Szerver kiválasztása";
 "web_view.unique_server_selection.title" = "Válasszon egy szervert";
 "webrtc_player.known_issues.title" = "Ismert problémák";
-"whats_new.app_support_update.item_body" = "Ez az utolsó frissítés az iOS 15, watchOS 8 és macOS 11 vagy régebbi rendszerekhez. Koppintson a további információkért.";
-"whats_new.app_support_update.item_title" = "Az iOS 15, a watchOS 8 és a macOS 11 támogatása megszűnik";
 "whats_new.app_support_update.title" = "Alkalmazástámogatási frissítés";
-"whats_new.energy_widget.article_body" = "Az új **Energia** widget az energia-irányítópultot a Kezdőképernyőre és a Zárolt képernyőre helyezi.\
-\
-**Mit jelenít meg?**\
-A hálózatot, a napenergiát, az akkumulátort és a gázt a kiválasztott időszakra: ma, tegnap, ezen a héten vagy ebben a hónapban. Kiválaszthatja, melyik forrás szerepeljen az élen, vagy rábízhatja a döntést a widgetre. A kis méret és a Zárolt képernyő méretei élő teljesítményt mutatnak, ha vannak beállított teljesítményérzékelők, a szélesebb méretek pedig az időszak összesítéseit jelenítik meg minden forrásra.\
-\
-**Hogyan adhatja hozzá?**\
-Tartsa nyomva a Kezdőképernyőt, koppintson a felső sarokban lévő hozzáadás gombra, keressen rá a Home Assistantra, majd válassza az Energia lehetőséget. A Zárolt képernyőhöz tartsa nyomva a képernyőt, koppintson a Testreszabás gombra, és adja hozzá ott a widgetet. Ehhez a Home Assistantban be kell állítani egy energia-irányítópultot.";
-"whats_new.energy_widget.item_body" = "Egy pillantással láthatja a Kezdőképernyőn és a Zárolt képernyőn, mennyi energiát fogyaszt, termel és tárol az otthona. Koppintson a további információkért.";
-"whats_new.energy_widget.item_title" = "Energia widget";
-"whats_new.energy_widget.mac.article_body" = "Az új **Energia** widget az energia-irányítópultot az asztalra helyezi.\
-\
-**Mit jelenít meg?**\
-A hálózatot, a napenergiát, az akkumulátort és a gázt a kiválasztott időszakra: ma, tegnap, ezen a héten vagy ebben a hónapban. Kiválaszthatja, melyik forrás szerepeljen az élen, vagy rábízhatja a döntést a widgetre. A kis méret élő teljesítményt mutat, ha vannak beállított teljesítményérzékelők, a szélesebb méretek pedig az időszak összesítéseit jelenítik meg minden forrásra.\
-\
-**Hogyan adhatja hozzá?**\
-Kattintson jobb gombbal az asztalra, válassza a Widgetek szerkesztése lehetőséget, keressen rá a Home Assistantra, majd válassza az Energia lehetőséget. Ehhez a Home Assistantban be kell állítani egy energia-irányítópultot.";
-"whats_new.energy_widget.mac.item_body" = "Egy pillantással láthatja az asztalon, mennyi energiát fogyaszt, termel és tárol az otthona. Koppintson a további információkért.";
 "whats_new.item.opens_article_hint" = "Megnyit egy cikket";
 "whats_new.item.opens_link_hint" = "Megnyit egy hivatkozást";
-"whats_new.live_activities.item_body" = "Kövessen egy időzítőt, egy működő készüléket vagy bármilyen folyamatban lévő dolgot a Zárolt képernyőről és a Dynamic Islandről. Koppintson, hogy megtudja, hogyan indítható el egy értesítéssel.";
-"whats_new.live_activities.item_title" = "Live Activities";
 "whats_new.title" = "Mi újság a Companion App-ban";
 "whats_new.version_format" = "%@ verzió";
 "widgets.action.name.activate" = "Aktiválás";

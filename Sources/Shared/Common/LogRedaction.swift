@@ -14,10 +14,12 @@ public enum LogRedaction {
     static let sensitiveKeys: Set<String> = [
         "access_token",
         "cloudhook_url",
+        "key",
         "push_token",
         "refresh_token",
         "remote_ui_url",
         "secret",
+        "session",
         "start_live_activity_token",
         "webhook_id",
         "widgetAuthenticity",

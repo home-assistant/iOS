@@ -11,7 +11,7 @@ if [ ! -f "$LAUNCHER_INFO_PLIST_PATH" ]; then
 <plist version="1.0">
 <dict>
 	<key>CFBundleIdentifier</key>
-	<string>io.robbie.HomeAssistant.dev.Launcher</string>
+	<string>${APP_BUNDLE_ID}.Launcher</string>
 </dict>
 </plist>
 EOF
@@ -27,7 +27,7 @@ if [ ! -f "$WATCHAPP_INFO_PLIST_PATH" ]; then
 <plist version="1.0">
 <dict>
 	<key>CFBundleIdentifier</key>
-	<string>io.robbie.HomeAssistant.dev.watchkitapp</string>
+	<string>${APP_BUNDLE_ID}.watchkitapp</string>
 </dict>
 </plist>
 EOF
