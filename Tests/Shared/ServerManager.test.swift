@@ -741,6 +741,49 @@ class ServerManagerTests: XCTestCase {
         XCTAssertNil(mirrored.connection.clientCertificate)
     }
 
+    func testUpdatingServerSettingsUpdatesMirrorStoreImmediately() throws {
+        servers = ServerManagerImpl(keychain: keychain, historicKeychain: historicKeychain, mirrorStore: mirrorStore)
+        servers.setup()
+
+        let info = with(ServerInfo.fake()) {
+            $0.connection.isLocalPushEnabled = true
+        }
+        let server = servers.add(identifier: "fake1", serverInfo: info)
+        XCTAssertEqual(mirrorStore.data["fake1"]?.connection.isLocalPushEnabled, true)
+
+        // A setting disabled after launch must survive a restore from the mirror: the mirror was
+        // previously only refreshed at launch, so this change was lost when the Keychain went away.
+        server.update { $0.connection.isLocalPushEnabled = false }
+
+        let mirrored = try XCTUnwrap(mirrorStore.data["fake1"])
+        XCTAssertEqual(mirrored.connection.isLocalPushEnabled, false)
+        XCTAssertEqual(mirrored.connection.webhookID, ServerInfo.mirrorPlaceholderWebhookID)
+        XCTAssertEqual(mirrored.token, ServerInfo.mirrorPlaceholderToken)
+        XCTAssertNil(mirrored.connection.webhookSecret)
+
+        // the sanitized mirror restores the disabled state, not the stale one
+        try keychain.removeAll()
+        servers = ServerManagerImpl(keychain: keychain, historicKeychain: historicKeychain, mirrorStore: mirrorStore)
+        servers.setup()
+        XCTAssertTrue(servers.restoreKeychainFromMirrorIfNeeded())
+        XCTAssertEqual(servers.server(for: "fake1")?.info.connection.isLocalPushEnabled, false)
+    }
+
+    func testTokenOnlyUpdateDoesNotRewriteMirrorStore() throws {
+        servers = ServerManagerImpl(keychain: keychain, historicKeychain: historicKeychain, mirrorStore: mirrorStore)
+        servers.setup()
+
+        let server = servers.add(identifier: "fake1", serverInfo: .fake())
+        // a first save also settles the evaluated active URL, so only the token differs below
+        server.update { $0.connection.isLocalPushEnabled = false }
+        let setCountBeforeTokenRefresh = mirrorStore.setCount
+
+        server.update { $0.token.expiration = .distantPast }
+
+        XCTAssertEqual(mirrorStore.setCount, setCountBeforeTokenRefresh)
+        XCTAssertEqual(mirrorStore.data["fake1"]?.token, ServerInfo.mirrorPlaceholderToken)
+    }
+
     func testDeletingLastServerDoesNotDeadlockWhenMirrorSnapshotExists() throws {
         let info = ServerInfo.fake()
         try keychain.set(encoder.encode(info), key: "fake1")
@@ -983,6 +1026,8 @@ class FakeServerManagerMirrorStore: ServerManagerMirrorStore {
         queue.sync { storage }
     }
 
+    private(set) var setCount = 0
+
     func removeAll() {
         queue.sync {
             storage.removeAll()
@@ -1010,6 +1055,7 @@ class FakeServerManagerMirrorStore: ServerManagerMirrorStore {
     func set(_ serverInfo: ServerInfo, key: String) {
         queue.sync {
             storage[key] = serverInfo.mirroredForPersistence
+            setCount += 1
         }
     }
 
