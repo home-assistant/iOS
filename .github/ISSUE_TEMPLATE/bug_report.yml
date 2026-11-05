@@ -127,7 +127,7 @@ body:
 
         Please upload your companion app logs through [this form][logs-form]. Mention your GitHub username and the issue title so we can match them to this report.
 
-        Logs can be exported from the app under Settings ⇒ Debugging ⇒ Export log files.
+        Logs can be exported from the app under Companion app settings ⇒ Debugging ⇒ Export log files.
 
         [logs-form]: https://forms.gle/5kax4QU2yvunHRxJA
   - type: dropdown
