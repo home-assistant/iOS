@@ -15,6 +15,12 @@ final class E2EFlow {
         static let secondURL = value(for: "E2E_HOME_ASSISTANT_SECOND_URL", default: "http://localhost:8124")
         static let username = value(for: "E2E_HOME_ASSISTANT_USERNAME", default: "citest")
         static let password = value(for: "E2E_HOME_ASSISTANT_PASSWORD", default: "h7jk99&U")
+        static let clientCertificateFile = value(for: "E2E_CLIENT_CERTIFICATE_FILE", default: "")
+        static let clientCertificatePassword = value(for: "E2E_CLIENT_CERTIFICATE_PASSWORD", default: "e2ep12pass")
+
+        /// Onboarding only asks about local access and the home network when the server can be
+        /// reached over plain HTTP; with an HTTPS URL it settles both on its own.
+        static var usesHTTPS: Bool { url.lowercased().hasPrefix("https://") }
 
         private static func value(for key: String, default fallback: String) -> String {
             let value = ProcessInfo.processInfo.environment[key] ?? ""
@@ -47,10 +53,19 @@ final class E2EFlow {
     /// allow the debug one, and it reads only the first 10 KB of that page, which no longer reaches
     /// the `redirect_uri` link tag. The debug pair is rejected with "Invalid redirect URI", so the
     /// flow could never log in.
-    static let launchArguments = ["-FASTLANE_SNAPSHOT", "YES"]
+    static let launchArguments = ["-FASTLANE_SNAPSHOT", "YES", "-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
 
-    func onboard() {
+    /// Hands the flow's `client.p12` to onboarding in place of the file picker, which a UI test
+    /// cannot drive: the picker runs in another process whose elements are not exposed.
+    static var clientCertificateLaunchArguments: [String] {
+        launchArguments + ["-E2E_CLIENT_CERTIFICATE_FILE", Instance.clientCertificateFile]
+    }
+
+    func onboard(importingClientCertificate: Bool = false) {
         connectToInstance()
+        if importingClientCertificate {
+            importClientCertificate()
+        }
         logIn()
         nameDevice()
         answerPermissions()
@@ -178,6 +193,19 @@ final class E2EFlow {
         tap(app.buttons[.onboardingManualEntryConnect], timeout: Timeout.screen, "connect button")
     }
 
+    func importClientCertificate() {
+        let selectFile = app.buttons[.onboardingClientCertificateSelectFile]
+        tap(selectFile, timeout: Timeout.frontend, "client certificate screen")
+
+        let prompt = app.alerts.firstMatch
+        wait(for: prompt, timeout: Timeout.screen, "certificate password prompt")
+        type(Instance.clientCertificatePassword, into: prompt.secureTextFields.firstMatch, "certificate password field")
+        let importButton = prompt.buttons.matching(NSPredicate(format: "label CONTAINS[c] 'Import'")).firstMatch
+        tap(importButton, timeout: Timeout.screen, "certificate import button")
+
+        waitUntilGone(selectFile, timeout: Timeout.frontend, "client certificate screen")
+    }
+
     func logIn(in loginWebView: XCUIElement? = nil) {
         let webView = loginWebView ?? app.webViews.firstMatch
         wait(for: webView, timeout: Timeout.frontend, "login web view")
@@ -220,6 +248,8 @@ final class E2EFlow {
         // Some iOS versions follow the location alert with a second one over the next screen; either
         // answer will do, but it has to be cleared before anything below it can be tapped.
         answerSystemAlertIfPresent(timeout: Timeout.optional)
+
+        guard !Instance.usesHTTPS else { return }
 
         // The secure level is what keeps the home network step in the flow: the less secure one
         // settles the decision on the spot and jumps straight to completion.

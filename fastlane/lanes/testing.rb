@@ -74,8 +74,34 @@ def ci_build_xcargs
   "COMPILER_INDEX_STORE_ENABLE=NO ARCHS=arm64 DISABLE_SWIFTLINT=1 #{test_timeout_xcargs}"
 end
 
+# A simulator of `model` on exactly iOS `version`, resolved to a UDID, created when the runtime is
+# installed but has no such device. Runner images do not ship every model on every runtime: the
+# xcode-27 image has iPhone 17 on iOS 27.0 but its 27.1 runtime only holds the iPhone Duo.
+def pinned_ios_simulator(model, version)
+  runtime_id = "com.apple.CoreSimulator.SimRuntime.iOS-#{version.tr('.', '-')}"
+  existing = available_simulators('iOS').find do |runtime, device|
+    runtime == runtime_id && device['name'] == model
+  end
+  return existing.last['udid'] if existing
+
+  UI.user_error!("The iOS #{version} simulator runtime is not installed") unless runtime_installed?(runtime_id)
+  device_type = "com.apple.CoreSimulator.SimDeviceType.#{model.tr(' ', '-')}"
+  sh("xcrun simctl create #{Shellwords.escape(model)} #{device_type} #{runtime_id}").strip
+end
+
+def runtime_installed?(runtime_id)
+  JSON.parse(`xcrun simctl list runtimes available --json`)['runtimes']
+      .any? { |runtime| runtime['identifier'] == runtime_id }
+end
+
 desc 'Run the iOS unit tests'
 lane :test do
+  # The snapshot references were recorded on this iOS, and a newer runtime renders text and controls
+  # differently enough to fail them, so the OS is pinned rather than `latest`: when the runner image
+  # gained iOS 27.2, `latest` moved there and the tests failed on whichever runner had it. CI boots
+  # the same device ahead of time (.github/workflows/ci.yml), so bump both together, and only with
+  # the references re-recorded on the new runtime.
+  simulator = pinned_ios_simulator('iPhone 17', '27.0')
   run_tests(
     project: 'HomeAssistant.xcodeproj',
     scheme: 'Tests-Unit',
@@ -94,7 +120,7 @@ lane :test do
     # A failed test is run again before it counts: the shared runner is loaded enough that a wait
     # generous on a Mac still lands late. A deterministic failure fails every attempt the same way.
     number_of_retries: 2,
-    destination: 'platform=iOS Simulator,name=iPhone 17,OS=latest'
+    destination: "platform=iOS Simulator,id=#{simulator}"
   )
 end
 
@@ -160,13 +186,24 @@ lane :e2e do |options|
   username = options[:username] || 'citest'
   password = options[:password] || 'h7jk99&U'
   model = options[:device] || 'iPhone 17'
+  # The directory `.github/e2e/mtls/generate-certs.sh` wrote, when `url` goes through the mTLS
+  # proxy: its CA is trusted by the simulator and its `client.p12` is handed to the flow.
+  mtls = options[:mtls_certificates] && File.expand_path(options[:mtls_certificates])
+  p12_password = options[:client_certificate_password] || 'e2ep12pass'
 
   # Fail here rather than three minutes into a build if the instance is not usable: this walks the
   # same login exchange the app performs during onboarding.
   verify = File.expand_path('../../Tools/home_assistant_e2e_auth.py', __dir__)
+  verify_tls = if mtls
+                 "--ca-certificate #{Shellwords.escape("#{mtls}/ca.pem")} " \
+                   "--client-certificate #{Shellwords.escape("#{mtls}/client.pem")} " \
+                   "--client-key #{Shellwords.escape("#{mtls}/client.key")} "
+               else
+                 ''
+               end
   sh("python3 #{Shellwords.escape(verify)} --url #{Shellwords.escape(url)} " \
      "--username #{Shellwords.escape(username)} --password #{Shellwords.escape(password)} " \
-     '--timeout 300 --require-component mobile_app')
+     "#{verify_tls}--timeout 300 --require-component mobile_app")
 
   # The test starts from the welcome screen, so the app must not already have a server. Erasing is
   # also what puts the location and notification prompts back, which the flow answers on its way
@@ -175,11 +212,27 @@ lane :e2e do |options|
   sh("xcrun simctl shutdown #{udid} || true")
   sh("xcrun simctl erase #{udid}")
 
+  # Erasing also drops the keychain, so the CA goes in afterwards. Trusting it here keeps the flow
+  # on the same path as a server with a public certificate: no security exception to accept, only
+  # the client certificate to import. The simulator is shut down again straight away: left booted
+  # it competes with the build for the runner's few cores and makes it four times slower, while
+  # the trust store survives the shutdown and `xcodebuild` boots the simulator again for the test.
+  if mtls
+    sh("xcrun simctl boot #{udid}")
+    sh("xcrun simctl bootstatus #{udid} -b")
+    sh("xcrun simctl keychain #{udid} add-root-cert #{Shellwords.escape("#{mtls}/ca.pem")}")
+    sh("xcrun simctl shutdown #{udid}")
+  end
+
   # `xcodebuild` forwards TEST_RUNNER_-prefixed variables into the test process with the prefix
   # stripped, which is how the flow learns where to point the app.
   ENV['TEST_RUNNER_E2E_HOME_ASSISTANT_URL'] = url
   ENV['TEST_RUNNER_E2E_HOME_ASSISTANT_USERNAME'] = username
   ENV['TEST_RUNNER_E2E_HOME_ASSISTANT_PASSWORD'] = password
+  if mtls
+    ENV['TEST_RUNNER_E2E_CLIENT_CERTIFICATE_FILE'] = "#{mtls}/client.p12"
+    ENV['TEST_RUNNER_E2E_CLIENT_CERTIFICATE_PASSWORD'] = p12_password
+  end
 
   # Unlike the unit test lanes, this one builds: a UI test bundle is run against a separate app,
   # and the bare `test` action cannot resolve `UITargetAppPath` for an app that was never built.

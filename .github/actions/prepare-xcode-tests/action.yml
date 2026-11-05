@@ -13,7 +13,9 @@ inputs:
     description: The scheme whose Swift packages are resolved before the tests
     required: true
   simulators:
-    description: Simulators to boot ahead of the tests, one `<platform>|<model>` per line
+    description: >-
+      Simulators to boot ahead of the tests, one `<platform>|<model>` per line, with `|<os>`
+      appended to boot that runtime's device rather than the newest one
     required: true
 
 outputs:
@@ -77,8 +79,8 @@ runs:
       env:
         SIMULATORS: ${{ inputs.simulators }}
       run: |
-        while IFS='|' read -r platform model; do
-          [ -n "$platform" ] && Tools/BootSimulator.sh "$platform" "$model"
+        while IFS='|' read -r platform model os; do
+          [ -n "$platform" ] && Tools/BootSimulator.sh "$platform" "$model" "$os"
         done <<< "$SIMULATORS"
 
     - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
