@@ -156,99 +156,29 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
 
-      # The xcode-27 image registers the watchOS 27.0 runtime twice, once "Unusable - Cryptex Mount
-      # Preferred". About 20 seconds after CoreSimulator first starts, simdiskimaged re-registers it
-      # and retries ejecting disks by a guessed BSD name, which can unmount the usable copy mid-run:
-      # the watch tests then fail with "runtime path not found" or hang connecting to the simulator
-      # (actions/runner-images#14946). Deleting the unusable copy first, before anything else starts
-      # CoreSimulator, leaves nothing to re-register. When the daemon takes the usable copy down
-      # anyway, the test lane mounts it again before the watch tests (Tools/EnsureSimulatorRuntime.sh).
-      # Remove this step once the image is fixed.
-      - name: Remove unusable simulator runtimes
-        run: |
-          xcrun simctl runtime list
-          for id in $(xcrun simctl runtime list | grep '(Unusable' \
-            | grep -oE '[0-9A-F]{8}(-[0-9A-F]{4}){3}-[0-9A-F]{12}'); do
-            xcrun simctl runtime delete "$id" || echo "::warning::Could not delete simulator runtime $id"
-          done
-          xcrun simctl runtime list
-
-      - uses: ruby/setup-ruby@de492cf36cbab201753d720ce4f4e336cd688c94  # v1.336.0
+      - uses: ./.github/actions/prepare-xcode-tests
+        id: prepare
         with:
-          ruby-version: .ruby-version
-
-      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
-        name: "Cache: Gems"
-        id: cache_gems
-        with:
-          path: vendor/bundle
-          key: >-
-            ${{ format('{0}-gems-{1}-{2}-{3}',
-            runner.os,
-            env.ImageVersion,
-            env.DEVELOPER_DIR,
-            hashFiles('.ruby-version', '**/Gemfile.lock')) }}
-
-      # DerivedData is warmed on `main` (the save step below) and only restored
-      # on PRs, so pinned SPM dependencies are compiled once per Package.resolved
-      # and reused instead of recompiled from scratch on every run.
-      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
-        name: "Restore: DerivedData"
-        id: derived_data
-        with:
-          path: ~/Library/Developer/Xcode/DerivedData
-          key: >-
-            ${{ format('{0}-deriveddata-{1}-{2}',
-            runner.os,
-            env.DEVELOPER_DIR,
-            hashFiles('Package.resolved')) }}
-          restore-keys: >-
-            ${{ format('{0}-deriveddata-{1}-',
-            runner.os,
-            env.DEVELOPER_DIR) }}
-
-      # A fallback restore carries precompiled Clang modules for whatever binary dependency
-      # versions `main` had. When a PR moves one of those pins, the freshly checked out
-      # headers are newer than the module built from the old ones and the build fails with
-      # "has been modified since the module file was built" instead of rebuilding it. Drop
-      # the modules so they are rebuilt against the headers actually present.
-      - name: "Drop precompiled modules from a fallback DerivedData restore"
-        if: steps.derived_data.outputs.cache-hit != 'true'
-        run: rm -rf ~/Library/Developer/Xcode/DerivedData/*/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
-
-      - name: Install Brews
-        # right now, we don't need anything from brew for tests, so save some time
-        if: ${{ false }}
-        run: brew bundle
-
-      - name: Install Gems
-        if: steps.cache_gems.outputs.cache-hit != 'true'
-        run: bundle install --jobs 4 --retry 3
-
-      # The test lane runs with package resolution disabled, so the test action does not
-      # re-resolve once per scheme. That relies on the packages already being checked out, which
-      # a cold DerivedData cache is not, so resolve them from the pinned versions up front.
-      - name: Resolve Swift packages
-        run: >-
-          xcodebuild -resolvePackageDependencies
-          -project HomeAssistant.xcodeproj
-          -scheme Tests-Unit
+          developer-dir: ${{ env.DEVELOPER_DIR }}
+          scheme: Tests-Unit
+          simulators: iOS|iPhone 17
 
       - name: Run tests
         run: bundle exec fastlane test
 
       # Save the warmed DerivedData only from `main`, and only on a fresh key,
       # so PR runs never evict the shared base cache other PRs restore from.
+      # The timestamp snapshot is what lets a PR reuse it incrementally.
+      - name: Record the source timestamps DerivedData was built with
+        if: github.ref == 'refs/heads/main' && steps.prepare.outputs.derived-data-cache-hit != 'true'
+        run: python3 Tools/source_timestamps.py snapshot ~/Library/Developer/Xcode/DerivedData
+
       - uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
         name: "Save: DerivedData"
-        if: github.ref == 'refs/heads/main' && steps.derived_data.outputs.cache-hit != 'true'
+        if: github.ref == 'refs/heads/main' && steps.prepare.outputs.derived-data-cache-hit != 'true'
         with:
           path: ~/Library/Developer/Xcode/DerivedData
-          key: >-
-            ${{ format('{0}-deriveddata-{1}-{2}',
-            runner.os,
-            env.DEVELOPER_DIR,
-            hashFiles('Package.resolved')) }}
+          key: ${{ steps.prepare.outputs.derived-data-key }}
 
       # `xcrun xccov` is the only source of truth for Xcode coverage: the uploader's
       # own Swift plugin globs DerivedData and pairs profdata with the wrong binaries,
@@ -310,6 +240,34 @@ jobs:
         with:
           name: ios-simulator
           path: build/simulator-app
+
+  # The complication snapshot tests render on a watch simulator, whose boot and test runner
+  # connection take between seven and fifteen minutes on the runner. Running them beside the iOS
+  # tests keeps that off the critical path.
+  test-watch:
+    runs-on: xcode-27
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+
+      - uses: ./.github/actions/prepare-xcode-tests
+        with:
+          developer-dir: ${{ env.DEVELOPER_DIR }}
+          scheme: WatchApp
+          simulators: watchOS|Apple Watch Series 12 (46mm)
+
+      - name: Run watch tests
+        run: bundle exec fastlane test_watch
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
+        name: "Upload Watch Test Logs"
+        if: ${{ always() }}
+        with:
+          name: test-logs-watch
+          path: |
+            ~/Library/Logs/DiagnosticReports
+            ~/Library/Developer/Xcode/DerivedData/HomeAssistant-*/Logs/Test
+            ~/Library/Logs/scan
 
   # A pull request has to test the code it brings: at least 90% of the lines it adds
   # or changes, and that the unit tests are able to run at all, must actually be run

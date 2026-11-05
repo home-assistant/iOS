@@ -244,6 +244,7 @@ public extension ServerInfo {
         info.connection.webhookSecret = nil
         info.connection.securityExceptions = .init()
         info.connection.clientCertificate = nil
+        info.connection = info.connection.withoutRuntimeURLState
         return info
     }
 

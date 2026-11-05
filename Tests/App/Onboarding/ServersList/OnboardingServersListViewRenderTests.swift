@@ -115,6 +115,68 @@ struct OnboardingServersListViewRenderTests {
         await rendered.relayout()
     }
 
+    private func drive(
+        prefillURL: URL? = nil,
+        style: OnboardingStyle
+    ) async -> (driver: SwiftUIScreenDriver, viewModel: OnboardingServersListViewModel?) {
+        let bonjour = MockBonjour()
+        let previousBonjour = Current.bonjour
+        Current.bonjour = { bonjour }
+        defer { Current.bonjour = previousBonjour }
+
+        let driver = await SwiftUIScreenDriver.show(
+            OnboardingServersListView(
+                prefillURL: prefillURL,
+                onboardingStyle: style,
+                presenter: OnboardingAuthPresenter()
+            ),
+            size: CGSize(width: 390, height: 844)
+        )
+        return (driver, bonjour.observer as? OnboardingServersListViewModel)
+    }
+
+    @Test func connectingFromTheAutoConnectSheetSelectsTheServer() async throws {
+        let (driver, drivenViewModel) = await drive(style: .initial)
+        defer { driver.close() }
+        let viewModel = try #require(drivenViewModel)
+
+        viewModel.discoveredInstances = try instances(1)
+        await #expect(driver.waitUntil { driver.presented != nil })
+        #expect(viewModel.currentlyInstanceLoading == nil)
+
+        await #expect(driver.tapButton(titled: L10n.Onboarding.Servers.AutoConnect.button))
+        await #expect(driver.waitUntil { driver.presented == nil })
+        #expect(viewModel.currentlyInstanceLoading == viewModel.discoveredInstances.first)
+        #expect(!viewModel.showCenterLoader)
+    }
+
+    @Test func closingTheAutoConnectSheetLeavesTheServerUnselected() async throws {
+        let (driver, drivenViewModel) = await drive(style: .initial)
+        defer { driver.close() }
+        let viewModel = try #require(drivenViewModel)
+
+        viewModel.discoveredInstances = try instances(1)
+        await #expect(driver.waitUntil { driver.presented != nil })
+
+        #expect(driver.barButtons.count == 1)
+        await driver.tapBarButton(0)
+        await #expect(driver.waitUntil { driver.presented == nil })
+        #expect(viewModel.currentlyInstanceLoading == nil)
+        #expect(!viewModel.showCenterLoader)
+    }
+
+    @Test func aSingleDiscoveredServerDoesNotInterruptAnInvitation() async throws {
+        let (driver, drivenViewModel) = await drive(
+            prefillURL: URL(string: "http://homeassistant.local:8123"),
+            style: .initial
+        )
+        defer { driver.close() }
+        let viewModel = try #require(drivenViewModel)
+
+        viewModel.discoveredInstances = try instances(1)
+        await #expect(!driver.waitUntil(timeout: 3) { driver.presented != nil })
+    }
+
     @Test func rendersAConnectionError() async throws {
         let rendered = await render(style: .secondary)
         defer { rendered.tearDown() }

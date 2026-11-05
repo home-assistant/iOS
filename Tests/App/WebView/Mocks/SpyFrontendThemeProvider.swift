@@ -50,6 +50,10 @@ final class SpyFrontendThemeProvider: FrontendThemeProviderProtocol {
         .clear
     }
 
+    func color(of name: String, fallback: FrontendColors, for serverId: String?) -> Color {
+        .clear
+    }
+
     func store(_ variables: [FrontendThemeVariable], for serverId: String, appearance: FrontendThemeAppearance) {
         lock.lock()
         captured = (variables, serverId, appearance)
