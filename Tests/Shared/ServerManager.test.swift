@@ -741,6 +741,78 @@ class ServerManagerTests: XCTestCase {
         XCTAssertNil(mirrored.connection.clientCertificate)
     }
 
+    func testUpdatingServerSettingsUpdatesMirrorStoreImmediately() throws {
+        servers = ServerManagerImpl(keychain: keychain, historicKeychain: historicKeychain, mirrorStore: mirrorStore)
+        servers.setup()
+
+        let info = with(ServerInfo.fake()) {
+            $0.connection.isLocalPushEnabled = true
+        }
+        let server = servers.add(identifier: "fake1", serverInfo: info)
+        XCTAssertEqual(mirrorStore.data["fake1"]?.connection.isLocalPushEnabled, true)
+
+        // A setting disabled after launch must survive a restore from the mirror: the mirror was
+        // previously only refreshed at launch, so this change was lost when the Keychain went away.
+        server.update { $0.connection.isLocalPushEnabled = false }
+
+        let mirrored = try XCTUnwrap(mirrorStore.data["fake1"])
+        XCTAssertEqual(mirrored.connection.isLocalPushEnabled, false)
+        XCTAssertEqual(mirrored.connection.webhookID, ServerInfo.mirrorPlaceholderWebhookID)
+        XCTAssertEqual(mirrored.token, ServerInfo.mirrorPlaceholderToken)
+        XCTAssertNil(mirrored.connection.webhookSecret)
+
+        // the sanitized mirror restores the disabled state, not the stale one
+        try keychain.removeAll()
+        servers = ServerManagerImpl(keychain: keychain, historicKeychain: historicKeychain, mirrorStore: mirrorStore)
+        servers.setup()
+        XCTAssertTrue(servers.restoreKeychainFromMirrorIfNeeded())
+        XCTAssertEqual(servers.server(for: "fake1")?.info.connection.isLocalPushEnabled, false)
+    }
+
+    func testTokenOnlyUpdateDoesNotRewriteMirrorStore() throws {
+        servers = ServerManagerImpl(keychain: keychain, historicKeychain: historicKeychain, mirrorStore: mirrorStore)
+        servers.setup()
+
+        let server = servers.add(identifier: "fake1", serverInfo: .fake())
+        // a first save also settles the evaluated active URL, so only the token differs below
+        server.update { $0.connection.isLocalPushEnabled = false }
+        let setCountBeforeTokenRefresh = mirrorStore.setCount
+
+        // token equality ignores expiration, so a refreshed access token is what makes this save real
+        server.update { $0.token.accessToken = "refreshed" }
+
+        XCTAssertEqual(server.info.token.accessToken, "refreshed")
+        XCTAssertEqual(mirrorStore.setCount, setCountBeforeTokenRefresh)
+        XCTAssertEqual(mirrorStore.data["fake1"]?.token, ServerInfo.mirrorPlaceholderToken)
+    }
+
+    func testRuntimeURLStateDoesNotRewriteMirrorStore() throws {
+        // Extensions read the Keychain on every access and the setter re-evaluates the active URL on
+        // every save, so without ignoring that runtime state a token refresh there would hit GRDB.
+        let wasAppExtension = Current.isAppExtension
+        Current.isAppExtension = true
+        defer { Current.isAppExtension = wasAppExtension }
+
+        servers = ServerManagerImpl(keychain: keychain, historicKeychain: historicKeychain, mirrorStore: mirrorStore)
+        servers.setup()
+
+        let info = with(ServerInfo.fake()) {
+            $0.connection.set(address: URL(string: "http://192.168.1.2:8123")!, for: .internal)
+            $0.connection.overrideActiveURLType = .internal
+        }
+        let server = servers.add(identifier: "fake1", serverInfo: info)
+        let setCountAfterAdd = mirrorStore.setCount
+
+        // the override is runtime state that a Keychain round trip drops, so this save differs from
+        // the added value in the override and the token only
+        server.update { $0.token.accessToken = "refreshed" }
+        XCTAssertEqual(server.info.token.accessToken, "refreshed")
+        XCTAssertEqual(mirrorStore.setCount, setCountAfterAdd)
+
+        server.update { $0.connection.isLocalPushEnabled = false }
+        XCTAssertEqual(mirrorStore.setCount, setCountAfterAdd + 1)
+    }
+
     func testDeletingLastServerDoesNotDeadlockWhenMirrorSnapshotExists() throws {
         let info = ServerInfo.fake()
         try keychain.set(encoder.encode(info), key: "fake1")
@@ -983,6 +1055,8 @@ class FakeServerManagerMirrorStore: ServerManagerMirrorStore {
         queue.sync { storage }
     }
 
+    private(set) var setCount = 0
+
     func removeAll() {
         queue.sync {
             storage.removeAll()
@@ -1010,6 +1084,7 @@ class FakeServerManagerMirrorStore: ServerManagerMirrorStore {
     func set(_ serverInfo: ServerInfo, key: String) {
         queue.sync {
             storage[key] = serverInfo.mirroredForPersistence
+            setCount += 1
         }
     }
 
