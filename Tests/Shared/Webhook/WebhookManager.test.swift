@@ -1174,7 +1174,7 @@ class WebhookManagerTests: XCTestCase {
         let expectedRequest = WebhookRequest(type: "update_location", data: ["json": true])
 
         stub(condition: { req in req.url == urls.internal }, response: { _ in
-            HTTPStubsResponse(data: Data(), statusCode: 500, headers: [:])
+            HTTPStubsResponse(jsonObject: [:], statusCode: 500, headers: nil)
         })
 
         var externalRequests = 0
