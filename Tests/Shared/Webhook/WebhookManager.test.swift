@@ -1215,6 +1215,78 @@ class WebhookManagerTests: XCTestCase {
         XCTAssertEqual(internalRequests, 0)
     }
 
+    func testSendPersistentInBackgroundDoesNotRetryAfterAPIError() {
+        Current.isBackgroundRequestsImmediate = { false }
+        let expectedRequest = WebhookRequest(type: "webhook_name", data: ["json": true])
+
+        var requests = 0
+        stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { [api1] _ in
+            requests += 1
+            api1!.server.info.connection.set(address: nil, for: .external)
+            return HTTPStubsResponse(jsonObject: ["hello": "goodbye"], statusCode: 200, headers: nil)
+        })
+
+        XCTAssertThrowsError(try hang(manager.send(server: api1.server, request: expectedRequest))) { error in
+            guard case HomeAssistantAPI.APIError.noAPIAvailable = error else {
+                return XCTFail("unexpected error \(error)")
+            }
+        }
+        XCTAssertEqual(requests, 1)
+    }
+
+    func testSendPersistentDoesNotFallBackAfterAPIErrorFromRemoteURL() throws {
+        Current.isBackgroundRequestsImmediate = { false }
+        let urls = try useInternalURLAtHome()
+        let expectedRequest = WebhookRequest(type: "update_location", data: ["json": true])
+
+        var internalRequests = 0
+        stub(condition: { req in req.url == urls.internal }, response: { _ in
+            internalRequests += 1
+            return HTTPStubsResponse(error: URLError(.cannotConnectToHost))
+        })
+
+        var externalRequests = 0
+        stub(condition: { req in req.url == urls.external }, response: { [api1] _ in
+            externalRequests += 1
+            api1!.server.info.connection.set(address: nil, for: .internal)
+            api1!.server.info.connection.set(address: nil, for: .external)
+            return HTTPStubsResponse(jsonObject: ["hello": "goodbye"], statusCode: 200, headers: nil)
+        })
+
+        XCTAssertThrowsError(try hang(manager.send(server: api1.server, request: expectedRequest))) { error in
+            guard case HomeAssistantAPI.APIError.noAPIAvailable = error else {
+                return XCTFail("unexpected error \(error)")
+            }
+        }
+        XCTAssertEqual(internalRequests, 1)
+        XCTAssertEqual(externalRequests, 1)
+    }
+
+    func testRemoteWebhookURLUsesRemoteUIWhenCloudIsEnabled() throws {
+        let urls = try useInternalURLAtHome()
+        let remoteUIURL = try XCTUnwrap(URL(string: "https://example.ui.nabu.casa"))
+        api1.server.info.connection.set(address: remoteUIURL, for: .remoteUI)
+        api1.server.info.connection.useCloud = true
+
+        XCTAssertEqual(WebhookManager.remoteWebhookURL(
+            for: api1.server,
+            unreachableInternalURL: urls.internal,
+            error: URLError(.cannotConnectToHost)
+        ), remoteUIURL.appendingPathComponent(api1.server.info.connection.webhookPath, isDirectory: false))
+    }
+
+    func testRemoteWebhookURLIsNilWhenRemoteURLIsTheInternalURL() throws {
+        let urls = try useInternalURLAtHome()
+        let internalBaseURL = try XCTUnwrap(api1.server.info.connection.address(for: .internal))
+        api1.server.info.connection.set(address: internalBaseURL, for: .external)
+
+        XCTAssertNil(WebhookManager.remoteWebhookURL(
+            for: api1.server,
+            unreachableInternalURL: urls.internal,
+            error: URLError(.cannotConnectToHost)
+        ))
+    }
+
     func testRemoteWebhookURLIgnoresErrorsThatAreNotTransportFailures() throws {
         let urls = try useInternalURLAtHome()
 
