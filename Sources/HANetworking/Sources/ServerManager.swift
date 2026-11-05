@@ -97,6 +97,7 @@ public final class ServerManagerImpl: ServerManager {
     private var keychain: ServerManagerKeychain
     private var historicKeychain: ServerManagerKeychain
     private var mirrorStore: ServerManagerMirrorStore
+    private let mirrorWrites = ServerManagerMirrorWriteSequencer()
     private var encoder: JSONEncoder
     private var decoder: JSONDecoder
 
@@ -266,15 +267,18 @@ public final class ServerManagerImpl: ServerManager {
             self.deletedServers = deletedServers
         }
 
-        let result = cache.mutate { cache -> Server in
+        let (result, mirrorTicket) = cache.mutate { cache -> (Server, ServerManagerMirrorWriteSequencer.Ticket) in
             keychain.set(serverInfo: setValue, key: identifier.keychainKey, encoder: encoder)
             cache.info[identifier] = setValue
             cache.all = nil
 
-            return server(key: identifier.keychainKey, value: setValue, currentCache: &cache)
+            let added = server(key: identifier.keychainKey, value: setValue, currentCache: &cache)
+            return (added, mirrorWrites.ticket())
         }
 
-        mirrorStore.set(setValue, key: identifier.keychainKey)
+        mirrorWrites.apply(mirrorTicket, key: identifier.keychainKey) {
+            mirrorStore.set(setValue, key: identifier.keychainKey)
+        }
         var restoredMirroredServers = restoredMirroredServers
         if restoredMirroredServers.remove(identifier.keychainKey) != nil {
             self.restoredMirroredServers = restoredMirroredServers
@@ -290,12 +294,15 @@ public final class ServerManagerImpl: ServerManager {
         deletedServers.insert(identifier)
         self.deletedServers = deletedServers
 
-        cache.mutate { cache in
+        let mirrorTicket = cache.mutate { cache in
             keychain.deleteServerInfo(key: identifier.keychainKey)
             cache.remove(identifier: identifier)
+            return mirrorWrites.ticket()
         }
 
-        mirrorStore.remove(identifier.keychainKey)
+        mirrorWrites.apply(mirrorTicket, key: identifier.keychainKey) {
+            mirrorStore.remove(identifier.keychainKey)
+        }
         var restoredMirroredServers = restoredMirroredServers
         if restoredMirroredServers.remove(identifier.keychainKey) != nil {
             self.restoredMirroredServers = restoredMirroredServers
@@ -310,12 +317,15 @@ public final class ServerManagerImpl: ServerManager {
         deletedServers.formUnion(Set(allKeys.map { Identifier<Server>(keychainKey: $0) }))
         self.deletedServers = deletedServers
 
-        cache.mutate { cache in
+        let mirrorTicket = cache.mutate { cache in
             cache.reset()
             _ = try? keychain.removeAll()
+            return mirrorWrites.ticket()
         }
 
-        mirrorStore.removeAll()
+        mirrorWrites.applyClear(mirrorTicket) {
+            mirrorStore.removeAll()
+        }
         restoredMirroredServers = []
 
         notify()
@@ -400,7 +410,7 @@ public final class ServerManagerImpl: ServerManager {
             // intentionally not in the lock
             _ = serverInfo.connection.evaluateActiveURL()
 
-            let (didUpdate, mirrorNeedsUpdate) = cache.mutate { cache -> (Bool, Bool) in
+            let (didUpdate, mirrorTicket) = cache.mutate { cache -> (Bool, ServerManagerMirrorWriteSequencer.Ticket?) in
                 // Read tombstones inside the lock: remove() writes its tombstone before it
                 // deletes the Keychain entry, so an update racing a deletion (e.g. a token
                 // refresh finishing while the user deletes the server) sees the tombstone
@@ -408,13 +418,13 @@ public final class ServerManagerImpl: ServerManager {
                 let deletedServers = self?.deletedServers ?? []
                 guard !deletedServers.contains(identifier) else {
                     HANetworkingEnvironment.current.log.verbose("ignoring update to deleted server \(identifier)")
-                    return (false, false)
+                    return (false, nil)
                 }
 
                 let old = cache.info[identifier]
 
                 guard old != serverInfo || cache.restrictCaching else {
-                    return (false, false)
+                    return (false, nil)
                 }
 
                 keychain.set(serverInfo: serverInfo, key: identifier.keychainKey, encoder: encoder)
@@ -426,16 +436,20 @@ public final class ServerManagerImpl: ServerManager {
 
                 notify()
                 // Secrets are stripped from the mirror, so a token refresh alone needs no database write.
-                let mirrorNeedsUpdate = old?.mirroredForPersistence != serverInfo.mirroredForPersistence
-                return (true, mirrorNeedsUpdate)
+                guard old?.mirroredForPersistence != serverInfo.mirroredForPersistence else {
+                    return (true, nil)
+                }
+                return (true, self?.mirrorWrites.ticket())
             }
 
             // The mirror is what a restore brings back when the Keychain is lost, so it has to follow
             // every settings change, not just the launch-time snapshot — otherwise a setting changed
             // after launch (local push, URLs, SSIDs) reverts to its old value on restore.
-            // Written outside the lock: the mirror is a database write.
-            if mirrorNeedsUpdate {
-                self?.mirrorStore.set(serverInfo, key: identifier.keychainKey)
+            // Written outside the lock, in ticket order: the mirror is a database write.
+            if let mirrorTicket, let self {
+                mirrorWrites.apply(mirrorTicket, key: identifier.keychainKey) {
+                    mirrorStore.set(serverInfo, key: identifier.keychainKey)
+                }
             }
 
             return didUpdate

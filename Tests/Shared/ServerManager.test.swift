@@ -778,8 +778,10 @@ class ServerManagerTests: XCTestCase {
         server.update { $0.connection.isLocalPushEnabled = false }
         let setCountBeforeTokenRefresh = mirrorStore.setCount
 
-        server.update { $0.token.expiration = .distantPast }
+        // token equality ignores expiration, so a refreshed access token is what makes this save real
+        server.update { $0.token.accessToken = "refreshed" }
 
+        XCTAssertEqual(server.info.token.accessToken, "refreshed")
         XCTAssertEqual(mirrorStore.setCount, setCountBeforeTokenRefresh)
         XCTAssertEqual(mirrorStore.data["fake1"]?.token, ServerInfo.mirrorPlaceholderToken)
     }
