@@ -1546,9 +1546,9 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "reminders_sync.settings.access_denied.body" = "목록을 동기화하려면 시스템 설정 앱에서 미리 알림에 대한 전체 접근을 허용하세요.";
 "reminders_sync.settings.access_denied.title" = "미리 알림 접근 권한 필요";
 "reminders_sync.settings.add_list" = "추가";
-"reminders_sync.settings.completed.footer" = "Items that were already completed before syncing started normally stay where they are. Turn this on to copy them to the other list as completed, so checked-off items are known on both sides. A list with a long history can gain many completed items on the first sync.";
-"reminders_sync.settings.completed.header" = "Completed items";
-"reminders_sync.settings.completed.title" = "Include completed items";
+"reminders_sync.settings.completed.footer" = "동기화가 시작되기 전에 이미 완료한 항목은 기본적으로 기존 목록에 그대로 남습니다. 이 옵션을 켜면 해당 항목이 완료 상태로 다른 목록에 복사되어 양쪽 목록에서 완료한 항목을 확인할 수 있습니다. 오래 사용한 목록에는 첫 동기화 때 완료 항목이 많이 추가될 수 있습니다.";
+"reminders_sync.settings.completed.header" = "완료한 항목";
+"reminders_sync.settings.completed.title" = "완료한 항목 포함";
 "reminders_sync.settings.conflicts.footer" = "이 설정은 양방향 동기화에만 적용됩니다. 마지막 동기화 이후 두 앱에서 같은 항목이 모두 편집된 경우, 여기에서 선택한 쪽의 버전이 유지됩니다.";
 "reminders_sync.settings.conflicts.header" = "충돌";
 "reminders_sync.settings.conflicts.title" = "변경 사항 유지 기준";
@@ -3431,7 +3431,7 @@ Home Assistant는 오픈 소스이며 개인정보 보호를 중시하고 집 �
 "widgets.todo_list.due_date.in_format" = "%@ 후";
 "widgets.todo_list.due_date.now" = "지금";
 "widgets.todo_list.due_date.today" = "오늘";
-"widgets.todo_list.load_failed" = "Couldn't update. Tap refresh.";
+"widgets.todo_list.load_failed" = "업데이트하지 못했습니다. 새로 고침을 탭하세요.";
 "widgets.todo_list.parameter.item_id" = "항목 ID";
 "widgets.todo_list.parameter.list" = "목록";
 "widgets.todo_list.parameter.list_id" = "목록 ID";
