@@ -36,5 +36,18 @@ final class CameraStreamPlanTests: XCTestCase {
     /// try-everything behaviour rather than refusing to play.
     func testUnknownCapabilitiesTryEveryStreamingMethod() {
         XCTAssertEqual(CameraStreamPlan.players(for: nil), [.webRTC, .hls, .mjpeg])
+        XCTAssertEqual(CameraStreamPlan.players(for: .answered(nil)), [.webRTC, .hls, .mjpeg])
+    }
+
+    /// An answered request decides the plan exactly as the capabilities alone would.
+    func testAnAnsweredRequestPlansFromItsCapabilities() {
+        let outcome = CameraCapabilitiesFetchOutcome.answered(CameraCapabilities(frontendStreamTypes: [.hls]))
+        XCTAssertEqual(CameraStreamPlan.players(for: outcome), [.hls, .mjpeg])
+    }
+
+    /// A request the socket never answered means WebRTC signaling, which needs that same socket,
+    /// would only spend its wait before failing; the HTTP-based players still have a chance.
+    func testAnUnansweredRequestSkipsWebRTC() {
+        XCTAssertEqual(CameraStreamPlan.players(for: .unanswered), [.hls, .mjpeg])
     }
 }

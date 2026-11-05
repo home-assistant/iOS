@@ -63,6 +63,17 @@ public class HomeAssistantAPI {
     private var rejectedReconnectAttempts = 0
     private var rejectedReconnectWorkItem: DispatchWorkItem?
     private var connectivityObserver: NSObjectProtocol?
+    /// When the websocket entered `.connecting`, so a connect that never completes can be told apart
+    /// from one that is simply slow.
+    private var webSocketConnectingSince: Date?
+
+    /// How long the websocket may sit in `.connecting` before it is torn down and started over.
+    ///
+    /// HAKit times out pings, not connects: a socket whose connect never calls back stays
+    /// `.connecting` for good, and asking it to `connect()` again is a no-op while that socket
+    /// exists. Device logs show one left that way for eight hours. Long enough to cover a slow
+    /// remote handshake plus HAKit's own backoff, and the periodic connect checks it every minute.
+    static let stuckWebSocketConnectTimeout: TimeInterval = 90
 
     /// Carries a sensor update that failed to reach this server to a later attempt.
     private(set) lazy var sensorUpdateRetry = SensorUpdateRetry { [weak self] providers in
@@ -337,6 +348,18 @@ public class HomeAssistantAPI {
 
     public func connectWebSocketIfNeeded() {
         let state = connection.state
+
+        if case .connecting = state, let since = webSocketConnectingSince,
+           Current.date().timeIntervalSince(since) >= Self.stuckWebSocketConnectTimeout {
+            Current.Log.error(
+                "websocket has been connecting for \(Int(Current.date().timeIntervalSince(since)))s; starting it over"
+            )
+            webSocketConnectingSince = nil
+            // Only a disconnect drops the socket HAKit is waiting on; a bare connect() would keep it.
+            connection.disconnect()
+            connection.connect()
+            return
+        }
 
         guard Self.shouldAttemptAutomaticWebSocketConnect(for: state) else {
             Current.Log.info("skipping automatic websocket connect while state is \(state)")
@@ -1781,6 +1804,14 @@ extension HomeAssistantAPI: SensorObserver {
 
 extension HomeAssistantAPI: HAConnectionDelegate {
     public func connection(_ connection: HAConnection, didTransitionTo state: HAConnectionState) {
+        if case .connecting = state {
+            if webSocketConnectingSince == nil {
+                webSocketConnectingSince = Current.date()
+            }
+        } else {
+            webSocketConnectingSince = nil
+        }
+
         switch state {
         case .ready:
             resetRejectedReconnectRecovery()
