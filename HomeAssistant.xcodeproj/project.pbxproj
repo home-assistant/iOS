@@ -6324,7 +6324,7 @@
 			repositoryURL = "https://github.com/home-assistant/HAKit.git";
 			requirement = {
 				kind = exactVersion;
-				version = 0.4.19;
+				version = 0.4.20;
 			};
 		};
 		42991E5F2FF4474500C2C76B /* XCRemoteSwiftPackageReference "sdk-iOS" */ = {
