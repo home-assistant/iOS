@@ -4219,7 +4219,6 @@
 				42E1C80E2FFE4B8C008DAEE5 /* XCRemoteSwiftPackageReference "XCGLogger" */,
 				426BD76C2FFE54B0001378A4 /* XCRemoteSwiftPackageReference "OHHTTPStubs" */,
 				42886D142FFE5B77004EB33B /* XCRemoteSwiftPackageReference "swift-sodium" */,
-				42886D282FFE8366004EB33B /* XCRemoteSwiftPackageReference "starscream" */,
 				42886D292FFE839A004EB33B /* XCRemoteSwiftPackageReference "PromiseKit" */,
 				42886D2A2FFE83C8004EB33B /* XCRemoteSwiftPackageReference "HAKit" */,
 				42ED095930033A7B0051FC9B /* XCRemoteSwiftPackageReference "swift-dependencies" */,
@@ -6307,14 +6306,6 @@
 				minimumVersion = 0.11.0;
 			};
 		};
-		42886D282FFE8366004EB33B /* XCRemoteSwiftPackageReference "starscream" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/bgoncal/starscream";
-			requirement = {
-				kind = revision;
-				revision = 9f793f7396d0def800c18be36769deb6d1313238;
-			};
-		};
 		42886D292FFE839A004EB33B /* XCRemoteSwiftPackageReference "PromiseKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/mxcl/PromiseKit/";
@@ -6328,7 +6319,7 @@
 			repositoryURL = "https://github.com/home-assistant/HAKit.git";
 			requirement = {
 				kind = exactVersion;
-				version = 0.4.19;
+				version = 0.4.21;
 			};
 		};
 		42991E5F2FF4474500C2C76B /* XCRemoteSwiftPackageReference "sdk-iOS" */ = {
