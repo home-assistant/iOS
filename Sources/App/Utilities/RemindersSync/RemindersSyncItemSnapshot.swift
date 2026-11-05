@@ -80,6 +80,16 @@ struct RemindersSyncItemSnapshot: Equatable {
         return copy
     }
 
+    func titleMatches(_ other: RemindersSyncItemSnapshot, exactly: Bool) -> Bool {
+        exactly ? title == other.title : title.caseInsensitiveCompare(other.title) == .orderedSame
+    }
+
+    func differsOnlyInTitleCase(from other: RemindersSyncItemSnapshot) -> Bool {
+        var otherWithOurTitle = other
+        otherWithOurTitle.title = title
+        return self != other && self == otherWithOurTitle && titleMatches(other, exactly: false)
+    }
+
     /// The due date as `EKReminder.dueDateComponents`.
     var dueComponents: DateComponents? {
         guard let due else { return nil }

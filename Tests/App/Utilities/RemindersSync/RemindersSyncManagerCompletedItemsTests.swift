@@ -221,4 +221,47 @@ struct RemindersSyncManagerCompletedItemsTests {
         #expect(links.map(\.todoItemUid) == ["new-milk"])
         #expect(links.first?.lastKnownCompleted == false)
     }
+
+    @Test func createdItemTheListReCasedIsStillLinked() async throws {
+        let (_, _, links) = try await withSyncEnvironment(items: [
+            ["summary": "Almond milk", "uid": "new-almond", "status": "needs_action"],
+        ]) { api in
+            try await applyPlan(api: api, remindersById: ["r-almond": reminder("Almond Milk", completed: false)])
+        }
+
+        #expect(links.map(\.todoItemUid) == ["new-almond"])
+        #expect(links.first?.reminderId == "r-almond")
+        #expect(links.first?.lastKnownTitle == "Almond Milk")
+    }
+
+    @Test func itemThatExistedBeforeTheSyncIsNotTakenForTheCreatedOne() async throws {
+        let (_, _, links) = try await withSyncEnvironment(items: [
+            ["summary": "Almond milk", "uid": "old-renamed", "status": "needs_action"],
+            ["summary": "Almond milk", "uid": "new-almond", "status": "needs_action"],
+        ]) { api in
+            try await applyPlan(
+                api: api,
+                todoSnapshots: ["old-renamed": RemindersSyncItemSnapshot(
+                    title: "Bread",
+                    isCompleted: false,
+                    notes: nil,
+                    due: nil
+                )],
+                remindersById: ["r-almond": reminder("Almond Milk", completed: false)]
+            )
+        }
+
+        #expect(links.map(\.todoItemUid) == ["new-almond"])
+        #expect(links.first?.reminderId == "r-almond")
+    }
+
+    @Test func newItemWithAnUnrelatedTitleIsNotLinked() async throws {
+        let (_, _, links) = try await withSyncEnvironment(items: [
+            ["summary": "Something else", "uid": "new-other", "status": "needs_action"],
+        ]) { api in
+            try await applyPlan(api: api, remindersById: ["r-fancy": reminder("Fancy Name", completed: false)])
+        }
+
+        #expect(links.isEmpty)
+    }
 }
