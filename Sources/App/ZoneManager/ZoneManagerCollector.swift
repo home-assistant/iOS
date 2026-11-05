@@ -90,8 +90,6 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
     }
 
     func startForegroundBeaconScanning(in regions: Set<CLRegion>, manager: CLLocationManager) {
-        // Keep the new radio behaviour in beta until device validation is complete.
-        guard Current.isTestFlight else { return }
         let desiredEntries = beaconEntries(in: regions)
         invalidateChangedBeaconEntries(desiredEntries, manager: manager)
         let identifiersToRemove = foregroundBeaconEntries.compactMap { identifier, entry in
@@ -118,8 +116,6 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
     }
 
     func startBackgroundBeaconMonitoring(in regions: Set<CLRegion>, manager: CLLocationManager) {
-        // Keep the new radio behaviour in beta until device validation is complete.
-        guard Current.isTestFlight else { return }
         let desiredRegions = Dictionary(
             uniqueKeysWithValues: regions.compactMap { region -> (String, CLBeaconRegion)? in
                 guard let beaconRegion = region as? CLBeaconRegion else { return nil }
@@ -167,8 +163,6 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
     }
 
     func startOpportunisticBeaconScanning(in regions: Set<CLRegion>, manager: CLLocationManager) {
-        // Keep the new radio behaviour in beta until device validation is complete.
-        guard Current.isTestFlight else { return }
         let entries = beaconEntries(in: regions)
         let requestedRegions = entries.mapValues(\.region)
         guard opportunisticBeaconScanTimeout == nil ||
@@ -273,7 +267,7 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
 
         let event = Self.event(for: region, state: state)
 
-        if Current.isTestFlight, let beaconRegion = region as? CLBeaconRegion {
+        if let beaconRegion = region as? CLBeaconRegion {
             switch state {
             case .inside:
                 guard !foregroundBeaconIdentifiersInside.contains(beaconRegion.identifier) else { return }

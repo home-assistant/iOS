@@ -117,18 +117,20 @@ class ZoneManagerCollectorTests: XCTestCase {
         )
     }
 
-    func testProductionKeepsLegacyBeaconEventsWithoutRangingOrBackgroundLease() throws {
+    func testProductionVerifiesBeaconEntryWithRanging() throws {
         Current.isTestFlight = false
         let region = try storedBeaconRegion(entityId: "production")
-        collector.startForegroundBeaconScanning(in: [region], manager: locationManager)
-        collector.startBackgroundBeaconMonitoring(in: [region], manager: locationManager)
-        collector.startOpportunisticBeaconScanning(in: [region], manager: locationManager)
         collector.locationManager(locationManager, didDetermineState: .inside, for: region)
+        XCTAssertTrue(delegate.events.isEmpty)
+        XCTAssertFalse(locationManager.startedRangingConstraints.isEmpty)
+        collector.didRange(
+            samples: [RangedBeaconSample(proximity: .near, rssi: -50)],
+            satisfying: region.beaconIdentityConstraint,
+            manager: locationManager
+        )
+        XCTAssertEqual(delegate.events.map(\.eventType), [.region(region, .inside)])
         collector.locationManager(locationManager, didDetermineState: .outside, for: region)
         XCTAssertEqual(delegate.events.map(\.eventType), [.region(region, .inside), .region(region, .outside)])
-        XCTAssertTrue(locationManager.startedRangingConstraints.isEmpty)
-        XCTAssertEqual(backgroundExecution.beginCount, 0)
-        XCTAssertEqual(locationManager.startUpdatingLocationCount, 0)
     }
 
     func testDidFailDoesLog() {
