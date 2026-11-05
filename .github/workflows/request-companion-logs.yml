@@ -1,0 +1,98 @@
+name: Request companion app logs
+
+# yamllint disable-line rule:truthy
+on:
+  issues:
+    types: [opened]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: "Issue number to check for missing logs"
+        required: true
+        type: number
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ inputs.issue_number || github.event.issue.number }}
+
+jobs:
+  request-logs:
+    name: Ask for logs when none were uploaded
+    runs-on: ubuntu-latest
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      contains(github.event.issue.body, '### Did you upload your companion app logs through the form above?')
+    permissions:
+      issues: write
+    steps:
+      - name: Comment when the reporter did not upload logs
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
+        env:
+          ISSUE_NUMBER: ${{ inputs.issue_number || github.event.issue.number }}
+        with:
+          script: |
+            const issueNumber = parseInt(process.env.ISSUE_NUMBER);
+
+            const { data: issue } = await github.rest.issues.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+            });
+
+            if (issue.state !== 'open') {
+              console.log('Issue is already closed, nothing to do');
+              return;
+            }
+
+            const body = issue.body ?? '';
+            const answersFor = heading => new Set(
+              (body.split(heading)[1]?.split('\n### ')[0] ?? '')
+                .split(/[,\n]/)
+                .map(value => value.trim())
+                .filter(Boolean)
+            );
+
+            const safariAnswers = answersFor('### Does the issue also happen in Safari?');
+            if (safariAnswers.size === 1 && safariAnswers.has('Yes')) {
+              console.log('Issue reproduces in Safari and is being redirected to the frontend repository, skipping');
+              return;
+            }
+
+            const logsAnswers = answersFor('### Did you upload your companion app logs through the form above?');
+            if (logsAnswers.size !== 1 || !logsAnswers.has('No')) {
+              console.log(`Logs answers are [${[...logsAnswers]}], nothing to do`);
+              return;
+            }
+
+            const issueAuthor = issue.user.login;
+            const logsFormUrl = 'https://forms.gle/5kax4QU2yvunHRxJA';
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+              per_page: 100,
+            });
+
+            if (comments.some(comment => comment.body?.includes('<!-- workflow: request-companion-logs -->'))) {
+              console.log('Logs were already requested on this issue, nothing to do');
+              return;
+            }
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+              body: `<!-- workflow: request-companion-logs -->\n` +
+                    `Hi @${issueAuthor}, thank you for your report!\n\n` +
+                    `You mentioned that you did not upload your companion app logs. Depending on the ` +
+                    `complexity of the issue, logs allow developers to see what the app was doing when the ` +
+                    `problem happened and can speed up debugging considerably.\n\n` +
+                    `If you are able to, please export them from the app under ` +
+                    `**Companion app settings ⇒ Debugging ⇒ Export log files** and upload them through ` +
+                    `[this form](${logsFormUrl}), mentioning your GitHub username and issue #${issue.number} ` +
+                    `so we can match them to this report.`
+            });
+
+            console.log('Posted the logs request comment');
