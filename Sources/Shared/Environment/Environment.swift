@@ -827,7 +827,7 @@ public class AppEnvironment {
         /// `authorizationStatus` performs synchronous XPC to locationd and can block for
         /// seconds; avoid calling this on the main thread.
         public var permissionStatus: () -> CLAuthorizationStatus = {
-            CLLocationManager().authorizationStatus
+            CLLocationManager.authorizationProbe.authorizationStatus
         }
     }
 

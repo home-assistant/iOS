@@ -1,3 +1,4 @@
+import HAKit
 import Intents
 import PromiseKit
 
@@ -43,13 +44,26 @@ public class FocusStatusWrapper {
 
     /// Every status iOS pushed to the Intents extension. Observed by the Focus sensors, because a
     /// push is iOS saying the status changed.
-    private(set) lazy var pushes = UserDefaultsValueSync<FocusStatusObservation>(settingsKey: "FocusStatusStateKey")
+    var pushes: UserDefaultsValueSync<FocusStatusObservation> {
+        .lazily(in: pushesStorage, settingsKey: "FocusStatusStateKey")
+    }
 
     /// The app's own last reading. Not observed: every sensor read writes it, so observing it
     /// would make each read start the next one.
-    private(set) lazy var readings = UserDefaultsValueSync<FocusStatusObservation>(
-        settingsKey: "FocusStatusReadingKey"
-    )
+    var readings: UserDefaultsValueSync<FocusStatusObservation> {
+        .lazily(in: readingsStorage, settingsKey: "FocusStatusReadingKey")
+    }
+
+    // Built on first use (`init` runs while `Current` is still being set up) but not as `lazy var`,
+    // which has no lock; see `FocusFilterWrapper`.
+    private let pushesStorage = HAProtected<UserDefaultsValueSync<FocusStatusObservation>?>(value: nil)
+    private let readingsStorage = HAProtected<UserDefaultsValueSync<FocusStatusObservation>?>(value: nil)
+
+    public init() {
+        // `latest` is `lazy` only because it captures `self`; settle it here so no first use from
+        // two sensors at once races its initialization.
+        _ = latest
+    }
 
     /// Whether this device has Focus at all. Every OS version the app supports does.
     public var isAvailable: () -> Bool = { true }

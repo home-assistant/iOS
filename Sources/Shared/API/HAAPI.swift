@@ -794,7 +794,7 @@ public class HomeAssistantAPI {
             let location = privacy == .exact ? reportedLocation : nil
 
             return firstly { () -> Promise<Void> in
-                let accuracyAuthorization: CLAccuracyAuthorization = CLLocationManager().accuracyAuthorization
+                let accuracyAuthorization = Current.locationManager.accuracyAuthorization
 
                 LocationHistoryEntry(
                     updateType: updateType,
