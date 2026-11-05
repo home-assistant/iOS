@@ -4,6 +4,11 @@ import UIKit
 import XCTest
 
 final class CameraMicrophoneBridgeTests: XCTestCase {
+    private struct Report: Equatable {
+        let sessionId: String
+        let microphoneLevel: Double
+    }
+
     private enum StartOutcome: Equatable {
         case started(sessionId: String)
         case failed(CameraMicrophoneError)
@@ -14,6 +19,7 @@ final class CameraMicrophoneBridgeTests: XCTestCase {
     private var sessions: [FakeCameraMicrophoneSession] = []
     private var startOutcomes: [StartOutcome] = []
     private var endedSessionIds: [String] = []
+    private var reports: [Report] = []
     private var haptics: SpyImpactFeedbackGenerator!
     private var originalImpactFeedback: ImpactFeedbackGeneratorProtocol!
     private let server = ServerFixture.standard
@@ -24,6 +30,7 @@ final class CameraMicrophoneBridgeTests: XCTestCase {
         sessions = []
         startOutcomes = []
         endedSessionIds = []
+        reports = []
         originalImpactFeedback = Current.impactFeedback
         haptics = SpyImpactFeedbackGenerator()
         Current.impactFeedback = haptics
@@ -34,6 +41,9 @@ final class CameraMicrophoneBridgeTests: XCTestCase {
         }
         bridge.onSessionEnded = { [weak self] sessionId in
             self?.endedSessionIds.append(sessionId)
+        }
+        bridge.onSessionReport = { [weak self] sessionId, microphoneLevel in
+            self?.reports.append(.init(sessionId: sessionId, microphoneLevel: microphoneLevel))
         }
     }
 
@@ -157,6 +167,27 @@ final class CameraMicrophoneBridgeTests: XCTestCase {
 
         XCTAssertEqual(endedSessionIds, ["session-1"])
         XCTAssertEqual(bridge.activeCameraEntityId, "camera.garden")
+    }
+
+    func testTheMicrophoneLevelOfTheActiveSessionIsReported() throws {
+        start("camera.front_door")
+        let session = try XCTUnwrap(sessions.first)
+        session.connect(sessionId: "session-1")
+
+        session.reportMicrophoneLevel(0.42)
+
+        XCTAssertEqual(reports, [.init(sessionId: "session-1", microphoneLevel: 0.42)])
+    }
+
+    func testTheMicrophoneLevelOfAReplacedSessionIsIgnored() throws {
+        start("camera.front_door")
+        let replaced = try XCTUnwrap(sessions.first)
+        replaced.connect(sessionId: "session-1")
+        start("camera.garden")
+
+        replaced.reportMicrophoneLevel(0.42)
+
+        XCTAssertTrue(reports.isEmpty)
     }
 
     func testGoingToTheBackgroundInterruptsTheSessionAndReportsIt() throws {

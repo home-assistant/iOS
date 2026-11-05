@@ -151,6 +151,20 @@ final class WebViewExternalMessageHandlerCameraMicrophoneTests: XCTestCase {
         XCTAssertEqual(command["payload"] as? [String: String], ["session_id": "session-1"])
     }
 
+    @MainActor func testTheMicrophoneLevelIsReportedToTheFrontend() throws {
+        sut.handleExternalMessage(startMessage(id: 7, entityId: "camera.front_door"))
+        let session = try XCTUnwrap(sessions.first)
+        _ = try messageSentToTheFrontend { session.connect(sessionId: "session-1") }
+
+        let command = try messageSentToTheFrontend { session.reportMicrophoneLevel(0.42) }
+
+        XCTAssertEqual(command["type"] as? String, "command")
+        XCTAssertEqual(command["command"] as? String, "webrtc/stream/report")
+        let payload = try XCTUnwrap(command["payload"] as? [String: Any])
+        XCTAssertEqual(payload["session_id"] as? String, "session-1")
+        XCTAssertEqual(payload["microphone_level"] as? Double, 0.42)
+    }
+
     @MainActor func testTheConfigurationAdvertisesTheCameraMicrophoneStream() throws {
         let reply = try messageSentToTheFrontend {
             sut.handleExternalMessage(["id": 1, "type": "config/get"])
