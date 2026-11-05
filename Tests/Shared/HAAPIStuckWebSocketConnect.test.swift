@@ -20,6 +20,7 @@ final class HAAPIStuckWebSocketConnectTests: XCTestCase {
         api = HomeAssistantAPI(server: .fake())
         connection = RecordingConnection()
         api.connection = connection
+        connection.delegate = api
     }
 
     override func tearDown() {
