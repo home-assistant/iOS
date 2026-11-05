@@ -256,6 +256,55 @@ final class SwiftUIScreenDriver {
         await settle()
     }
 
+    @discardableResult
+    func tapButton(titled title: String) async -> Bool {
+        Self.enableAccessibility()
+        await settle()
+        guard let element = accessibilityElements(in: window).first(where: {
+            $0.accessibilityLabel == title
+        }) else {
+            print("SwiftUIScreenDriver: no button \(title)")
+            return false
+        }
+        element.accessibilityActivate()
+        await settle()
+        return true
+    }
+
+    private static let enableAccessibility: () -> Void = {
+        guard let handle = dlopen("/usr/lib/libAccessibility.dylib", RTLD_LOCAL),
+              let symbol = dlsym(handle, "_AXSApplicationAccessibilitySetEnabled") else {
+            return {}
+        }
+        typealias Enable = @convention(c) (Int32) -> Void
+        let enable = unsafeBitCast(symbol, to: Enable.self)
+        return { enable(1) }
+    }()
+
+    private func accessibilityElements(in root: NSObject) -> [NSObject] {
+        var found: [NSObject] = []
+        var stack: [NSObject] = [root]
+        while let node = stack.popLast() {
+            if node.isAccessibilityElement { found.append(node) }
+            if let elements = node.accessibilityElements as? [NSObject] {
+                stack.append(contentsOf: elements.reversed())
+            } else {
+                let count = node.accessibilityElementCount()
+                if count > 0, count != NSNotFound {
+                    for index in (0 ..< count).reversed() {
+                        if let element = node.accessibilityElement(at: index) as? NSObject {
+                            stack.append(element)
+                        }
+                    }
+                }
+            }
+            if let view = node as? UIView {
+                stack.append(contentsOf: view.subviews.reversed())
+            }
+        }
+        return found
+    }
+
     // MARK: - Navigation bar
 
     /// The navigation bar buttons of the screen on top, trailing ones first.
