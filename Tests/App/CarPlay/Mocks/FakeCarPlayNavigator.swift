@@ -19,7 +19,9 @@ final class FakeCarPlayNavigator: CarPlayNavigationPresenting {
 
     func pushTemplate(_ templateToPush: CPTemplate, animated: Bool, completion: ((Bool, Error?) -> Void)?) {
         pushedTemplates.append(templateToPush)
-        templates.append(templateToPush)
+        if pushError == nil {
+            templates.append(templateToPush)
+        }
         completion?(pushError == nil, pushError)
     }
 
