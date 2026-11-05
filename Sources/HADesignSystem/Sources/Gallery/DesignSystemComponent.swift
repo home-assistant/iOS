@@ -26,7 +26,6 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
     case sheetCloseButton
     case textField
     case card
-    case bottomSheet
     case floatingPanel
     case progressView
     case fullScreenLoader
@@ -180,7 +179,6 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
         case .sheetCloseButton: SheetCloseButton.frontendComponentName
         case .textField: HATextField.frontendComponentName
         case .card: nil
-        case .bottomSheet: AppleLikeBottomSheet<AnyView>.frontendComponentName
         case .floatingPanel: nil
         case .progressView: HAProgressView.frontendComponentName
         case .fullScreenLoader: nil
@@ -332,7 +330,6 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
         case .sheetCloseButton: SheetCloseButton.frontendComponentVersion
         case .textField: HATextField.frontendComponentVersion
         case .card: nil
-        case .bottomSheet: AppleLikeBottomSheet<AnyView>.frontendComponentVersion
         case .floatingPanel: nil
         case .progressView: HAProgressView.frontendComponentVersion
         case .fullScreenLoader: nil
@@ -485,7 +482,6 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
         case .sheetCloseButton: "Sheet Close Button"
         case .textField: "Text Field"
         case .card: "Card"
-        case .bottomSheet: "Bottom Sheet"
         case .floatingPanel: "Floating Panel"
         case .progressView: "Progress View"
         case .fullScreenLoader: "Full Screen Loader"
@@ -640,7 +636,7 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
         case .textField, .selectBox, .formField, .baseTimeInput, .timeInput, .durationInput,
              .dateInput, .qrScanner:
             .inputs
-        case .card, .bottomSheet, .floatingPanel, .sectionTitle, .sectionPill, .settingsRow, .faded, .collapsible,
+        case .card, .floatingPanel, .sectionTitle, .sectionPill, .settingsRow, .faded, .collapsible,
              .haCard, .tileCard, .entityCard, .buttonCard, .glanceCard, .gaugeCard, .markdownCard,
              .headingCard, .clockCard, .thermostatCard, .todoListCard, .weatherForecastCard, .dialogHeader,
              .pictureCard, .alarmPanelCard, .statisticCard, .humidifierCard, .pictureGlanceCard,
@@ -710,8 +706,6 @@ public enum DesignSystemComponent: String, CaseIterable, Identifiable {
                     }
                 },
             ]
-        case .bottomSheet:
-            [.init("Default") { BottomSheetGalleryDemo() }]
         case .floatingPanel:
             [.init("Default") {
                 Color.clear
