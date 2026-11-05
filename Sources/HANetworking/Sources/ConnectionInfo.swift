@@ -67,6 +67,15 @@ public struct ConnectionInfo: Codable, Equatable {
     public var overrideActiveURLType: URLType?
     public private(set) var activeURLType: URLType = .external
 
+    /// This connection with the URL state worked out at runtime cleared. `activeURLType` and
+    /// `overrideActiveURLType` are re-evaluated after decoding, so they are never a settings change.
+    public var withoutRuntimeURLState: ConnectionInfo {
+        var info = self
+        info.overrideActiveURLType = nil
+        info.activeURLType = .external
+        return info
+    }
+
     public var isLocalPushEnabled = true {
         didSet {
             guard oldValue != isLocalPushEnabled else { return }
