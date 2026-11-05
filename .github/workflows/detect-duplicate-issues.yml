@@ -232,19 +232,26 @@ jobs:
           SIMILAR_ISSUES: ${{ steps.fetch_similar.outputs.similar_issues }}
         with:
           script: |
-            const aiResponse = (process.env.AI_RESPONSE ?? '').trim().replace(/[\u0000-\u001F\u007F-\u009F]/g, '');
+            const aiResponse = (process.env.AI_RESPONSE ?? '')
+              .replace(/[\u0000-\u001F\u007F-\u009F]/g, '')
+              .replace(/^\s*```(?:json)?\s*|\s*```\s*$/g, '')
+              .trim();
             console.log('AI response:', aiResponse);
 
-            let duplicateNumbers = [];
+            let parsed;
             try {
-              const parsed = JSON.parse(aiResponse);
-              duplicateNumbers = Array.isArray(parsed) ? parsed : [];
+              parsed = JSON.parse(aiResponse);
             } catch (error) {
-              console.log(`AI response is not JSON (${error.message}), extracting numbers instead`);
-              duplicateNumbers = (aiResponse.match(/\d+/g) ?? []).map(value => parseInt(value));
+              console.log(`AI response is not valid JSON (${error.message}), skipping`);
+              return;
             }
 
-            duplicateNumbers = duplicateNumbers.filter(value => Number.isInteger(value));
+            if (!Array.isArray(parsed) || !parsed.every(value => Number.isInteger(value))) {
+              console.log('AI response is not an array of issue numbers, skipping');
+              return;
+            }
+
+            const duplicateNumbers = parsed;
 
             if (duplicateNumbers.length === 0) {
               console.log('No duplicates detected by AI');
@@ -261,8 +268,10 @@ jobs:
               return;
             }
 
+            const escapeMarkdown = text => text.replace(/[\\`*_{}[\]()<>#+\-!|~]/g, '\\$&');
+
             const duplicateLinks = duplicates
-              .map(issue => `- [#${issue.number}: ${issue.title}](${issue.url})`)
+              .map(issue => `- #${issue.number}: ${escapeMarkdown(issue.title)}`)
               .join('\n');
 
             const commentBody = [
