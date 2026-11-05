@@ -1,5 +1,5 @@
 {
-  "originHash" : "a9ba7637cada6e38da4f75ccf209e02e9c08da9a9950dd3f4208867168ab5ff9",
+  "originHash" : "615e8cb5aeb53af036e15e5a8e65ca43da810754b39bd9e6072c0b07468f8ad8",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -123,8 +123,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/home-assistant/HAKit.git",
       "state" : {
-        "revision" : "0f750dd4003ad2d41e2653ae769f5e6750686490",
-        "version" : "0.4.20"
+        "revision" : "c24be0c9d68bc4903f616b895aae9296ae80cdb8",
+        "version" : "0.4.21"
       }
     },
     {
@@ -215,14 +215,6 @@
       "state" : {
         "revision" : "e01b3d4f861412f8dcee8d93c417d2c2b0cdfd77",
         "version" : "7.0.0"
-      }
-    },
-    {
-      "identity" : "starscream",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/bgoncal/starscream",
-      "state" : {
-        "revision" : "9f793f7396d0def800c18be36769deb6d1313238"
       }
     },
     {

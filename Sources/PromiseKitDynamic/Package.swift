@@ -34,7 +34,7 @@ public let package = Package(
         // reintroducing the duplicate-metadata crash. So this dynamic framework also
         // subsumes HAKit+PromiseKit: everyone links THIS instead, giving a single
         // shared copy of PromiseKit.
-        .package(url: "https://github.com/home-assistant/HAKit.git", exact: "0.4.20"),
+        .package(url: "https://github.com/home-assistant/HAKit.git", exact: "0.4.21"),
     ],
     targets: [
         .target(
