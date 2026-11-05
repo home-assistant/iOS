@@ -11,9 +11,9 @@
 "NSLocationWhenInUseUsageDescription" = "Este aplicativo precisa de acesso à localização para se conectar diretamente à sua instalação do Home Assistant. \n \n 1️⃣ Sua localização será usada apenas para verificar se você está conectado à sua rede local. \n \n 2️⃣ Ela não será compartilhada com ninguém. \n \n 3️⃣ Se você não permitir isso, o aplicativo sempre se conectará pela internet. Se não for configurado, ele protegerá seus dados e recusará a conexão.";
 "NSMicrophoneUsageDescription" = "Gravar áudio usando o frontend do Home Assistant.";
 "NSMotionUsageDescription" = "O movimento é usado para melhorar as atualizações de localização com o tipo de movimento atual, bem como fornecer dados básicos de pedômetro.";
-"NSPhotoLibraryAddUsageDescription" = "O acesso à Biblioteca de fotos é necessário para permitir salvar fotos da visualização da web.";
-"NSPhotoLibraryUsageDescription" = "O acesso à Biblioteca de fotos é necessário para permitir salvar fotos da visualização da web.";
-"NSSiriUsageDescription" = "Usamos a Siri para permitir que atalhos criados interajam com o aplicativo.";
+"NSPhotoLibraryAddUsageDescription" = "O acesso à Biblioteca de Fotos é necessário para permitir salvar fotos da visualização web.";
+"NSPhotoLibraryUsageDescription" = "O acesso à Biblioteca de Fotos é necessário para permitir salvar fotos da visualização web.";
+"NSSiriUsageDescription" = "Usamos a Siri para permitir que os atalhos criados interajam com o aplicativo.";
 "NSSpeechRecognitionUsageDescription" = "Usado para ditar texto para o Assist.";
 "SEND_LOCATION_APP_SHORTCUT_TITLE" = "Enviar localização";
 "TemporaryFullAccuracyReasonManualUpdate" = "Conceda precisão total para usar sua localização atual no rastreador do seu dispositivo.";

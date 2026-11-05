@@ -245,8 +245,8 @@
 "app_intents.open_close.title" = "Openen of sluiten";
 "app_intents.open_experimental_dashboard.description" = "Opent het experimentele dashboard";
 "app_intents.open_experimental_dashboard.title" = "Open Experimenteel Dashboard";
-"app_intents.open_home_assistant.description" = "Opens the Home Assistant app";
-"app_intents.open_home_assistant.title" = "Open Home Assistant";
+"app_intents.open_home_assistant.description" = "Opent de Home Assistant-app";
+"app_intents.open_home_assistant.title" = "Home Assistant openen";
 "app_intents.open_state_icon.title" = "Icoon voor open stand";
 "app_intents.perform_action.action.title" = "Actie";
 "app_intents.perform_action.action_parameter_configuration" = "Welke actie?";
@@ -1547,8 +1547,8 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "reminders_sync.settings.access_denied.title" = "Toegang tot herinneringen vereist";
 "reminders_sync.settings.add_list" = "Voeg toe";
 "reminders_sync.settings.completed.footer" = "Items that were already completed before syncing started normally stay where they are. Turn this on to copy them to the other list as completed, so checked-off items are known on both sides. A list with a long history can gain many completed items on the first sync.";
-"reminders_sync.settings.completed.header" = "Completed items";
-"reminders_sync.settings.completed.title" = "Include completed items";
+"reminders_sync.settings.completed.header" = "Voltooide items";
+"reminders_sync.settings.completed.title" = "Toon voltooide items";
 "reminders_sync.settings.conflicts.footer" = "Dit is alleen van belang bij synchronisatie in twee richtingen. Als hetzelfde item sinds de laatste synchronisatie in beide apps is gewijzigd, wordt de versie van de kant die je hier kiest behouden.";
 "reminders_sync.settings.conflicts.header" = "Conflicten";
 "reminders_sync.settings.conflicts.title" = "Behoud de wijzigingen van";
@@ -1575,9 +1575,9 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "restored_registrations.explanation" = "This device was set up from a backup of another one. It still signs in and reports to Home Assistant as that device, so both would share one device there, with its sensors, location and notifications.";
 "restored_registrations.held_back_notification.body" = "This device was set up from a backup of another one, so its location and sensors aren't sent to %@. Open the app to choose how it connects.";
 "restored_registrations.held_back_notification.title" = "Home Assistant isn't getting updates from this device";
-"restored_registrations.login.progress" = "Server %li of %li";
-"restored_registrations.login.title" = "Sign in to %@";
-"restored_registrations.new_device" = "Set up as a new device";
+"restored_registrations.login.progress" = "Server %li van %li";
+"restored_registrations.login.title" = "Log in op %@";
+"restored_registrations.new_device" = "Als nieuw apparaat instellen";
 "restored_registrations.next.body" = "The page that opens next is the login of %@. Signing in there registers this device with it as a new device.";
 "restored_registrations.next.continue" = "Continue";
 "restored_registrations.next.title" = "Next: sign in to %@";
@@ -1589,9 +1589,9 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "restored_registrations.setting_up" = "Instellen…";
 "restored_registrations.status.done" = "Stel als nieuw apparaat in";
 "restored_registrations.status.failed" = "Couldn't register: %@";
-"restored_registrations.status.registering" = "Registering…";
-"restored_registrations.status.signing_in" = "Signing in…";
-"restored_registrations.status.skipped" = "Not set up yet. Asked again on the next launch.";
+"restored_registrations.status.registering" = "Registreren…";
+"restored_registrations.status.signing_in" = "Aan het inloggen…";
+"restored_registrations.status.skipped" = "Nog niet ingesteld. Word opnieuw gevraagd bij de volgende start.";
 "restored_registrations.status.waiting" = "Wachten";
 "restored_registrations.title" = "Restored from another device?";
 "restored_registrations.try_again" = "Probeer opnieuw";
@@ -1726,7 +1726,7 @@ Home Assistant is open source, komt op voor privacy en draait lokaal bij jou in 
 "settings.connection_section.reauthenticate.url_picker_title" = "Sign in using";
 "settings.connection_section.refresh_server" = "Werk serverinformatie bij";
 "settings.connection_section.register_as_new_device.footer" = "Use this when another device restored from a backup of this one shares its registration, so each gets its own sensors, location and notifications.";
-"settings.connection_section.register_as_new_device.progress" = "Registering…";
+"settings.connection_section.register_as_new_device.progress" = "Registreren…";
 "settings.connection_section.register_as_new_device.restored_footer" = "This server knows this device as the one its backup came from, so it isn't sent this device's location and sensors. Register as a new device, or replace the old device if this one took its place.";
 "settings.connection_section.register_as_new_device.sign_in_message" = "You sign in to this server again and this device gets a registration of its own. The current one stays in Home Assistant for any other device still using it. Remove it there once no device does.";
 "settings.connection_section.register_as_new_device.title" = "Registreer als nieuw apparaat";
@@ -3155,7 +3155,7 @@ Hoewel geen enkele URL als veilig wordt beschouwd, worden de gegevens van deze s
 "web_view.add_to.option.Deeplink.title" = "Deeplink";
 "web_view.add_to.option.MacToolbar.title" = "Mac-werkbalk";
 "web_view.add_to.option.NfcTag.title" = "NFC-tag";
-"web_view.add_to.option.WatchComplication.title" = "Watch Complication";
+"web_view.add_to.option.WatchComplication.title" = "Watch complicatie";
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Controleer je verbinding of probeer het later opnieuw. Als Home Assistant opnieuw wordt opgestart, wordt de verbinding hersteld zodra deze weer beschikbaar is.";
 "web_view.empty_state.clean_cache_and_reload_button" = "Wis cache en herlaad";
@@ -3412,7 +3412,7 @@ Hoewel geen enkele URL als veilig wordt beschouwd, worden de gegevens van deze s
 "widgets.todo_list.due_date.in_format" = "Over %@";
 "widgets.todo_list.due_date.now" = "Nu";
 "widgets.todo_list.due_date.today" = "Vandaag";
-"widgets.todo_list.load_failed" = "Couldn't update. Tap refresh.";
+"widgets.todo_list.load_failed" = "Bijwerken mislukt. Tik om te vernieuwen.";
 "widgets.todo_list.parameter.item_id" = "Item-ID";
 "widgets.todo_list.parameter.list" = "Lijst";
 "widgets.todo_list.parameter.list_id" = "Lijst-ID";
