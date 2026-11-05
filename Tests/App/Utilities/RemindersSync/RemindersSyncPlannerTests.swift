@@ -253,6 +253,17 @@ struct RemindersSyncPlannerTests {
         #expect(operations == [.updateTodoItem(todoItemUid: "todo-1", reminderId: "reminder-1")])
     }
 
+    @Test func testCaseOnlyTodoItemEditStillWinsAConflictingReminderRename() {
+        let original = snapshot(title: "Milk")
+        let operations = RemindersSyncPlanner.plan(
+            direction: .bothWays,
+            todoItems: ["todo-1": snapshot(title: "MILK")],
+            reminders: ["reminder-1": snapshot(title: "Bread")],
+            links: [link(snapshot: original)]
+        )
+        #expect(operations == [.updateReminder(todoItemUid: "todo-1", reminderId: "reminder-1")])
+    }
+
     @Test func testCaseOnlyTodoItemEditStillPropagatesWhenSyncingBothWays() {
         let original = snapshot(title: "Almond milk")
         let operations = RemindersSyncPlanner.plan(
@@ -273,6 +284,17 @@ struct RemindersSyncPlannerTests {
             links: [link(snapshot: written)]
         )
         #expect(operations.isEmpty)
+    }
+
+    @Test func testSyncingToHomeAssistantStillRestoresAReCasedItemCompletedInTheList() {
+        let written = snapshot(title: "Almond Milk")
+        let operations = RemindersSyncPlanner.plan(
+            direction: .toHomeAssistant,
+            todoItems: ["todo-1": snapshot(title: "Almond milk", isCompleted: true)],
+            reminders: ["reminder-1": written],
+            links: [link(snapshot: written)]
+        )
+        #expect(operations == [.updateTodoItem(todoItemUid: "todo-1", reminderId: "reminder-1")])
     }
 
     @Test func testSyncingToHomeAssistantStillPushesACaseOnlyReminderEdit() {

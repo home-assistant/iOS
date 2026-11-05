@@ -140,8 +140,10 @@ enum RemindersSyncPlanner {
                 return []
             }
             let reminderChanged = reminder != link.snapshot
-            let todoChanged = todoItem != link.snapshot
-                && !(reminderChanged && todoItem.differsOnlyInTitleCase(from: link.snapshot))
+            let todoOnlyReCased = reminderChanged
+                && reminder.title == link.snapshot.title
+                && todoItem.differsOnlyInTitleCase(from: link.snapshot)
+            let todoChanged = todoItem != link.snapshot && !todoOnlyReCased
             return [updateOperation(
                 for: link,
                 direction: direction,
