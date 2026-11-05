@@ -12,6 +12,9 @@ jobs:
   label-platform:
     runs-on: ubuntu-latest
     if: contains(github.event.issue.body, '### Which platform has the issue?')
+    concurrency:
+      group: triage-bug-report-labels-${{ github.event.issue.number }}
+      cancel-in-progress: false
     steps:
       - name: Apply platform labels from the selected platforms
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
@@ -24,8 +27,16 @@ jobs:
               'macOS': 'mac',
             };
 
-            const body = context.payload.issue.body ?? '';
-            const section = body.split('### Which platform has the issue?')[1]?.split('\n### ')[0] ?? '';
+            const { data: issue } = await github.rest.issues.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const body = issue.body ?? '';
+            const section = body
+              .split('### Which platform has the issue?')[1]
+              ?.split('\n### ')[0] ?? '';
 
             const selected = section
               .split(/[,\n]/)
@@ -38,7 +49,7 @@ jobs:
                 .map(platform => platformLabels[platform])
             );
 
-            const current = new Set(context.payload.issue.labels.map(label => label.name));
+            const current = new Set(issue.labels.map(label => label.name));
             const managed = new Set(Object.values(platformLabels));
             const toAdd = [...wanted].filter(label => !current.has(label));
             const toRemove = [...current].filter(label => managed.has(label) && !wanted.has(label));
@@ -65,14 +76,18 @@ jobs:
 
   redirect-frontend-issues:
     runs-on: ubuntu-latest
-    if: github.event.action == 'opened' && contains(github.event.issue.body, '### Does the issue also happen in Safari?')
+    if: >-
+      github.event.action == 'opened' &&
+      contains(github.event.issue.body, '### Does the issue also happen in Safari?')
     steps:
       - name: Close issues that reproduce in Safari and point to the frontend repository
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
         with:
           script: |
             const body = context.payload.issue.body ?? '';
-            const answer = (body.split('### Does the issue also happen in Safari?')[1]?.split('\n### ')[0] ?? '').trim();
+            const answer = (body
+              .split('### Does the issue also happen in Safari?')[1]
+              ?.split('\n### ')[0] ?? '').trim();
 
             if (answer !== 'Yes') {
               console.log(`Safari answer is "${answer}", nothing to do`);
@@ -80,6 +95,8 @@ jobs:
             }
 
             const issueAuthor = context.payload.issue.user.login;
+            const frontendIssueUrl =
+              'https://github.com/home-assistant/frontend/issues/new?labels=bug&template=bug_report.yml';
 
             await github.rest.issues.addLabels({
               owner: context.repo.owner,
@@ -95,10 +112,10 @@ jobs:
               body: `Hi @${issueAuthor}, thank you for your report!\n\n` +
                     `You indicated that the issue also happens in Safari, which means the bug is in the ` +
                     `Home Assistant frontend rather than in the app.\n\n` +
-                    `Please open an issue in the [frontend repository]` +
-                    `(https://github.com/home-assistant/frontend/issues/new?labels=bug&template=BUG_REPORT.md) instead, ` +
+                    `Please open an issue in the [frontend repository](${frontendIssueUrl}) instead, ` +
                     `where the frontend maintainers can look into it.\n\n` +
-                    `If you selected Yes by mistake and the issue only happens in the app, let us know and we will reopen this issue.`
+                    `If you selected Yes by mistake and the issue only happens in the app, ` +
+                    `let us know and we will reopen this issue.`
             });
 
             await github.rest.issues.update({

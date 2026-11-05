@@ -17,11 +17,13 @@ body:
       required: true
     attributes:
       label: Does the issue also happen in Safari?
-      description: >
+      description: |
         Open your Home Assistant URL in Safari on the same device and try to reproduce the problem.
         If it happens there too, the bug is in the Home Assistant frontend and belongs in the
-        [frontend repository](https://github.com/home-assistant/frontend/issues/new?labels=bug&template=BUG_REPORT.md) instead.
-        Native app features such as notifications, widgets, sensors, location or the watch app cannot be tested in Safari.
+        [frontend repository][frontend-issue] instead. Native app features such as notifications,
+        widgets, sensors, location or the watch app cannot be tested in Safari.
+
+        [frontend-issue]: https://github.com/home-assistant/frontend/issues/new?labels=bug&template=bug_report.yml
       options:
         - "No"
         - "Yes"
@@ -95,10 +97,14 @@ body:
     attributes:
       label: What version of Home Assistant Core are you running?
       placeholder: core-
-      description: >
-        Can be found in: [Settings ⇒ System ⇒ Repairs ⇒ Three Dots in Upper Right ⇒ System information](https://my.home-assistant.io/redirect/system_health/).
+      description: |
+        Can be found in:
+        [Settings ⇒ System ⇒ Repairs ⇒ Three Dots in Upper Right ⇒ System information][system-health].
 
-        [![Open your Home Assistant instance and show the system information.](https://my.home-assistant.io/badges/system_health.svg)](https://my.home-assistant.io/redirect/system_health/)
+        [![Open your Home Assistant instance and show the system information.][system-health-badge]][system-health]
+
+        [system-health]: https://my.home-assistant.io/redirect/system_health/
+        [system-health-badge]: https://my.home-assistant.io/badges/system_health.svg
   - type: markdown
     attributes:
       value: |
@@ -125,7 +131,8 @@ body:
       value: |
         ### Companion app logs
 
-        Please upload your companion app logs through [this form][logs-form]. Mention your GitHub username and the issue title so we can match them to this report.
+        Please upload your companion app logs through [this form][logs-form].
+        Mention your GitHub username and the issue title so we can match them to this report.
 
         Logs can be exported from the app under Companion app settings ⇒ Debugging ⇒ Export log files.
 
