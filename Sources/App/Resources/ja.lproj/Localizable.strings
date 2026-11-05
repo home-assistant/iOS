@@ -1545,9 +1545,9 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "reminders_sync.settings.access_denied.body" = "リストを同期するには、システム設定アプリで「リマインダー」への完全なアクセスを許可してください。";
 "reminders_sync.settings.access_denied.title" = "リマインダーへのアクセス権が必要です";
 "reminders_sync.settings.add_list" = "追加";
-"reminders_sync.settings.completed.footer" = "Items that were already completed before syncing started normally stay where they are. Turn this on to copy them to the other list as completed, so checked-off items are known on both sides. A list with a long history can gain many completed items on the first sync.";
-"reminders_sync.settings.completed.header" = "Completed items";
-"reminders_sync.settings.completed.title" = "Include completed items";
+"reminders_sync.settings.completed.footer" = "同期が始まる前にすでに完了していた項目は、通常はそのままで残ります。この機能を有効にすると、それらの項目が「完了」状態のままもう一方のリストにコピーされるため、チェック済みの項目が両方のリストで共有されます。履歴が長いリストの場合、最初の同期時に多くの完了項目が追加されることがあります。";
+"reminders_sync.settings.completed.header" = "完了した項目";
+"reminders_sync.settings.completed.title" = "完了した項目を含める";
 "reminders_sync.settings.conflicts.footer" = "これは双方向同期の場合にのみ適用されます。前回の同期以降、両方のアプリで同じ項目が編集された場合、ここで選択した側のバージョンが保持されます。";
 "reminders_sync.settings.conflicts.header" = "競合の解決";
 "reminders_sync.settings.conflicts.title" = "変更の優先元";
@@ -3411,7 +3411,7 @@ Home Assistantはオープンソースで、プライバシーを擁護し、あ
 "widgets.todo_list.due_date.in_format" = "%@以内";
 "widgets.todo_list.due_date.now" = "現在";
 "widgets.todo_list.due_date.today" = "今日";
-"widgets.todo_list.load_failed" = "Couldn't update. Tap refresh.";
+"widgets.todo_list.load_failed" = "更新できませんでした。更新をタップしてください。";
 "widgets.todo_list.parameter.item_id" = "アイテムID";
 "widgets.todo_list.parameter.list" = "リスト";
 "widgets.todo_list.parameter.list_id" = "リストID";
