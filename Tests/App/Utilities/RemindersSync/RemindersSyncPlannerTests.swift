@@ -242,6 +242,28 @@ struct RemindersSyncPlannerTests {
         #expect(toHomeAssistant == [.updateTodoItem(todoItemUid: "todo-1", reminderId: "reminder-1")])
     }
 
+    @Test func testCompletingAReminderTheListReCasedIsNotUndoneWhenSyncingBothWays() {
+        let written = snapshot(title: "Almond Milk")
+        let operations = RemindersSyncPlanner.plan(
+            direction: .bothWays,
+            todoItems: ["todo-1": snapshot(title: "Almond milk")],
+            reminders: ["reminder-1": snapshot(title: "Almond Milk", isCompleted: true)],
+            links: [link(snapshot: written)]
+        )
+        #expect(operations == [.updateTodoItem(todoItemUid: "todo-1", reminderId: "reminder-1")])
+    }
+
+    @Test func testCaseOnlyTodoItemEditStillPropagatesWhenSyncingBothWays() {
+        let original = snapshot(title: "Almond milk")
+        let operations = RemindersSyncPlanner.plan(
+            direction: .bothWays,
+            todoItems: ["todo-1": snapshot(title: "Almond Milk")],
+            reminders: ["reminder-1": original],
+            links: [link(snapshot: original)]
+        )
+        #expect(operations == [.updateReminder(todoItemUid: "todo-1", reminderId: "reminder-1")])
+    }
+
     @Test func testSyncingToHomeAssistantAcceptsTheListReCasingTheWrittenTitle() {
         let written = snapshot(title: "Almond Milk")
         let operations = RemindersSyncPlanner.plan(

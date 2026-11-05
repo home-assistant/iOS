@@ -680,9 +680,6 @@ final class RemindersSyncManager: ObservableObject {
             }
             unmatchedReminderIds.removeAll { reminderId in matches.contains { $0.reminderId == reminderId } }
         }
-        if unmatchedReminderIds.count == 1, createdItems.count == 1 {
-            matches.append((unmatchedReminderIds[0], createdItems[0]))
-        }
 
         for (reminderId, item) in matches {
             guard var snapshot = reminderSnapshots[reminderId] else { continue }

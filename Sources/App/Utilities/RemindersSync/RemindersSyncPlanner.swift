@@ -139,12 +139,15 @@ enum RemindersSyncPlanner {
                todoItem.differsOnlyInTitleCase(from: reminder) {
                 return []
             }
+            let reminderChanged = reminder != link.snapshot
+            let todoChanged = todoItem != link.snapshot
+                && !(reminderChanged && todoItem.differsOnlyInTitleCase(from: link.snapshot))
             return [updateOperation(
                 for: link,
                 direction: direction,
                 conflictResolution: conflictResolution,
-                todoChanged: todoItem != link.snapshot,
-                reminderChanged: reminder != link.snapshot
+                todoChanged: todoChanged,
+                reminderChanged: reminderChanged
             )]
         case let (.some(todoItem), .none):
             // The reminder was deleted.
