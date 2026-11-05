@@ -192,6 +192,7 @@ public struct ToastView: View {
                     height: isExpanded ? expandedHeight : dynamicIslandHeight
                 )
                 .offset(
+                    x: (safeArea.leading - safeArea.trailing) / 2,
                     y: haveDynamicIsland ? topOffset : (isExpanded ? safeArea.top + 10 : -80)
                 )
                 /// For Non Dynamic Island Based Phones!
