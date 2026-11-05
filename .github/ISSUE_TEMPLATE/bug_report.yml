@@ -1,0 +1,150 @@
+name: Report bug
+description: Report a bug in the iOS, iPadOS, watchOS or macOS app.
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        If you have a feature or enhancement request, please [request it here instead][fr].
+
+        Remove or mask sensitive values (tokens, URLs, IP addresses) before submitting.
+
+        [fr]: https://github.com/orgs/home-assistant/discussions/new?category=ios-macos
+  - type: dropdown
+    id: safari
+    validations:
+      required: true
+    attributes:
+      label: Does the issue also happen in Safari?
+      multiple: true
+      description: |
+        Open your Home Assistant URL in Safari on the same device and try to reproduce the problem.
+        If it happens there too, the bug is in the Home Assistant frontend and belongs in the
+        [frontend repository][frontend-issue] instead. Native app features such as notifications,
+        widgets, sensors, location or the watch app cannot be tested in Safari. Select one answer.
+
+        [frontend-issue]: https://github.com/home-assistant/frontend/issues/new?labels=bug&template=bug_report.yml
+      options:
+        - "No"
+        - "Yes"
+        - Not applicable (native app feature)
+  - type: textarea
+    id: problem
+    validations:
+      required: true
+    attributes:
+      label: The problem
+      description: >-
+        Describe the issue you are experiencing here, to communicate to the
+        maintainers. Tell us what you were trying to do and what happened.
+
+        Provide a clear and concise description of what the problem is.
+  - type: markdown
+    attributes:
+      value: |
+        ## Environment
+  - type: dropdown
+    id: platform
+    validations:
+      required: true
+    attributes:
+      label: Which platform has the issue?
+      description: Select every platform where you see the bug.
+      multiple: true
+      options:
+        - iOS
+        - iPadOS
+        - watchOS
+        - macOS
+  - type: input
+    id: device_model
+    validations:
+      required: true
+    attributes:
+      label: Which device model are you using?
+      placeholder: iPhone 17 Pro
+      description: >
+        Can be found in: Settings ⇒ General ⇒ About (iOS, iPadOS, watchOS) or Apple menu ⇒ About This Mac (macOS).
+  - type: input
+    id: os_version
+    validations:
+      required: true
+    attributes:
+      label: Which OS version is the device running?
+      placeholder: iOS 27.1
+      description: >
+        Can be found in: Settings ⇒ General ⇒ About (iOS, iPadOS, watchOS) or Apple menu ⇒ About This Mac (macOS).
+  - type: input
+    id: app_version
+    validations:
+      required: true
+    attributes:
+      label: What version of the app has the issue?
+      placeholder: 2026.11 (2026.1234)
+      description: >
+        Can be found in the app's About screen. Include the build number shown in brackets.
+  - type: input
+    id: last_working_app_version
+    attributes:
+      label: What was the last working version of the app?
+      placeholder: 2026.10 (2026.1200)
+      description: >
+        If known, otherwise leave blank.
+  - type: input
+    id: core_version
+    validations:
+      required: true
+    attributes:
+      label: What version of Home Assistant Core are you running?
+      placeholder: core-
+      description: |
+        Can be found in:
+        [Settings ⇒ System ⇒ Repairs ⇒ Three Dots in Upper Right ⇒ System information][system-health].
+
+        [![Open your Home Assistant instance and show the system information.][system-health-badge]][system-health]
+
+        [system-health]: https://my.home-assistant.io/redirect/system_health/
+        [system-health-badge]: https://my.home-assistant.io/badges/system_health.svg
+  - type: markdown
+    attributes:
+      value: |
+        # Details
+  - type: textarea
+    id: reproduction
+    validations:
+      required: true
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1.
+        2.
+        3.
+  - type: textarea
+    id: expected
+    validations:
+      required: true
+    attributes:
+      label: Expected behavior
+      description: A clear and concise description of what you expected to happen.
+  - type: markdown
+    attributes:
+      value: |
+        ### Companion app logs
+
+        Please upload your companion app logs through [this form][logs-form].
+        Mention your GitHub username and the issue title so we can match them to this report.
+
+        Logs can be exported from the app under Companion app settings ⇒ Debugging ⇒ Export log files.
+
+        [logs-form]: https://forms.gle/5kax4QU2yvunHRxJA
+  - type: dropdown
+    id: logs_uploaded
+    validations:
+      required: true
+    attributes:
+      label: Did you upload your companion app logs through the form above?
+      multiple: true
+      options:
+        - "Yes"
+        - "No"
