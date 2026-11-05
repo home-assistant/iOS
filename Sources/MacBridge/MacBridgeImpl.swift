@@ -88,7 +88,9 @@ import SystemConfiguration
                     case .prohibited: return .prohibited
                     }
                 }())
-                NSApplication.shared.activate(ignoringOtherApps: true)
+                if !MacBridgeUpdateRelauncher.shared.isKeepingAppInBackground {
+                    NSApplication.shared.activate(ignoringOtherApps: true)
+                }
             }
         }
     }

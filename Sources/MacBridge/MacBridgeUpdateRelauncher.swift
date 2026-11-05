@@ -13,10 +13,11 @@ final class MacBridgeUpdateRelauncher {
 
     static let relaunchModeArgument = "--ha-relaunch-mode"
     static let stateFileName = "update-relauncher-state"
+    static let ownerFileName = "update-relauncher-owner"
     static let logFileName = "update-relauncher.log"
 
     static let watcherScript = """
-    bundle="$1"; original="$2"; state_file="$3"
+    bundle="$1"; original="$2"; state_file="$3"; owner_file="$4"
     marker=$(cat)
     if [ "$marker" = "quit" ]; then
         echo "app quit normally; not relaunching"
@@ -32,6 +33,10 @@ final class MacBridgeUpdateRelauncher {
             echo "updated to version $current; relaunching in ${state:-foreground}"
             retries=0
             while [ "$retries" -lt 6 ]; do
+                if [ "$(cat "$owner_file" 2>/dev/null)" != "$$" ]; then
+                    echo "superseded by a newer watcher; not relaunching"
+                    exit 0
+                fi
                 if [ "$state" = "background" ]; then
                     /usr/bin/open -g "$bundle" --args --ha-relaunch-mode background && exit 0
                 else
@@ -53,6 +58,19 @@ final class MacBridgeUpdateRelauncher {
         subsystem: Bundle.main.bundleIdentifier ?? "MacBridge",
         category: "update-relauncher"
     )
+
+    static var isBackgroundRelaunch: Bool {
+        let arguments = ProcessInfo.processInfo.arguments
+        guard let index = arguments.firstIndex(of: relaunchModeArgument),
+              arguments.indices.contains(index + 1) else {
+            return false
+        }
+        return arguments[index + 1] == WindowState.background.rawValue
+    }
+
+    var isKeepingAppInBackground: Bool {
+        Self.isBackgroundRelaunch && !hasVisibleWindows
+    }
 
     private var writeDescriptor: Int32 = -1
     private var stateFileURL: URL?
@@ -83,13 +101,24 @@ final class MacBridgeUpdateRelauncher {
         stateFileURL = stateDirectory.appendingPathComponent(Self.stateFileName)
         writeStateIfChanged()
 
-        guard spawnWatcher(
+        guard let watcherPid = spawnWatcher(
             bundlePath: bundleURL.path,
             version: version,
             stateFilePath: stateDirectory.appendingPathComponent(Self.stateFileName).path,
+            ownerFilePath: stateDirectory.appendingPathComponent(Self.ownerFileName).path,
             logFilePath: stateDirectory.appendingPathComponent(Self.logFileName).path
         ) else {
             return false
+        }
+
+        do {
+            try String(watcherPid).write(
+                to: stateDirectory.appendingPathComponent(Self.ownerFileName),
+                atomically: true,
+                encoding: .utf8
+            )
+        } catch {
+            logger.error("writing watcher owner failed: \(error.localizedDescription)")
         }
 
         observeWindowVisibility()
@@ -108,15 +137,22 @@ final class MacBridgeUpdateRelauncher {
         }
     }
 
-    private func spawnWatcher(bundlePath: String, version: String, stateFilePath: String, logFilePath: String) -> Bool {
+    private func spawnWatcher(
+        bundlePath: String,
+        version: String,
+        stateFilePath: String,
+        ownerFilePath: String,
+        logFilePath: String
+    ) -> pid_t? {
         var descriptors: [Int32] = [-1, -1]
         guard pipe(&descriptors) == 0 else {
             logger.error("pipe failed: \(errno)")
-            return false
+            return nil
         }
         let readEnd = descriptors[0]
         let writeEnd = descriptors[1]
         _ = fcntl(writeEnd, F_SETFD, FD_CLOEXEC)
+        _ = fcntl(writeEnd, F_SETNOSIGPIPE, 1)
 
         var fileActions: posix_spawn_file_actions_t?
         posix_spawn_file_actions_init(&fileActions)
@@ -130,23 +166,31 @@ final class MacBridgeUpdateRelauncher {
         defer { posix_spawnattr_destroy(&attributes) }
         posix_spawnattr_setflags(&attributes, Int16(POSIX_SPAWN_SETSID | POSIX_SPAWN_CLOEXEC_DEFAULT))
 
-        let arguments = ["/bin/sh", "-c", Self.watcherScript, "update-relauncher", bundlePath, version, stateFilePath]
+        let arguments = [
+            "/bin/sh", "-c", Self.watcherScript, "update-relauncher", bundlePath, version, stateFilePath, ownerFilePath,
+        ]
         var argv: [UnsafeMutablePointer<CChar>?] = arguments.map { strdup($0) }
         argv.append(nil)
         defer { argv.forEach { free($0) } }
 
+        var envp: [UnsafeMutablePointer<CChar>?] = ProcessInfo.processInfo.environment.map { key, value in
+            strdup("\(key)=\(value)")
+        }
+        envp.append(nil)
+        defer { envp.forEach { free($0) } }
+
         var pid: pid_t = 0
-        let status = posix_spawn(&pid, "/bin/sh", &fileActions, &attributes, argv, environ)
+        let status = posix_spawn(&pid, "/bin/sh", &fileActions, &attributes, argv, envp)
         close(readEnd)
         guard status == 0 else {
             close(writeEnd)
             logger.error("posix_spawn failed: \(status)")
-            return false
+            return nil
         }
 
         writeDescriptor = writeEnd
         logger.info("watcher pid \(pid) for \(bundlePath) version \(version)")
-        return true
+        return pid
     }
 
     private func observeWindowVisibility() {
