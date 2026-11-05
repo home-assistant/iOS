@@ -405,6 +405,8 @@ public final class ServerManagerImpl: ServerManager {
     private func serverInfoSetter(
         cache: HAProtected<ServerCache>,
         keychain: ServerManagerKeychain,
+        mirrorStore: ServerManagerMirrorStore,
+        mirrorWrites: ServerManagerMirrorWriteSequencer,
         identifier: Identifier<Server>,
         encoder: JSONEncoder,
         notify: @escaping () -> Void
@@ -445,15 +447,14 @@ public final class ServerManagerImpl: ServerManager {
                 guard old?.mirroredForPersistence != serverInfo.mirroredForPersistence else {
                     return (true, nil)
                 }
-                return (true, self?.mirrorWrites.ticket())
+                return (true, mirrorWrites.ticket())
             }
 
             // The mirror is what a restore brings back when the Keychain is lost, so it has to follow
             // every settings change, not just the launch-time snapshot — otherwise a setting changed
             // after launch (local push, URLs, SSIDs) reverts to its old value on restore.
             // Written outside the lock, in ticket order: the mirror is a database write.
-            if let mirrorTicket, let self {
-                let mirrorStore = self.mirrorStore
+            if let mirrorTicket {
                 mirrorWrites.apply(mirrorTicket, key: identifier.keychainKey) {
                     mirrorStore.set(serverInfo, key: identifier.keychainKey)
                 }
@@ -481,6 +482,8 @@ public final class ServerManagerImpl: ServerManager {
             ), setter: serverInfoSetter(
                 cache: cache,
                 keychain: keychain,
+                mirrorStore: mirrorStore,
+                mirrorWrites: mirrorWrites,
                 identifier: identifier,
                 encoder: encoder,
                 notify: { [weak self] in self?.notify() }
