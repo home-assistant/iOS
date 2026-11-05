@@ -34,19 +34,22 @@ jobs:
             }
 
             const body = issue.body ?? '';
-            const section = body
-              .split('### Did you upload your companion app logs through the form above?')[1]
-              ?.split('\n### ')[0] ?? '';
-
-            const answers = new Set(
-              section
+            const answersFor = heading => new Set(
+              (body.split(heading)[1]?.split('\n### ')[0] ?? '')
                 .split(/[,\n]/)
                 .map(value => value.trim())
                 .filter(Boolean)
             );
 
-            if (answers.size !== 1 || !answers.has('No')) {
-              console.log(`Logs answers are [${[...answers]}], nothing to do`);
+            const safariAnswers = answersFor('### Does the issue also happen in Safari?');
+            if (safariAnswers.size === 1 && safariAnswers.has('Yes')) {
+              console.log('Issue reproduces in Safari and is being redirected to the frontend repository, skipping');
+              return;
+            }
+
+            const logsAnswers = answersFor('### Did you upload your companion app logs through the form above?');
+            if (logsAnswers.size !== 1 || !logsAnswers.has('No')) {
+              console.log(`Logs answers are [${[...logsAnswers]}], nothing to do`);
               return;
             }
 
