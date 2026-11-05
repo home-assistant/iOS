@@ -1546,9 +1546,9 @@ Home Assistant ist Open Source, setzt sich für Datenschutz ein und läuft lokal
 "reminders_sync.settings.access_denied.body" = "Erlaube in den Systemeinstellungen den vollen Zugriff auf „Erinnerungen“, um deine Listen zu synchronisieren.";
 "reminders_sync.settings.access_denied.title" = "Zugriff auf Erinnerungen erforderlich";
 "reminders_sync.settings.add_list" = "Hinzufügen";
-"reminders_sync.settings.completed.footer" = "Items that were already completed before syncing started normally stay where they are. Turn this on to copy them to the other list as completed, so checked-off items are known on both sides. A list with a long history can gain many completed items on the first sync.";
-"reminders_sync.settings.completed.header" = "Completed items";
-"reminders_sync.settings.completed.title" = "Include completed items";
+"reminders_sync.settings.completed.footer" = "Einträge, die bereits vor Beginn der Synchronisierung als erledigt markiert waren, bleiben normalerweise an ihrem Platz. Aktiviere diese Option, um sie als erledigt in die andere Liste zu kopieren, sodass abgehakte Einträge auf beiden Seiten sichtbar sind. Bei einer Liste mit einer langen Historie können bei der ersten Synchronisierung viele Einträge als erledigt markiert werden.";
+"reminders_sync.settings.completed.header" = "Erledigte Einträge";
+"reminders_sync.settings.completed.title" = "Erledigte Einträge einbeziehen";
 "reminders_sync.settings.conflicts.footer" = "Dies ist nur bei bidirektionalen Synchronisationen von Bedeutung. Wenn derselbe Eintrag seit der letzten Synchronisation in beiden Apps bearbeitet wurde, wird die Version der Seite beibehalten, die du hier auswählst.";
 "reminders_sync.settings.conflicts.header" = "Konflikte";
 "reminders_sync.settings.conflicts.title" = "Änderungen behalten aus";
@@ -3434,7 +3434,7 @@ Klicke mit der rechten Maustaste auf deinen Schreibtisch, wähle „Widgets bear
 "widgets.todo_list.due_date.in_format" = "In %@";
 "widgets.todo_list.due_date.now" = "Jetzt";
 "widgets.todo_list.due_date.today" = "Heute";
-"widgets.todo_list.load_failed" = "Couldn't update. Tap refresh.";
+"widgets.todo_list.load_failed" = "Aktualisierung fehlgeschlagen. Tippe auf „Aktualisieren“.";
 "widgets.todo_list.parameter.item_id" = "Eintrag-ID";
 "widgets.todo_list.parameter.list" = "Liste";
 "widgets.todo_list.parameter.list_id" = "Listen-ID";
