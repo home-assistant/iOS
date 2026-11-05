@@ -374,8 +374,7 @@ public class WebhookManager: NSObject {
                     server: server,
                     identifier: identifier,
                     request: request,
-                    waitForResponse: true,
-                    webhookURL: webhookURL
+                    waitForResponse: true
                 )
             }
 
@@ -399,11 +398,11 @@ public class WebhookManager: NSObject {
                     return sendBackground()
                 }
 
-                Current.Log.info("internal URL unreachable, retrying \(request.type) with \(remoteURL)")
+                Current.Log.info("internal URL unreachable, retrying \(request.type) with the remote URL")
                 Current.clientEventStore.addEvent(ClientEvent(
-                    text: "Internal URL unreachable, retrying with remote URL - \(remoteURL.absoluteString)",
+                    text: "Internal URL unreachable, retrying with remote URL",
                     type: .networkRequest,
-                    payload: ["error": String(describing: error)]
+                    payload: ["error": LogRedaction.redact(String(describing: error))]
                 ))
 
                 return sendRegular(remoteURL).get {

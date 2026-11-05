@@ -1141,6 +1141,33 @@ class WebhookManagerTests: XCTestCase {
         XCTAssertEqual(Current.connectivity.lastKnownNetworkState().ssid, "MyWifi")
     }
 
+    func testSendPersistentBackgroundFallbackUsesNetworkJoinedDuringAttempts() throws {
+        Current.isBackgroundRequestsImmediate = { false }
+        let urls = try useInternalURLAtHome()
+        let expectedRequest = WebhookRequest(type: "update_location", data: ["json": true])
+
+        var internalRequests = 0
+        stub(condition: { req in req.url == urls.internal }, response: { _ in
+            internalRequests += 1
+            return HTTPStubsResponse(error: URLError(.cannotConnectToHost))
+        })
+
+        var externalRequests = 0
+        stub(condition: { req in req.url == urls.external }, response: { _ in
+            externalRequests += 1
+            if externalRequests == 1 {
+                Current.connectivity.updateLastKnownNetworkState(NetworkState(ssid: "Elsewhere"))
+                return HTTPStubsResponse(error: URLError(.timedOut))
+            } else {
+                return HTTPStubsResponse(jsonObject: ["hello": "goodbye"], statusCode: 200, headers: nil)
+            }
+        })
+
+        XCTAssertNoThrow(try hang(manager.send(server: api1.server, request: expectedRequest)))
+        XCTAssertEqual(internalRequests, 1)
+        XCTAssertEqual(externalRequests, 2)
+    }
+
     func testSendPersistentDoesNotRetryRemoteURLWhenInternalURLAnswers() throws {
         Current.isBackgroundRequestsImmediate = { false }
         let urls = try useInternalURLAtHome()
