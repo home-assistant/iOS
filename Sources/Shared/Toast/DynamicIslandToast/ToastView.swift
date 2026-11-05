@@ -144,6 +144,8 @@ private struct ToastWindowContent: View {
 // https://www.patreon.com/posts/swiftui-dynamic-147414349
 @available(iOS 18, *)
 public struct ToastView: View {
+    @Environment(\.layoutDirection) private var layoutDirection
+
     public let toast: Toast?
     public let isExpanded: Bool
 
@@ -156,6 +158,7 @@ public struct ToastView: View {
         GeometryReader {
             let safeArea = $0.safeAreaInsets
             let size = $0.size
+            let leadingSafeAreaShift = (safeArea.leading - safeArea.trailing) / 2
 
             /// Dynamic Island
             let haveDynamicIsland: Bool = safeArea.top >= 59
@@ -192,7 +195,7 @@ public struct ToastView: View {
                     height: isExpanded ? expandedHeight : dynamicIslandHeight
                 )
                 .offset(
-                    x: (safeArea.leading - safeArea.trailing) / 2,
+                    x: layoutDirection == .rightToLeft ? -leadingSafeAreaShift : leadingSafeAreaShift,
                     y: haveDynamicIsland ? topOffset : (isExpanded ? safeArea.top + 10 : -80)
                 )
                 /// For Non Dynamic Island Based Phones!
