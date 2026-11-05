@@ -18,6 +18,14 @@ struct CameraCapabilities: Equatable {
     /// The websocket command that returns these capabilities, added to core in 2024.11.
     static let webSocketCommand = "camera/capabilities"
 
+    /// How long the request may go unanswered before the socket carrying it is treated as dead.
+    ///
+    /// HAKit queues a command for as long as its socket is not ready and never times it out, so a
+    /// socket that silently died, or a reconnect that never completes, would leave the player on its
+    /// loader for good. Device logs show this command answered within 50 ms on a working
+    /// connection; the same budget `WebRTCViewPlayerViewModel` gives its signaling commands.
+    static let unansweredTimeout: TimeInterval = 8
+
     let frontendStreamTypes: Set<CameraStreamType>
     let twoWayAudio: Bool
 
@@ -36,25 +44,56 @@ struct CameraCapabilities: Equatable {
 
     /// Fetches the capabilities for a camera entity.
     ///
-    /// Returns `nil` — rather than an empty set — when the request fails or the server is too old
-    /// to answer it, so the caller keeps the try-everything cascade instead of refusing to play.
-    static func fetch(server: Server, cameraEntityId: String) async -> CameraCapabilities? {
-        guard let api = Current.api(for: server) else { return nil }
+    /// Answers `.answered(nil)` — rather than an empty set — when the request fails or the server is
+    /// too old to answer it, so the caller keeps the try-everything cascade instead of refusing to
+    /// play. Answers `.unanswered` when nothing comes back within `timeout`, which is the socket
+    /// being unusable rather than the camera lacking anything.
+    static func fetch(
+        server: Server,
+        cameraEntityId: String,
+        timeout: TimeInterval = unansweredTimeout
+    ) async -> CameraCapabilitiesFetchOutcome {
+        guard let api = Current.api(for: server) else { return .answered(nil) }
         return await withCheckedContinuation { continuation in
-            api.connection.send(.init(
+            let gate = ResumeGate()
+            let request = api.connection.send(.init(
                 type: .webSocket(webSocketCommand),
                 data: ["entity_id": cameraEntityId]
             )) { result in
+                guard gate.claim() else { return }
                 switch result {
                 case let .success(data):
-                    continuation.resume(returning: CameraCapabilities(data: data))
+                    continuation.resume(returning: .answered(CameraCapabilities(data: data)))
                 case let .failure(error):
                     Current.Log.error(
                         "Failed to fetch camera capabilities for \(cameraEntityId): \(error.localizedDescription)"
                     )
-                    continuation.resume(returning: nil)
+                    continuation.resume(returning: .answered(nil))
                 }
             }
+            // On HAKit's callback queue, where the completion above lands too, so the two never race.
+            api.connection.callbackQueue.asyncAfter(deadline: .now() + timeout) {
+                guard gate.claim() else { return }
+                request.cancel()
+                Current.Log.error(
+                    "Camera capabilities for \(cameraEntityId) went unanswered for \(Int(timeout))s, treating the socket as dead"
+                )
+                continuation.resume(returning: .unanswered)
+            }
+        }
+    }
+
+    /// Hands the continuation to whichever of the answer and the timeout comes first.
+    private final class ResumeGate {
+        private let lock = NSLock()
+        private var isClaimed = false
+
+        func claim() -> Bool {
+            lock.lock()
+            defer { lock.unlock() }
+            guard !isClaimed else { return false }
+            isClaimed = true
+            return true
         }
     }
 }

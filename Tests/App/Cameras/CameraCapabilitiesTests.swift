@@ -27,6 +27,8 @@ final class CameraCapabilitiesTests: XCTestCase {
     override func tearDown() {
         Current.cachedApis = [:]
         Current.servers = previousServers
+        // A request the test never answered would otherwise keep the API alive through its completion.
+        connection.pendingRequests = []
         api = nil
         connection = nil
         server = nil
@@ -76,8 +78,8 @@ final class CameraCapabilitiesTests: XCTestCase {
         XCTAssertEqual(request.request.data["entity_id"] as? String, "camera.front_door")
         request.completion(.success(.init(value: ["frontend_stream_types": ["web_rtc"]])))
 
-        let capabilities = await task.value
-        XCTAssertEqual(capabilities?.frontendStreamTypes, [.webRTC])
+        let outcome = await task.value
+        XCTAssertEqual(outcome, .answered(CameraCapabilities(frontendStreamTypes: [.webRTC])))
     }
 
     /// A server that can't answer — an older core without the command, or a connection that dropped
@@ -91,8 +93,8 @@ final class CameraCapabilitiesTests: XCTestCase {
         let request = try await capabilitiesRequest()
         request.completion(.failure(.internal(debugDescription: "unknown command")))
 
-        let capabilities = await task.value
-        XCTAssertNil(capabilities)
+        let outcome = await task.value
+        XCTAssertEqual(outcome, .answered(nil))
     }
 
     /// A server the app has no usable URL for yields no API at all, which is what a camera opened
@@ -102,13 +104,43 @@ final class CameraCapabilitiesTests: XCTestCase {
             info.connection.set(address: nil, for: .external)
         })
 
-        let capabilities = await CameraCapabilities.fetch(
+        let outcome = await CameraCapabilities.fetch(
             server: unreachable,
             cameraEntityId: "camera.front_door"
         )
 
-        XCTAssertNil(capabilities)
+        XCTAssertEqual(outcome, .answered(nil))
         XCTAssertTrue(connection.pendingRequests.isEmpty)
+    }
+
+    /// HAKit holds a command for as long as its socket is not ready and never gives up on it, so a
+    /// socket that died silently would leave the player on its loader for good. Silence past the
+    /// timeout is reported as such, and the request is withdrawn so it cannot answer late.
+    func testFetchReportsSilenceAsUnansweredAndWithdrawsTheRequest() async throws {
+        let task = Task { [server] in
+            await CameraCapabilities.fetch(server: server!, cameraEntityId: "camera.front_door", timeout: 0.05)
+        }
+
+        let request = try await capabilitiesRequest()
+
+        let outcome = await task.value
+        XCTAssertEqual(outcome, .unanswered)
+        XCTAssertTrue(connection.cancelledRequests.contains { $0.type == request.request.type })
+    }
+
+    /// An answer that lands first must not be overridden by the timeout that was armed with it.
+    func testAnAnswerBeforeTheTimeoutIsKept() async throws {
+        let task = Task { [server] in
+            await CameraCapabilities.fetch(server: server!, cameraEntityId: "camera.front_door", timeout: 0.2)
+        }
+
+        let request = try await capabilitiesRequest()
+        request.completion(.success(.init(value: ["frontend_stream_types": ["hls"]])))
+
+        let outcome = await task.value
+        XCTAssertEqual(outcome, .answered(CameraCapabilities(frontendStreamTypes: [.hls])))
+        try await Task.sleep(nanoseconds: 300 * NSEC_PER_MSEC)
+        XCTAssertTrue(connection.cancelledRequests.isEmpty)
     }
 
     /// The fetch runs off this test's own execution context, so wait for the request to reach the
