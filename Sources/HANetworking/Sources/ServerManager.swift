@@ -400,7 +400,7 @@ public final class ServerManagerImpl: ServerManager {
             // intentionally not in the lock
             _ = serverInfo.connection.evaluateActiveURL()
 
-            return cache.mutate { cache in
+            let (didUpdate, mirrorNeedsUpdate) = cache.mutate { cache -> (Bool, Bool) in
                 // Read tombstones inside the lock: remove() writes its tombstone before it
                 // deletes the Keychain entry, so an update racing a deletion (e.g. a token
                 // refresh finishing while the user deletes the server) sees the tombstone
@@ -408,13 +408,13 @@ public final class ServerManagerImpl: ServerManager {
                 let deletedServers = self?.deletedServers ?? []
                 guard !deletedServers.contains(identifier) else {
                     HANetworkingEnvironment.current.log.verbose("ignoring update to deleted server \(identifier)")
-                    return false
+                    return (false, false)
                 }
 
                 let old = cache.info[identifier]
 
                 guard old != serverInfo || cache.restrictCaching else {
-                    return false
+                    return (false, false)
                 }
 
                 keychain.set(serverInfo: serverInfo, key: identifier.keychainKey, encoder: encoder)
@@ -425,8 +425,20 @@ public final class ServerManagerImpl: ServerManager {
                 }
 
                 notify()
-                return true
+                // Secrets are stripped from the mirror, so a token refresh alone needs no database write.
+                let mirrorNeedsUpdate = old?.mirroredForPersistence != serverInfo.mirroredForPersistence
+                return (true, mirrorNeedsUpdate)
             }
+
+            // The mirror is what a restore brings back when the Keychain is lost, so it has to follow
+            // every settings change, not just the launch-time snapshot — otherwise a setting changed
+            // after launch (local push, URLs, SSIDs) reverts to its old value on restore.
+            // Written outside the lock: the mirror is a database write.
+            if mirrorNeedsUpdate {
+                self?.mirrorStore.set(serverInfo, key: identifier.keychainKey)
+            }
+
+            return didUpdate
         }
     }
 
