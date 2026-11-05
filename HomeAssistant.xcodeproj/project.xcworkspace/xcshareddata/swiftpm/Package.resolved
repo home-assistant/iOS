@@ -123,8 +123,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/home-assistant/HAKit.git",
       "state" : {
-        "revision" : "0535d4aabd0a50e2c18cdcaa2f4423ff057a546a",
-        "version" : "0.4.19"
+        "revision" : "0f750dd4003ad2d41e2653ae769f5e6750686490",
+        "version" : "0.4.20"
       }
     },
     {
