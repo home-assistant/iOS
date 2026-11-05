@@ -74,8 +74,34 @@ def ci_build_xcargs
   "COMPILER_INDEX_STORE_ENABLE=NO ARCHS=arm64 DISABLE_SWIFTLINT=1 #{test_timeout_xcargs}"
 end
 
+# A simulator of `model` on exactly iOS `version`, resolved to a UDID, created when the runtime is
+# installed but has no such device. Runner images do not ship every model on every runtime: the
+# xcode-27 image has iPhone 17 on iOS 27.0 but its 27.1 runtime only holds the iPhone Duo.
+def pinned_ios_simulator(model, version)
+  runtime_id = "com.apple.CoreSimulator.SimRuntime.iOS-#{version.tr('.', '-')}"
+  existing = available_simulators('iOS').find do |runtime, device|
+    runtime == runtime_id && device['name'] == model
+  end
+  return existing.last['udid'] if existing
+
+  UI.user_error!("The iOS #{version} simulator runtime is not installed") unless runtime_installed?(runtime_id)
+  device_type = "com.apple.CoreSimulator.SimDeviceType.#{model.tr(' ', '-')}"
+  sh("xcrun simctl create #{Shellwords.escape(model)} #{device_type} #{runtime_id}").strip
+end
+
+def runtime_installed?(runtime_id)
+  JSON.parse(`xcrun simctl list runtimes available --json`)['runtimes']
+      .any? { |runtime| runtime['identifier'] == runtime_id }
+end
+
 desc 'Run the iOS unit tests'
 lane :test do
+  # The snapshot references were recorded on this iOS, and a newer runtime renders text and controls
+  # differently enough to fail them, so the OS is pinned rather than `latest`: when the runner image
+  # gained iOS 27.2, `latest` moved there and the tests failed on whichever runner had it. CI boots
+  # the same device ahead of time (.github/workflows/ci.yml), so bump both together, and only with
+  # the references re-recorded on the new runtime.
+  simulator = pinned_ios_simulator('iPhone 17', '27.0')
   run_tests(
     project: 'HomeAssistant.xcodeproj',
     scheme: 'Tests-Unit',
@@ -94,12 +120,7 @@ lane :test do
     # A failed test is run again before it counts: the shared runner is loaded enough that a wait
     # generous on a Mac still lands late. A deterministic failure fails every attempt the same way.
     number_of_retries: 2,
-    # The snapshot references were recorded on this iOS, and a newer runtime renders text and
-    # controls differently enough to fail them, so the OS is pinned rather than `latest`: the
-    # runner image gained iOS 27.2 next to 27.1 and the tests failed on whichever runner had it.
-    # CI boots the same device ahead of time (.github/workflows/ci.yml), so bump both together, and
-    # only with the references re-recorded on the new runtime.
-    destination: 'platform=iOS Simulator,name=iPhone 17,OS=27.1'
+    destination: "platform=iOS Simulator,id=#{simulator}"
   )
 end
 
