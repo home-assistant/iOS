@@ -109,8 +109,8 @@
         "package": "hakit",
         "repositoryURL": "https://github.com/home-assistant/HAKit.git",
         "state": {
-          "revision": "0f750dd4003ad2d41e2653ae769f5e6750686490",
-          "version": "0.4.20"
+          "revision": "c24be0c9d68bc4903f616b895aae9296ae80cdb8",
+          "version": "0.4.21"
         }
       },
       {
@@ -191,13 +191,6 @@
         "state": {
           "revision": "e01b3d4f861412f8dcee8d93c417d2c2b0cdfd77",
           "version": "7.0.0"
-        }
-      },
-      {
-        "package": "starscream",
-        "repositoryURL": "https://github.com/bgoncal/starscream",
-        "state": {
-          "revision": "9f793f7396d0def800c18be36769deb6d1313238"
         }
       },
       {
