@@ -1,0 +1,71 @@
+name: Request companion app logs
+
+# yamllint disable-line rule:truthy
+on:
+  issues:
+    types: [opened]
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.issue.number }}
+
+jobs:
+  request-logs:
+    name: Ask for logs when none were uploaded
+    runs-on: ubuntu-latest
+    if: contains(github.event.issue.body, '### Did you upload your companion app logs through the form above?')
+    permissions:
+      issues: write
+    steps:
+      - name: Comment when the reporter did not upload logs
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
+        with:
+          script: |
+            const { data: issue } = await github.rest.issues.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            if (issue.state !== 'open') {
+              console.log('Issue is already closed, nothing to do');
+              return;
+            }
+
+            const body = issue.body ?? '';
+            const section = body
+              .split('### Did you upload your companion app logs through the form above?')[1]
+              ?.split('\n### ')[0] ?? '';
+
+            const answers = new Set(
+              section
+                .split(/[,\n]/)
+                .map(value => value.trim())
+                .filter(Boolean)
+            );
+
+            if (answers.size !== 1 || !answers.has('No')) {
+              console.log(`Logs answers are [${[...answers]}], nothing to do`);
+              return;
+            }
+
+            const issueAuthor = issue.user.login;
+            const logsFormUrl = 'https://forms.gle/5kax4QU2yvunHRxJA';
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `<!-- workflow: request-companion-logs -->\n` +
+                    `Hi @${issueAuthor}, thank you for your report!\n\n` +
+                    `You mentioned that you did not upload your companion app logs. Depending on the ` +
+                    `complexity of the issue, logs allow developers to see what the app was doing when the ` +
+                    `problem happened and can speed up debugging considerably.\n\n` +
+                    `If you are able to, please export them from the app under ` +
+                    `**Companion app settings ⇒ Debugging ⇒ Export log files** and upload them through ` +
+                    `[this form](${logsFormUrl}), mentioning your GitHub username and issue #${issue.number} ` +
+                    `so we can match them to this report.`
+            });
+
+            console.log('Posted the logs request comment');
