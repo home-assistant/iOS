@@ -94,7 +94,12 @@ lane :test do
     # A failed test is run again before it counts: the shared runner is loaded enough that a wait
     # generous on a Mac still lands late. A deterministic failure fails every attempt the same way.
     number_of_retries: 2,
-    destination: 'platform=iOS Simulator,name=iPhone 17,OS=latest'
+    # The snapshot references were recorded on this iOS, and a newer runtime renders text and
+    # controls differently enough to fail them, so the OS is pinned rather than `latest`: the
+    # runner image gained iOS 27.2 next to 27.1 and the tests failed on whichever runner had it.
+    # CI boots the same device ahead of time (.github/workflows/ci.yml), so bump both together, and
+    # only with the references re-recorded on the new runtime.
+    destination: 'platform=iOS Simulator,name=iPhone 17,OS=27.1'
   )
 end
 
