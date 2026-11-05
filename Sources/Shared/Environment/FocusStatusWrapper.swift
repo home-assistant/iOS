@@ -59,6 +59,12 @@ public class FocusStatusWrapper {
     private let pushesStorage = HAProtected<UserDefaultsValueSync<FocusStatusObservation>?>(value: nil)
     private let readingsStorage = HAProtected<UserDefaultsValueSync<FocusStatusObservation>?>(value: nil)
 
+    public init() {
+        // `latest` is `lazy` only because it captures `self`; settle it here so no first use from
+        // two sensors at once races its initialization.
+        _ = latest
+    }
+
     /// Whether this device has Focus at all. Every OS version the app supports does.
     public var isAvailable: () -> Bool = { true }
 

@@ -23,8 +23,9 @@ final class CarPlayNavigationPresentingDepthLimitTests: XCTestCase {
 
     func testPushesWhileTheStackHasRoom() {
         var outcome: (Bool, Error?)?
-        navigator.pushTemplateWithinDepthLimit(template("one"), animated: false) { outcome = ($0, $1) }
+        let accepted = navigator.pushTemplateWithinDepthLimit(template("one"), animated: false) { outcome = ($0, $1) }
 
+        XCTAssertTrue(accepted)
         XCTAssertEqual(navigator.pushedTemplates.count, 1)
         XCTAssertEqual(outcome?.0, true)
         XCTAssertNil(outcome?.1)
@@ -37,8 +38,11 @@ final class CarPlayNavigationPresentingDepthLimitTests: XCTestCase {
         XCTAssertEqual(navigator.templates.count, FakeCarPlayNavigator.maximumTemplateDepth)
 
         var outcome: (Bool, Error?)?
-        navigator.pushTemplateWithinDepthLimit(template("one too many"), animated: false) { outcome = ($0, $1) }
+        let accepted = navigator.pushTemplateWithinDepthLimit(template("one too many"), animated: false) {
+            outcome = ($0, $1)
+        }
 
+        XCTAssertFalse(accepted)
         XCTAssertEqual(navigator.pushedTemplates.count, FakeCarPlayNavigator.maximumTemplateDepth)
         XCTAssertEqual(outcome?.0, false)
         XCTAssertNil(outcome?.1)
@@ -61,8 +65,9 @@ final class CarPlayNavigationPresentingDepthLimitTests: XCTestCase {
         navigator.pushTemplateWithinDepthLimit(repeated, animated: false)
 
         var outcome: (Bool, Error?)?
-        navigator.pushTemplateWithinDepthLimit(repeated, animated: false) { outcome = ($0, $1) }
+        let accepted = navigator.pushTemplateWithinDepthLimit(repeated, animated: false) { outcome = ($0, $1) }
 
+        XCTAssertFalse(accepted)
         XCTAssertEqual(navigator.pushedTemplates.count, 1)
         XCTAssertEqual(outcome?.0, false)
         XCTAssertNil(outcome?.1)

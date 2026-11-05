@@ -58,11 +58,13 @@ class CarPlayDomainsListTemplate: CarPlayTemplateProvider {
     func presentEntitiesList(template: CarPlayEntitiesListTemplate) {
         template.interfaceController = interfaceController
 
-        childTemplateProvider = template
-        interfaceController?.pushTemplateWithinDepthLimit(
+        let accepted = interfaceController?.pushTemplateWithinDepthLimit(
             template.template,
             animated: true,
             completion: nil
         )
+        if accepted != false {
+            childTemplateProvider = template
+        }
     }
 }

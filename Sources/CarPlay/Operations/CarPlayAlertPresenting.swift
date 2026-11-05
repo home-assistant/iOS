@@ -27,26 +27,32 @@ extension CPInterfaceController: CarPlayNavigationPresenting {}
 
 extension CarPlayNavigationPresenting {
     /// How many templates CarPlay lets an app stack, root included.
-    static var maximumTemplateDepth: Int { 5 }
+    static var maximumTemplateDepth: Int {
+        5
+    }
 
     /// `pushTemplate` that refuses what CarPlay would raise on and take the app down with: a sixth
     /// template on the stack (a double tap on a slow head unit got there) or one already on it.
+    /// Returns whether the push was handed to CarPlay, so a caller commits the state behind the
+    /// screen only once it is actually on its way.
+    @discardableResult
     func pushTemplateWithinDepthLimit(
         _ templateToPush: CPTemplate,
         animated: Bool,
         completion: ((Bool, Error?) -> Void)? = nil
-    ) {
+    ) -> Bool {
         let templates = templates
         guard templates.count < Self.maximumTemplateDepth else {
             Current.Log.error("CarPlay refused to push \(type(of: templateToPush)): \(templates.count) already stacked")
             completion?(false, nil)
-            return
+            return false
         }
         guard !templates.contains(where: { $0 === templateToPush }) else {
             Current.Log.error("CarPlay refused to push \(type(of: templateToPush)): already on the stack")
             completion?(false, nil)
-            return
+            return false
         }
         pushTemplate(templateToPush, animated: animated, completion: completion)
+        return true
     }
 }

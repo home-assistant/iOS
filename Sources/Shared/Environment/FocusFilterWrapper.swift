@@ -44,6 +44,15 @@ public class FocusFilterWrapper {
     private let runsStorage = HAProtected<UserDefaultsValueSync<FocusFilterState>?>(value: nil)
     private let readingsStorage = HAProtected<UserDefaultsValueSync<FocusFilterState>?>(value: nil)
 
+    public init() {
+        // The closures below are `lazy` only because they capture `self`; settle them here so no
+        // first use from two sensors at once races their initialization.
+        _ = activeFocusState
+        _ = activeFocusName
+        _ = setActiveFocusName
+        _ = forgetFocusName
+    }
+
     /// How the app asks iOS for the name the filter currently has, `nil` when no Focus with a name
     /// picked is on.
     public typealias CurrentValuesReader = () async throws -> String?

@@ -14,7 +14,10 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
     private let paginatedListTemplate: CarPlayPaginatedListTemplate
     /// Set only by tests, which cannot construct a `CPInterfaceController`.
     var alertPresenterOverride: CarPlayAlertPresenting?
-    var alertPresenter: CarPlayAlertPresenting? { alertPresenterOverride ?? interfaceController }
+    var alertPresenter: CarPlayAlertPresenting? {
+        alertPresenterOverride ?? interfaceController
+    }
+
     /// Control screen pushed for domains that have one (climate); forwarded lifecycle and state
     /// events like the domains/areas tabs forward to this list.
     private var childTemplateProvider: (any CarPlayTemplateProvider)?
@@ -70,8 +73,10 @@ final class CarPlayEntitiesListTemplate: CarPlayTemplateProvider {
     func displayControlScreen(entity: HAEntity, server: Server) {
         guard var provider = CarPlayControlScreenFactory.template(entity: entity, server: server) else { return }
         provider.interfaceController = interfaceController
-        childTemplateProvider = provider
-        interfaceController?.pushTemplateWithinDepthLimit(provider.template, animated: true, completion: nil)
+        if interfaceController?
+            .pushTemplateWithinDepthLimit(provider.template, animated: true, completion: nil) != false {
+            childTemplateProvider = provider
+        }
     }
 
     func displayLockConfirmation(entity: HAEntity, completion: @escaping () -> Void) {

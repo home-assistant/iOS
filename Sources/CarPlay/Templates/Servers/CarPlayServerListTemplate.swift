@@ -20,7 +20,9 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
 
     /// Set only by tests, which cannot construct a `CPInterfaceController`.
     var navigatorOverride: CarPlayNavigationPresenting?
-    private var navigator: CarPlayNavigationPresenting? { navigatorOverride ?? interfaceController }
+    private var navigator: CarPlayNavigationPresenting? {
+        navigatorOverride ?? interfaceController
+    }
 
     init(viewModel: CarPlayServerListViewModel) {
         self.viewModel = viewModel
@@ -192,14 +194,15 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
     }
 
     private func presentServerSelection() {
-        viewModel.beginServerSelection()
         let selectionTemplate = CPListTemplate(title: L10n.CarPlay.Labels.Settings.MainServer.title, sections: [])
-        serverSelectionTemplate = selectionTemplate
-        Task { @MainActor [weak self] in
-            guard let self else { return }
-            await selectionTemplate.updateSections([serverSelectionSection(template: selectionTemplate)])
+        if navigator?.pushTemplateWithinDepthLimit(selectionTemplate, animated: true, completion: nil) != false {
+            viewModel.beginServerSelection()
+            serverSelectionTemplate = selectionTemplate
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                await selectionTemplate.updateSections([serverSelectionSection(template: selectionTemplate)])
+            }
         }
-        navigator?.pushTemplateWithinDepthLimit(selectionTemplate, animated: true, completion: nil)
     }
 
     private func serverSelectionSection(template: CPListTemplate) async -> CPListSection {
@@ -219,11 +222,12 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
     }
 
     private func presentLayoutSelection() {
-        viewModel.beginLayoutSelection()
         let selectionTemplate = CPListTemplate(title: L10n.Carplay.Tab.QuickAccess.layout, sections: [])
-        layoutSelectionTemplate = selectionTemplate
-        selectionTemplate.updateSections([layoutSelectionSection(template: selectionTemplate)])
-        navigator?.pushTemplateWithinDepthLimit(selectionTemplate, animated: true, completion: nil)
+        if navigator?.pushTemplateWithinDepthLimit(selectionTemplate, animated: true, completion: nil) != false {
+            viewModel.beginLayoutSelection()
+            layoutSelectionTemplate = selectionTemplate
+            selectionTemplate.updateSections([layoutSelectionSection(template: selectionTemplate)])
+        }
     }
 
     private func layoutSelectionSection(template: CPListTemplate) -> CPListSection {
@@ -251,11 +255,12 @@ final class CarPlayServersListTemplate: CarPlayTemplateProvider {
     }
 
     private func presentTabsSelection() {
-        viewModel.beginTabSelection()
         let selectionTemplate = CPListTemplate(title: L10n.CarPlay.Config.Tabs.title, sections: [])
-        tabsSelectionTemplate = selectionTemplate
-        selectionTemplate.updateSections([tabsSelectionSection(template: selectionTemplate)])
-        navigator?.pushTemplateWithinDepthLimit(selectionTemplate, animated: true, completion: nil)
+        if navigator?.pushTemplateWithinDepthLimit(selectionTemplate, animated: true, completion: nil) != false {
+            viewModel.beginTabSelection()
+            tabsSelectionTemplate = selectionTemplate
+            selectionTemplate.updateSections([tabsSelectionSection(template: selectionTemplate)])
+        }
     }
 
     private func tabsSelectionSection(template: CPListTemplate) -> CPListSection {
