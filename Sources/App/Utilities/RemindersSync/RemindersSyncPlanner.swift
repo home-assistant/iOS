@@ -69,23 +69,26 @@ enum RemindersSyncPlanner {
         // checked-off copy while an open one is available for it.
         var adoptedTodoUids = Set<String>()
         for requireSameState in [true, false] {
-            for uid in unlinkedTodoUids where !adoptedTodoUids.contains(uid) {
-                guard let todoItem = todoItems[uid],
-                      let reminderIndex = unlinkedReminderIds.firstIndex(where: { reminderId in
-                          guard let reminder = reminders[reminderId], reminder.title == todoItem.title else {
-                              return false
-                          }
-                          return !requireSameState || reminder.isCompleted == todoItem.isCompleted
-                      }) else { continue }
-                let reminderId = unlinkedReminderIds.remove(at: reminderIndex)
-                adoptedTodoUids.insert(uid)
-                operations.append(.adoptLink(todoItemUid: uid, reminderId: reminderId))
-                if let reminder = reminders[reminderId], reminder != todoItem {
-                    switch direction {
-                    case .bothWays, .toReminders:
-                        operations.append(.updateReminder(todoItemUid: uid, reminderId: reminderId))
-                    case .toHomeAssistant:
-                        operations.append(.updateTodoItem(todoItemUid: uid, reminderId: reminderId))
+            for exactTitle in [true, false] {
+                for uid in unlinkedTodoUids where !adoptedTodoUids.contains(uid) {
+                    guard let todoItem = todoItems[uid],
+                          let reminderIndex = unlinkedReminderIds.firstIndex(where: { reminderId in
+                              guard let reminder = reminders[reminderId],
+                                    reminder.titleMatches(todoItem, exactly: exactTitle) else {
+                                  return false
+                              }
+                              return !requireSameState || reminder.isCompleted == todoItem.isCompleted
+                          }) else { continue }
+                    let reminderId = unlinkedReminderIds.remove(at: reminderIndex)
+                    adoptedTodoUids.insert(uid)
+                    operations.append(.adoptLink(todoItemUid: uid, reminderId: reminderId))
+                    if let reminder = reminders[reminderId], reminder != todoItem {
+                        switch direction {
+                        case .bothWays, .toReminders:
+                            operations.append(.updateReminder(todoItemUid: uid, reminderId: reminderId))
+                        case .toHomeAssistant:
+                            operations.append(.updateTodoItem(todoItemUid: uid, reminderId: reminderId))
+                        }
                     }
                 }
             }
@@ -130,6 +133,10 @@ enum RemindersSyncPlanner {
                 if todoItem != link.snapshot {
                     return [.adoptLink(todoItemUid: link.todoItemUid, reminderId: link.reminderId)]
                 }
+                return []
+            }
+            if direction == .toHomeAssistant, reminder == link.snapshot,
+               todoItem.differsOnlyInTitleCase(from: reminder) {
                 return []
             }
             return [updateOperation(

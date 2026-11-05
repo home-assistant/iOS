@@ -221,4 +221,51 @@ struct RemindersSyncManagerCompletedItemsTests {
         #expect(links.map(\.todoItemUid) == ["new-milk"])
         #expect(links.first?.lastKnownCompleted == false)
     }
+
+    @Test func createdItemTheListReCasedIsStillLinked() async throws {
+        let (_, _, links) = try await withSyncEnvironment(items: [
+            ["summary": "Almond milk", "uid": "new-almond", "status": "needs_action"],
+        ]) { api in
+            try await applyPlan(api: api, remindersById: ["r-almond": reminder("Almond Milk", completed: false)])
+        }
+
+        #expect(links.map(\.todoItemUid) == ["new-almond"])
+        #expect(links.first?.reminderId == "r-almond")
+        #expect(links.first?.lastKnownTitle == "Almond Milk")
+    }
+
+    @Test func onlyNewItemIsLinkedEvenWhenTheListRewroteItsTitle() async throws {
+        let (_, _, links) = try await withSyncEnvironment(items: [
+            ["summary": "Bread", "uid": "old-bread", "status": "needs_action"],
+            ["summary": "Fancy name!", "uid": "new-fancy", "status": "needs_action"],
+        ]) { api in
+            try await applyPlan(
+                api: api,
+                todoSnapshots: ["old-bread": RemindersSyncItemSnapshot(
+                    title: "Bread",
+                    isCompleted: false,
+                    notes: nil,
+                    due: nil
+                )],
+                remindersById: ["r-fancy": reminder("Fancy Name", completed: false)]
+            )
+        }
+
+        #expect(links.map(\.todoItemUid) == ["new-fancy"])
+        #expect(links.first?.reminderId == "r-fancy")
+    }
+
+    @Test func severalNewItemsWithUnmatchedTitlesAreNotGuessed() async throws {
+        let (_, _, links) = try await withSyncEnvironment(items: [
+            ["summary": "First", "uid": "new-first", "status": "needs_action"],
+            ["summary": "Second", "uid": "new-second", "status": "needs_action"],
+        ]) { api in
+            try await applyPlan(api: api, remindersById: [
+                "r-a": reminder("Alpha", completed: false),
+                "r-b": reminder("Beta", completed: false),
+            ])
+        }
+
+        #expect(links.isEmpty)
+    }
 }

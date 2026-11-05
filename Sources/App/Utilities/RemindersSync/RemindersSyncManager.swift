@@ -476,7 +476,8 @@ final class RemindersSyncManager: ObservableObject {
                     config: config,
                     api: api,
                     reminderIds: createdTodoItemReminderIds,
-                    reminderSnapshots: reminderSnapshots
+                    reminderSnapshots: reminderSnapshots,
+                    preexistingTodoItemUids: Set(todoSnapshots.keys)
                 )
             }
             throw error
@@ -487,7 +488,8 @@ final class RemindersSyncManager: ObservableObject {
                 config: config,
                 api: api,
                 reminderIds: createdTodoItemReminderIds,
-                reminderSnapshots: reminderSnapshots
+                reminderSnapshots: reminderSnapshots,
+                preexistingTodoItemUids: Set(todoSnapshots.keys)
             )
         }
 
@@ -644,14 +646,16 @@ final class RemindersSyncManager: ObservableObject {
     }
 
     /// `todo.add_item` doesn't return the created item's `uid`, so items created on the Home
-    /// Assistant side are linked by re-fetching the list and matching still-unlinked items by
-    /// title. `todo.add_item` can't create a completed item either, so a completed reminder is
-    /// created open and completed here, once its `uid` is known.
+    /// Assistant side are linked by re-fetching the list and matching the items that weren't there
+    /// before this sync by title, ignoring case because some backends (Alexa lists) re-case what
+    /// they store. `todo.add_item` can't create a completed item either, so a completed reminder
+    /// is created open and completed here, once its `uid` is known.
     private func linkCreatedTodoItems(
         config: RemindersSyncConfig,
         api: HomeAssistantAPI,
         reminderIds: [String],
-        reminderSnapshots: [String: RemindersSyncItemSnapshot]
+        reminderSnapshots: [String: RemindersSyncItemSnapshot],
+        preexistingTodoItemUids: Set<String>
     ) async throws {
         let refreshed = try await fetchTodoItems(api: api, listId: config.todoEntityId)
         let configId = config.id
@@ -660,13 +664,28 @@ final class RemindersSyncManager: ObservableObject {
         // Only open items are candidates: that's what `todo.add_item` just created, and with
         // completed items included an older checked-off copy of the same title may also be
         // unlinked.
-        var unlinkedItems = refreshed.filter { !linkedUids.contains($0.uid) && $0.status != "completed" }
+        var createdItems = refreshed.filter {
+            !linkedUids.contains($0.uid) && !preexistingTodoItemUids.contains($0.uid) && $0.status != "completed"
+        }
 
-        for reminderId in reminderIds {
-            guard var snapshot = reminderSnapshots[reminderId],
-                  let index = unlinkedItems
-                  .firstIndex(where: { RemindersSyncItemSnapshot(todoItem: $0).title == snapshot.title }) else { continue }
-            let item = unlinkedItems.remove(at: index)
+        var unmatchedReminderIds = reminderIds.filter { reminderSnapshots[$0] != nil }
+        var matches: [(reminderId: String, item: TodoListItem)] = []
+        for exactTitle in [true, false] {
+            for reminderId in unmatchedReminderIds {
+                guard let snapshot = reminderSnapshots[reminderId],
+                      let index = createdItems.firstIndex(where: {
+                          RemindersSyncItemSnapshot(todoItem: $0).titleMatches(snapshot, exactly: exactTitle)
+                      }) else { continue }
+                matches.append((reminderId, createdItems.remove(at: index)))
+            }
+            unmatchedReminderIds.removeAll { reminderId in matches.contains { $0.reminderId == reminderId } }
+        }
+        if unmatchedReminderIds.count == 1, createdItems.count == 1 {
+            matches.append((unmatchedReminderIds[0], createdItems[0]))
+        }
+
+        for (reminderId, item) in matches {
+            guard var snapshot = reminderSnapshots[reminderId] else { continue }
             if snapshot.isCompleted {
                 do {
                     try await api.updateTodoItem(
