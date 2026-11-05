@@ -447,8 +447,9 @@ public final class ServerManagerImpl: ServerManager {
             // after launch (local push, URLs, SSIDs) reverts to its old value on restore.
             // Written outside the lock, in ticket order: the mirror is a database write.
             if let mirrorTicket, let self {
-                self.mirrorWrites.apply(mirrorTicket, key: identifier.keychainKey) {
-                    self.mirrorStore.set(serverInfo, key: identifier.keychainKey)
+                let mirrorStore = self.mirrorStore
+                mirrorWrites.apply(mirrorTicket, key: identifier.keychainKey) {
+                    mirrorStore.set(serverInfo, key: identifier.keychainKey)
                 }
             }
 
