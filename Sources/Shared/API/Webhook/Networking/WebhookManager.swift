@@ -350,16 +350,21 @@ public class WebhookManager: NSObject {
             return held
         }
 
-        let (promise, seal) = Promise<Void>.pending()
-
-        dataQueue.async { [dataQueue] in
-            let sendRegular: () -> Promise<Void> = { [self] in
+        return firstly {
+            Promise<URL?> { seal in
+                Task {
+                    await seal.fulfill(server.webhookURL())
+                }
+            }
+        }.then(on: dataQueue) { [self, dataQueue] webhookURL -> Promise<Void> in
+            let sendRegular: (URL?) -> Promise<Void> = { [self] url in
                 send(
                     on: currentRegularSessionInfo,
                     server: server,
                     identifier: identifier,
                     request: request,
-                    waitForResponse: true
+                    waitForResponse: true,
+                    webhookURL: url
                 )
             }
 
@@ -369,31 +374,95 @@ public class WebhookManager: NSObject {
                     server: server,
                     identifier: identifier,
                     request: request,
-                    waitForResponse: true
+                    waitForResponse: true,
+                    webhookURL: webhookURL
                 )
             }
 
-            let promise: Promise<Void>
-
             if Current.isBackgroundRequestsImmediate() {
-                promise = sendBackground()
-            } else {
-                Current.Log.info("in background, choosing to not use background session")
-                promise = sendRegular().recover(on: dataQueue) { error -> Promise<Void> in
-                    Current.Log.error("in-background non-background failed: \(error)")
-                    if error is HomeAssistantAPI.APIError {
-                        // not worth retrying, since we got a real response that we didn't like
-                        throw error
-                    } else {
-                        return sendBackground()
-                    }
-                }
+                return sendBackground()
             }
 
-            promise.pipe(to: { seal.resolve($0) })
+            Current.Log.info("in background, choosing to not use background session")
+            return sendRegular(webhookURL).recover(on: dataQueue) { error -> Promise<Void> in
+                Current.Log.error("in-background non-background failed: \(error)")
+                if error is HomeAssistantAPI.APIError {
+                    // not worth retrying, since we got a real response that we didn't like
+                    throw error
+                }
+
+                guard let webhookURL, let remoteURL = Self.remoteWebhookURL(
+                    for: server,
+                    unreachableInternalURL: webhookURL,
+                    error: error
+                ) else {
+                    return sendBackground()
+                }
+
+                Current.Log.info("internal URL unreachable, retrying \(request.type) with \(remoteURL)")
+                Current.clientEventStore.addEvent(ClientEvent(
+                    text: "Internal URL unreachable, retrying with remote URL - \(remoteURL.absoluteString)",
+                    type: .networkRequest,
+                    payload: ["error": String(describing: error)]
+                ))
+
+                return sendRegular(remoteURL).get {
+                    Current.connectivity.updateLastKnownNetworkState(NetworkState())
+                }.recover(on: dataQueue) { remoteError -> Promise<Void> in
+                    Current.Log.error("remote URL retry failed: \(remoteError)")
+                    if remoteError is HomeAssistantAPI.APIError {
+                        throw remoteError
+                    }
+                    return sendBackground()
+                }
+            }
+        }
+    }
+
+    static let regularSessionTimeout: TimeInterval = 10
+
+    static func remoteWebhookURL(for server: Server, unreachableInternalURL: URL, error: Error) -> URL? {
+        guard isUnreachable(error) else { return nil }
+
+        let connection = server.info.connection
+        guard let internalURL = connection.address(for: .internal),
+              unreachableInternalURL.scheme?.lowercased() == internalURL.scheme?.lowercased(),
+              unreachableInternalURL.host?.lowercased() == internalURL.host?.lowercased(),
+              unreachableInternalURL.port == internalURL.port else {
+            return nil
         }
 
-        return promise
+        if let cloudhookURL = connection.cloudhookURL {
+            return cloudhookURL
+        }
+
+        let remoteBase: URL?
+        if connection.useCloud, let remoteUIURL = connection.address(for: .remoteUI) {
+            remoteBase = remoteUIURL
+        } else {
+            remoteBase = connection.address(for: .external)
+        }
+
+        guard let remoteURL = remoteBase?.appendingPathComponent(connection.webhookPath, isDirectory: false),
+              remoteURL != unreachableInternalURL else {
+            return nil
+        }
+        return remoteURL
+    }
+
+    static func isUnreachable(_ error: Error) -> Bool {
+        guard let urlError = error as? URLError else { return false }
+        switch urlError.code {
+        case .cannotConnectToHost,
+             .cannotFindHost,
+             .dnsLookupFailed,
+             .networkConnectionLost,
+             .notConnectedToInternet,
+             .timedOut:
+            return true
+        default:
+            return false
+        }
     }
 
     public func sendPassive(
@@ -434,7 +503,8 @@ public class WebhookManager: NSObject {
         server: Server,
         identifier: WebhookResponseIdentifier,
         request: WebhookRequest,
-        waitForResponse: Bool
+        waitForResponse: Bool,
+        webhookURL: URL? = nil
     ) -> Promise<Void> {
         guard let handlerType = responseHandlers[identifier] else {
             Current.Log.error("no existing handler for \(identifier), not sending request")
@@ -452,7 +522,7 @@ public class WebhookManager: NSObject {
         Current.backgroundTask(withName: BackgroundTask.webhookSend.rawValue) { _ in promise }.cauterize()
 
         firstly {
-            Self.urlRequest(for: request, server: server)
+            Self.urlRequest(for: request, server: server, webhookURL: webhookURL)
         }.done(on: dataQueue) { urlRequest, data in
             let task: URLSessionUploadTask
             let filesToRemove: [URL]
@@ -468,6 +538,8 @@ public class WebhookManager: NSObject {
 
                 filesToRemove = [temporaryFile]
             } else {
+                var urlRequest = urlRequest
+                urlRequest.timeoutInterval = Self.regularSessionTimeout
                 // not writing to disk so we don't have to deal with the cleanup logic across sessions
                 task = sessionInfo.session.uploadTask(with: urlRequest, from: data)
                 filesToRemove = []
@@ -614,14 +686,17 @@ public class WebhookManager: NSObject {
     private static func urlRequest(
         for request: WebhookRequest,
         server: Server,
-        baseURL: URL? = nil
+        baseURL: URL? = nil,
+        webhookURL resolvedWebhookURL: URL? = nil
     ) -> Promise<(URLRequest, Data)> {
         Promise { seal in
             Task {
                 do {
                     let webhookURL: URL
 
-                    if let baseURL {
+                    if let resolvedWebhookURL {
+                        webhookURL = resolvedWebhookURL
+                    } else if let baseURL {
                         webhookURL = baseURL.appendingPathComponent(
                             server.info.connection.webhookPath,
                             isDirectory: false

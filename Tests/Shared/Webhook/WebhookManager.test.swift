@@ -1024,6 +1024,216 @@ class WebhookManagerTests: XCTestCase {
         }
     }
 
+    func testSendPersistentInBackgroundFailsOverBeforeBackgroundTimeRunsOut() {
+        Current.isBackgroundRequestsImmediate = { false }
+
+        let expectedRequest = WebhookRequest(type: "webhook_name", data: ["json": true])
+
+        var timeouts = [TimeInterval]()
+        stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { request in
+            timeouts.append(request.timeoutInterval)
+            if timeouts.count == 1 {
+                return HTTPStubsResponse(error: URLError(.timedOut))
+            } else {
+                return HTTPStubsResponse(jsonObject: ["hello": "goodbye"], statusCode: 200, headers: nil)
+            }
+        })
+
+        XCTAssertNoThrow(try hang(manager.send(server: api1.server, request: expectedRequest)))
+        XCTAssertEqual(timeouts.count, 2)
+        XCTAssertEqual(timeouts.first, WebhookManager.regularSessionTimeout)
+        XCTAssertNotEqual(timeouts.last, WebhookManager.regularSessionTimeout)
+    }
+
+    func testSendPersistentInForegroundKeepsDefaultTimeout() {
+        Current.isBackgroundRequestsImmediate = { true }
+
+        let expectedRequest = WebhookRequest(type: "webhook_name", data: ["json": true])
+
+        var timeouts = [TimeInterval]()
+        stub(condition: { [webhookURL1] req in req.url == webhookURL1 }, response: { request in
+            timeouts.append(request.timeoutInterval)
+            return HTTPStubsResponse(jsonObject: ["hello": "goodbye"], statusCode: 200, headers: nil)
+        })
+
+        XCTAssertNoThrow(try hang(manager.send(server: api1.server, request: expectedRequest)))
+        XCTAssertEqual(timeouts.count, 1)
+        XCTAssertNotEqual(timeouts.first, WebhookManager.regularSessionTimeout)
+    }
+
+    func testSendPersistentRetriesRemoteURLWhenInternalURLIsUnreachable() throws {
+        Current.isBackgroundRequestsImmediate = { false }
+        let urls = try useInternalURLAtHome()
+        let expectedRequest = WebhookRequest(type: "update_location", data: ["json": true])
+
+        var internalRequests = 0
+        stub(condition: { req in req.url == urls.internal }, response: { _ in
+            internalRequests += 1
+            return HTTPStubsResponse(error: URLError(.cannotConnectToHost))
+        })
+
+        var externalRequests = 0
+        stub(condition: { req in req.url == urls.external }, response: { [api1] request in
+            externalRequests += 1
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest, server: api1!.server)
+            return HTTPStubsResponse(jsonObject: ["hello": "goodbye"], statusCode: 200, headers: nil)
+        })
+
+        XCTAssertNoThrow(try hang(manager.send(server: api1.server, request: expectedRequest)))
+        XCTAssertEqual(internalRequests, 1)
+        XCTAssertEqual(externalRequests, 1)
+        XCTAssertNil(Current.connectivity.lastKnownNetworkState().ssid)
+    }
+
+    func testSendPersistentRetriesCloudhookWhenInternalURLIsUnreachable() throws {
+        Current.isBackgroundRequestsImmediate = { false }
+        let urls = try useInternalURLAtHome()
+        let cloudhookURL = try XCTUnwrap(URL(string: "https://hooks.nabu.casa/cloudhook-id"))
+        api1.server.info.connection.cloudhookURL = cloudhookURL
+        let expectedRequest = WebhookRequest(type: "update_location", data: ["json": true])
+
+        stub(condition: { req in req.url == urls.internal }, response: { _ in
+            HTTPStubsResponse(error: URLError(.notConnectedToInternet))
+        })
+
+        var externalRequests = 0
+        stub(condition: { req in req.url == urls.external }, response: { _ in
+            externalRequests += 1
+            return HTTPStubsResponse(jsonObject: ["hello": "goodbye"], statusCode: 200, headers: nil)
+        })
+
+        var cloudhookRequests = 0
+        stub(condition: { req in req.url == cloudhookURL }, response: { [api1] request in
+            cloudhookRequests += 1
+            XCTAssertEqualWebhookRequest(request.ohhttpStubs_httpBody, expectedRequest, server: api1!.server)
+            return HTTPStubsResponse(jsonObject: ["hello": "goodbye"], statusCode: 200, headers: nil)
+        })
+
+        XCTAssertNoThrow(try hang(manager.send(server: api1.server, request: expectedRequest)))
+        XCTAssertEqual(cloudhookRequests, 1)
+        XCTAssertEqual(externalRequests, 0)
+    }
+
+    func testSendPersistentUsesBackgroundSessionWhenRemoteURLFailsToo() throws {
+        Current.isBackgroundRequestsImmediate = { false }
+        let urls = try useInternalURLAtHome()
+        let expectedRequest = WebhookRequest(type: "update_location", data: ["json": true])
+
+        var internalRequests = 0
+        stub(condition: { req in req.url == urls.internal }, response: { _ in
+            internalRequests += 1
+            if internalRequests == 1 {
+                return HTTPStubsResponse(error: URLError(.cannotConnectToHost))
+            } else {
+                return HTTPStubsResponse(jsonObject: ["hello": "goodbye"], statusCode: 200, headers: nil)
+            }
+        })
+
+        var externalRequests = 0
+        stub(condition: { req in req.url == urls.external }, response: { _ in
+            externalRequests += 1
+            return HTTPStubsResponse(error: URLError(.timedOut))
+        })
+
+        XCTAssertNoThrow(try hang(manager.send(server: api1.server, request: expectedRequest)))
+        XCTAssertEqual(internalRequests, 2)
+        XCTAssertEqual(externalRequests, 1)
+        XCTAssertEqual(Current.connectivity.lastKnownNetworkState().ssid, "MyWifi")
+    }
+
+    func testSendPersistentDoesNotRetryRemoteURLWhenInternalURLAnswers() throws {
+        Current.isBackgroundRequestsImmediate = { false }
+        let urls = try useInternalURLAtHome()
+        let expectedRequest = WebhookRequest(type: "update_location", data: ["json": true])
+
+        stub(condition: { req in req.url == urls.internal }, response: { _ in
+            HTTPStubsResponse(data: Data(), statusCode: 500, headers: [:])
+        })
+
+        var externalRequests = 0
+        stub(condition: { req in req.url == urls.external }, response: { _ in
+            externalRequests += 1
+            return HTTPStubsResponse(jsonObject: ["hello": "goodbye"], statusCode: 200, headers: nil)
+        })
+
+        XCTAssertThrowsError(try hang(manager.send(server: api1.server, request: expectedRequest))) { error in
+            XCTAssertEqual(error as? WebhookError, .unacceptableStatusCode(500))
+        }
+        XCTAssertEqual(externalRequests, 0)
+        XCTAssertEqual(Current.connectivity.lastKnownNetworkState().ssid, "MyWifi")
+    }
+
+    func testSendPersistentDoesNotRetryRemoteURLWhenInternalURLWasNotUsed() throws {
+        Current.isBackgroundRequestsImmediate = { false }
+        let urls = try useInternalURLAtHome()
+        useNetworkAwayFromHome()
+        let expectedRequest = WebhookRequest(type: "update_location", data: ["json": true])
+
+        var internalRequests = 0
+        stub(condition: { req in req.url == urls.internal }, response: { _ in
+            internalRequests += 1
+            return HTTPStubsResponse(jsonObject: ["hello": "goodbye"], statusCode: 200, headers: nil)
+        })
+
+        var externalRequests = 0
+        stub(condition: { req in req.url == urls.external }, response: { _ in
+            externalRequests += 1
+            return HTTPStubsResponse(error: URLError(.cannotConnectToHost))
+        })
+
+        XCTAssertThrowsError(try hang(manager.send(server: api1.server, request: expectedRequest))) { error in
+            XCTAssertEqual((error as? URLError)?.code, .cannotConnectToHost)
+        }
+        XCTAssertEqual(externalRequests, 2)
+        XCTAssertEqual(internalRequests, 0)
+    }
+
+    func testRemoteWebhookURLIgnoresErrorsThatAreNotTransportFailures() throws {
+        let urls = try useInternalURLAtHome()
+
+        XCTAssertNil(WebhookManager.remoteWebhookURL(
+            for: api1.server,
+            unreachableInternalURL: urls.internal,
+            error: WebhookError.unacceptableStatusCode(500)
+        ))
+        XCTAssertNil(WebhookManager.remoteWebhookURL(
+            for: api1.server,
+            unreachableInternalURL: urls.internal,
+            error: URLError(.cancelled)
+        ))
+        XCTAssertEqual(WebhookManager.remoteWebhookURL(
+            for: api1.server,
+            unreachableInternalURL: urls.internal,
+            error: URLError(.dnsLookupFailed)
+        ), urls.external)
+    }
+
+    private func useInternalURLAtHome() throws -> (internal: URL, external: URL) {
+        let internalBaseURL = try XCTUnwrap(URL(string: "http://192.168.1.2:8123"))
+        api1.server.info.connection.set(address: internalBaseURL, for: .internal)
+
+        let connectivity = Current.connectivity
+        let previousCurrentNetworkState = connectivity.currentNetworkState
+        let previousRefreshNetworkInformation = connectivity.refreshNetworkInformation
+
+        connectivity.currentNetworkState = { NetworkState(ssid: "MyWifi") }
+        connectivity.refreshNetworkInformation = {}
+        connectivity.updateLastKnownNetworkState(NetworkState(ssid: "MyWifi"))
+
+        addTeardownBlock {
+            connectivity.currentNetworkState = previousCurrentNetworkState
+            connectivity.refreshNetworkInformation = previousRefreshNetworkInformation
+            connectivity.updateLastKnownNetworkState(NetworkState())
+        }
+
+        let webhookPath = api1.server.info.connection.webhookPath
+        let externalBaseURL = try XCTUnwrap(api1.server.info.connection.address(for: .external))
+        return (
+            internal: internalBaseURL.appendingPathComponent(webhookPath, isDirectory: false),
+            external: externalBaseURL.appendingPathComponent(webhookPath, isDirectory: false)
+        )
+    }
+
     func testSendPersistentPassively() throws {
         let request = WebhookRequest(type: "webhook_name", data: ["json": true])
 
