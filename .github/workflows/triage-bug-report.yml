@@ -1,0 +1,145 @@
+name: Triage bug report
+
+# yamllint disable-line rule:truthy
+on:
+  issues:
+    types: [opened, edited]
+
+permissions:
+  issues: write
+
+jobs:
+  label-platform:
+    runs-on: ubuntu-latest
+    if: contains(github.event.issue.body, '### Which platform has the issue?')
+    concurrency:
+      group: triage-bug-report-labels-${{ github.event.issue.number }}
+      cancel-in-progress: false
+    steps:
+      - name: Apply platform labels from the selected platforms
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
+        with:
+          script: |
+            const platformLabels = {
+              'iOS': 'ios',
+              'iPadOS': 'iPad',
+              'watchOS': 'watch',
+              'macOS': 'mac',
+            };
+
+            const { data: issue } = await github.rest.issues.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const body = issue.body ?? '';
+            const section = body
+              .split('### Which platform has the issue?')[1]
+              ?.split('\n### ')[0] ?? '';
+
+            const selected = section
+              .split(/[,\n]/)
+              .map(value => value.trim())
+              .filter(Boolean);
+
+            const wanted = new Set(
+              selected
+                .filter(platform => platform in platformLabels)
+                .map(platform => platformLabels[platform])
+            );
+
+            const current = new Set(issue.labels.map(label => label.name));
+            const managed = new Set(Object.values(platformLabels));
+            const toAdd = [...wanted].filter(label => !current.has(label));
+            const toRemove = [...current].filter(label => managed.has(label) && !wanted.has(label));
+
+            if (toAdd.length) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                labels: toAdd,
+              });
+            }
+
+            for (const label of toRemove) {
+              await github.rest.issues.removeLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                name: label,
+              });
+            }
+
+            console.log(`Platform labels — added: [${toAdd}] removed: [${toRemove}]`);
+
+  redirect-frontend-issues:
+    runs-on: ubuntu-latest
+    if: >-
+      github.event.action == 'opened' &&
+      contains(github.event.issue.body, '### Does the issue also happen in Safari?')
+    steps:
+      - name: Close issues that reproduce in Safari and point to the frontend repository
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
+        with:
+          script: |
+            const { data: issue } = await github.rest.issues.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            if (issue.state !== 'open') {
+              console.log('Issue is already closed, nothing to do');
+              return;
+            }
+
+            const body = issue.body ?? '';
+            const section = body
+              .split('### Does the issue also happen in Safari?')[1]
+              ?.split('\n### ')[0] ?? '';
+
+            const answers = new Set(
+              section
+                .split(/[,\n]/)
+                .map(value => value.trim())
+                .filter(Boolean)
+            );
+
+            if (answers.size !== 1 || !answers.has('Yes')) {
+              console.log(`Safari answers are [${[...answers]}], nothing to do`);
+              return;
+            }
+
+            const issueAuthor = issue.user.login;
+            const frontendIssueUrl =
+              'https://github.com/home-assistant/frontend/issues/new?labels=bug&template=bug_report.yml';
+
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['frontend'],
+            });
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `Hi @${issueAuthor}, thank you for your report!\n\n` +
+                    `You indicated that the issue also happens in Safari, which means the bug is in the ` +
+                    `Home Assistant frontend rather than in the app.\n\n` +
+                    `Please open an issue in the [frontend repository](${frontendIssueUrl}) instead, ` +
+                    `where the frontend maintainers can look into it.\n\n` +
+                    `If you selected Yes by mistake and the issue only happens in the app, ` +
+                    `let us know and we will reopen this issue.`
+            });
+
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              state: 'closed',
+              state_reason: 'not_planned',
+            });
