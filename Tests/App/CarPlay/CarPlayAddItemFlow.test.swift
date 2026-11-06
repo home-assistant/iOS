@@ -25,8 +25,13 @@ struct CarPlayAddItemFlowTests {
             self.database = database
         }
 
-        var server: Server { servers.all[0] }
-        var serverId: String { server.identifier.rawValue }
+        var server: Server {
+            servers.all[0]
+        }
+
+        var serverId: String {
+            server.identifier.rawValue
+        }
 
         func makeFlow(destination: CarPlayAddItemViewModel.Destination = .quickAccess) -> CarPlayAddItemFlow {
             CarPlayAddItemFlow(
@@ -94,6 +99,25 @@ struct CarPlayAddItemFlowTests {
 
             #expect(harness.finishCount == 1)
             #expect(harness.navigator.pushedTemplates.isEmpty)
+        }
+    }
+
+    /// A flow CarPlay has no room to show is over before it starts, so its owner cleans up as after
+    /// any other finish.
+    @Test func startingOnAFullTemplateStackFinishesAtOnce() throws {
+        try withHarness { harness in
+            for index in 0 ..< FakeCarPlayNavigator.maximumTemplateDepth {
+                harness.navigator.pushTemplate(
+                    CPListTemplate(title: "\(index)", sections: []),
+                    animated: false,
+                    completion: nil
+                )
+            }
+            let flow = harness.makeFlow()
+            flow.start()
+
+            #expect(harness.finishCount == 1)
+            #expect(!harness.navigator.pushedTemplates.contains { $0 === flow.template })
         }
     }
 

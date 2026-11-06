@@ -7,6 +7,9 @@ on:
     # An hour later, the device restored from another device's backup. Each flow onboards from the
     # welcome screen on an erased simulator, so they run one per job rather than back to back.
     - cron: "0 6 * * *"
+    # Then onboarding through a proxy that requires a client certificate (mTLS), matching
+    # home-assistant/android's `onboarding-mtls`.
+    - cron: "0 7 * * *"
   # Manual run on any branch carrying this workflow.
   workflow_dispatch:
     inputs:
@@ -22,13 +25,16 @@ on:
         options:
           - OnboardingE2ETests
           - RestoredDeviceE2ETests
+          - MTLSOnboardingE2ETests
 
-# Keyed by flow as well, so the 06:00 run never cancels a 05:00 run that is still going.
+# Keyed by flow as well, so a later scheduled run never cancels an earlier one that is still going.
 concurrency:
   group: >-
     ${{ format('e2e-{0}-{1}',
     github.ref,
-    github.event.schedule == '0 6 * * *' && 'RestoredDeviceE2ETests' || inputs.test || 'OnboardingE2ETests') }}
+    github.event.schedule == '0 6 * * *' && 'RestoredDeviceE2ETests'
+    || github.event.schedule == '0 7 * * *' && 'MTLSOnboardingE2ETests'
+    || inputs.test || 'OnboardingE2ETests') }}
   cancel-in-progress: true
 
 permissions:
@@ -42,8 +48,9 @@ env:
   BUNDLE_PATH: vendor/bundle
 
 # Runs one end-to-end flow against a real Home Assistant: onboarding, from the welcome screen
-# through to the native settings screen the frontend opens over the external message bus, or a
-# device restored from another device's backup setting itself up as a new one. Nightly rather than
+# through to the native settings screen the frontend opens over the external message bus, a
+# device restored from another device's backup setting itself up as a new one, or onboarding
+# through an nginx proxy that requires a client certificate (see .github/e2e/mtls). Nightly rather than
 # per PR: macOS minutes are billed at ten times the Linux rate, and the point is catching
 # regressions in Home Assistant and in the app's own flows, neither of which needs per-commit
 # resolution.
@@ -57,6 +64,7 @@ jobs:
   e2e:
     name: >-
       ${{ github.event.schedule == '0 6 * * *' && 'RestoredDeviceE2ETests'
+      || github.event.schedule == '0 7 * * *' && 'MTLSOnboardingE2ETests'
       || inputs.test || 'OnboardingE2ETests' }}
     runs-on: xcode-27
     timeout-minutes: 90
@@ -70,9 +78,13 @@ jobs:
       E2E_HOME_ASSISTANT_URL: http://localhost:8123
       E2E_HOME_ASSISTANT_USERNAME: citest
       E2E_HOME_ASSISTANT_PASSWORD: "h7jk99&U"
-      # The 06:00 schedule runs the restored-device flow; a manual run takes the input.
+      E2E_MTLS_URL: https://localhost:8443
+      E2E_MTLS_P12_PASSWORD: e2ep12pass
+      # The 06:00 schedule runs the restored-device flow, 07:00 the mTLS one; a manual run takes
+      # the input.
       E2E_TEST: >-
         ${{ github.event.schedule == '0 6 * * *' && 'RestoredDeviceE2ETests'
+        || github.event.schedule == '0 7 * * *' && 'MTLSOnboardingE2ETests'
         || inputs.test || 'OnboardingE2ETests' }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
@@ -188,6 +200,57 @@ jobs:
           --output "$RUNNER_TEMP/homeassistant-config.json"
           --summary "$GITHUB_STEP_SUMMARY"
 
+      # The mTLS flow puts nginx in front of the instance, demanding a client certificate on every
+      # request. The certificates are generated per run and never leave the runner: only the proxy
+      # logs are uploaded. The macOS runner has no Docker daemon, so nginx comes from Homebrew.
+      - name: Generate mTLS certificates
+        if: env.E2E_TEST == 'MTLSOnboardingE2ETests'
+        run: bash .github/e2e/mtls/generate-certs.sh "$RUNNER_TEMP/mtls"
+
+      - name: Install nginx
+        if: env.E2E_TEST == 'MTLSOnboardingE2ETests'
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: 1
+          HOMEBREW_NO_INSTALL_CLEANUP: 1
+        run: brew install nginx
+
+      - name: Start mTLS proxy
+        if: env.E2E_TEST == 'MTLSOnboardingE2ETests'
+        run: bash .github/e2e/mtls/proxy.sh start "$RUNNER_TEMP/mtls" 127.0.0.1:8123
+
+      # Fails here, on the runner, when the proxy is broken, rather than inside the flow. Without
+      # the client certificate the proxy itself must answer 400; with it the same login exchange as
+      # above has to work through it.
+      - name: Verify mTLS proxy
+        if: env.E2E_TEST == 'MTLSOnboardingE2ETests'
+        run: |
+          # The runner's curl exits 35 instead of reporting the 400 when the proxy asks for a client
+          # certificate it does not have, so the no-certificate probe goes through Python.
+          python3 - "$E2E_MTLS_URL/api/" "$RUNNER_TEMP/mtls/ca.pem" <<'EOF'
+          import ssl, sys, urllib.error, urllib.request
+          url, ca = sys.argv[1:3]
+          context = ssl.create_default_context(cafile=ca)
+          try:
+              urllib.request.urlopen(url, context=context, timeout=30)
+              status = 200
+          except urllib.error.HTTPError as error:
+              status = error.code
+          if status != 400:
+              print(f"::error::Expected 400 from the proxy without a client certificate, got {status}")
+              sys.exit(1)
+          print("Proxy rejects requests without a client certificate")
+          EOF
+
+          python3 Tools/home_assistant_e2e_auth.py \
+            --url "$E2E_MTLS_URL" \
+            --username "$E2E_HOME_ASSISTANT_USERNAME" \
+            --password "$E2E_HOME_ASSISTANT_PASSWORD" \
+            --ca-certificate "$RUNNER_TEMP/mtls/ca.pem" \
+            --client-certificate "$RUNNER_TEMP/mtls/client.pem" \
+            --client-key "$RUNNER_TEMP/mtls/client.key" \
+            --timeout 60 \
+            --require-component mobile_app
+
       # Same as the CI workflow: the lane runs with package resolution disabled, so the packages
       # have to be checked out before it, which a restore-only cache cannot guarantee.
       - name: Resolve Swift packages
@@ -197,12 +260,26 @@ jobs:
           -scheme Tests-UI
 
       - name: Run flow
-        run: >-
-          bundle exec fastlane e2e
-          test:"$E2E_TEST"
-          url:"$E2E_HOME_ASSISTANT_URL"
-          username:"$E2E_HOME_ASSISTANT_USERNAME"
-          password:"$E2E_HOME_ASSISTANT_PASSWORD"
+        run: |
+          ARGS=(
+            test:"$E2E_TEST"
+            username:"$E2E_HOME_ASSISTANT_USERNAME"
+            password:"$E2E_HOME_ASSISTANT_PASSWORD"
+          )
+          if [ "$E2E_TEST" = "MTLSOnboardingE2ETests" ]; then
+            ARGS+=(
+              url:"$E2E_MTLS_URL"
+              mtls_certificates:"$RUNNER_TEMP/mtls"
+              client_certificate_password:"$E2E_MTLS_P12_PASSWORD"
+            )
+          else
+            ARGS+=(url:"$E2E_HOME_ASSISTANT_URL")
+          fi
+          bundle exec fastlane e2e "${ARGS[@]}"
+
+      - name: Stop mTLS proxy
+        if: always() && env.E2E_TEST == 'MTLSOnboardingE2ETests'
+        run: bash .github/e2e/mtls/proxy.sh stop "$RUNNER_TEMP/mtls" || true
 
       - name: Stop Home Assistant
         if: always()
@@ -268,6 +345,7 @@ jobs:
             ${{ runner.temp }}/hass-stdout.log
             ${{ runner.temp }}/homeassistant-config.json
             ${{ runner.temp }}/homeassistant/home-assistant.log
+            ${{ runner.temp }}/mtls/nginx-*.log
             ${{ runner.temp }}/e2e-recording
             fastlane/test_output/e2e
             ~/Library/Logs/scan

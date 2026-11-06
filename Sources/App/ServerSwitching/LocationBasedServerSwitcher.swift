@@ -108,7 +108,7 @@ final class LocationBasedServerSwitcher {
             guard !Task.isCancelled else { return }
 
             var location: CLLocation?
-            let authorizationStatus = CLLocationManager().authorizationStatus
+            let authorizationStatus = CLLocationManager.authorizationProbe.authorizationStatus
             if authorizationStatus == .authorizedAlways || authorizationStatus == .authorizedWhenInUse {
                 location = await withCheckedContinuation { continuation in
                     CLLocationManager.oneShotLocation(timeout: Self.locationTimeout)

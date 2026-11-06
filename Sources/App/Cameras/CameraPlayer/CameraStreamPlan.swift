@@ -29,4 +29,19 @@ enum CameraStreamPlan {
         players.append(.mjpeg)
         return players
     }
+
+    /// The players to try given how the capabilities request went.
+    ///
+    /// A request the server never answered means its WebSocket is not carrying commands, and WebRTC
+    /// signaling runs over that same socket: starting there would only spend the connection gate's
+    /// wait before cascading. HLS (`stream_camera` over the webhook) and the MJPEG proxy go over
+    /// HTTP and play while the socket is still coming back.
+    static func players(for outcome: CameraCapabilitiesFetchOutcome) -> [CameraPlayerType] {
+        switch outcome {
+        case let .answered(capabilities):
+            return players(for: capabilities)
+        case .unanswered:
+            return [.hls, .mjpeg]
+        }
+    }
 }

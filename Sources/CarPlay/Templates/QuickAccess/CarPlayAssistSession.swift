@@ -304,7 +304,7 @@ final class CarPlayAssistSession: NSObject {
             ],
             actions: []
         )
-        interfaceController?.pushTemplate(template, animated: true, completion: { _, error in
+        interfaceController?.pushTemplateWithinDepthLimit(template, animated: true, completion: { _, error in
             if let error {
                 Current.Log.error("CarPlay Assist failed to present playback help: \(error.localizedDescription)")
             }

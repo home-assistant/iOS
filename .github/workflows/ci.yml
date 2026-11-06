@@ -161,7 +161,8 @@ jobs:
         with:
           developer-dir: ${{ env.DEVELOPER_DIR }}
           scheme: Tests-Unit
-          simulators: iOS|iPhone 17
+          # The OS matches the pin in fastlane/lanes/testing.rb, see there.
+          simulators: iOS|iPhone 17|27.0
 
       - name: Run tests
         run: bundle exec fastlane test

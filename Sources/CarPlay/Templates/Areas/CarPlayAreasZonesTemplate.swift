@@ -55,11 +55,13 @@ final class CarPlayAreasZonesTemplate: CarPlayTemplateProvider {
     func presentEntitiesList(template: CarPlayEntitiesListTemplate) {
         template.interfaceController = interfaceController
 
-        childTemplateProvider = template
-        interfaceController?.pushTemplate(
+        let accepted = interfaceController?.pushTemplateWithinDepthLimit(
             template.template,
             animated: true,
             completion: nil
         )
+        if accepted != false {
+            childTemplateProvider = template
+        }
     }
 }

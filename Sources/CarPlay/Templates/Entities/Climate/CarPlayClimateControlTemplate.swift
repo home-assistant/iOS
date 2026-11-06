@@ -404,6 +404,6 @@ final class CarPlayClimateControlTemplate: CarPlayTemplateProvider {
 
     private func pushSelectionTemplate(title: String, items: [CPListItem]) {
         let selectionTemplate = CPListTemplate(title: title, sections: [CPListSection(items: items)])
-        navigator?.pushTemplate(selectionTemplate, animated: true, completion: nil)
+        navigator?.pushTemplateWithinDepthLimit(selectionTemplate, animated: true, completion: nil)
     }
 }
