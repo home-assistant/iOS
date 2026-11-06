@@ -5,6 +5,9 @@ import CarPlay
 /// every push, pop and presentation, and runs completions at once, as a settled transition would.
 final class FakeCarPlayNavigator: CarPlayNavigationPresenting {
     var presentedTemplate: CPTemplate?
+    /// The stack as CarPlay would hold it: root first, grown by pushes and shrunk by pops.
+    private(set) var templates: [CPTemplate] = []
+    /// Every push ever made, in order, whether or not it has since been popped.
     private(set) var pushedTemplates: [CPTemplate] = []
     private(set) var presentedTemplates: [CPTemplate] = []
     private(set) var popCount = 0
@@ -16,16 +19,23 @@ final class FakeCarPlayNavigator: CarPlayNavigationPresenting {
 
     func pushTemplate(_ templateToPush: CPTemplate, animated: Bool, completion: ((Bool, Error?) -> Void)?) {
         pushedTemplates.append(templateToPush)
+        if pushError == nil {
+            templates.append(templateToPush)
+        }
         completion?(pushError == nil, pushError)
     }
 
     func popTemplate(animated: Bool, completion: ((Bool, Error?) -> Void)?) {
         popCount += 1
+        if !templates.isEmpty {
+            templates.removeLast()
+        }
         completion?(true, nil)
     }
 
     func popToRootTemplate(animated: Bool, completion: ((Bool, Error?) -> Void)?) {
         popToRootCount += 1
+        templates = Array(templates.prefix(1))
         completion?(true, nil)
     }
 

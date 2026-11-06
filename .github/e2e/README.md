@@ -5,8 +5,9 @@ Home Assistant every night at 05:00 UTC, mirroring [home-assistant/android][andr
 `e2e` workflow. The flow onboards the app from the welcome screen, then drives the frontend into
 opening the app's **native** settings screen, which is what proves the external message bus works
 end to end. An hour later it runs `Tests/UI/RestoredDeviceE2ETests.swift`, in a job of its own
-because every flow onboards from scratch on an erased simulator. A manual run picks the flow through
-the `test` input.
+because every flow onboards from scratch on an erased simulator, and an hour after that
+`Tests/UI/MTLSOnboardingE2ETests.swift`, the same onboarding through a proxy that requires a client
+certificate (see [mTLS](#mtls) below). A manual run picks the flow through the `test` input.
 
 ## The fixture
 
@@ -76,6 +77,53 @@ To check the instance without running the flow:
 python3 Tools/home_assistant_e2e_auth.py --url http://localhost:8123 --username citest --password 'h7jk99&U' --timeout 300 --require-component mobile_app
 ```
 
+## mTLS
+
+`Tests/UI/MTLSOnboardingE2ETests.swift` onboards through an nginx reverse proxy with
+`ssl_verify_client on`, so even the first request fails without a client certificate. That covers
+the places the app presents one: the probe that notices the requirement and asks for the certificate,
+the login web view, the registration request and the WebSocket behind the frontend. It is the
+counterpart of `.maestro/onboarding-mtls.yaml` in home-assistant/android, with the pieces that were
+Android-specific swapped for their simulator equivalents:
+
+| | Android | iOS |
+| --- | --- | --- |
+| Proxy | `nginx:stable-alpine` container | `nginx` from Homebrew, started by `mtls/proxy.sh` |
+| Trusting the run's CA | debug-only trust anchor compiled into the APK | `xcrun simctl keychain <udid> add-root-cert`, done by the lane after erasing |
+| Getting the `.p12` into the app | the system certificate installer, driven by Maestro | `-E2E_CLIENT_CERTIFICATE_FILE`, a launch argument onboarding honours only in the fastlane-snapshot configuration, in place of the file picker |
+
+The file picker is the one step not driven: it runs in another process and exposes nothing to
+XCUITest. Everything after it, the password prompt included, is the real flow.
+
+`mtls/generate-certs.sh <out-dir>` writes a one-day CA, the server certificate for `localhost`, the
+client certificate and its `client.p12` (password `e2ep12pass`, name `e2eclient`); nothing with a
+private key is committed. `mtls/proxy.sh start <out-dir> [<upstream>]` renders
+`mtls/nginx.conf.template` and starts nginx on port 8443 in front of the instance, keeping its pid
+file and logs in that directory; `proxy.sh stop <out-dir>` stops it.
+
+Locally, with an instance on port 8123 and `brew install nginx`:
+
+```bash
+.github/e2e/mtls/generate-certs.sh /tmp/mtls
+.github/e2e/mtls/proxy.sh start /tmp/mtls
+bundle exec fastlane e2e test:MTLSOnboardingE2ETests url:https://localhost:8443 mtls_certificates:/tmp/mtls
+.github/e2e/mtls/proxy.sh stop /tmp/mtls
+```
+
+The `mtls_certificates:` option is what makes the lane trust the CA on the simulator, hand the
+`client.p12` to the flow, and verify the instance through the proxy, since the check script
+presents `client.pem` when given `--ca-certificate`, `--client-certificate` and `--client-key`.
+Without the client certificate the proxy must answer 400; with it the instance answers through it.
+Not every `curl` reports the 400: the one on the CI runner exits 35 as soon as the proxy asks for a
+client certificate it does not have, which is why the workflow runs the first check through Python:
+
+```bash
+python3 -c 'import ssl,urllib.request,urllib.error;c=ssl.create_default_context(cafile="/tmp/mtls/ca.pem")
+try: urllib.request.urlopen("https://localhost:8443/api/",context=c)
+except urllib.error.HTTPError as e: print(e.code)'
+curl -s --cacert /tmp/mtls/ca.pem --cert /tmp/mtls/client.pem --key /tmp/mtls/client.key https://localhost:8443/api/
+```
+
 The iOS Simulator shares the host's network stack, so `http://localhost:8123` is also the address to
 type into onboarding by hand on a simulator running on the same machine. This is the one place iOS
 has it easier than Android, whose emulators need an egress tunnel and a DNS override to reach the
@@ -104,7 +152,8 @@ the cron line, which is why this exists.
 
 The `e2e-artifacts` artifact carries a screen recording of the run under `e2e-recording/`, which is
 usually the quickest way to see where the flow went wrong. Alongside it are Home Assistant's own log,
-the `/api/config` it reported, and the full `.xcresult`.
+the `/api/config` it reported, the full `.xcresult` and, for the mTLS flow, nginx's access and error
+logs.
 
 Recordings are kept for passing runs as well, through `uiTestingScreenshotsLifetime` in
 [`Tests-UI.xctestplan`](../../Tests/UI/Tests-UI.xctestplan); Xcode would otherwise discard them on
