@@ -1535,7 +1535,7 @@ class ZoneManagerCollectorTests: XCTestCase {
         XCTAssertEqual(delegate.events.map(\.eventType), [.region(region, .inside)])
     }
 
-    func testStoppingForegroundScanDiscardsObservedExit() throws {
+    func testForegroundRestartPreservesPendingExitEvidence() throws {
         let region = try storedBeaconRegion(entityId: "stopped_exit", inRegion: true)
         collector.startForegroundBeaconScanning(in: [region], manager: locationManager)
         collector.locationManager(locationManager, didDetermineState: .outside, for: region)
@@ -1546,7 +1546,65 @@ class ZoneManagerCollectorTests: XCTestCase {
             satisfying: region.beaconIdentityConstraint,
             manager: locationManager
         )
-        XCTAssertEqual(delegate.events.map(\.eventType), [.region(region, .outside)])
+        XCTAssertEqual(delegate.events.map(\.eventType), [.region(region, .outside), .region(region, .inside)])
+        var zone = try XCTUnwrap(AppZone.zone(identifier: region.identifier))
+        zone.inRegion = false
+        try database.write { try zone.save($0) }
+        collector.didRange(
+            samples: [.init(proximity: .near, rssi: -55)],
+            satisfying: region.beaconIdentityConstraint,
+            manager: locationManager
+        )
+        XCTAssertEqual(delegate.events.map(\.eventType), [.region(region, .outside), .region(region, .inside)])
+    }
+
+    func testObservedExitDoesNotCarryAcrossChangedBeaconDefinition() throws {
+        let region = try storedBeaconRegion(entityId: "changed_exit", inRegion: true)
+        collector.locationManager(locationManager, didDetermineState: .outside, for: region)
+        var zone = try XCTUnwrap(AppZone.zone(identifier: region.identifier))
+        zone.beaconUUID = UUID().uuidString
+        try database.write { try zone.save($0) }
+        let replacement = try XCTUnwrap(zone.beaconRegion)
+        collector.startForegroundBeaconScanning(in: [replacement], manager: locationManager)
+        // A late outside callback for the former definition must not mark the replacement outside.
+        collector.locationManager(locationManager, didDetermineState: .outside, for: region)
+        collector.didRange(
+            samples: [.init(proximity: .near, rssi: -55)],
+            satisfying: replacement.beaconIdentityConstraint,
+            manager: locationManager
+        )
+        XCTAssertEqual(delegate.events.map(\.eventType), [.region(region, .outside), .region(region, .outside)])
+    }
+
+    func testPendingOnlyReentryBeforeAndAfterExitPersistence() throws {
+        for persistExitFirst in [false, true] {
+            let region = try storedBeaconRegion(entityId: "pending_only_\(persistExitFirst)", inRegion: true)
+            collector.locationManager(locationManager, didDetermineState: .outside, for: region)
+            var zone = try XCTUnwrap(AppZone.zone(identifier: region.identifier))
+            if persistExitFirst {
+                zone.inRegion = false
+                try database.write { try zone.save($0) }
+            }
+            collector.locationManager(locationManager, didDetermineState: .inside, for: region)
+            collector.didRange(
+                samples: [.init(proximity: .near, rssi: -55)],
+                satisfying: region.beaconIdentityConstraint,
+                manager: locationManager
+            )
+            XCTAssertEqual(delegate.events.suffix(2).map(\.eventType), [
+                .region(region, .outside), .region(region, .inside),
+            ])
+            let eventCount = delegate.events.count
+            zone.inRegion = false
+            try database.write { try zone.save($0) }
+            collector.locationManager(locationManager, didDetermineState: .inside, for: region)
+            collector.didRange(
+                samples: [.init(proximity: .near, rssi: -55)],
+                satisfying: region.beaconIdentityConstraint,
+                manager: locationManager
+            )
+            XCTAssertEqual(delegate.events.count, eventCount, "The accepted reentry remains latched")
+        }
     }
 
     func testForegroundReentryBeforeAndAfterPendingExitIsPersisted() throws {
