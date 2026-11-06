@@ -41,6 +41,7 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
     private var pendingBeaconEntries = [String: PendingBeaconEntry]()
     private var foregroundBeaconEntries = [String: ForegroundBeaconEntry]()
     private var foregroundBeaconIdentifiersInside = Set<String>()
+    private var foregroundBeaconIdentifiersOutside = Set<String>()
     private var opportunisticBeaconEntries = [String: ForegroundBeaconEntry]()
     private var backgroundBeaconRegions = [String: CLBeaconRegion]()
     private var beaconReconciliationStates = [String: BeaconReconciliationState]()
@@ -104,6 +105,7 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
         for identifier in identifiersToRemove
             where pendingBeaconEntries[identifier] == nil && opportunisticBeaconEntries[identifier] == nil {
             foregroundBeaconIdentifiersInside.remove(identifier)
+            foregroundBeaconIdentifiersOutside.remove(identifier)
             beaconReconciliationStates.removeValue(forKey: identifier)
         }
         for constraint in Set(removedConstraints) {
@@ -158,6 +160,7 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
         for identifier in entries.keys
             where pendingBeaconEntries[identifier] == nil && opportunisticBeaconEntries[identifier] == nil {
             foregroundBeaconIdentifiersInside.remove(identifier)
+            foregroundBeaconIdentifiersOutside.remove(identifier)
             beaconReconciliationStates.removeValue(forKey: identifier)
         }
 
@@ -209,6 +212,7 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
         for identifier in entries.keys
             where foregroundBeaconEntries[identifier] == nil && pendingBeaconEntries[identifier] == nil {
             foregroundBeaconIdentifiersInside.remove(identifier)
+            foregroundBeaconIdentifiersOutside.remove(identifier)
             beaconReconciliationStates.removeValue(forKey: identifier)
         }
         for constraint in Set(entries.values.map(\.constraint)) {
@@ -283,6 +287,10 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
                 cancelPendingBeaconEntry(for: beaconRegion, manager: manager)
                 cancelOpportunisticBeaconEntry(for: beaconRegion, manager: manager)
                 foregroundBeaconIdentifiersInside.remove(beaconRegion.identifier)
+                if foregroundBeaconEntries[beaconRegion.identifier]?.constraint == beaconRegion
+                    .beaconIdentityConstraint {
+                    foregroundBeaconIdentifiersOutside.insert(beaconRegion.identifier)
+                }
             case .unknown:
                 break
             }
@@ -542,6 +550,7 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
             acceptCurrentSample(for: identifier, event: opportunistic.event, events: &events)
             if foregroundBeaconEntries[identifier] == nil, pendingBeaconEntries[identifier] == nil {
                 foregroundBeaconIdentifiersInside.remove(identifier)
+                foregroundBeaconIdentifiersOutside.remove(identifier)
                 beaconReconciliationStates.removeValue(forKey: identifier)
             }
         }
@@ -554,18 +563,21 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
     ) {
         // Database observation may still be queued behind this radio callback. Validate
         // its evidence against the authoritative row before latching or emitting entry.
-        guard let previousZone = event.associatedZone,
+        guard Current.settingsStore.locationSources.zone,
+              let previousZone = event.associatedZone,
               let currentZone = AppZone.zone(identifier: previousZone.identifier),
               currentZone.trackingEnabled,
               let currentRegion = currentZone.beaconRegion,
               case let .region(sampledRegion as CLBeaconRegion, _) = event.eventType,
               currentRegion.beaconIdentityConstraint == sampledRegion.beaconIdentityConstraint else { return }
+        // An observed exit is newer than the stored row while its processor write is pending.
+        let wasOutside = foregroundBeaconIdentifiersOutside.remove(identifier) != nil
         let wasInside = foregroundBeaconIdentifiersInside.contains(identifier)
         foregroundBeaconIdentifiersInside.insert(identifier)
         var event = event
         event.associatedZone = currentZone
         guard !wasInside,
-              event.associatedZone?.inRegion != true,
+              wasOutside || !currentZone.inRegion,
               !events.contains(event) else { return }
         events.append(event)
     }
@@ -597,6 +609,7 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
                 removedConstraints.insert(entry.constraint)
             }
             foregroundBeaconIdentifiersInside.remove(identifier)
+            foregroundBeaconIdentifiersOutside.remove(identifier)
             beaconReconciliationStates.removeValue(forKey: identifier)
         }
         for constraint in removedConstraints {
