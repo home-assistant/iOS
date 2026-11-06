@@ -34,11 +34,17 @@ enum MacBrowserSceneLauncher {
         let destroysEmptyWindow: Bool
     }
 
-    static func actions(isInitialConnection: Bool) -> SceneConnectionActions {
+    static func actions(
+        isInitialConnection: Bool,
+        isUpdateRelaunch: Bool = UpdateRelaunchMode.launch != nil
+    ) -> SceneConnectionActions {
         guard isBrowserLaunchEnabled else {
             return SceneConnectionActions(opensBrowser: false, destroysEmptyWindow: false)
         }
-        return SceneConnectionActions(opensBrowser: isInitialConnection, destroysEmptyWindow: true)
+        return SceneConnectionActions(
+            opensBrowser: isInitialConnection && !isUpdateRelaunch,
+            destroysEmptyWindow: true
+        )
     }
 
     #if DEBUG

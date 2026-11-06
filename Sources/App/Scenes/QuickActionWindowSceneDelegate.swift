@@ -40,17 +40,6 @@ final class QuickActionWindowSceneDelegate: UIResponder, UIWindowSceneDelegate {
             return
         }
 
-        #if targetEnvironment(macCatalyst)
-        if BackgroundRelaunchWindowSuppressor.shared.shouldDestroyMainScene(
-            isExplicitRequest: !connectionOptions.userActivities.isEmpty
-                || !connectionOptions.urlContexts.isEmpty
-                || connectionOptions.notificationResponse != nil
-        ) {
-            UIApplication.shared.requestSceneSessionDestruction(session, options: nil, errorHandler: nil)
-            return
-        }
-        #endif
-
         // "Open Home Assistant UI in browser" (Mac): the last-known network information is read live from
         // macBridge, so the synchronous evaluation is current. See `MacBrowserSceneLauncher` for why the empty
         // window is destroyed on every connection but the browser opens only on cold launch (#4985).

@@ -294,7 +294,6 @@ final class SceneManager {
 
     private func bringAppToFrontIfNeeded() {
         #if targetEnvironment(macCatalyst)
-        BackgroundRelaunchWindowSuppressor.shared.windowWasRequested()
         Current.macBridge.activateApp()
         #endif
     }

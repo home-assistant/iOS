@@ -64,6 +64,14 @@ final class MacBrowserSceneLauncherTests: XCTestCase {
         XCTAssertTrue(actions.destroysEmptyWindow)
     }
 
+    func testActionsAfterUpdateRelaunchDestroyWindowWithoutOpeningBrowser() {
+        Current.isCatalyst = true
+        Current.settingsStore.macNativeFeaturesOnly = true
+        let actions = MacBrowserSceneLauncher.actions(isInitialConnection: true, isUpdateRelaunch: true)
+        XCTAssertFalse(actions.opensBrowser)
+        XCTAssertTrue(actions.destroysEmptyWindow)
+    }
+
     func testActionsAreNoOpWhenPreferenceOff() {
         Current.isCatalyst = true
         Current.settingsStore.macNativeFeaturesOnly = false

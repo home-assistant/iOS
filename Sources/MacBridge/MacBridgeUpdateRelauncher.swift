@@ -68,10 +68,10 @@ final class MacBridgeUpdateRelauncher {
         return arguments[index + 1] == WindowState.background.rawValue
     }
 
-    var isKeepingAppInBackground: Bool {
-        Self.isBackgroundRelaunch && !hasVisibleWindows
-    }
+    private(set) lazy var isKeepingAppInBackground = Self.isBackgroundRelaunch
 
+    private var acceptsUserUnhide = false
+    private var isObservingBackgroundHold = false
     private var writeDescriptor: Int32 = -1
     private var stateFileURL: URL?
     private var lastWrittenState: WindowState?
@@ -79,10 +79,11 @@ final class MacBridgeUpdateRelauncher {
 
     @discardableResult
     func start() -> Bool {
-        guard !Bundle.main.isRunningInExtension, !Self.isDebuggerAttached else {
+        guard !Bundle.main.isRunningInExtension else {
             return false
         }
-        guard let version = Bundle.main.infoDictionary?["CFBundleVersion"] as? String,
+        keepInBackgroundIfRelaunched()
+        guard !Self.isDebuggerAttached, let version = Bundle.main.infoDictionary?["CFBundleVersion"] as? String,
               let directory = try? FileManager.default.url(
                   for: .applicationSupportDirectory,
                   in: .userDomainMask,
@@ -193,6 +194,48 @@ final class MacBridgeUpdateRelauncher {
         writeDescriptor = writeEnd
         logger.info("watcher pid \(pid) for \(bundlePath) version \(version)")
         return pid
+    }
+
+    private func keepInBackgroundIfRelaunched() {
+        guard isKeepingAppInBackground, !isObservingBackgroundHold else { return }
+        isObservingBackgroundHold = true
+        let names: [Notification.Name] = [
+            NSApplication.didFinishRestoringWindowsNotification,
+            NSApplication.didUnhideNotification,
+            NSApplication.didBecomeActiveNotification,
+            NSWindow.didBecomeKeyNotification,
+            NSWindow.didBecomeMainNotification,
+            NSWindow.didChangeOcclusionStateNotification,
+        ]
+        for name in names {
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(backgroundHoldEvent(_:)),
+                name: name,
+                object: nil
+            )
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [self] in
+            acceptsUserUnhide = true
+        }
+        hideWhileKeptInBackground()
+    }
+
+    @objc private func backgroundHoldEvent(_ notification: Notification) {
+        guard isKeepingAppInBackground else { return }
+        let isUserReveal = notification.name == NSApplication.didUnhideNotification
+            || notification.name == NSApplication.didBecomeActiveNotification
+        if acceptsUserUnhide, isUserReveal {
+            isKeepingAppInBackground = false
+            logger.info("background relaunch hold ended by the user")
+            return
+        }
+        hideWhileKeptInBackground()
+    }
+
+    private func hideWhileKeptInBackground() {
+        guard !NSApplication.shared.isHidden else { return }
+        NSApplication.shared.hide(nil)
     }
 
     private func observeWindowVisibility() {
