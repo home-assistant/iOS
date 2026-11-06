@@ -119,6 +119,8 @@ final class MacBridgeUpdateRelauncher {
             )
         } catch {
             logger.error("writing watcher owner failed: \(error.localizedDescription)")
+            sendQuitMarker()
+            return false
         }
 
         observeWindowVisibility()
@@ -238,6 +240,10 @@ final class MacBridgeUpdateRelauncher {
     }
 
     @objc private func applicationWillTerminate() {
+        sendQuitMarker()
+    }
+
+    private func sendQuitMarker() {
         guard writeDescriptor >= 0 else { return }
         _ = "quit".withCString { write(writeDescriptor, $0, strlen($0)) }
         close(writeDescriptor)

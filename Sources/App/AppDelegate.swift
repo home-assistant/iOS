@@ -168,6 +168,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             BackgroundRelaunchWindowSuppressor.shared.windowWasRequested()
             return StatusItemPrimaryAction.openInBrowserIfNeeded()
         }
+        BackgroundRelaunchWindowSuppressor.shared.startObservingSceneConnections()
         if Current.macBridge.startUpdateRelauncher() {
             Current.Log.info("update relauncher started")
         } else {

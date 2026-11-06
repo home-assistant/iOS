@@ -41,9 +41,10 @@ final class QuickActionWindowSceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
 
         #if targetEnvironment(macCatalyst)
-        if BackgroundRelaunchWindowSuppressor.shared.shouldDestroyScene(
-            hasUserActivities: !connectionOptions.userActivities.isEmpty,
-            hasURLContexts: !connectionOptions.urlContexts.isEmpty
+        if BackgroundRelaunchWindowSuppressor.shared.shouldDestroyMainScene(
+            isExplicitRequest: !connectionOptions.userActivities.isEmpty
+                || !connectionOptions.urlContexts.isEmpty
+                || connectionOptions.notificationResponse != nil
         ) {
             UIApplication.shared.requestSceneSessionDestruction(session, options: nil, errorHandler: nil)
             return
