@@ -55,7 +55,10 @@ class AppZoneTests: XCTestCase {
         zone.beaconUUID = UUID().uuidString
 
         XCTAssertTrue(zone.isBeaconRegion)
-        XCTAssertEqualRegions(zone.regionsForMonitoring, zone.beaconRegion.flatMap { [$0] } ?? [])
+        XCTAssertEqualRegions(
+            zone.regionsForMonitoring,
+            zone.beaconRegion.map { [$0] } ?? []
+        )
     }
 
     func testNormalRegion() {
