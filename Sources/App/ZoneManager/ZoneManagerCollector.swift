@@ -275,6 +275,13 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
         let event = Self.event(for: region, state: state)
 
         if Current.isTestFlight, let beaconRegion = region as? CLBeaconRegion {
+            // A queued callback for an old definition must not mutate the replacement's
+            // owners or inside state, or deliver an exit for the current zone.
+            if let zone = event.associatedZone {
+                guard zone.beaconRegion?.beaconIdentityConstraint == beaconRegion.beaconIdentityConstraint else {
+                    return
+                }
+            }
             switch state {
             case .inside:
                 guard !foregroundBeaconIdentifiersInside.contains(beaconRegion.identifier) else { return }

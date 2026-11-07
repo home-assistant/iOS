@@ -1573,7 +1573,7 @@ class ZoneManagerCollectorTests: XCTestCase {
             satisfying: replacement.beaconIdentityConstraint,
             manager: locationManager
         )
-        XCTAssertEqual(delegate.events.map(\.eventType), [.region(region, .outside), .region(region, .outside)])
+        XCTAssertEqual(delegate.events.map(\.eventType), [.region(region, .outside)])
     }
 
     func testPendingOnlyReentryBeforeAndAfterExitPersistence() throws {
@@ -1835,6 +1835,120 @@ class ZoneManagerCollectorTests: XCTestCase {
             collector.stopForegroundBeaconScanning(manager: locationManager)
             collector.stopBackgroundBeaconMonitoring(manager: locationManager)
         }
+    }
+
+    func testStaleInsideCallbackPreservesReplacementPendingEntry() throws {
+        try assertStaleCallbackPreservesReplacement(pending: true, staleState: .inside)
+    }
+
+    func testStaleOutsideCallbackPreservesReplacementPendingEntry() throws {
+        try assertStaleCallbackPreservesReplacement(pending: true, staleState: .outside)
+    }
+
+    func testStaleInsideCallbackPreservesReplacementOpportunisticEntry() throws {
+        try assertStaleCallbackPreservesReplacement(pending: false, staleState: .inside)
+    }
+
+    func testStaleOutsideCallbackPreservesReplacementOpportunisticEntry() throws {
+        try assertStaleCallbackPreservesReplacement(pending: false, staleState: .outside)
+    }
+
+    func testStaleInsideCallbackDoesNotExtendReplacementPendingDeadline() throws {
+        try assertStaleCallbackPreservesReplacement(pending: true, staleState: .inside, verifyWithSample: false)
+    }
+
+    func testStaleInsideCallbackDoesNotExtendReplacementOpportunisticDeadline() throws {
+        try assertStaleCallbackPreservesReplacement(pending: false, staleState: .inside, verifyWithSample: false)
+    }
+
+    private func assertStaleCallbackPreservesReplacement(
+        pending: Bool,
+        staleState: CLRegionState,
+        verifyWithSample: Bool = true
+    ) throws {
+        let oldRegion = try storedBeaconRegion(entityId: "stale_callback")
+        if pending {
+            collector.locationManager(locationManager, didDetermineState: .inside, for: oldRegion)
+        } else {
+            collector.startOpportunisticBeaconScanning(in: [oldRegion], manager: locationManager)
+        }
+        scheduler.advance(by: 20)
+        var zone = try XCTUnwrap(AppZone.zone(identifier: oldRegion.identifier))
+        zone.beaconUUID = UUID().uuidString
+        try database.write { try zone.save($0) }
+        let replacement = try XCTUnwrap(zone.beaconRegion)
+        if pending {
+            collector.locationManager(locationManager, didDetermineState: .inside, for: replacement)
+        } else {
+            collector.startOpportunisticBeaconScanning(in: [replacement], manager: locationManager)
+        }
+        let leaseEndCount = backgroundExecution.endCount
+        scheduler.advance(by: 4)
+        collector.locationManager(locationManager, didDetermineState: staleState, for: oldRegion)
+        XCTAssertTrue(delegate.events.isEmpty)
+        XCTAssertEqual(locationManager.startedRangingConstraints, [
+            oldRegion.beaconIdentityConstraint, replacement.beaconIdentityConstraint,
+        ])
+        XCTAssertEqual(locationManager.stoppedRangingConstraints, [oldRegion.beaconIdentityConstraint])
+        XCTAssertEqual(backgroundExecution.endCount, leaseEndCount)
+        // Cross the old owner's deadline while the replacement still owns its lease.
+        scheduler.advance(by: 1)
+        XCTAssertEqual(locationManager.stoppedRangingConstraints, [oldRegion.beaconIdentityConstraint])
+        collector.didRange(
+            samples: [.init(proximity: .near, rssi: -55)],
+            satisfying: oldRegion.beaconIdentityConstraint, manager: locationManager
+        )
+        XCTAssertTrue(delegate.events.isEmpty)
+        if !verifyWithSample {
+            scheduler.advance(by: 19)
+            XCTAssertEqual(locationManager.stoppedRangingConstraints, [oldRegion.beaconIdentityConstraint])
+            XCTAssertEqual(backgroundExecution.endCount, leaseEndCount)
+            scheduler.advance(by: 1)
+            XCTAssertEqual(locationManager.stoppedRangingConstraints, [
+                oldRegion.beaconIdentityConstraint, replacement.beaconIdentityConstraint,
+            ])
+            XCTAssertEqual(backgroundExecution.endCount, leaseEndCount + 1)
+            XCTAssertTrue(delegate.events.isEmpty)
+            return
+        }
+        collector.didRange(
+            samples: [.init(proximity: .near, rssi: -55)],
+            satisfying: replacement.beaconIdentityConstraint, manager: locationManager
+        )
+        XCTAssertEqual(delegate.events.map(\.eventType), [.region(replacement, .inside)])
+        XCTAssertEqual(locationManager.stoppedRangingConstraints, [
+            oldRegion.beaconIdentityConstraint, replacement.beaconIdentityConstraint,
+        ])
+        XCTAssertEqual(backgroundExecution.endCount, leaseEndCount + 1)
+        scheduler.advance(by: 25)
+        XCTAssertEqual(delegate.events.count, 1)
+        XCTAssertEqual(locationManager.startedRangingConstraints.count, 2)
+        XCTAssertEqual(locationManager.stoppedRangingConstraints.count, 2)
+        XCTAssertEqual(backgroundExecution.endCount, leaseEndCount + 1)
+    }
+
+    func testStaleOutsideCallbackDoesNotClearReplacementForegroundInsideState() throws {
+        let oldRegion = try storedBeaconRegion(entityId: "replacement_foreground")
+        collector.startForegroundBeaconScanning(in: [oldRegion], manager: locationManager)
+        var zone = try XCTUnwrap(AppZone.zone(identifier: oldRegion.identifier))
+        zone.beaconUUID = UUID().uuidString
+        try database.write { try zone.save($0) }
+        let replacement = try XCTUnwrap(zone.beaconRegion)
+        collector.startForegroundBeaconScanning(in: [replacement], manager: locationManager)
+        collector.didRange(
+            samples: [.init(proximity: .near, rssi: -55)],
+            satisfying: replacement.beaconIdentityConstraint, manager: locationManager
+        )
+        XCTAssertEqual(delegate.events.map(\.eventType), [.region(replacement, .inside)])
+        // The processor has not persisted the entry yet; only the collector's latch prevents a duplicate.
+        collector.locationManager(locationManager, didDetermineState: .outside, for: oldRegion)
+        collector.didRange(
+            samples: [.init(proximity: .near, rssi: -55)],
+            satisfying: replacement.beaconIdentityConstraint, manager: locationManager
+        )
+        XCTAssertEqual(delegate.events.map(\.eventType), [.region(replacement, .inside)])
+        XCTAssertEqual(locationManager.stoppedRangingConstraints, [oldRegion.beaconIdentityConstraint])
+        collector.stopForegroundBeaconScanning(manager: locationManager)
     }
 
     func testRepeatedInsideCallbacksKeepOriginalVerificationDeadline() throws {
