@@ -41,6 +41,7 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
     private var pendingBeaconEntries = [String: PendingBeaconEntry]()
     private var foregroundBeaconEntries = [String: ForegroundBeaconEntry]()
     private var foregroundBeaconIdentifiersInside = Set<String>()
+    private var observedBeaconExits = [String: CLBeaconIdentityConstraint]()
     private var opportunisticBeaconEntries = [String: ForegroundBeaconEntry]()
     private var backgroundBeaconRegions = [String: CLBeaconRegion]()
     private var beaconReconciliationStates = [String: BeaconReconciliationState]()
@@ -268,6 +269,13 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
         let event = Self.event(for: region, state: state)
 
         if let beaconRegion = region as? CLBeaconRegion {
+            // A queued callback for an old definition must not mutate the replacement's
+            // owners or inside state, or deliver an exit for the current zone.
+            if let zone = event.associatedZone {
+                guard zone.beaconRegion?.beaconIdentityConstraint == beaconRegion.beaconIdentityConstraint else {
+                    return
+                }
+            }
             switch state {
             case .inside:
                 guard !foregroundBeaconIdentifiersInside.contains(beaconRegion.identifier) else { return }
@@ -277,6 +285,10 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
                 cancelPendingBeaconEntry(for: beaconRegion, manager: manager)
                 cancelOpportunisticBeaconEntry(for: beaconRegion, manager: manager)
                 foregroundBeaconIdentifiersInside.remove(beaconRegion.identifier)
+                if event.associatedZone?.beaconRegion?.beaconIdentityConstraint == beaconRegion
+                    .beaconIdentityConstraint {
+                    observedBeaconExits[beaconRegion.identifier] = beaconRegion.beaconIdentityConstraint
+                }
             case .unknown:
                 break
             }
@@ -548,18 +560,22 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
     ) {
         // Database observation may still be queued behind this radio callback. Validate
         // its evidence against the authoritative row before latching or emitting entry.
-        guard let previousZone = event.associatedZone,
+        guard Current.settingsStore.locationSources.zone,
+              let previousZone = event.associatedZone,
               let currentZone = AppZone.zone(identifier: previousZone.identifier),
               currentZone.trackingEnabled,
               let currentRegion = currentZone.beaconRegion,
               case let .region(sampledRegion as CLBeaconRegion, _) = event.eventType,
               currentRegion.beaconIdentityConstraint == sampledRegion.beaconIdentityConstraint else { return }
+        // An observed exit is newer than the stored row while its processor write is pending.
+        // It survives radio-owner handoffs and is consumed only by a matching usable sample.
+        let wasOutside = observedBeaconExits.removeValue(forKey: identifier) == sampledRegion.beaconIdentityConstraint
         let wasInside = foregroundBeaconIdentifiersInside.contains(identifier)
         foregroundBeaconIdentifiersInside.insert(identifier)
         var event = event
         event.associatedZone = currentZone
         guard !wasInside,
-              event.associatedZone?.inRegion != true,
+              wasOutside || !currentZone.inRegion,
               !events.contains(event) else { return }
         events.append(event)
     }
@@ -568,6 +584,10 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
         _ desiredEntries: [String: ForegroundBeaconEntry],
         manager: CLLocationManager
     ) {
+        observedBeaconExits = observedBeaconExits.filter { identifier, constraint in
+            guard let zone = AppZone.zone(identifier: identifier), zone.trackingEnabled else { return false }
+            return zone.beaconRegion?.beaconIdentityConstraint == constraint
+        }
         var removedConstraints = Set<CLBeaconIdentityConstraint>()
         for (identifier, desired) in desiredEntries {
             let constraints = [
