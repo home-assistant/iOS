@@ -11,7 +11,7 @@ struct HAExpandedTitleView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spaces.micro) {
-            Text(state.title ?? attributes.title)
+            Text(attributes.displayTitle(for: state))
                 .font(.body.weight(.semibold))
                 .foregroundStyle(.white)
                 .lineLimit(1)

@@ -979,22 +979,6 @@ private struct ActivityRow: View {
     }
 }
 
-// MARK: - Snapshot model
-
-@available(iOS 17.2, *)
-private struct ActivitySnapshot: Identifiable {
-    let id: String
-    let tag: String
-    let title: String
-    let message: String
-
-    init(activity: Activity<HALiveActivityAttributes>) {
-        self.id = activity.id
-        self.tag = activity.attributes.tag
-        self.title = activity.content.state.title ?? activity.attributes.title
-        self.message = activity.content.state.message
-    }
-}
 #endif
 
 #if os(iOS) && !targetEnvironment(macCatalyst)
