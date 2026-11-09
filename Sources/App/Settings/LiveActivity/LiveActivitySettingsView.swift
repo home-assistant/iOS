@@ -991,7 +991,7 @@ private struct ActivitySnapshot: Identifiable {
     init(activity: Activity<HALiveActivityAttributes>) {
         self.id = activity.id
         self.tag = activity.attributes.tag
-        self.title = activity.attributes.title
+        self.title = activity.content.state.title ?? activity.attributes.title
         self.message = activity.content.state.message
     }
 }
