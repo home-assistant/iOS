@@ -227,4 +227,42 @@ struct RemindersSyncItemSnapshotTests {
         )
         #expect(fromTodo == fromLink)
     }
+
+    // MARK: - Matching titles
+
+    @Test func testTitlesMatchExactlyOrIgnoringCase() {
+        let item = RemindersSyncItemSnapshot(title: "Almond Milk", isCompleted: false, notes: nil, due: nil)
+        let reCased = RemindersSyncItemSnapshot(title: "Almond milk", isCompleted: false, notes: nil, due: nil)
+        #expect(item.titleMatches(item, exactly: true))
+        #expect(!item.titleMatches(reCased, exactly: true))
+        #expect(item.titleMatches(reCased, exactly: false))
+        #expect(!item.titleMatches(
+            RemindersSyncItemSnapshot(title: "Oat milk", isCompleted: false, notes: nil, due: nil),
+            exactly: false
+        ))
+    }
+
+    @Test func testOnlyATitleCaseDifferenceCountsAsReCased() {
+        let item = RemindersSyncItemSnapshot(title: "Almond Milk", isCompleted: false, notes: "tote", due: "2026-07-17")
+        var reCased = item
+        reCased.title = "Almond milk"
+        #expect(reCased.differsOnlyInTitleCase(from: item))
+        #expect(!item.differsOnlyInTitleCase(from: item))
+
+        var completed = reCased
+        completed.isCompleted = true
+        #expect(!completed.differsOnlyInTitleCase(from: item))
+
+        var newNotes = reCased
+        newNotes.notes = "bag"
+        #expect(!newNotes.differsOnlyInTitleCase(from: item))
+
+        var newDue = reCased
+        newDue.due = "2026-07-18"
+        #expect(!newDue.differsOnlyInTitleCase(from: item))
+
+        var renamed = item
+        renamed.title = "Oat milk"
+        #expect(!renamed.differsOnlyInTitleCase(from: item))
+    }
 }
