@@ -1294,6 +1294,60 @@ class ZoneManagerCollectorTests: XCTestCase {
         XCTAssertEqual(backgroundExecution.endCount, 1)
     }
 
+    func testOpportunisticEntryRemainsLatchedAcrossForegroundHandoff() throws {
+        let region = try storedBeaconRegion(entityId: "opportunistic_handoff")
+        let beacon = RangedBeaconSample(proximity: .near, rssi: -60)
+
+        collector.startOpportunisticBeaconScanning(in: [region], manager: locationManager)
+        collector.didRange(
+            samples: [beacon],
+            satisfying: region.beaconIdentityConstraint,
+            manager: locationManager
+        )
+
+        XCTAssertEqual(delegate.events.map(\.eventType), [.region(region, .inside)])
+        XCTAssertFalse(try XCTUnwrap(AppZone.zone(identifier: region.identifier)).inRegion)
+
+        // The collector delegate does not run the asynchronous processor, so the stored row
+        // deliberately remains outside while ownership moves to foreground ranging.
+        collector.startForegroundBeaconScanning(in: [region], manager: locationManager)
+        collector.didRange(
+            samples: [beacon],
+            satisfying: region.beaconIdentityConstraint,
+            manager: locationManager
+        )
+
+        XCTAssertEqual(delegate.events.map(\.eventType), [.region(region, .inside)])
+        XCTAssertFalse(try XCTUnwrap(AppZone.zone(identifier: region.identifier)).inRegion)
+        collector.stopForegroundBeaconScanning(manager: locationManager)
+    }
+
+    func testRepeatedInsideAfterPendingAndOpportunisticOwnersFinishDoesNotDuplicateEntry() throws {
+        let region = try storedBeaconRegion(entityId: "overlapping_entry_owners")
+        let beacon = RangedBeaconSample(proximity: .near, rssi: -60)
+
+        collector.locationManager(locationManager, didDetermineState: .inside, for: region)
+        collector.startOpportunisticBeaconScanning(in: [region], manager: locationManager)
+        collector.didRange(
+            samples: [beacon],
+            satisfying: region.beaconIdentityConstraint,
+            manager: locationManager
+        )
+
+        XCTAssertEqual(delegate.events.map(\.eventType), [.region(region, .inside)])
+        XCTAssertFalse(try XCTUnwrap(AppZone.zone(identifier: region.identifier)).inRegion)
+
+        collector.locationManager(locationManager, didDetermineState: .inside, for: region)
+        collector.didRange(
+            samples: [beacon],
+            satisfying: region.beaconIdentityConstraint,
+            manager: locationManager
+        )
+
+        XCTAssertEqual(delegate.events.map(\.eventType), [.region(region, .inside)])
+        XCTAssertFalse(try XCTUnwrap(AppZone.zone(identifier: region.identifier)).inRegion)
+    }
+
     func testOpportunisticScanTimesOut() throws {
         let server = Server.fake()
         let zone = AppZone(
