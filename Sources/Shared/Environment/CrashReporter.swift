@@ -18,7 +18,8 @@ public class CrashReporterImpl: CrashReporter {
             return
         }
 
-        guard AppConstants.BundleID.starts(with: "io.robbie.") else {
+        let officialPrefix = Bundle.main.object(forInfoDictionaryKey: "HACrashReportingBundleIDPrefix") as? String
+        guard let officialPrefix, AppConstants.BundleID.starts(with: officialPrefix) else {
             return
         }
 

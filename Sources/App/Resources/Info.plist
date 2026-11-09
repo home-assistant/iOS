@@ -22,7 +22,7 @@
 		</dict>
 	</array>
 	<key>CFBundleDisplayName</key>
-	<string>$(PRODUCT_NAME)</string>
+	<string>$(APP_DISPLAY_NAME)</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -45,6 +45,7 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>${ENV_URL_HANDLER}</string>
+				<string>${MIGRATION_URL_HANDLER}</string>
 			</array>
 		</dict>
 	</array>
@@ -77,6 +78,10 @@
 		<string>firefox</string>
 		<string>firefox-focus</string>
 		<string>firefox-klar</string>
+		<string>homeassistant-nc</string>
+		<string>homeassistant-nc-dev</string>
+		<string>homeassistant-ohf</string>
+		<string>homeassistant-ohf-dev</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
@@ -210,9 +215,11 @@
 	</dict>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
-		<string>io.robbie.homeassistant.backgroundfetch</string>
-		<string>io.robbie.homeassistant.reminderssync</string>
+		<string>$(BACKGROUND_TASK_ID_PREFIX).backgroundfetch</string>
+		<string>$(BACKGROUND_TASK_ID_PREFIX).reminderssync</string>
 	</array>
+	<key>HACrashReportingBundleIDPrefix</key>
+	<string>$(CRASH_REPORTING_BUNDLE_ID_PREFIX)</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

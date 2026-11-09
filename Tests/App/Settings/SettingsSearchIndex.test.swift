@@ -6,15 +6,15 @@ struct SettingsSearchIndexTests {
     @Test("Every settings entry belongs to exactly one objective group")
     func sectionsCoverAllItems() {
         let grouped = SettingsSection.allCases.flatMap(\.allItems)
-        // Servers and What's New are rendered outside the objective groups.
-        let expected = SettingsItem.allCases.filter { $0 != .servers && $0 != .whatsNew }
+        // Servers, What's New and the transfer to the new app are rendered outside the objective groups.
+        let expected = SettingsItem.allCases.filter { ![.servers, .whatsNew, .transferToNewApp].contains($0) }
         #expect(Set(grouped).count == grouped.count)
         #expect(Set(grouped) == Set(expected))
     }
 
     @Test("Every indexed entry has search keywords")
     func allItemsHaveKeywords() {
-        for item in SettingsItem.allCases where item != .whatsNew {
+        for item in SettingsItem.allCases where ![.whatsNew, .transferToNewApp].contains(item) {
             #expect(!item.searchKeywords.isEmpty, "\(item.rawValue) has no search keywords")
         }
     }
@@ -54,8 +54,8 @@ struct SettingsSearchIndexTests {
 
     @Test("Every screen-backed entry provides content search entries")
     func allScreensProvideContentEntries() {
-        // Help is an external link and What's New is a modal, so they have no screen content.
-        for item in SettingsItem.allCases where ![.help, .whatsNew].contains(item) {
+        // Help is an external link, What's New and the transfer are modals, so they have no screen content.
+        for item in SettingsItem.allCases where ![.help, .whatsNew, .transferToNewApp].contains(item) {
             // Live Activities entries are only available alongside their screen.
             if item == .liveActivities, #unavailable(iOS 17.2) { continue }
             #expect(!item.contentSearchEntries.isEmpty, "\(item.rawValue) has no content search entries")
