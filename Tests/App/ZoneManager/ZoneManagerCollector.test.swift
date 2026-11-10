@@ -1348,6 +1348,26 @@ class ZoneManagerCollectorTests: XCTestCase {
         XCTAssertFalse(try XCTUnwrap(AppZone.zone(identifier: region.identifier)).inRegion)
     }
 
+    func testBeaconEntryCanBeCollectedAgainAfterOneShotProcessorRejection() throws {
+        let region = try storedBeaconRegion(entityId: "one_shot_retry")
+        let beacon = RangedBeaconSample(proximity: .near, rssi: -60)
+        collector.startForegroundBeaconScanning(in: [region], manager: locationManager)
+        collector.locationManager(locationManager, didDetermineState: .inside, for: region)
+        collector.didRange(samples: [beacon], satisfying: region.beaconIdentityConstraint, manager: locationManager)
+
+        let rejectedEntry = try XCTUnwrap(delegate.events.first)
+        XCTAssertEqual(delegate.events.count, 1)
+        collector.rearmBeaconEntryAfterOneShot(rejectedEntry)
+
+        collector.locationManager(locationManager, didDetermineState: .inside, for: region)
+        collector.didRange(samples: [beacon], satisfying: region.beaconIdentityConstraint, manager: locationManager)
+
+        XCTAssertEqual(delegate.events.count, 2)
+        XCTAssertTrue(delegate.events.allSatisfy { $0.eventType == .region(region, .inside) })
+        XCTAssertFalse(try XCTUnwrap(AppZone.zone(identifier: region.identifier)).inRegion)
+        collector.stopForegroundBeaconScanning(manager: locationManager)
+    }
+
     func testOpportunisticScanTimesOut() throws {
         let server = Server.fake()
         let zone = AppZone(

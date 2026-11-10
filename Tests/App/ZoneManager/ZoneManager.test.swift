@@ -5,6 +5,7 @@ import GRDB
 import PromiseKit
 @testable import Shared
 import SharedTesting
+import UIKit
 import XCTest
 
 final class MockClientEventStore: ClientEventStoreProtocol {
@@ -394,6 +395,69 @@ class ZoneManagerTests: XCTestCase {
             regionFilter: regionFilter,
             syncExecutor: syncExecutor
         )
+    }
+
+    func testOneShotIgnoredBeaconEntryCanRetryThroughCollectorAndProcessor() throws {
+        let previousTestFlight = Current.isTestFlight
+        let previousSingleShotQuery = Current.isPerformingSingleShotLocationQuery
+        Current.isTestFlight = true
+        defer {
+            Current.isTestFlight = previousTestFlight
+            Current.isPerformingSingleShotLocationQuery = previousSingleShotQuery
+        }
+        let zone = AppZone(
+            entityId: "one_shot_retry",
+            serverIdentifier: apis[0].server.identifier.rawValue,
+            beaconUUID: UUID().uuidString
+        )
+        _ = try addedZones([zone])
+        let currentZone = try XCTUnwrap(AppZone.zone(identifier: zone.identifier))
+        let region = try XCTUnwrap(currentZone.beaconRegion)
+        let event = ZoneManagerEvent(
+            eventType: .region(region, .inside),
+            associatedZone: currentZone,
+            beaconDiagnostic: BeaconDiagnostic(
+                proximity: "near",
+                rssi: -60,
+                isAppActive: UIApplication.shared.applicationState == .active
+            )
+        )
+        let realCollector = ZoneManagerCollectorImpl(backgroundExecution: RepairScanExecution())
+        let realProcessor = ZoneManagerProcessorImpl()
+        let manager = ZoneManager(
+            locationManager: locationManager,
+            collector: realCollector,
+            processor: realProcessor,
+            regionFilter: regionFilter,
+            isApplicationActive: { true },
+            syncExecutor: { $0() }
+        )
+        XCTAssertNotNil(manager.collector.delegate)
+
+        Current.isPerformingSingleShotLocationQuery = true
+        let firstLog = expectLog(for: event)
+        realCollector.locationManager(locationManager, didDetermineState: .inside, for: region)
+        realCollector.didRange(
+            samples: [RangedBeaconSample(proximity: .near, rssi: -60)],
+            satisfying: region.beaconIdentityConstraint,
+            manager: locationManager
+        )
+        wait(for: [firstLog], timeout: 10)
+        XCTAssertTrue(loggedEvents.last?.text.contains("ignoring during one shot") == true)
+        XCTAssertFalse(try XCTUnwrap(AppZone.zone(identifier: zone.identifier)).inRegion)
+
+        Current.isPerformingSingleShotLocationQuery = false
+        let retryLog = expectLog(for: event)
+        realCollector.locationManager(locationManager, didDetermineState: .inside, for: region)
+        realCollector.didRange(
+            samples: [RangedBeaconSample(proximity: .near, rssi: -60)],
+            satisfying: region.beaconIdentityConstraint,
+            manager: locationManager
+        )
+        wait(for: [retryLog], timeout: 10)
+
+        XCTAssertTrue(try XCTUnwrap(AppZone.zone(identifier: zone.identifier)).inRegion)
+        XCTAssertEqual(apis[0].createdEventTypes, ["ios.zone_entered"])
     }
 
     private func addedZones(_ toAdd: [AppZone]) throws -> [AppZone] {
@@ -896,6 +960,8 @@ private class FakeCollector: NSObject, ZoneManagerCollector {
         ignoringNextStates.insert(region)
     }
 
+    func rearmBeaconEntryAfterOneShot(_ event: ZoneManagerEvent) {}
+
     func startForegroundBeaconScanning(in regions: Set<CLRegion>, manager: CLLocationManager) {
         handoffCalls.append("startForeground")
         foregroundScanCallsWereOnMainThread.append(Thread.isMainThread)
@@ -1002,9 +1068,20 @@ private class FakeHassAPI: HomeAssistantAPI {
 
     var createdEventPromise: Promise<CreatedEventInfo>!
     var createdEventSeal: Resolver<CreatedEventInfo>?
+    private(set) var createdEventTypes = [String]()
 
     override func CreateEvent(eventType: String, eventData: [String: Any]) -> Promise<Void> {
+        createdEventTypes.append(eventType)
         createdEventSeal?.fulfill((eventType: eventType, eventData: eventData))
         return .value(())
+    }
+
+    override func SubmitLocation(
+        updateType: LocationUpdateTrigger,
+        location: CLLocation?,
+        rawLocation: CLLocation? = nil,
+        zone: AppZone?
+    ) -> Promise<Void> {
+        .value(())
     }
 }

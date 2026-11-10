@@ -6,6 +6,11 @@ import Shared
 import UIKit
 
 class ZoneManager {
+    private struct FiredBeaconEntry {
+        let constraint: CLBeaconIdentityConstraint
+        let sendToken: UUID
+    }
+
     let locationManager: CLLocationManager
     let collector: ZoneManagerCollector
     let processor: ZoneManagerProcessor
@@ -13,6 +18,8 @@ class ZoneManager {
     private(set) var zones: [AppZone]
 
     private var synchronizedRegions = Set<CLRegion>()
+    private var firedBeaconEntries = [String: FiredBeaconEntry]()
+    private var beaconEntriesRetriedAfterOneShot = [String: CLBeaconIdentityConstraint]()
     private var observationToken: AnyDatabaseCancellable?
     private let isApplicationActive: () -> Bool
     private let syncExecutor: (@escaping () -> Void) -> Void
@@ -200,16 +207,50 @@ class ZoneManager {
 
         switch event.eventType {
         case let .region(region, state):
+            if let beaconRegion = region as? CLBeaconRegion {
+                switch state {
+                case .inside where beaconEntriesRetriedAfterOneShot[beaconRegion.identifier] ==
+                    beaconRegion.beaconIdentityConstraint:
+                    beaconEntriesRetriedAfterOneShot.removeValue(forKey: beaconRegion.identifier)
+                    return
+                case .outside where beaconEntriesRetriedAfterOneShot[beaconRegion.identifier] ==
+                    beaconRegion.beaconIdentityConstraint:
+                    beaconEntriesRetriedAfterOneShot.removeValue(forKey: beaconRegion.identifier)
+                default:
+                    break
+                }
+                if state == .outside,
+                   firedBeaconEntries[beaconRegion.identifier]?.constraint == beaconRegion.beaconIdentityConstraint {
+                    firedBeaconEntries.removeValue(forKey: beaconRegion.identifier)
+                }
+            }
             guard let api = Current.api(for: server) else {
                 Current.Log.error("No API available to fire ZoneManager event, server: \(server)")
                 return
             }
+            let beaconEntrySendToken: UUID?
+            if let beaconRegion = region as? CLBeaconRegion, state == .inside {
+                let sendToken = UUID()
+                firedBeaconEntries[beaconRegion.identifier] = FiredBeaconEntry(
+                    constraint: beaconRegion.beaconIdentityConstraint,
+                    sendToken: sendToken
+                )
+                beaconEntrySendToken = sendToken
+            } else {
+                beaconEntrySendToken = nil
+            }
             let eventInfo = api.zoneStateEvent(region: region, state: state, zone: zone)
-            api.CreateEvent(eventType: eventInfo.eventType, eventData: eventInfo.eventData).pipe { result in
+            api.CreateEvent(eventType: eventInfo.eventType, eventData: eventInfo.eventData).pipe { [weak self] result in
                 switch result {
                 case .fulfilled:
                     Current.Log.info("Fired ZoneManager event")
                 case let .rejected(error):
+                    if let beaconRegion = region as? CLBeaconRegion,
+                       let sendToken = beaconEntrySendToken,
+                       self?.firedBeaconEntries[beaconRegion.identifier]?.sendToken == sendToken {
+                        self?.firedBeaconEntries.removeValue(forKey: beaconRegion.identifier)
+                        self?.beaconEntriesRetriedAfterOneShot.removeValue(forKey: beaconRegion.identifier)
+                    }
                     let message = "Failed to fire ZoneManager event: \(error.localizedDescription)"
                     Current.Log.error(message)
                     Current.clientEventStore.addEvent(.init(text: message, type: .locationUpdate))
@@ -349,6 +390,14 @@ extension ZoneManager: ZoneManagerCollectorDelegate {
 
 extension ZoneManager: ZoneManagerProcessorDelegate {
     func processor(_ processor: ZoneManagerProcessor, didLog state: ZoneManagerState) {
+        if case let .didIgnore(event, error) = state,
+           (error as? ZoneManagerIgnoreReason) == .duringOneShot,
+           case let .region(region as CLBeaconRegion, .inside) = event.eventType {
+            if firedBeaconEntries[region.identifier]?.constraint == region.beaconIdentityConstraint {
+                beaconEntriesRetriedAfterOneShot[region.identifier] = region.beaconIdentityConstraint
+            }
+            collector.rearmBeaconEntryAfterOneShot(event)
+        }
         log(state: state)
     }
 }

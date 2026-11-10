@@ -10,6 +10,7 @@ protocol ZoneManagerCollectorDelegate: AnyObject {
 protocol ZoneManagerCollector: CLLocationManagerDelegate {
     var delegate: ZoneManagerCollectorDelegate? { get set }
     func ignoreNextState(for region: CLRegion)
+    func rearmBeaconEntryAfterOneShot(_ event: ZoneManagerEvent)
     func startForegroundBeaconScanning(in regions: Set<CLRegion>, manager: CLLocationManager)
     func stopForegroundBeaconScanning(manager: CLLocationManager)
     func startBackgroundBeaconMonitoring(in regions: Set<CLRegion>, manager: CLLocationManager)
@@ -88,6 +89,20 @@ class ZoneManagerCollectorImpl: NSObject, ZoneManagerCollector {
 
     func ignoreNextState(for region: CLRegion) {
         ignoredNextRegions.insert(region)
+    }
+
+    func rearmBeaconEntryAfterOneShot(_ event: ZoneManagerEvent) {
+        guard Current.isTestFlight,
+              case let .region(region as CLBeaconRegion, .inside) = event.eventType,
+              let previousZone = event.associatedZone,
+              let currentZone = AppZone.zone(identifier: previousZone.identifier),
+              currentZone.trackingEnabled,
+              !currentZone.inRegion,
+              currentZone.beaconRegion?.beaconIdentityConstraint == region.beaconIdentityConstraint,
+              foregroundBeaconIdentifiersInside[region.identifier] == region.beaconIdentityConstraint,
+              observedBeaconExits[region.identifier] != region.beaconIdentityConstraint else { return }
+
+        foregroundBeaconIdentifiersInside.removeValue(forKey: region.identifier)
     }
 
     func startForegroundBeaconScanning(in regions: Set<CLRegion>, manager: CLLocationManager) {
