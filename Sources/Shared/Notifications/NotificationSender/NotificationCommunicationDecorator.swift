@@ -35,7 +35,17 @@ public final class NotificationCommunicationDecoratorImpl: NotificationCommunica
     ) async -> UNNotificationContent {
         let intent = await buildIntent(sender: sender, title: sender.senderName, body: content.body, api: api)
         do {
-            return try content.updating(from: intent)
+            let updatedContent = try content.updating(from: intent)
+            guard !content.subtitle.isEmpty else {
+                return updatedContent
+            }
+            guard let decoratedContent = updatedContent.mutableCopy() as? UNMutableNotificationContent else {
+                Current.Log.warning("Communication notification mutableCopy() failed")
+                return updatedContent
+            }
+            // INSendMessageIntent has no subtitle field, so preserve it from the original content.
+            decoratedContent.subtitle = content.subtitle
+            return decoratedContent
         } catch {
             Current.Log.error("Communication notification updating(from:) failed: \(error)")
             return content
