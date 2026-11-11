@@ -6,6 +6,7 @@ import SystemConfiguration
 @objc(HAMacBridgeImpl) final class MacBridgeImpl: NSObject, MacBridge {
     let networkMonitor: MacBridgeNetworkMonitor
     let statusItem: MacBridgeStatusItem?
+    private var requestedActivationPolicy: MacBridgeActivationPolicy?
 
     override init() {
         if Bundle.main.isRunningInExtension {
@@ -20,6 +21,13 @@ import SystemConfiguration
         super.init()
 
         MacBridgeAppDelegateHandler.swizzleAppDelegate()
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(applyRequestedActivationPolicy),
+            name: NSApplication.didBecomeActiveNotification,
+            object: nil
+        )
 
         for name: Notification.Name in [
             NSApplication.didFinishLaunchingNotification,
@@ -80,25 +88,42 @@ import SystemConfiguration
             }
         }
         set {
-            if newValue != activationPolicy {
-                // This is also configured on background launches; changing Dock visibility must not steal focus.
-                NSApplication.shared.setActivationPolicy({
-                    switch newValue {
-                    case .regular: return .regular
-                    case .accessory: return .accessory
-                    case .prohibited: return .prohibited
-                    }
-                }())
+            requestedActivationPolicy = newValue
+            // Catalyst uses .prohibited while handling a background launch. Promoting it to .regular
+            // creates a window, even without activate(). Wait until the user opens the app.
+            guard activationPolicy != .prohibited else { return }
+            applyRequestedActivationPolicy()
+        }
+    }
+
+    @objc private func applyRequestedActivationPolicy() {
+        guard let requestedActivationPolicy, requestedActivationPolicy != activationPolicy else { return }
+        let wasActive = NSApplication.shared.isActive
+        NSApplication.shared.setActivationPolicy({
+            switch requestedActivationPolicy {
+            case .regular: return .regular
+            case .accessory: return .accessory
+            case .prohibited: return .prohibited
             }
+        }())
+        if wasActive {
+            NSApplication.shared.activate(ignoringOtherApps: true)
         }
     }
 
     func activateApp() {
+        applyRequestedActivationPolicy()
         NSApplication.shared.activate(ignoringOtherApps: true)
     }
 
     func setReopenHandler(_ handler: @escaping () -> Bool) {
-        MacBridgeAppDelegateHandler.reopenHandler = handler
+        MacBridgeAppDelegateHandler.reopenHandler = { [weak self] in
+            let handled = handler()
+            if !handled {
+                self?.applyRequestedActivationPolicy()
+            }
+            return handled
+        }
     }
 
     func configureStatusItem(using configuration: MacBridgeStatusItemConfiguration) {
