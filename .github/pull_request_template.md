@@ -16,9 +16,10 @@ Select exactly one option that describes AI usage in this contribution:
 ## Screenshots
 <!-- If this is a user-facing change not in the frontend, please include screenshots in light and dark mode. -->
 
-## Link to pull request in Documentation repository
-<!-- Pull requests that add, change or remove functionality must have a corresponding pull request in the Companion App Documentation repository (https://github.com/home-assistant/companion.home-assistant). Please add the number of this pull request after the "#" -->
-Documentation: home-assistant/companion.home-assistant#
+## Additional information
+<!-- Pull requests that add, change or remove functionality must have a corresponding pull request in the Companion App Documentation repository (https://github.com/home-assistant/companion.home-assistant). Under "This PR belongs together with", list the pull requests that are part of the same change, in any repository: the code this documents, its documentation or brands, or code that has to be merged together with it. List this pull request on theirs too. Mention other pull requests and issues, like one this builds on or a revert, in the summary above. -->
+- This PR fixes or closes issue: fixes #
+- This PR belongs together with: 
 
 ## Any other notes
 <!-- If there is any other information of note, like if this Pull Request is part of a bigger change, please include it here. -->
