@@ -6,6 +6,14 @@ import WidgetKit
 @available(watchOS 10.0, *)
 struct WatchWidgetsEntryView: View {
     let entry: WatchWidgetEntry
+    /// True while the display is dimmed: wrist down on an Always On watch.
+    @Environment(\.isLuminanceReduced) private var isLuminanceReduced
+
+    /// The complication as the face should draw it right now: swapped for the Home Assistant logo while
+    /// dimmed if the user turned "Show when inactive" off. The tap target stays the real complication's.
+    private var complication: WatchWidgetComplicationSnapshot? {
+        entry.complication?.displayed(isLuminanceReduced: isLuminanceReduced)
+    }
 
     var body: some View {
         content
@@ -31,13 +39,13 @@ struct WatchWidgetsEntryView: View {
     private var content: some View {
         switch entry.family {
         case .accessoryInline:
-            InlineComplicationView(complication: entry.complication, family: entry.family)
+            InlineComplicationView(complication: complication, family: entry.family)
         case .accessoryCorner:
-            CornerComplicationView(complication: entry.complication, family: entry.family)
+            CornerComplicationView(complication: complication, family: entry.family)
         case .accessoryRectangular:
-            RectangularComplicationView(complication: entry.complication, family: entry.family)
+            RectangularComplicationView(complication: complication, family: entry.family)
         default:
-            CircularComplicationView(complication: entry.complication, family: entry.family)
+            CircularComplicationView(complication: complication, family: entry.family)
         }
     }
 }
