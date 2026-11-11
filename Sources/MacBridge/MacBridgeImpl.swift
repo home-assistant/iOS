@@ -117,13 +117,7 @@ import SystemConfiguration
     }
 
     func setReopenHandler(_ handler: @escaping () -> Bool) {
-        MacBridgeAppDelegateHandler.reopenHandler = { [weak self] in
-            let handled = handler()
-            if !handled {
-                self?.applyRequestedActivationPolicy()
-            }
-            return handled
-        }
+        MacBridgeAppDelegateHandler.reopenHandler = handler
     }
 
     func configureStatusItem(using configuration: MacBridgeStatusItemConfiguration) {
