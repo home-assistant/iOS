@@ -81,6 +81,7 @@ import SystemConfiguration
         }
         set {
             if newValue != activationPolicy {
+                // This is also configured on background launches; changing Dock visibility must not steal focus.
                 NSApplication.shared.setActivationPolicy({
                     switch newValue {
                     case .regular: return .regular
@@ -88,7 +89,6 @@ import SystemConfiguration
                     case .prohibited: return .prohibited
                     }
                 }())
-                NSApplication.shared.activate(ignoringOtherApps: true)
             }
         }
     }
