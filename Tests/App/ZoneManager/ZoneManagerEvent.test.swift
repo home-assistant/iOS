@@ -23,6 +23,17 @@ class ZoneManagerEventTests: XCTestCase {
         )
     }
 
+    func testRangingDiagnosticIsVisibleInExistingEventDescription() {
+        let event = ZoneManagerEvent(
+            eventType: .region(beaconRegion, .inside),
+            beaconDiagnostic: .init(proximity: "near", rssi: -60, isAppActive: false)
+        )
+        XCTAssertTrue(event.description.contains("ranging proximity=near rssi=-60"))
+        XCTAssertTrue(event.description.contains("appActive=false"))
+        let ordinary = ZoneManagerEvent(eventType: .region(beaconRegion, .inside))
+        XCTAssertFalse(ordinary.description.contains("ranging proximity="))
+    }
+
     func testTriggerConversion() {
         XCTAssertEqual(
             ZoneManagerEvent(eventType: .region(beaconRegion, .inside)).asTrigger(),
