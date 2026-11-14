@@ -423,7 +423,7 @@
 "camera_player.errors.unable_to_connect_to_server" = "Det går inte att ansluta till Home Assistant";
 "camera_player.errors.unknown" = "Okänt fel";
 "camera_player.notification.body" = "Tryck för att öppna kameran";
-"camera_player.talkback.connecting" = "Connecting microphone";
+"camera_player.talkback.connecting" = "Ansluter mikrofonen";
 "camera_player.talkback.start" = "Börja prata";
 "camera_player.talkback.stop" = "Sluta prata";
 "cameras.no_server_found" = "Ingen server hittades för kamera: %@";
@@ -689,7 +689,7 @@
 "connection.active_url_type.toast.internal" = "Använda den interna URL:en.";
 "connection.active_url_type.toast.none" = "Det finns för närvarande ingen aktiv URL för denna server.";
 "connection.active_url_type.toast.remote_ui" = "Använder Cloud Remote UI-URL.";
-"connection.active_url_type.toast.remote_ui_link" = "Using %@ Remote UI URL.";
+"connection.active_url_type.toast.remote_ui_link" = "Använder URL:en för fjärrgränssnittet på %@.";
 "connection.active_url_type.toast.title" = "Anslutningstyp";
 "connection.error.details.button.clipboard" = "Kopiera till urklipp";
 "connection.error.details.button.discord" = "Fråga i Discord";
@@ -702,8 +702,8 @@
 "connection.error.details.title" = "Anslutningsfel";
 "connection.error.failed_connect.cloud.title" = "Kontrollera att din Home Assistant Cloud-prenumeration är aktiv och ansluten till din server, du kan verifiera det på [Nabu Casa](https://account.nabucasa.com)";
 "connection.error.failed_connect.cloud_inactive.title" = "Du har inaktiverat Home Assistant Cloud-användning i appen. Om du behöver det för fjärråtkomst, öppna inställningarna för Companion-appen och aktivera det.";
-"connection.error.failed_connect.cloud_inactive_link.title" = "You have disabled %@ use in the app, if you need it for remote access please open companion app settings and enable it.";
-"connection.error.failed_connect.cloud_link.title" = "Make sure your %@ subscription is active and connected to your server, you can verify that at [Nabu Casa](https://account.nabucasa.com)";
+"connection.error.failed_connect.cloud_inactive_link.title" = "Du har inaktiverat funktionen ” %@ ” i appen. Om du behöver den för fjärråtkomst ska du öppna inställningarna i den tillhörande appen och aktivera den.";
+"connection.error.failed_connect.cloud_link.title" = "Se till att din prenumeration på %@ är aktiv och ansluten till din server. Du kan kontrollera detta på [Nabu Casa](https://account.nabucasa.com)";
 "connection.error.failed_connect.subtitle" = "Kontrollera din anslutning och försök igen. Om du inte är hemma, se till att du har konfigurerat fjärråtkomst.";
 "connection.error.failed_connect.title" = "Vi kunde inte ansluta till Home Assistant";
 "connection.error.failed_connect.url" = "Appen ansluter för närvarande till";
@@ -1541,9 +1541,9 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "reminders_sync.settings.access_denied.body" = "Ge full åtkomst till ”Påminnelser” i appen ”Inställningar” för att synkronisera dina listor.";
 "reminders_sync.settings.access_denied.title" = "Åtkomst till Påminnelser krävs";
 "reminders_sync.settings.add_list" = "Lägg till";
-"reminders_sync.settings.completed.footer" = "Items that were already completed before syncing started normally stay where they are. Turn this on to copy them to the other list as completed, so checked-off items are known on both sides. A list with a long history can gain many completed items on the first sync.";
-"reminders_sync.settings.completed.header" = "Completed items";
-"reminders_sync.settings.completed.title" = "Include completed items";
+"reminders_sync.settings.completed.footer" = "Uppgifter som redan var avslutade innan synkroniseringen inleddes förblir normalt sett där de är. Aktivera den här funktionen för att kopiera dem till den andra listan som avslutade, så att avbockade uppgifter syns på båda sidor. En lista med en lång historik kan få många avslutade uppgifter vid den första synkroniseringen.";
+"reminders_sync.settings.completed.header" = "Färdiga objekt";
+"reminders_sync.settings.completed.title" = "Inkludera färdiga objekt";
 "reminders_sync.settings.conflicts.footer" = "Detta gäller endast vid tvåvägssynkronisering. Om samma objekt har redigerats i båda apparna sedan den senaste synkroniseringen behålls den version som kommer från den sida du väljer här.";
 "reminders_sync.settings.conflicts.header" = "Konflikter";
 "reminders_sync.settings.conflicts.title" = "Behåll ändringar från";
@@ -1658,7 +1658,7 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "settings.connection_section.client_certificate.remove_confirmation.message" = "Certifikatet kommer att tas bort från enheten. Du måste importera det igen för att använda mTLS-autentisering.";
 "settings.connection_section.client_certificate.remove_confirmation.remove" = "Ta bort";
 "settings.connection_section.client_certificate.remove_confirmation.title" = "Ta bort certifikat?";
-"settings.connection_section.cloud_link_overrides_external" = "When connecting via %@, the External URL will not be used. You do not need to configure one unless you want to disable it.";
+"settings.connection_section.cloud_link_overrides_external" = "Vid anslutning via %@, den externa URL:en kommer inte att används. Så länge du inte vill inaktivera den behöver du inte konfigurera det.";
 "settings.connection_section.cloud_overrides_external" = "Vid anslutning via Cloud används inte den externa URL:en. Du behöver inte konfigurera den så länge du inte vill inaktivera Cloud.";
 "settings.connection_section.cloudhook.check_reachability.reachable" = "Nåbar";
 "settings.connection_section.cloudhook.check_reachability.reachable_status_code" = "Nåbar (HTTP %li)";
@@ -1746,7 +1746,7 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "settings.connection_section.urls_how_it_works.active.header" = "Används just nu";
 "settings.connection_section.urls_how_it_works.active.none" = "Ingen URL kan användas med de nuvarande inställningarna";
 "settings.connection_section.urls_how_it_works.away.body" = "Om inget av de angivna nätverken stämmer överens används Home Assistant Cloud-URL:en om molntjänsten är aktiverad, och i övriga fall används den externa URL:en.";
-"settings.connection_section.urls_how_it_works.away.body_link" = "When no listed network matches, the %@ URL is used if it is turned on, and the external URL otherwise.";
+"settings.connection_section.urls_how_it_works.away.body_link" = "Om inget av de listade nätverken stämmer överens används URL:en %@ om den är aktiverad, annars används den externa URL:en.";
 "settings.connection_section.urls_how_it_works.away.title" = "Någon annanstans";
 "settings.connection_section.urls_how_it_works.background.body" = "Sensoruppdateringar, aviseringar och lokala push-meddelanden fortsätter att fungera även när appen är stängd. I bakgrunden delar iOS endast nätverksnamnet när platsåtkomst är inställd på ”Alltid” istället för ”När appen används”, så utan den känns ditt hemnätverk inte igen och anslutningarna sker på samma sätt som när du är borta.";
 "settings.connection_section.urls_how_it_works.background.title" = "När appen körs i bakgrunden";
@@ -1774,7 +1774,7 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "settings.connection_section.webhook.active.unavailable" = "Ingen URL tillgänglig";
 "settings.connection_section.webhook.endpoints.footer" = "Behandla dessa URL:er som känsliga. Den som har tillgång till dem kan skicka förfrågningar till den här mobilappens webhook.";
 "settings.connection_section.webhook.footer" = "Appen skickar uppdateringar om sensorer, position och annat till denna webhook. Home Assistant Cloud tillhandahåller en cloudhook som används när du är borta från hemmet. Utan den skapar appen istället webhook-URL:en utifrån den interna, fjärranslutna eller externa URL:en för denna server.";
-"settings.connection_section.webhook.footer_link" = "The app sends sensor, location and other updates to this webhook. %@ provides a cloudhook, which is used whenever you are away from home. Without it, the app builds the webhook URL from the internal, remote or external URL of this server instead.";
+"settings.connection_section.webhook.footer_link" = "Appen skickar sensor-, positions- och andra uppdateringar till denna webhook. %@ tillhandahåller en cloudhook som används när du befinner dig utanför hemmet. Utan den skapar appen istället webhook-URL:en utifrån den interna, fjärranslutna eller externa URL:en för denna server.";
 "settings.connection_section.webhook.in_use" = "Används";
 "settings.connection_section.webhook.title" = "Webhook";
 "settings.connection_section.websocket.status.authenticating" = "Autentiserar";
@@ -2027,8 +2027,8 @@ Importen ersätter alla kategorier som visas på den här skärmen, inklusive ap
 "settings.debugging.shake_disclaimer_optional.title" = "Skaka appen för att öppna felsökning";
 "settings.debugging.simulate_restored_device.alert_title" = "Simulate a restore from another device?";
 "settings.debugging.simulate_restored_device.confirm_button" = "Simulate Restore";
-"settings.debugging.simulate_restored_device.message" = "Marks every server as registered by another device, as if this app's data had been restored from a backup of another phone. The next time the app comes to the foreground, it asks whether to keep those registrations or set this device up as a new one. Nothing is sent to your servers until you choose.";
-"settings.debugging.simulate_restored_device.title" = "Simulate restore from another device";
+"settings.debugging.simulate_restored_device.message" = "Markerar varje server som registrerad av en annan enhet, som om appens data hade återställts från en säkerhetskopia på en annan telefon. Nästa gång appen aktiveras frågar den om du vill behålla dessa registreringar eller konfigurera den här enheten som en ny. Ingenting skickas till era servrar förrän du har gjort ditt val.";
+"settings.debugging.simulate_restored_device.title" = "Simulera återställning från en annan enhet";
 "settings.debugging.thread.footer" = "Kontrollera vilka Thread-autentiseringsuppgifter som finns i Apple Keychain. Du kan också importera i Home Assistant eller ta bort från Keychain.";
 "settings.debugging.title" = "Felsökning";
 "settings.debugging.web_view_empty_state_timeout.title" = "Tidsgräns för tomt tillstånd i webbvyn";
@@ -3070,7 +3070,7 @@ Ingen URL anses vara säker, men data från den här servern synkroniseras inte 
 "watch.settings.client_events.title" = "Loggar";
 "watch.settings.complications.empty" = "Inga komplikationer konfigurerade än.";
 "watch.settings.complications.footer" = "Hämtar varje komplikations aktuella värde direkt från Home Assistant. Detta kräver en nåbar server-URL (i det lokala nätverket eller en fjärr-/moln-URL).";
-"watch.settings.complications.footer_link" = "Fetches each complication's current value directly from Home Assistant. This needs a reachable server URL (local network or a remote/%@ URL).";
+"watch.settings.complications.footer_link" = "Hämtar varje komplikations aktuella värde direkt från Home Assistant. Detta kräver en tillgänglig server-URL (i det lokala nätverket eller en fjärr-URL/%@ -URL).";
 "watch.settings.complications.last_attempt" = "Senaste försöket: %@";
 "watch.settings.complications.list_footer" = "Tryck på en komplikation för att se när den senast uppdaterades och för att försöka igen.";
 "watch.settings.complications.never" = "Har ännu inte uppdaterats";
@@ -3150,7 +3150,7 @@ Ingen URL anses vara säker, men data från den här servern synkroniseras inte 
 "web_view.add_to.option.Deeplink.title" = "Djuplänk";
 "web_view.add_to.option.MacToolbar.title" = "Mac-verktygsfältet";
 "web_view.add_to.option.NfcTag.title" = "NFC-tagg";
-"web_view.add_to.option.WatchComplication.title" = "Watch Complication";
+"web_view.add_to.option.WatchComplication.title" = "Klockkomplikation";
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Kontrollera din anslutning eller försök igen senare. Om Home Assistant startas om kommer den att återanslutas efter uppstarten.";
 "web_view.empty_state.clean_cache_and_reload_button" = "Rensa cacheminnet och ladda om sidan";
@@ -3428,7 +3428,7 @@ Högerklicka på skrivbordet, välj Redigera widgetar, sök efter Home Assistant
 "widgets.todo_list.due_date.in_format" = "I %@";
 "widgets.todo_list.due_date.now" = "Nu";
 "widgets.todo_list.due_date.today" = "Idag";
-"widgets.todo_list.load_failed" = "Couldn't update. Tap refresh.";
+"widgets.todo_list.load_failed" = "Det gick inte att uppdatera. Tryck på ”Uppdatera”.";
 "widgets.todo_list.parameter.item_id" = "Artikel-ID";
 "widgets.todo_list.parameter.list" = "Lista";
 "widgets.todo_list.parameter.list_id" = "List-ID";
