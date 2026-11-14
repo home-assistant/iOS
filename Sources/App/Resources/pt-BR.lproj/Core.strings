@@ -124,7 +124,7 @@ Conclua a configuração seguindo as [instruções de configuração]({url}).";
 "component::improv_ble::config::abort::unknown" = "Erro inesperado";
 "component::improv_ble::config::error::unable_to_connect" = "O dispositivo não conseguiu se conectar à rede Wi-Fi. Verifique se o SSID e a senha estão corretos e tente novamente.";
 "component::improv_ble::config::flow_title" = "{name}";
-"component::improv_ble::config::progress::authorize" = "O dispositivo requer autorização. Pressione o botão de autorização ou consulte o manual do dispositivo para saber como proceder.";
+"component::improv_ble::config::progress::authorize" = "O dispositivo requer autorização. Pressione o botão de autorização dele ou consulte o manual do dispositivo para saber como proceder.";
 "component::improv_ble::config::progress::provisioning" = "O dispositivo está se conectando à rede Wi-Fi.";
 "component::improv_ble::config::step::bluetooth_confirm::description" = "Deseja configurar {name}?";
 "component::improv_ble::config::step::identify::description" = "O dispositivo está se identificando agora, por exemplo, piscando ou emitindo um bipe.";

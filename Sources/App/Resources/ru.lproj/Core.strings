@@ -253,7 +253,7 @@
 "component::sensor::title" = "Сенсор";
 "component::sfr_box::entity::sensor::dsl_training::state::idle" = "Бездействие";
 "component::shelly::entity::sensor::valve_status::state::closed" = "Закрыто";
-"component::shelly::selector::ble_scanner_mode::options::active" = "Активно";
+"component::shelly::selector::ble_scanner_mode::options::active" = "Активный (больше расходует заряд аккумулятора устройства, самые быстрые обновления)";
 "component::shelly::selector::ble_scanner_mode::options::disabled" = "Деактивировано";
 "component::siren::entity_component::_::state::off" = "Выключено";
 "component::siren::entity_component::_::state::on" = "Включено";

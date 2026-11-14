@@ -804,10 +804,10 @@
 "extensions.notification_content.error.request.other" = "Получен неожиданный (не 200) код состояния (%li)";
 "extensions.notification_content.error.request.webrtc_unavailable" = "Трансляция WebRTC недоступна";
 "extensions.notification_content.error_state.hide_details" = "Hide details";
-"extensions.notification_content.error_state.message" = "The stream or file could not be loaded. Check that it is reachable and try again.";
+"extensions.notification_content.error_state.message" = "Не удалось загрузить поток или файл. Убедитесь, что они доступны, и повторите попытку.";
 "extensions.notification_content.error_state.retry" = "Try again";
 "extensions.notification_content.error_state.show_details" = "Show details";
-"extensions.notification_content.error_state.title" = "Media unavailable";
+"extensions.notification_content.error_state.title" = "Медиа недоступны";
 "flight_greetings.empty_state.body" = "В данный момент вы не в сети. Ваш дом будет ждать вас по прибытии.";
 "flight_greetings.empty_state.configure_hint" = "Настроить приветствия в полете в настройках";
 "flight_greetings.empty_state.title" = "Удачного полёта";
@@ -1654,7 +1654,7 @@ Home Assistant — это приложение с открытым исходн�
 "settings.connection_section.client_certificate.import" = "Импорт сертификата";
 "settings.connection_section.client_certificate.import_error.title" = "Импорт не удался";
 "settings.connection_section.client_certificate.importing" = "Импорт...";
-"settings.connection_section.client_certificate.not_configured" = "Not configured";
+"settings.connection_section.client_certificate.not_configured" = "Не настроено";
 "settings.connection_section.client_certificate.password_prompt.import_button" = "Импорт";
 "settings.connection_section.client_certificate.password_prompt.message" = "Введите пароль для файла сертификата.";
 "settings.connection_section.client_certificate.password_prompt.placeholder" = "Пароль";
@@ -1779,7 +1779,7 @@ Home Assistant — это приложение с открытым исходн�
 "settings.connection_section.webhook.active.unavailable" = "No URL available";
 "settings.connection_section.webhook.endpoints.footer" = "Относитесь к этим URL-адресам с осторожностью. Любой, у кого они есть, может отправлять запросы на этот webhook мобильного приложения.";
 "settings.connection_section.webhook.footer" = "Приложение отправляет данные с датчиков, информацию о местоположении и другие обновления на этот webhook. Home Assistant Cloud предоставляет cloudhook, который используется, когда вы находитесь вне дома. Без него приложение формирует URL webhook на основе внутреннего, удаленного или внешнего URL этого сервера.";
-"settings.connection_section.webhook.footer_link" = "The app sends sensor, location and other updates to this webhook. %@ provides a cloudhook, which is used whenever you are away from home. Without it, the app builds the webhook URL from the internal, remote or external URL of this server instead.";
+"settings.connection_section.webhook.footer_link" = "Приложение отправляет данные с датчиков, информацию о местоположении и другие обновления на этот webhook. %@ — это cloudhook, который используется, когда вы находитесь вне дома. Без него приложение формирует URL webhook на основе внутреннего, удаленного или внешнего URL этого сервера.";
 "settings.connection_section.webhook.in_use" = "Используется";
 "settings.connection_section.webhook.title" = "Webhook";
 "settings.connection_section.websocket.status.authenticating" = "Аутентификация";
@@ -3073,7 +3073,7 @@ Home Assistant — это приложение с открытым исходн�
 "watch.settings.client_events.title" = "Журналы";
 "watch.settings.complications.empty" = "Расширения пока не настроены.";
 "watch.settings.complications.footer" = "Получает текущее значение каждого расширения напрямую из Home Assistant. Для этого нужен доступный URL-адрес сервера (в локальной сети или удаленный/облачный URL-адрес).";
-"watch.settings.complications.footer_link" = "Fetches each complication's current value directly from Home Assistant. This needs a reachable server URL (local network or a remote/%@ URL).";
+"watch.settings.complications.footer_link" = "Получает текущее значение каждого расширения напрямую из Home Assistant. Для этого нужен доступный URL-адрес сервера (в локальной сети или удаленный %@ URL-адрес).";
 "watch.settings.complications.last_attempt" = "Последняя попытка: %@";
 "watch.settings.complications.list_footer" = "Нажмите на расширение, чтобы узнать, когда оно обновлялось в последний раз, и повторить попытку.";
 "watch.settings.complications.never" = "Not yet updated";
@@ -3153,7 +3153,7 @@ Home Assistant — это приложение с открытым исходн�
 "web_view.add_to.option.Deeplink.title" = "Deeplink";
 "web_view.add_to.option.MacToolbar.title" = "Mac Toolbar";
 "web_view.add_to.option.NfcTag.title" = "NFC метка";
-"web_view.add_to.option.WatchComplication.title" = "Watch Complication";
+"web_view.add_to.option.WatchComplication.title" = "Расширение часов";
 "web_view.add_to.option.Widget.title" = "Виджет";
 "web_view.empty_state.body" = "Пожалуйста, проверьте ваше соединение или повторите попытку позже. Если Home Assistant перезагружается, соединение восстановится после его возвращения в сеть.";
 "web_view.empty_state.clean_cache_and_reload_button" = "Очистить кэш и перезагрузить";
@@ -3431,7 +3431,7 @@ Home Assistant — это приложение с открытым исходн�
 "widgets.todo_list.due_date.in_format" = "В %@";
 "widgets.todo_list.due_date.now" = "Сейчас";
 "widgets.todo_list.due_date.today" = "Сегодня";
-"widgets.todo_list.load_failed" = "Couldn't update. Tap refresh.";
+"widgets.todo_list.load_failed" = "Не удалось обновить. Нажмите для обновления.";
 "widgets.todo_list.parameter.item_id" = "Item ID";
 "widgets.todo_list.parameter.list" = "Список";
 "widgets.todo_list.parameter.list_id" = "Список ID";
