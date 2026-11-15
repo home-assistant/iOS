@@ -9,6 +9,7 @@ struct HALiveActivityLockScreenRouterView: View {
     @Environment(\.activityFamily) private var activityFamily
     let attributes: HALiveActivityAttributes
     let state: HALiveActivityAttributes.ContentState
+    let activityID: String?
 
     var body: some View {
         content
@@ -23,9 +24,9 @@ struct HALiveActivityLockScreenRouterView: View {
         case .small:
             HALiveActivityCompactView(attributes: attributes, state: state)
         case .medium:
-            HALockScreenView(attributes: attributes, state: state)
+            HALockScreenView(attributes: attributes, state: state, activityID: activityID)
         @unknown default:
-            HALockScreenView(attributes: attributes, state: state)
+            HALockScreenView(attributes: attributes, state: state, activityID: activityID)
         }
     }
 

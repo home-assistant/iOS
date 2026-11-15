@@ -940,6 +940,8 @@
 				Widgets/LiveActivity/HAExpandedContentView.swift,
 				Widgets/LiveActivity/HAExpandedTitleView.swift,
 				Widgets/LiveActivity/HAExpandedTrailingView.swift,
+				Widgets/LiveActivity/HALiveActivityActionButtons.swift,
+				Widgets/LiveActivity/HALiveActivityActionIntent.swift,
 				Widgets/LiveActivity/HALiveActivityCompactView.swift,
 				Widgets/LiveActivity/HALockScreenView.swift,
 				"Widgets/Lockscreen/Gauge/GaugeTypeAppEnum+DesignSystem.swift",

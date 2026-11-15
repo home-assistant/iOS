@@ -198,7 +198,8 @@ struct HandlerStartOrUpdateLiveActivity: NotificationCommandHandler {
             backgroundColor: backgroundColor,
             textColor: textColor,
             progressBarColor: progressBarColor,
-            progressBarDirection: progressBarDirection
+            progressBarDirection: progressBarDirection,
+            actions: HALiveActivityAction.notificationActions(payload["actions"])
         )
     }
 }

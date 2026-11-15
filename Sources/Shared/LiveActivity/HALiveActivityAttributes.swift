@@ -118,6 +118,9 @@ public struct HALiveActivityAttributes: ActivityAttributes {
         /// silently drop the whole update). Maps to `progress_bar_direction`.
         public var progressBarDirection: String?
 
+        /// Event buttons shown in the Lock Screen and expanded Dynamic Island presentations.
+        public private(set) var actions: [HALiveActivityAction]
+
         /// Recognised `progress_bar_direction` values.
         public enum ProgressBarDirection: String {
             case increasing
@@ -167,6 +170,7 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             case textColor = "text_color"
             case progressBarColor = "progress_bar_color"
             case progressBarDirection = "progress_bar_direction"
+            case actions
         }
 
         // MARK: - Init
@@ -186,7 +190,8 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             backgroundColor: String? = nil,
             textColor: String? = nil,
             progressBarColor: String? = nil,
-            progressBarDirection: String? = nil
+            progressBarDirection: String? = nil,
+            actions: [HALiveActivityAction] = []
         ) {
             self.title = title
             self.message = message
@@ -203,6 +208,7 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             self.textColor = textColor
             self.progressBarColor = progressBarColor
             self.progressBarDirection = progressBarDirection
+            self.actions = HALiveActivityAction.visibleActions(actions)
         }
 
         // MARK: - Codable
@@ -240,6 +246,8 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             self.textColor = try container.decodeIfPresent(String.self, forKey: .textColor)
             self.progressBarColor = try container.decodeIfPresent(String.self, forKey: .progressBarColor)
             self.progressBarDirection = try container.decodeIfPresent(String.self, forKey: .progressBarDirection)
+            let decodedActions = (try? container.decode([HALiveActivityAction].self, forKey: .actions)) ?? []
+            self.actions = HALiveActivityAction.visibleActions(decodedActions)
         }
 
         public func encode(to encoder: Encoder) throws {
@@ -263,6 +271,9 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             try container.encodeIfPresent(textColor, forKey: .textColor)
             try container.encodeIfPresent(progressBarColor, forKey: .progressBarColor)
             try container.encodeIfPresent(progressBarDirection, forKey: .progressBarDirection)
+            if !actions.isEmpty {
+                try container.encode(actions, forKey: .actions)
+            }
         }
 
         // HA may send progress/progress_max as a JSON float (e.g. 20.1234). ActivityKit decodes

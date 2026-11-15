@@ -10,6 +10,7 @@ import SwiftUI
 struct HAExpandedContentView: View {
     let attributes: HALiveActivityAttributes
     let state: HALiveActivityAttributes.ContentState
+    var activityID: String?
 
     var body: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spaces.oneAndHalf) {
@@ -20,6 +21,10 @@ struct HAExpandedContentView: View {
                 HAExpandedTrailingView(state: state)
             }
             HAExpandedBottomView(state: state)
+            if let activityID, !state.actions.isEmpty {
+                HALiveActivityActionButtons(activityID: activityID, actions: state.actions)
+                    .foregroundStyle(.white)
+            }
         }
         .padding([.horizontal, .bottom], DesignSystem.Spaces.one)
     }
