@@ -1,4 +1,5 @@
 #if os(iOS) && !targetEnvironment(macCatalyst)
+import CoreFoundation
 import Foundation
 
 /// An event-style action from the notification payload.
@@ -18,25 +19,50 @@ public struct HALiveActivityAction: Codable, Hashable, Identifiable, Sendable {
     public init(id: String, title: String, icon: String? = nil, showTitle: Bool? = nil) {
         self.id = id
         self.title = title
-        self.icon = icon
+        self.icon = icon.flatMap { $0.utf8.count <= 96 ? $0 : nil }
         self.showTitle = showTitle
     }
 
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        try self.init(
+            id: container.decode(String.self, forKey: .id),
+            title: container.decode(String.self, forKey: .title),
+            icon: try? container.decode(String.self, forKey: .icon),
+            showTitle: try? container.decode(Bool.self, forKey: .showTitle)
+        )
+    }
+
     public var systemImage: String? {
-        guard let icon, icon.hasPrefix("sfsymbols:"), icon.utf8.count <= 96 else { return nil }
+        guard let icon, icon.hasPrefix("sfsymbols:") else { return nil }
         let name = String(icon.dropFirst("sfsymbols:".count))
         return name.isEmpty ? nil : name
     }
 
     static func visibleActions(_ actions: [Self]) -> [Self] {
         var identifiers = Set<String>()
-        return Array(actions.filter { action in
-            !action.id.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && action.id.utf8.count <= 64 &&
-                action.id != "URI" && action.id != "REPLY" &&
-                !action.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && action.title.utf8
-                .count <= 96 &&
-                identifiers.insert(action.id).inserted
-        }.prefix(3))
+        var visible: [Self] = []
+        for action in actions {
+            guard !action.id.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+                  action.id.utf8.count <= 64,
+                  action.id != "URI", action.id != "REPLY",
+                  !action.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+                  action.title.utf8.count <= 96,
+                  identifiers.insert(action.id).inserted else { continue }
+            visible.append(action)
+            if visible.count == 3 { break }
+        }
+        return visible
+    }
+
+    static func decodeActions(from list: inout UnkeyedDecodingContainer) -> [Self] {
+        var actions: [Self] = []
+        while !list.isAtEnd, let decoder = try? list.superDecoder() {
+            if let action = try? Self(from: decoder) {
+                actions.append(action)
+            }
+        }
+        return visibleActions(actions)
     }
 
     static func notificationActions(_ value: Any?) -> [Self] {
@@ -47,8 +73,10 @@ public struct HALiveActivityAction: Codable, Hashable, Identifiable, Sendable {
                   let title = entry["title"] as? String,
                   entry["uri"] == nil,
                   (entry["behavior"] as? String)?.lowercased() != "textinput" else { return nil }
-            let icon = (entry["icon"] as? String).flatMap { $0.utf8.count <= 96 ? $0 : nil }
-            return Self(id: id, title: title, icon: icon, showTitle: entry["show_title"] as? Bool)
+            let showTitle = (entry["show_title"] as? NSNumber).flatMap {
+                CFGetTypeID($0) == CFBooleanGetTypeID() ? $0.boolValue : nil
+            }
+            return Self(id: id, title: title, icon: entry["icon"] as? String, showTitle: showTitle)
         }
     }
 }

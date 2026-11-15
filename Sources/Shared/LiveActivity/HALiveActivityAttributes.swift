@@ -211,6 +211,26 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             self.actions = HALiveActivityAction.visibleActions(actions)
         }
 
+        /// Keep updates from another server's matching tag from becoming actionable on this one.
+        /// ActivityKit also limits the combined encoded attributes and state to 4 KB.
+        func fittingActions(
+            for attributes: HALiveActivityAttributes,
+            from serverWebhookId: String?
+        ) -> Self {
+            guard !actions.isEmpty else { return self }
+            var state = self
+            guard let serverWebhookId, !serverWebhookId.isEmpty, serverWebhookId == attributes.serverWebhookId else {
+                state.actions = []
+                return state
+            }
+            let encoder = JSONEncoder()
+            let byteBudget = 4096 - ((try? encoder.encode(attributes).count) ?? 4096)
+            while !state.actions.isEmpty, ((try? encoder.encode(state).count) ?? 4097) > byteBudget {
+                state.actions.removeLast()
+            }
+            return state
+        }
+
         // MARK: - Codable
 
         // ActivityKit decodes content-state with the default JSONDecoder, which
@@ -246,8 +266,11 @@ public struct HALiveActivityAttributes: ActivityAttributes {
             self.textColor = try container.decodeIfPresent(String.self, forKey: .textColor)
             self.progressBarColor = try container.decodeIfPresent(String.self, forKey: .progressBarColor)
             self.progressBarDirection = try container.decodeIfPresent(String.self, forKey: .progressBarDirection)
-            let decodedActions = (try? container.decode([HALiveActivityAction].self, forKey: .actions)) ?? []
-            self.actions = HALiveActivityAction.visibleActions(decodedActions)
+            if var list = try? container.nestedUnkeyedContainer(forKey: .actions) {
+                self.actions = HALiveActivityAction.decodeActions(from: &list)
+            } else {
+                self.actions = []
+            }
         }
 
         public func encode(to encoder: Encoder) throws {

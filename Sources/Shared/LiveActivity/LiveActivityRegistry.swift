@@ -54,21 +54,23 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
     struct Update {
         let state: HALiveActivityAttributes.ContentState
         let relevanceScore: Double?
+        let serverWebhookId: String?
 
         func inheriting(_ previous: Update?) -> Update {
             guard relevanceScore == nil, let inherited = previous?.relevanceScore else { return self }
-            return Update(state: state, relevanceScore: inherited)
+            return Update(state: state, relevanceScore: inherited, serverWebhookId: serverWebhookId)
         }
 
         func content(
-            after previous: ActivityContent<HALiveActivityAttributes.ContentState>?
+            after previous: ActivityContent<HALiveActivityAttributes.ContentState>?,
+            attributes: HALiveActivityAttributes
         ) -> ActivityContent<HALiveActivityAttributes.ContentState> {
             var carried = state
             if let previous {
                 carried = LiveActivityRegistry.carryForwardChronometerAnchor(previous: previous.state, new: carried)
             }
             return ActivityContent(
-                state: carried,
+                state: carried.fittingActions(for: attributes, from: serverWebhookId),
                 staleDate: LiveActivityRegistry.staleDate(for: carried),
                 relevanceScore: relevanceScore ?? previous?.relevanceScore ?? kLiveActivityDefaultRelevanceScore
             )
@@ -140,7 +142,9 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         entries[id] = entry
         if let latestState = pending {
             // A second push arrived while Activity.request() was in-flight — apply the newer state now.
-            await entry.activity.update(latestState.content(after: entry.activity.content))
+            await entry.activity.update(
+                latestState.content(after: entry.activity.content, attributes: entry.activity.attributes)
+            )
         }
     }
 
@@ -169,9 +173,11 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         relevanceScore: Double?,
         alert: Bool
     ) async throws -> Bool {
+        let update = Update(state: state, relevanceScore: relevanceScore, serverWebhookId: serverWebhookId)
+
         // UPDATE path — activity already running with this tag
         if let existing = entries[tag] {
-            let content = Update(state: state, relevanceScore: relevanceScore).content(after: existing.activity.content)
+            let content = update.content(after: existing.activity.content, attributes: existing.activity.attributes)
             await existing.activity.update(
                 content,
                 alertConfiguration: Self.alertConfiguration(alert, title: title, message: state.message)
@@ -182,7 +188,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         // Also check system list in case we lost track after crash/relaunch
         if let live = Activity<HALiveActivityAttributes>.activities
             .first(where: { $0.attributes.tag == tag }) {
-            let content = Update(state: state, relevanceScore: relevanceScore).content(after: live.content)
+            let content = update.content(after: live.content, attributes: live.attributes)
             await live.update(
                 content,
                 alertConfiguration: Self.alertConfiguration(alert, title: title, message: state.message)
@@ -196,7 +202,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         guard reserve(id: tag) else {
             if reserved.contains(tag) {
                 // Activity.request() is in-flight — save this state so confirmReservation applies it.
-                pendingState[tag] = Update(state: state, relevanceScore: relevanceScore).inheriting(pendingState[tag])
+                pendingState[tag] = update.inheriting(pendingState[tag])
                 Current.Log.info(
                     "LiveActivityRegistry: duplicate start for tag \(tag), will apply latest state on confirm"
                 )
@@ -219,7 +225,7 @@ public actor LiveActivityRegistry: LiveActivityRegistryProtocol {
         let activity: Activity<HALiveActivityAttributes>
 
         do {
-            let content = Update(state: state, relevanceScore: relevanceScore).content(after: nil)
+            let content = update.content(after: nil, attributes: attributes)
             activity = try Activity<HALiveActivityAttributes>.request(
                 attributes: attributes,
                 content: content,

@@ -26,11 +26,22 @@ struct HALiveActivityActionIntent: LiveActivityIntent {
     func perform() async throws -> some IntentResult {
         await Current.connectivity.refreshNetworkInformation()
         guard let activity = Activity<HALiveActivityAttributes>.activities.first(where: { $0.id == activityID }),
-              [.active, .stale].contains(activity.activityState),
-              activity.content.state.actions.contains(where: { $0.id == actionID }) else {
+              [.active, .stale].contains(activity.activityState) else {
             throw ShortcutAppIntentError(L10n.Widgets.Custom.IntentPerformActionFailed.body)
         }
-        guard let webhookID = activity.attributes.serverWebhookId,
+        try await sendAction(attributes: activity.attributes, state: activity.content.state)
+        return .result()
+    }
+
+    @MainActor
+    func sendAction(
+        attributes: HALiveActivityAttributes,
+        state: HALiveActivityAttributes.ContentState
+    ) async throws {
+        guard state.actions.contains(where: { $0.id == actionID }) else {
+            throw ShortcutAppIntentError(L10n.Widgets.Custom.IntentPerformActionFailed.body)
+        }
+        guard let webhookID = attributes.serverWebhookId,
               let server = Current.servers.server(forWebhookID: webhookID),
               let api = Current.api(for: server) else {
             throw ShortcutAppIntentError(L10n.AppIntents.Error.noServer)
@@ -39,11 +50,10 @@ struct HALiveActivityActionIntent: LiveActivityIntent {
         let event = api.mobileAppNotificationActionEvent(
             identifier: actionID,
             category: nil,
-            actionData: ["tag": activity.attributes.tag],
+            actionData: ["tag": attributes.tag],
             textInput: nil
         )
         try await api.CreateEvent(eventType: event.eventType, eventData: event.eventData).async()
-        return .result()
     }
 }
 #endif
