@@ -13,14 +13,17 @@ struct HALiveActivityActionButtons: View {
     var body: some View {
         HStack(spacing: DesignSystem.Spaces.one) {
             ForEach(actions) { action in
+                let symbol = action.systemImage.flatMap { UIImage(systemName: $0) == nil ? nil : $0 }
                 Button(intent: HALiveActivityActionIntent(activityID: activityID, actionID: action.id)) {
                     HStack(spacing: DesignSystem.Spaces.half) {
-                        if let symbol = action.systemImage, UIImage(systemName: symbol) != nil {
+                        if let symbol {
                             Image(systemSymbol: SFSymbol(rawValue: symbol))
                                 .accessibilityHidden(true)
                         }
-                        Text(verbatim: action.title)
-                            .lineLimit(1)
+                        if action.showTitle != false || symbol == nil {
+                            Text(verbatim: action.title)
+                                .lineLimit(1)
+                        }
                     }
                     .font(.subheadline.weight(.semibold))
                     .frame(maxWidth: .infinity, minHeight: 44)
@@ -28,6 +31,7 @@ struct HALiveActivityActionButtons: View {
                     .contentShape(Capsule())
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel(Text(verbatim: action.title))
             }
         }
     }

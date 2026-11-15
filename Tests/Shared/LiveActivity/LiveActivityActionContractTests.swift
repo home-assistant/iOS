@@ -12,7 +12,7 @@ final class LiveActivityActionContractTests: XCTestCase {
                 "live_update": true,
                 "tag": "music",
                 "actions": [
-                    ["action": "PLAY", "title": "Play", "icon": "sfsymbols:play.fill"],
+                    ["action": "PLAY", "title": "Play", "icon": "sfsymbols:play.fill", "show_title": false],
                     ["action": "REPLY", "title": "Reply"],
                     ["action": "OPEN", "title": "Link", "uri": "/lovelace"],
                     ["action": "TEXT", "title": "Text", "behavior": "textInput"],
@@ -27,7 +27,9 @@ final class LiveActivityActionContractTests: XCTestCase {
         let state = HandlerStartOrUpdateLiveActivity.contentState(from: payload)
         XCTAssertEqual(state.actions.map(\.id), ["PLAY", "PAUSE", "NEXT"])
         XCTAssertEqual(state.actions.first?.systemImage, "play.fill")
+        XCTAssertEqual(state.actions.first?.showTitle, false)
         XCTAssertNil(state.actions.last?.systemImage)
+        XCTAssertNil(state.actions.last?.showTitle)
 
         let encoded = try JSONEncoder().encode(state)
         let decoded = try JSONDecoder().decode(HALiveActivityAttributes.ContentState.self, from: encoded)

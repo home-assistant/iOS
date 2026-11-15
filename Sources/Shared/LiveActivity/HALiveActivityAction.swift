@@ -6,17 +6,20 @@ public struct HALiveActivityAction: Codable, Hashable, Identifiable, Sendable {
     public let id: String
     public let title: String
     public let icon: String?
+    public let showTitle: Bool?
 
     enum CodingKeys: String, CodingKey {
         case id = "action"
         case title
         case icon
+        case showTitle = "show_title"
     }
 
-    public init(id: String, title: String, icon: String? = nil) {
+    public init(id: String, title: String, icon: String? = nil, showTitle: Bool? = nil) {
         self.id = id
         self.title = title
         self.icon = icon
+        self.showTitle = showTitle
     }
 
     public var systemImage: String? {
@@ -45,7 +48,7 @@ public struct HALiveActivityAction: Codable, Hashable, Identifiable, Sendable {
                   entry["uri"] == nil,
                   (entry["behavior"] as? String)?.lowercased() != "textinput" else { return nil }
             let icon = (entry["icon"] as? String).flatMap { $0.utf8.count <= 96 ? $0 : nil }
-            return Self(id: id, title: title, icon: icon)
+            return Self(id: id, title: title, icon: icon, showTitle: entry["show_title"] as? Bool)
         }
     }
 }
