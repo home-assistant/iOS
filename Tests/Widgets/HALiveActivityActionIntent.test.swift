@@ -2,6 +2,7 @@
 @testable import HomeAssistant
 
 import Foundation
+import os
 import PromiseKit
 @testable import Shared
 import SharedTesting
@@ -89,10 +90,15 @@ struct HALiveActivityActionIntentTests {
     }
 
     private final class RecordingWebhooks: WebhookManager {
-        private(set) var sent: [(server: Server, request: WebhookRequest)] = []
+        private let requests = OSAllocatedUnfairLock(
+            uncheckedState: [(server: Server, request: WebhookRequest)]()
+        )
+        var sent: [(server: Server, request: WebhookRequest)] {
+            requests.withLockUnchecked { $0 }
+        }
 
         override func sendEphemeral(server: Server, request: WebhookRequest) -> Promise<Void> {
-            sent.append((server, request))
+            requests.withLockUnchecked { $0.append((server, request)) }
             return .value(())
         }
     }

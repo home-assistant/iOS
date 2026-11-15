@@ -14,6 +14,8 @@ public struct HALiveActivityAction: Codable, Hashable, Identifiable, Sendable {
         case title
         case icon
         case showTitle = "show_title"
+        case uri
+        case behavior
     }
 
     public init(id: String, title: String, icon: String? = nil, showTitle: Bool? = nil) {
@@ -25,12 +27,28 @@ public struct HALiveActivityAction: Codable, Hashable, Identifiable, Sendable {
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
+        let behavior = try? container.decode(String.self, forKey: .behavior)
+        guard !container.contains(.uri), behavior?.lowercased() != "textinput" else {
+            throw DecodingError.dataCorruptedError(
+                forKey: .id,
+                in: container,
+                debugDescription: "Live Activity buttons support event actions only"
+            )
+        }
         try self.init(
             id: container.decode(String.self, forKey: .id),
             title: container.decode(String.self, forKey: .title),
             icon: try? container.decode(String.self, forKey: .icon),
             showTitle: try? container.decode(Bool.self, forKey: .showTitle)
         )
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(title, forKey: .title)
+        try container.encodeIfPresent(icon, forKey: .icon)
+        try container.encodeIfPresent(showTitle, forKey: .showTitle)
     }
 
     public var systemImage: String? {

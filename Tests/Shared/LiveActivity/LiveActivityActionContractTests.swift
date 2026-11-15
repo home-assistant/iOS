@@ -44,6 +44,9 @@ final class LiveActivityActionContractTests: XCTestCase {
           "actions": [
             null,
             {"action":"MISSING_TITLE"},
+            {"action":"OPEN","title":"Open","uri":"/lovelace"},
+            {"action":"NO_URI","title":"Open","uri":null},
+            {"action":"INPUT","title":"Reply","behavior":"textInput"},
             {"action":"PLAY","title":"Play","show_title":false},
             {"action":"PLAY","title":"Duplicate"},
             {"action":"REPLY","title":"Reply"},
