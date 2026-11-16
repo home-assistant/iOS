@@ -72,16 +72,6 @@ final class SensorPermissionsViewModel: ObservableObject {
     }
 
     func settingsDestination(for permission: SensorPermission) -> OpenSettingsDestination {
-        switch permission {
-        case .location: return .location
-        case .notification: return .notification
-        case .motion: return .motion
-        case .focus: return .focus
-        case .camera: return .camera
-        case .microphone: return .microphone
-        case .speech: return .speech
-        case .bluetooth: return .bluetooth
-        case .localNetwork: return .localNetwork
-        }
+        permission.settingsDestination
     }
 }

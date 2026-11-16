@@ -65,7 +65,11 @@ struct ServersListView: View {
                 L10n.Settings.ConnectionSection.DeleteServer.title,
                 isPresented: Binding(
                     get: { serverPendingDeletion?.identifier == server.identifier },
-                    set: { if !$0 { serverPendingDeletion = nil } }
+                    set: {
+                        if !$0 {
+                            serverPendingDeletion = nil
+                        }
+                    }
                 ),
                 titleVisibility: .visible
             ) {

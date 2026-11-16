@@ -19,6 +19,7 @@ fastlane_version '2.137.0'
 default_platform :ios
 
 # Import modular lane files
+import './lanes/account.rb'
 import './lanes/setup.rb'
 import './lanes/quality.rb'
 import './lanes/provisioning.rb'

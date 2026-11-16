@@ -286,7 +286,7 @@ public final class ClientCertificateManager {
     ///
     /// Certs are serialized in their original order so the chain can be reconstructed identically
     /// on retrieval, regardless of keychain internals.
-    private func storeIntermediateCertificates(_ certs: [SecCertificate], for identifier: String) {
+    func storeIntermediateCertificates(_ certs: [SecCertificate], for identifier: String) {
         // Always delete the existing entry first so re-imports start clean.
         deleteIntermediateCertificates(for: identifier)
 
@@ -317,7 +317,7 @@ public final class ClientCertificateManager {
     }
 
     /// Retrieve the ordered intermediate certificates previously stored for this identity.
-    private func retrieveIntermediateCertificates(for identifier: String) -> [SecCertificate] {
+    func retrieveIntermediateCertificates(for identifier: String) -> [SecCertificate] {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: Self.chainServiceKey,

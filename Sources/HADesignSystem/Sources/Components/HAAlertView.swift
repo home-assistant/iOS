@@ -17,8 +17,7 @@ public struct HAAlertView<Content: View, Action: View>: View {
     private let action: Action
 
     /// - Parameters:
-    ///   - title: Shown in bold above the message. Without one the icon centres on the message,
-    ///     matching `ha-alert`'s `.icon.no-title`.
+    ///   - title: Shown in bold above the message.
     ///   - icon: Overrides the icon ``HAAlertType`` would supply, for `ha-alert`'s `icon` slot.
     ///   - narrow: Stacks the action under the message instead of beside it, for tight columns.
     ///   - onDismiss: Adds a close button. The frontend fires `alert-dismissed-clicked` and leaves
@@ -52,7 +51,7 @@ public struct HAAlertView<Content: View, Action: View>: View {
     }
 
     public var body: some View {
-        HStack(alignment: title == nil ? .center : .top, spacing: DesignSystem.Spaces.one) {
+        HStack(alignment: .top, spacing: DesignSystem.Spaces.one) {
             MaterialDesignIconsImage(icon: icon ?? alertType.icon, size: 24)
                 .foregroundStyle(alertType.color)
             messageAndActionLayout {
@@ -83,9 +82,9 @@ public struct HAAlertView<Content: View, Action: View>: View {
                 }
             }
         }
-        .padding(DesignSystem.Spaces.one)
+        .padding(DesignSystem.Spaces.two)
         .background(alertType.color.opacity(0.12))
-        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.half))
+        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.one))
         .accessibilityElement(children: .contain)
     }
 }

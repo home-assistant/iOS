@@ -10,6 +10,7 @@ struct SettingsView: View {
     @State private var macSidebarSelection: MacSettingsSidebarSelection?
     @State private var showAbout = false
     @State private var whatsNewRelease: WhatsNewRelease?
+    @State private var showsMigrationAnnouncement = false
     @State private var testFlightMessage: TestFlightMessage?
     @State private var isShowingTranslationKeys = prefs.bool(forKey: "showTranslationKeys")
     @State private var searchText = ""
@@ -36,7 +37,6 @@ struct SettingsView: View {
 
     // MARK: - macOS Split View
 
-    @ViewBuilder
     private var macOSView: some View {
         // Use navigation view since navigation stack has bugs on Mac Catalyst
         // such as no back buttons for navigated views
@@ -145,6 +145,16 @@ struct SettingsView: View {
                 // Settings items grouped by user objective
                 settingsSections(SettingsSection.groupsAboveTrailingRows, matching: nil)
 
+                if AppMigrationAnnouncement.isRelevant {
+                    Section {
+                        Button {
+                            showsMigrationAnnouncement = true
+                        } label: {
+                            settingsItemLabel(.transferToNewApp)
+                        }
+                    }
+                }
+
                 if let latestRelease = WhatsNewEngine().latestRelease() {
                     // What's New
                     Section {
@@ -214,6 +224,9 @@ struct SettingsView: View {
             NavigationStack {
                 aboutViewContent
             }
+        }
+        .sheet(isPresented: $showsMigrationAnnouncement) {
+            AppMigrationAnnouncementView { AppMigrationAnnouncement.markSeen() }
         }
         .sheet(item: $whatsNewRelease) { release in
             WhatsNewView(release: release) {
@@ -336,7 +349,6 @@ struct SettingsView: View {
         }
     }
 
-    @ViewBuilder
     private func settingsSections(_ sections: [SettingsSection], matching searchQuery: String?) -> some View {
         ForEach(sections, id: \.self) { section in
             let items = searchQuery.map { section.items(matching: $0) } ?? section.items

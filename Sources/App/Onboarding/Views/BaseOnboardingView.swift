@@ -30,6 +30,8 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View, Keybo
     private let secondaryActionTitle: String?
     private let secondaryAction: (() -> Void)?
     private let secondaryActionIdentifier: String?
+    private let secondaryActionConfirmation: BaseOnboardingConfirmation?
+    @State private var showsSecondaryConfirmation = false
 
     // Layout tuning
     private let verticalSpacing: CGFloat
@@ -51,6 +53,7 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View, Keybo
         secondaryActionTitle: String? = nil,
         secondaryAction: (() -> Void)? = nil,
         secondaryActionIdentifier: String? = nil,
+        secondaryActionConfirmation: BaseOnboardingConfirmation? = nil,
         illustrationTopPadding: CGFloat = DesignSystem.Spaces.four,
         verticalSpacing: CGFloat = DesignSystem.Spaces.three
     ) {
@@ -65,6 +68,7 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View, Keybo
         self.secondaryActionTitle = secondaryActionTitle
         self.secondaryAction = secondaryAction
         self.secondaryActionIdentifier = secondaryActionIdentifier
+        self.secondaryActionConfirmation = secondaryActionConfirmation
         self.verticalSpacing = verticalSpacing
     }
 
@@ -80,6 +84,7 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View, Keybo
         secondaryActionTitle: String? = nil,
         secondaryAction: (() -> Void)? = nil,
         secondaryActionIdentifier: String? = nil,
+        secondaryActionConfirmation: BaseOnboardingConfirmation? = nil,
         illustrationTopPadding: CGFloat = DesignSystem.Spaces.four,
         verticalSpacing: CGFloat = DesignSystem.Spaces.three
     ) where Content == EmptyView {
@@ -94,6 +99,7 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View, Keybo
         self.secondaryActionTitle = secondaryActionTitle
         self.secondaryAction = secondaryAction
         self.secondaryActionIdentifier = secondaryActionIdentifier
+        self.secondaryActionConfirmation = secondaryActionConfirmation
         self.verticalSpacing = verticalSpacing
     }
 
@@ -180,12 +186,35 @@ public struct BaseOnboardingView<Illustration: View, Content: View>: View, Keybo
             .accessibilityIdentifier(primaryActionIdentifier ?? "")
 
             if let secondaryActionTitle, let secondaryAction {
-                Button(action: secondaryAction) {
+                Button {
+                    if secondaryActionConfirmation != nil {
+                        showsSecondaryConfirmation = true
+                    } else {
+                        secondaryAction()
+                    }
+                } label: {
                     Text(secondaryActionTitle)
                 }
                 .buttonStyle(.secondaryButton)
                 .tint(Color.haPrimary)
                 .accessibilityIdentifier(secondaryActionIdentifier ?? "")
+                .confirmationDialog(
+                    secondaryActionConfirmation?.title ?? "",
+                    isPresented: $showsSecondaryConfirmation,
+                    titleVisibility: .visible
+                ) {
+                    if let secondaryActionConfirmation {
+                        Button(
+                            secondaryActionConfirmation.confirmTitle,
+                            role: secondaryActionConfirmation.confirmRole
+                        ) {
+                            secondaryActionConfirmation.action()
+                        }
+                        .accessibilityIdentifier(secondaryActionConfirmation.confirmIdentifier ?? "")
+                    }
+                } message: {
+                    Text(secondaryActionConfirmation?.message ?? "")
+                }
             }
         }
         .padding(.bottom, Current.isCatalyst ? DesignSystem.Spaces.two : DesignSystem.Spaces.one)

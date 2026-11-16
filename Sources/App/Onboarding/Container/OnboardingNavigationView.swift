@@ -15,7 +15,7 @@ enum OnboardingStyle: Hashable {
 }
 
 enum OnboardingNavigation {
-    public static var requiredOnboardingStyle: OnboardingStyle? {
+    static var requiredOnboardingStyle: OnboardingStyle? {
         if Current.servers.all.isEmpty {
             return .required
         } else {
@@ -31,8 +31,9 @@ struct OnboardingNavigationView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject public var viewModel = OnboardingNavigationViewModel()
     @StateObject private var presenter: OnboardingAuthPresenter
+    @ObservedObject private var migrationCoordinator = AppMigrationCoordinator.shared
 
-    public let onboardingStyle: OnboardingStyle
+    let onboardingStyle: OnboardingStyle
     private let prefillURL: URL?
     private let shouldDismissOnSuccess: Bool
 
@@ -78,16 +79,39 @@ struct OnboardingNavigationView: View {
                 closeOnboarding()
             }
         }
+        .onChange(of: migrationCoordinator.importState) { newValue in
+            if newValue != nil, !presenter.path.contains(.migration) {
+                presenter.push(.migration)
+            }
+        }
+        .onAppear {
+            if migrationCoordinator.importState != nil, !presenter.path.contains(.migration) {
+                presenter.push(.migration)
+            }
+        }
     }
 
     @ViewBuilder
     private var root: some View {
         switch onboardingStyle {
         case .initial, .required:
-            OnboardingWelcomeView(continueAction: { presenter.push(.serversList) })
+            if AppMigrationRole.allowsOnboarding {
+                OnboardingWelcomeView(
+                    continueAction: { presenter.push(.serversList) },
+                    transferAction: migrationCoordinator.isPreviousAppInstalled ? { presenter.push(.migration) } : nil
+                )
+            } else {
+                AppMigrationNoServersView()
+            }
         case .secondary:
-            serversList
-                .navigationTitle(L10n.Settings.ConnectionSection.addServer)
+            if AppMigrationRole.allowsOnboarding {
+                serversList
+                    .navigationTitle(L10n.Settings.ConnectionSection.addServer)
+            } else {
+                // The previous app adds no servers any more: it explains the new app and offers to move
+                // the existing setup there instead.
+                AppMigrationAnnouncementView { AppMigrationAnnouncement.markSeen() }
+            }
         }
     }
 
@@ -127,6 +151,11 @@ struct OnboardingNavigationView: View {
                 error: context.error,
                 showSettingsEntry: false,
                 expandMoreDetails: true
+            )
+        case .migration:
+            AppMigrationFlowView(
+                skipAction: { presenter.popToRoot() },
+                finishAction: { finishFlow() }
             )
         case let .serverIdentity(request):
             // Mac Catalyst only; the user resolves the step through the page's own buttons.

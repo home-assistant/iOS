@@ -8,13 +8,13 @@ lane :download_provisioning_profiles do
 
   # rubocop:disable Layout/LineLength
   # Disabled until sigh can handle Apple Distribution certs again
-  # sh('fastlane', 'sigh', 'repair', '--username', ENV.fetch('FASTLANE_USER', nil), '--output_path', '../Configuration/Provisioning')
-  sh('fastlane', 'sigh', 'download_all', '--username', ENV.fetch('FASTLANE_USER', nil), '--output_path', '../Configuration/Provisioning')
+  # sh('fastlane', 'sigh', 'repair', '--username', ENV.fetch('FASTLANE_USER', nil), '--output_path', account_provisioning_directory)
+  sh('fastlane', 'sigh', 'download_all', '--username', ENV.fetch('FASTLANE_USER', nil), '--output_path', account_provisioning_directory)
   # rubocop:enable Layout/LineLength
 end
 
 lane :import_provisioning_profiles do
-  directory = '../Configuration/Provisioning'
+  directory = account_provisioning_directory
 
   Dir.children(directory).each do |file|
     next if file.start_with?('.')
