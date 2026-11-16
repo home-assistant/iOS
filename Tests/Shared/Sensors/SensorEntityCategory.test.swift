@@ -189,4 +189,39 @@ struct SensorEntityCategoryTests {
         #expect(payload["entity_category"] as? String == "diagnostic")
         #expect(payload["state"] as? String == "unavailable")
     }
+
+    @Test("A redacted sensor keeps what Home Assistant would otherwise take as removed")
+    func redactedSensorsKeepClassesAndUnit() {
+        let sensor = WebhookSensor(
+            name: "Pressure",
+            uniqueID: WebhookSensorId.pressure.rawValue,
+            icon: "mdi:gauge",
+            deviceClass: .pressure,
+            state: 1013.25,
+            unit: "hPa"
+        )
+        sensor.StateClass = .measurement
+
+        let payload = WebhookSensor(redacting: sensor).toJSON()
+        #expect(payload["device_class"] as? String == "pressure")
+        #expect(payload["unit_of_measurement"] as? String == "hPa")
+        #expect(payload["state_class"] as? String == "measurement")
+        #expect(payload["state"] as? String == "unavailable")
+    }
+
+    @Test("A sensor awaiting permission is registered with its classes and unit")
+    func sensorsAwaitingPermissionCarryClassesAndUnit() {
+        let payload = WebhookSensor(
+            awaitingPermissionNamed: "Pressure",
+            uniqueID: WebhookSensorId.pressure.rawValue,
+            deviceClass: .pressure,
+            unit: "hPa",
+            stateClass: .measurement
+        ).toJSON()
+
+        #expect(payload["device_class"] as? String == "pressure")
+        #expect(payload["unit_of_measurement"] as? String == "hPa")
+        #expect(payload["state_class"] as? String == "measurement")
+        #expect(payload["state"] as? String == "unavailable")
+    }
 }
