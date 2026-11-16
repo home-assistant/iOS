@@ -12,6 +12,9 @@ import WidgetKit
 struct HALockScreenView: View {
     let attributes: HALiveActivityAttributes
     let state: HALiveActivityAttributes.ContentState
+    var activityID: String?
+
+    private var showsActions: Bool { activityID != nil && !state.actions.isEmpty }
 
     /// Icon size for the MDI icon in the header row.
     private static let iconSize: CGFloat = 28
@@ -21,7 +24,7 @@ struct HALockScreenView: View {
     private static let trailingValueMinimumScaleFactor: CGFloat = 0.7
 
     var body: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spaces.oneAndHalf) {
+        VStack(alignment: .leading, spacing: showsActions ? DesignSystem.Spaces.one : DesignSystem.Spaces.oneAndHalf) {
             HStack(alignment: .top, spacing: DesignSystem.Spaces.oneAndHalf) {
                 iconContainer
 
@@ -63,9 +66,14 @@ struct HALockScreenView: View {
                     direction: state.resolvedProgressBarDirection
                 )
             }
+
+            if let activityID, showsActions {
+                HALiveActivityActionButtons(activityID: activityID, actions: state.actions)
+                    .foregroundStyle(primaryTextColor)
+            }
         }
         .padding(.horizontal, DesignSystem.Spaces.two)
-        .padding(.vertical, DesignSystem.Spaces.two)
+        .padding(.vertical, showsActions ? DesignSystem.Spaces.one : DesignSystem.Spaces.two)
     }
 
     // MARK: - Sub-views

@@ -3698,6 +3698,14 @@ public enum L10n {
       /// Frequent Updates
       public static var title: String { return L10n.tr("Localizable", "live_activity.frequent_updates.title") }
     }
+    public enum PerformAction {
+      /// Action ID
+      public static var actionId: String { return L10n.tr("Localizable", "live_activity.perform_action.action_id") }
+      /// Live Activity ID
+      public static var activityId: String { return L10n.tr("Localizable", "live_activity.perform_action.activity_id") }
+      /// Perform Live Activity Action
+      public static var title: String { return L10n.tr("Localizable", "live_activity.perform_action.title") }
+    }
     public enum Privacy {
       /// Live Activity content is visible on your Lock Screen and Dynamic Island without Face ID or Touch ID. Choose what you display carefully.
       public static var message: String { return L10n.tr("Localizable", "live_activity.privacy.message") }

@@ -8,12 +8,27 @@ import WidgetKit
 struct HALiveActivityConfiguration: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: HALiveActivityAttributes.self) { context in
-            HALockScreenView(attributes: context.attributes, state: context.state)
-                .haLiveActivityLockScreenChrome(attributes: context.attributes, state: context.state)
+            HALockScreenView(
+                attributes: context.attributes,
+                state: context.state,
+                activityID: context.actionActivityID
+            )
+            .haLiveActivityLockScreenChrome(attributes: context.attributes, state: context.state)
         } dynamicIsland: { context in
-            makeHADynamicIsland(attributes: context.attributes, state: context.state)
-                .widgetURL(haLiveActivityTapURL(attributes: context.attributes, state: context.state))
+            makeHADynamicIsland(
+                attributes: context.attributes,
+                state: context.state,
+                activityID: context.actionActivityID
+            )
+            .widgetURL(haLiveActivityTapURL(attributes: context.attributes, state: context.state))
         }
+    }
+}
+
+@available(iOS 17.2, *)
+extension ActivityViewContext where Attributes == HALiveActivityAttributes {
+    var actionActivityID: String? {
+        attributes.serverWebhookId?.isEmpty == false ? activityID : nil
     }
 }
 

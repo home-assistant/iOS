@@ -679,6 +679,8 @@ final class LiveActivityRegistryChronometerAnchorTests: XCTestCase {
 
 @available(iOS 17.2, *)
 final class LiveActivityRegistryUpdateTests: XCTestCase {
+    private let attributes = HALiveActivityAttributes(tag: "test", title: "Test")
+
     private func state(message: String = "m") -> HALiveActivityAttributes.ContentState {
         HandlerStartOrUpdateLiveActivity.contentState(from: ["message": message])
     }
@@ -688,23 +690,29 @@ final class LiveActivityRegistryUpdateTests: XCTestCase {
     }
 
     func testContent_noScoreNoPrevious_usesDefaultScore() {
-        let content = LiveActivityRegistry.Update(state: state(), relevanceScore: nil).content(after: nil)
+        let content = LiveActivityRegistry.Update(state: state(), relevanceScore: nil, serverWebhookId: nil).content(
+            after: nil,
+            attributes: attributes
+        )
         XCTAssertEqual(content.relevanceScore, 0.5)
         XCTAssertEqual(content.state.message, "m")
     }
 
     func testContent_noScore_keepsPreviousScore() {
-        let update = LiveActivityRegistry.Update(state: state(), relevanceScore: nil)
-        XCTAssertEqual(update.content(after: previousContent(score: 0.8)).relevanceScore, 0.8)
+        let update = LiveActivityRegistry.Update(state: state(), relevanceScore: nil, serverWebhookId: nil)
+        XCTAssertEqual(update.content(after: previousContent(score: 0.8), attributes: attributes).relevanceScore, 0.8)
     }
 
     func testContent_score_replacesPreviousScore() {
-        let update = LiveActivityRegistry.Update(state: state(), relevanceScore: 0.3)
-        XCTAssertEqual(update.content(after: previousContent(score: 0.8)).relevanceScore, 0.3)
+        let update = LiveActivityRegistry.Update(state: state(), relevanceScore: 0.3, serverWebhookId: nil)
+        XCTAssertEqual(update.content(after: previousContent(score: 0.8), attributes: attributes).relevanceScore, 0.3)
     }
 
     func testContent_noTimer_staleDateIsThirtyMinutesOut() {
-        let content = LiveActivityRegistry.Update(state: state(), relevanceScore: nil).content(after: nil)
+        let content = LiveActivityRegistry.Update(state: state(), relevanceScore: nil, serverWebhookId: nil).content(
+            after: nil,
+            attributes: attributes
+        )
         XCTAssertEqual(content.staleDate?.timeIntervalSinceNow ?? 0, 30 * 60, accuracy: 5)
     }
 
@@ -713,7 +721,10 @@ final class LiveActivityRegistryUpdateTests: XCTestCase {
         var timer = state()
         timer.chronometer = true
         timer.countdownEnd = end
-        let content = LiveActivityRegistry.Update(state: timer, relevanceScore: nil).content(after: nil)
+        let content = LiveActivityRegistry.Update(state: timer, relevanceScore: nil, serverWebhookId: nil).content(
+            after: nil,
+            attributes: attributes
+        )
         XCTAssertEqual(content.staleDate, end.addingTimeInterval(2))
     }
 
@@ -721,7 +732,10 @@ final class LiveActivityRegistryUpdateTests: XCTestCase {
         var timer = state()
         timer.chronometer = true
         timer.countdownEnd = Date().addingTimeInterval(-600)
-        let content = LiveActivityRegistry.Update(state: timer, relevanceScore: nil).content(after: nil)
+        let content = LiveActivityRegistry.Update(state: timer, relevanceScore: nil, serverWebhookId: nil).content(
+            after: nil,
+            attributes: attributes
+        )
         XCTAssertGreaterThan(content.staleDate ?? .distantPast, Date())
     }
 
@@ -735,29 +749,35 @@ final class LiveActivityRegistryUpdateTests: XCTestCase {
         new.chronometer = true
         new.chronometerStart = start.addingTimeInterval(300)
         new.countdownEnd = start.addingTimeInterval(1500)
-        let update = LiveActivityRegistry.Update(state: new, relevanceScore: nil)
-        let content = update.content(after: ActivityContent(state: previous, staleDate: nil))
+        let update = LiveActivityRegistry.Update(state: new, relevanceScore: nil, serverWebhookId: nil)
+        let content = update.content(after: ActivityContent(state: previous, staleDate: nil), attributes: attributes)
         XCTAssertEqual(content.state.chronometerStart, start)
         XCTAssertEqual(content.state.countdownEnd, previous.countdownEnd)
         XCTAssertEqual(content.state.message, "updated")
     }
 
     func testInheriting_noScore_takesPreviousScore() {
-        let previous = LiveActivityRegistry.Update(state: state(), relevanceScore: 0.9)
-        let update = LiveActivityRegistry.Update(state: state(message: "next"), relevanceScore: nil)
-            .inheriting(previous)
+        let previous = LiveActivityRegistry.Update(state: state(), relevanceScore: 0.9, serverWebhookId: nil)
+        let update = LiveActivityRegistry.Update(
+            state: state(message: "next"),
+            relevanceScore: nil,
+            serverWebhookId: nil
+        )
+        .inheriting(previous)
         XCTAssertEqual(update.relevanceScore, 0.9)
         XCTAssertEqual(update.state.message, "next")
     }
 
     func testInheriting_score_keepsOwnScore() {
-        let previous = LiveActivityRegistry.Update(state: state(), relevanceScore: 0.9)
-        let update = LiveActivityRegistry.Update(state: state(), relevanceScore: 0.2).inheriting(previous)
+        let previous = LiveActivityRegistry.Update(state: state(), relevanceScore: 0.9, serverWebhookId: nil)
+        let update = LiveActivityRegistry.Update(state: state(), relevanceScore: 0.2, serverWebhookId: nil)
+            .inheriting(previous)
         XCTAssertEqual(update.relevanceScore, 0.2)
     }
 
     func testInheriting_noPrevious_staysNil() {
-        let update = LiveActivityRegistry.Update(state: state(), relevanceScore: nil).inheriting(nil)
+        let update = LiveActivityRegistry.Update(state: state(), relevanceScore: nil, serverWebhookId: nil)
+            .inheriting(nil)
         XCTAssertNil(update.relevanceScore)
     }
 }

@@ -12,11 +12,12 @@ import WidgetKit
 @available(iOS 17.2, *)
 func makeHADynamicIsland(
     attributes: HALiveActivityAttributes,
-    state: HALiveActivityAttributes.ContentState
+    state: HALiveActivityAttributes.ContentState,
+    activityID: String? = nil
 ) -> DynamicIsland {
     DynamicIsland {
         DynamicIslandExpandedRegion(.bottom) {
-            HAExpandedContentView(attributes: attributes, state: state)
+            HAExpandedContentView(attributes: attributes, state: state, activityID: activityID)
         }
     } compactLeading: {
         HADynamicIslandIconView(slug: state.icon, color: state.color, size: 18)
