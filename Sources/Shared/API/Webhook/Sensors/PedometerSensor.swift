@@ -142,7 +142,7 @@ public class PedometerSensor: SensorProvider {
         }
 
         var awaitingPermissionSensor: WebhookSensor {
-            WebhookSensor(awaitingPermissionNamed: name, uniqueID: rawValue)
+            WebhookSensor(awaitingPermissionNamed: name, uniqueID: rawValue, unit: unit, stateClass: stateClass)
         }
 
         /// Listed with every value or none: a sensor only reported when it has a value has no row
