@@ -5,19 +5,29 @@ import GRDB
 import PromiseKit
 @testable import Shared
 import SharedTesting
+import UIKit
 import XCTest
 
 final class MockClientEventStore: ClientEventStoreProtocol {
     let addEventAction: (ClientEvent) -> Void
 
-    var addedEvents: [ClientEvent] = []
+    private let lock = NSLock()
+    private var events: [ClientEvent] = []
+
+    var addedEvents: [ClientEvent] {
+        lock.lock()
+        defer { lock.unlock() }
+        return events
+    }
 
     init(addEventAction: @escaping (ClientEvent) -> Void) {
         self.addEventAction = addEventAction
     }
 
     func addEvent(_ event: ClientEvent) {
-        addedEvents.append(event)
+        lock.lock()
+        events.append(event)
+        lock.unlock()
         addEventAction(event)
     }
 
@@ -26,7 +36,9 @@ final class MockClientEventStore: ClientEventStoreProtocol {
     }
 
     func clearAllEvents() {
-        addedEvents = []
+        lock.lock()
+        events = []
+        lock.unlock()
     }
 }
 
@@ -42,11 +54,28 @@ class ZoneManagerTests: XCTestCase {
     private var regionFilter: FakeRegionFilter!
     private var locationManager: FakeCLLocationManager!
     private var apis: [FakeHassAPI]!
-    private var loggedEventsUpdatedExpectation: XCTestExpectation?
-    private var loggedEvents: [ClientEvent]! {
-        didSet {
-            loggedEventsUpdatedExpectation?.fulfill()
-        }
+    private let logLock = NSLock()
+    private var logExpectations: [String: XCTestExpectation] = [:]
+    private var expectedLogCounts: [String: Int] = [:]
+    private var eventStore: MockClientEventStore!
+    private var previousEventStore: ClientEventStoreProtocol!
+    private var loggedEvents: [ClientEvent] { eventStore.getEvents() }
+
+    private func expectLog(for event: ZoneManagerEvent) -> XCTestExpectation {
+        let result = expectation(description: "processor final log: \(event.description)")
+        logLock.lock()
+        XCTAssertNil(logExpectations.updateValue(result, forKey: event.description))
+        expectedLogCounts[event.description, default: 0] += 1
+        logLock.unlock()
+        return result
+    }
+
+    private func receiveLog(_ event: ClientEvent) {
+        guard let identity = event.jsonPayloadJSONObject()["event"] as? String else { return }
+        logLock.lock()
+        let pending = logExpectations.removeValue(forKey: identity)
+        logLock.unlock()
+        pending?.fulfill()
     }
 
     enum TestError: Error {
@@ -72,11 +101,12 @@ class ZoneManagerTests: XCTestCase {
         Current.servers = servers
         Current.cachedApis = [server1.identifier: apis[0], server2.identifier: apis[1]]
 
-        loggedEvents = []
+        previousEventStore = Current.clientEventStore
         Current.connectivity.currentNetworkState = { NetworkState(ssid: "wifi_name") }
-        Current.clientEventStore = MockClientEventStore(addEventAction: { event in
-            self.loggedEvents.append(event)
-        })
+        eventStore = MockClientEventStore { [weak self] event in
+            self?.receiveLog(event)
+        }
+        Current.clientEventStore = eventStore
         Current.location.oneShotLocation = { _, _ in .value(.init(latitude: 0, longitude: 0)) }
         collector = FakeCollector()
         processor = FakeProcessor()
@@ -85,8 +115,20 @@ class ZoneManagerTests: XCTestCase {
     }
 
     override func tearDown() {
+        logLock.lock()
+        XCTAssertTrue(logExpectations.isEmpty, "Every operation must drain its trailing log before teardown")
+        logExpectations.removeAll()
+        let expectedCounts = expectedLogCounts
+        expectedLogCounts.removeAll()
+        logLock.unlock()
+        let actualCounts = loggedEvents.reduce(into: [String: Int]()) { counts, event in
+            if let identity = event.jsonPayloadJSONObject()["event"] as? String {
+                counts[identity, default: 0] += 1
+            }
+        }
+        XCTAssertEqual(actualCounts, expectedCounts, "Missing, duplicate or foreign processor log")
         Current.database = previousDatabase
-        Current.clientEventStore.clearAllEvents()
+        Current.clientEventStore = previousEventStore
 
         currentSnapshot.restore()
         // XCTest keeps every test case instance for the whole run, so what the properties hold
@@ -99,6 +141,250 @@ class ZoneManagerTests: XCTestCase {
         super.tearDown()
     }
 
+    private final class RepairScanExecution: BeaconScanBackgroundExecution {
+        private(set) var beginCount = 0
+        private(set) var endCount = 0
+        private var active = false
+
+        func begin(expirationHandler: @escaping () -> Void) {
+            guard !active else { return }
+            active = true
+            beginCount += 1
+        }
+
+        func end() {
+            guard active else { return }
+            active = false
+            endCount += 1
+        }
+    }
+
+    func testSuccessfulBackgroundLocationDoesNotRearmExpiredUnchangedScan() throws {
+        let previousBeta = Current.isTestFlight
+        Current.isTestFlight = true
+        defer { Current.isTestFlight = previousBeta }
+        let zone = AppZone(entityId: "bounded_sync", serverIdentifier: "repair", beaconUUID: UUID().uuidString)
+        _ = try addedZones([zone])
+        let region = try XCTUnwrap(zone.beaconRegion)
+        let lease = RepairScanExecution()
+        var clock = Date(timeIntervalSince1970: 1000)
+        var jobs = [(TimeInterval, DispatchWorkItem)]()
+        let realCollector = ZoneManagerCollectorImpl(
+            backgroundExecution: lease, now: { clock }, schedule: { jobs.append(($0, $1)) }
+        )
+        var onSync: (() -> Void)?
+        let manager = ZoneManager(
+            locationManager: locationManager, collector: realCollector, processor: processor,
+            regionFilter: regionFilter, isApplicationActive: { false },
+            syncExecutor: { work in
+                work()
+                let completion = onSync
+                onSync = nil
+                completion?()
+            }
+        )
+        defer {
+            realCollector.stopBackgroundBeaconMonitoring(manager: locationManager)
+            realCollector.stopForegroundBeaconScanning(manager: locationManager)
+        }
+        XCTAssertEqual(locationManager.startedRangingConstraints, [region.beaconIdentityConstraint])
+        XCTAssertEqual(jobs.count, 1)
+        let timeout = try XCTUnwrap(jobs.first)
+        XCTAssertEqual(timeout.0, 25)
+        clock = clock.addingTimeInterval(25)
+        timeout.1.perform()
+        XCTAssertEqual(lease.endCount, 1)
+        XCTAssertEqual(locationManager.stoppedRangingConstraints, [region.beaconIdentityConstraint])
+
+        let synced = expectation(description: "successful location processor reached manager sync")
+        let (promise, seal) = Promise<Void>.pending()
+        processor.promiseToReturn = promise
+        onSync = { synced.fulfill() }
+        clock = clock.addingTimeInterval(6)
+        let location = CLLocation(
+            coordinate: .init(latitude: 1, longitude: 2), altitude: 0,
+            horizontalAccuracy: 5, verticalAccuracy: 5, timestamp: clock
+        )
+        realCollector.locationManager(locationManager, didUpdateLocations: [location])
+        XCTAssertEqual(processor.performEvent?.eventType, .locationChange([location]))
+        let logged = try expectLog(for: XCTUnwrap(processor.performEvent))
+        seal.fulfill(())
+        wait(for: [synced, logged], timeout: 30)
+        XCTAssertEqual(locationManager.startedRangingConstraints, [region.beaconIdentityConstraint])
+        XCTAssertEqual(lease.beginCount, 1)
+        XCTAssertEqual(jobs.count, 1)
+
+        // A genuine lifecycle wake may still acquire a fresh bounded owner.
+        manager.applicationWillResignActive()
+        XCTAssertEqual(locationManager.startedRangingConstraints.count, 2)
+        XCTAssertEqual(lease.beginCount, 2)
+        clock = clock.addingTimeInterval(25)
+        jobs[1].1.perform()
+        let changedSync = expectation(description: "changed background definition reconciled")
+        onSync = { changedSync.fulfill() }
+        var changedZone = zone
+        changedZone.beaconUUID = UUID().uuidString
+        try database.write { try changedZone.save($0) }
+        wait(for: [changedSync], timeout: 30)
+        let changedRegion = try XCTUnwrap(changedZone.beaconRegion)
+        XCTAssertEqual(locationManager.startedRangingConstraints.last, changedRegion.beaconIdentityConstraint)
+        XCTAssertEqual(locationManager.startedRangingConstraints.count, 3)
+        XCTAssertEqual(lease.beginCount, 3)
+    }
+
+    func testChangedBeaconRowRejectsSampleBeforeQueuedReconciliation() throws {
+        try assertStaleBeaconSampleRejected { $0.beaconUUID = UUID().uuidString }
+    }
+
+    func testDisabledBeaconRowRejectsSampleBeforeQueuedReconciliation() throws {
+        try assertStaleBeaconSampleRejected { $0.trackingEnabled = false }
+    }
+
+    func testNonBeaconRowRejectsSampleBeforeQueuedReconciliation() throws {
+        try assertStaleBeaconSampleRejected { $0.beaconUUID = nil }
+    }
+
+    func testChangedMajorMinorRejectsSampleBeforeQueuedReconciliation() throws {
+        try assertStaleBeaconSampleRejected {
+            $0.beaconMajor = 2
+            $0.beaconMinor = 3
+        }
+    }
+
+    private func assertStaleBeaconSampleRejected(_ mutate: (inout AppZone) -> Void) throws {
+        let previousBeta = Current.isTestFlight
+        Current.isTestFlight = true
+        defer { Current.isTestFlight = previousBeta }
+        var zone = AppZone(entityId: "stale_sync", serverIdentifier: "repair", beaconUUID: UUID().uuidString)
+        _ = try addedZones([zone])
+        let originalZone = zone
+        let oldRegion = try XCTUnwrap(zone.beaconRegion)
+        let realCollector = ZoneManagerCollectorImpl(backgroundExecution: RepairScanExecution())
+        var heldSyncs = [() -> Void]()
+        var onQueued: (() -> Void)?
+        let manager = ZoneManager(
+            locationManager: locationManager, collector: realCollector, processor: processor,
+            regionFilter: regionFilter, isApplicationActive: { true },
+            syncExecutor: { work in
+                heldSyncs.append(work)
+                let completion = onQueued
+                onQueued = nil
+                completion?()
+            }
+        )
+        defer { realCollector.stopForegroundBeaconScanning(manager: locationManager) }
+        XCTAssertEqual(heldSyncs.count, 1)
+        heldSyncs.removeFirst()()
+        XCTAssertEqual(locationManager.startedRangingConstraints, [oldRegion.beaconIdentityConstraint])
+        let queued = expectation(description: "changed GRDB row queued reconciliation")
+        onQueued = { queued.fulfill() }
+        mutate(&zone)
+        try database.write { try zone.save($0) }
+        wait(for: [queued], timeout: 30)
+        XCTAssertFalse(heldSyncs.isEmpty)
+        XCTAssertEqual(manager.zones.first?.beaconUUID, zone.trackingEnabled ? zone.beaconUUID : nil)
+
+        // Keep the manager delegate attached: a stale event must not even reach its processor/fire path.
+        let (promise, seal) = Promise<Void>.pending()
+        processor.promiseToReturn = promise
+        realCollector.didRange(
+            samples: [.init(proximity: .near, rssi: -55)],
+            satisfying: oldRegion.beaconIdentityConstraint, manager: locationManager
+        )
+        XCTAssertNil(processor.performEvent)
+
+        // Restore the row without reconciling first. The stale sample must not have set an inside latch.
+        let restoredQueued = expectation(description: "restored row queued")
+        onQueued = { restoredQueued.fulfill() }
+        try database.write { try originalZone.save($0) }
+        wait(for: [restoredQueued], timeout: 30)
+        realCollector.didRange(
+            samples: [.init(proximity: .near, rssi: -55)],
+            satisfying: oldRegion.beaconIdentityConstraint, manager: locationManager
+        )
+        XCTAssertEqual(processor.performEvent?.eventType, .region(oldRegion, .inside))
+        let logged = try expectLog(for: XCTUnwrap(processor.performEvent))
+        let processedSync = expectation(description: "accepted sample queued reconciliation")
+        onQueued = { processedSync.fulfill() }
+        seal.fulfill(())
+        wait(for: [logged, processedSync], timeout: 30)
+
+        // Release reconciliation using an enabled replacement B, then require its first sample too.
+        zone.trackingEnabled = true
+        if zone.beaconUUID == nil || zone.beaconUUID == originalZone.beaconUUID {
+            zone.beaconUUID = UUID().uuidString
+        }
+        let replacementQueued = expectation(description: "replacement B queued")
+        onQueued = { replacementQueued.fulfill() }
+        try database.write { try zone.save($0) }
+        wait(for: [replacementQueued], timeout: 30)
+        XCTAssertEqual(manager.zones.first?.beaconUUID, zone.beaconUUID)
+        while !heldSyncs.isEmpty {
+            heldSyncs.removeFirst()()
+        }
+        let newRegion = try XCTUnwrap(zone.beaconRegion)
+        let replacementSync = expectation(description: "replacement B processor queued reconciliation")
+        onQueued = { replacementSync.fulfill() }
+        processor.performEvent = nil
+        let (replacementPromise, replacementSeal) = Promise<Void>.pending()
+        processor.promiseToReturn = replacementPromise
+        realCollector.didRange(
+            samples: [.init(proximity: .near, rssi: -55)],
+            satisfying: newRegion.beaconIdentityConstraint, manager: locationManager
+        )
+        XCTAssertEqual(processor.performEvent?.eventType, .region(newRegion, .inside))
+        let replacementLogged = try expectLog(for: XCTUnwrap(processor.performEvent))
+        replacementSeal.fulfill(())
+        wait(for: [replacementLogged, replacementSync], timeout: 30)
+        while !heldSyncs.isEmpty {
+            heldSyncs.removeFirst()()
+        }
+    }
+
+    func testBecomingActiveScansMonitoredBeaconRegions() {
+        let beaconRegion = CLBeaconRegion(uuid: UUID(), identifier: "beacon")
+        let circularRegion = CLCircularRegion(
+            center: .init(latitude: 1, longitude: 2),
+            radius: 20,
+            identifier: "circular"
+        )
+        locationManager.overrideMonitoredRegions = [beaconRegion, circularRegion]
+        regionFilter.regionsBlock = { AnyCollection([beaconRegion, circularRegion]) }
+
+        let manager = newZoneManager()
+        manager.applicationDidBecomeActive()
+
+        XCTAssertEqual(collector.scannedRegions, locationManager.monitoredRegions)
+        XCTAssertTrue(collector.scanManager === locationManager)
+
+        manager.applicationWillResignActive()
+        XCTAssertEqual(collector.stopScanningCount, 1)
+        XCTAssertEqual(collector.backgroundMonitoredRegions, locationManager.monitoredRegions)
+    }
+
+    func testScanHandoffAcquiresNewOwnerBeforeReleasingOldOwner() {
+        let manager = newZoneManager()
+        collector.handoffCalls.removeAll()
+        manager.applicationDidBecomeActive()
+        XCTAssertEqual(collector.handoffCalls, ["startForeground", "stopBackground"])
+        collector.handoffCalls.removeAll()
+        manager.applicationWillResignActive()
+        XCTAssertEqual(collector.handoffCalls, ["startBackground", "stopForeground"])
+    }
+
+    func testLifecycleHandoffsUseSynchronizedRegionsWithoutReadingLocationDaemon() {
+        let region = CLBeaconRegion(uuid: UUID(), identifier: "cached-beacon")
+        regionFilter.regionsBlock = { AnyCollection([region]) }
+        let manager = newZoneManager()
+        locationManager.monitoredRegionsReadsWereOnMainThread.removeAll()
+
+        manager.applicationDidBecomeActive()
+        XCTAssertEqual(collector.scannedRegions, [region])
+        manager.applicationWillResignActive()
+        XCTAssertEqual(collector.backgroundMonitoredRegions, [region])
+        XCTAssertTrue(locationManager.monitoredRegionsReadsWereOnMainThread.isEmpty)
+    }
+
     private func newZoneManager(
         syncExecutor: @escaping (@escaping () -> Void) -> Void = { $0() }
     ) -> ZoneManager {
@@ -109,6 +395,69 @@ class ZoneManagerTests: XCTestCase {
             regionFilter: regionFilter,
             syncExecutor: syncExecutor
         )
+    }
+
+    func testOneShotIgnoredBeaconEntryCanRetryThroughCollectorAndProcessor() throws {
+        let previousTestFlight = Current.isTestFlight
+        let previousSingleShotQuery = Current.isPerformingSingleShotLocationQuery
+        Current.isTestFlight = true
+        defer {
+            Current.isTestFlight = previousTestFlight
+            Current.isPerformingSingleShotLocationQuery = previousSingleShotQuery
+        }
+        let zone = AppZone(
+            entityId: "one_shot_retry",
+            serverIdentifier: apis[0].server.identifier.rawValue,
+            beaconUUID: UUID().uuidString
+        )
+        _ = try addedZones([zone])
+        let currentZone = try XCTUnwrap(AppZone.zone(identifier: zone.identifier))
+        let region = try XCTUnwrap(currentZone.beaconRegion)
+        let event = ZoneManagerEvent(
+            eventType: .region(region, .inside),
+            associatedZone: currentZone,
+            beaconDiagnostic: BeaconDiagnostic(
+                proximity: "near",
+                rssi: -60,
+                isAppActive: UIApplication.shared.applicationState == .active
+            )
+        )
+        let realCollector = ZoneManagerCollectorImpl(backgroundExecution: RepairScanExecution())
+        let realProcessor = ZoneManagerProcessorImpl()
+        let manager = ZoneManager(
+            locationManager: locationManager,
+            collector: realCollector,
+            processor: realProcessor,
+            regionFilter: regionFilter,
+            isApplicationActive: { true },
+            syncExecutor: { $0() }
+        )
+        XCTAssertNotNil(manager.collector.delegate)
+
+        Current.isPerformingSingleShotLocationQuery = true
+        let firstLog = expectLog(for: event)
+        realCollector.locationManager(locationManager, didDetermineState: .inside, for: region)
+        realCollector.didRange(
+            samples: [RangedBeaconSample(proximity: .near, rssi: -60)],
+            satisfying: region.beaconIdentityConstraint,
+            manager: locationManager
+        )
+        wait(for: [firstLog], timeout: 10)
+        XCTAssertTrue(loggedEvents.last?.text.contains("ignoring during one shot") == true)
+        XCTAssertFalse(try XCTUnwrap(AppZone.zone(identifier: zone.identifier)).inRegion)
+
+        Current.isPerformingSingleShotLocationQuery = false
+        let retryLog = expectLog(for: event)
+        realCollector.locationManager(locationManager, didDetermineState: .inside, for: region)
+        realCollector.didRange(
+            samples: [RangedBeaconSample(proximity: .near, rssi: -60)],
+            satisfying: region.beaconIdentityConstraint,
+            manager: locationManager
+        )
+        wait(for: [retryLog], timeout: 10)
+
+        XCTAssertTrue(try XCTUnwrap(AppZone.zone(identifier: zone.identifier)).inRegion)
+        XCTAssertEqual(apis[0].createdEventTypes, ["ios.zone_entered"])
     }
 
     private func addedZones(_ toAdd: [AppZone]) throws -> [AppZone] {
@@ -312,21 +661,12 @@ class ZoneManagerTests: XCTestCase {
 
         processor.promiseToReturn = .value(())
 
-        let expectation = expectation(description: "promise")
-        expectation.assertForOverFulfill = false // changing zones adds logs and we don't care
-        loggedEventsUpdatedExpectation = expectation
-
-        manager.collector(collector, didCollect: .init(
+        let event = ZoneManagerEvent(
             eventType: .locationChange([CLLocation(latitude: 1.23, longitude: 4.56)])
-        ))
-
-        let expectation2 = self.expectation(
-            for: .init(format: "monitoredRegions.@count == 1"),
-            evaluatedWith: locationManager,
-            handler: nil
         )
-
-        wait(for: [expectation, expectation2], timeout: 10)
+        let logged = expectLog(for: event)
+        manager.collector(collector, didCollect: event)
+        wait(for: [logged], timeout: 30)
 
         XCTAssertEqual(locationManager.monitoredRegions.count, 1)
         XCTAssertEqual(locationManager.monitoredRegions, Set([expectedReplacement]))
@@ -468,22 +808,22 @@ class ZoneManagerTests: XCTestCase {
 
         api.resetCreatedEventInfo()
 
-        manager.collector(collector, didCollect: ZoneManagerEvent(
-            eventType: .region(region, .inside),
-            associatedZone: zone
-        ))
+        let event1 = ZoneManagerEvent(eventType: .region(region, .inside), associatedZone: zone)
+        let logged1 = expectLog(for: event1)
+        manager.collector(collector, didCollect: event1)
 
         let createdEvent1 = try hang(api.createdEventPromise)
+        wait(for: [logged1], timeout: 30)
         XCTAssertEqual(createdEvent1.eventType, "ios.zone_entered")
         XCTAssertEqual(createdEvent1.eventData["zone"] as? String, "zone.zid")
 
         api.resetCreatedEventInfo()
-        manager.collector(collector, didCollect: ZoneManagerEvent(
-            eventType: .region(region, .outside),
-            associatedZone: zone
-        ))
+        let event2 = ZoneManagerEvent(eventType: .region(region, .outside), associatedZone: zone)
+        let logged2 = expectLog(for: event2)
+        manager.collector(collector, didCollect: event2)
 
         let createdEvent2 = try hang(api.createdEventPromise)
+        wait(for: [logged2], timeout: 30)
         XCTAssertEqual(createdEvent2.eventType, "ios.zone_exited")
         XCTAssertEqual(createdEvent2.eventData["zone"] as? String, "zone.zid")
     }
@@ -509,22 +849,22 @@ class ZoneManagerTests: XCTestCase {
         processor.promiseToReturn = .value(())
 
         api.resetCreatedEventInfo()
-        manager.collector(collector, didCollect: ZoneManagerEvent(
-            eventType: .region(region, .inside),
-            associatedZone: zone
-        ))
+        let event1 = ZoneManagerEvent(eventType: .region(region, .inside), associatedZone: zone)
+        let logged1 = expectLog(for: event1)
+        manager.collector(collector, didCollect: event1)
 
         let createdEvent1 = try hang(api.createdEventPromise)
+        wait(for: [logged1], timeout: 30)
         XCTAssertEqual(createdEvent1.eventType, "ios.zone_entered")
         XCTAssertEqual(createdEvent1.eventData["zone"] as? String, "zone.zid")
         XCTAssertEqual(createdEvent1.eventData["multi_region_zone_id"] as? String, "868")
 
         api.resetCreatedEventInfo()
-        manager.collector(collector, didCollect: ZoneManagerEvent(
-            eventType: .region(region, .outside),
-            associatedZone: zone
-        ))
+        let event2 = ZoneManagerEvent(eventType: .region(region, .outside), associatedZone: zone)
+        let logged2 = expectLog(for: event2)
+        manager.collector(collector, didCollect: event2)
         let createdEvent2 = try hang(api.createdEventPromise)
+        wait(for: [logged2], timeout: 30)
         XCTAssertEqual(createdEvent2.eventType, "ios.zone_exited")
         XCTAssertEqual(createdEvent2.eventData["zone"] as? String, "zone.zid")
         XCTAssertEqual(createdEvent2.eventData["multi_region_zone_id"] as? String, "868")
@@ -546,12 +886,8 @@ class ZoneManagerTests: XCTestCase {
         XCTAssertEqual(processor.performEvent, event)
         XCTAssertTrue(loggedEvents.isEmpty)
 
+        let expectation = expectLog(for: event)
         seal.reject(TestError.anyError)
-
-        let expectation = expectation(description: "promise")
-        loggedEventsUpdatedExpectation = expectation
-
-        seal.fulfill(())
         wait(for: [expectation], timeout: 10)
 
         guard let loggedEvent = loggedEvents.first else {
@@ -580,8 +916,7 @@ class ZoneManagerTests: XCTestCase {
         XCTAssertEqual(processor.performEvent, event)
         XCTAssertTrue(loggedEvents.isEmpty)
 
-        let expectation = expectation(description: "promise")
-        loggedEventsUpdatedExpectation = expectation
+        let expectation = expectLog(for: event)
 
         seal.fulfill(())
         wait(for: [expectation], timeout: 10)
@@ -606,25 +941,97 @@ private extension Array where Element: CLRegion {
 }
 
 private class FakeCollector: NSObject, ZoneManagerCollector {
-    var delegate: ZoneManagerCollectorDelegate?
+    weak var delegate: ZoneManagerCollectorDelegate?
 
     var ignoringNextStates = Set<CLRegion>()
     var ignoreNextStateCallsWereOnMainThread = [Bool]()
+    var foregroundScanCallsWereOnMainThread = [Bool]()
+    var backgroundScanCallsWereOnMainThread = [Bool]()
+    var scannedRegions = Set<CLRegion>()
+    weak var scanManager: CLLocationManager?
+    var stopScanningCount = 0
+    var opportunisticallyScannedRegions = Set<CLRegion>()
+    var backgroundMonitoredRegions = Set<CLRegion>()
+    var stopBackgroundMonitoringCount = 0
+    var handoffCalls = [String]()
 
     func ignoreNextState(for region: CLRegion) {
         ignoreNextStateCallsWereOnMainThread.append(Thread.isMainThread)
         ignoringNextStates.insert(region)
     }
+
+    func rearmBeaconEntryAfterOneShot(_ event: ZoneManagerEvent) {}
+
+    func startForegroundBeaconScanning(in regions: Set<CLRegion>, manager: CLLocationManager) {
+        handoffCalls.append("startForeground")
+        foregroundScanCallsWereOnMainThread.append(Thread.isMainThread)
+        scannedRegions = regions
+        scanManager = manager
+    }
+
+    func stopForegroundBeaconScanning(manager: CLLocationManager) {
+        handoffCalls.append("stopForeground")
+        stopScanningCount += 1
+        scanManager = manager
+    }
+
+    func startBackgroundBeaconMonitoring(in regions: Set<CLRegion>, manager: CLLocationManager) {
+        handoffCalls.append("startBackground")
+        backgroundScanCallsWereOnMainThread.append(Thread.isMainThread)
+        backgroundMonitoredRegions = regions
+        scanManager = manager
+    }
+
+    func stopBackgroundBeaconMonitoring(manager: CLLocationManager) {
+        handoffCalls.append("stopBackground")
+        stopBackgroundMonitoringCount += 1
+        scanManager = manager
+    }
+
+    func startOpportunisticBeaconScanning(in regions: Set<CLRegion>, manager: CLLocationManager) {
+        opportunisticallyScannedRegions = regions
+        scanManager = manager
+    }
 }
 
 private class FakeProcessor: ZoneManagerProcessor {
-    var delegate: ZoneManagerProcessorDelegate?
+    weak var delegate: ZoneManagerProcessorDelegate?
 
-    var promiseToReturn: Promise<Void>?
-    var performEvent: ZoneManagerEvent?
+    private let lock = NSLock()
+    private var pendingPromise: Promise<Void>?
+    private var latestEvent: ZoneManagerEvent?
+
+    var promiseToReturn: Promise<Void>? {
+        get {
+            lock.lock()
+            defer { lock.unlock() }
+            return pendingPromise
+        }
+        set {
+            lock.lock()
+            pendingPromise = newValue
+            lock.unlock()
+        }
+    }
+
+    var performEvent: ZoneManagerEvent? {
+        get {
+            lock.lock()
+            defer { lock.unlock() }
+            return latestEvent
+        }
+        set {
+            lock.lock()
+            latestEvent = newValue
+            lock.unlock()
+        }
+    }
+
     func perform(event: ZoneManagerEvent) -> Promise<Void> {
-        performEvent = event
-        return promiseToReturn!
+        lock.lock()
+        defer { lock.unlock() }
+        latestEvent = event
+        return pendingPromise!
     }
 
     var resetExitReportingRegions = [CLRegion]()
@@ -661,9 +1068,20 @@ private class FakeHassAPI: HomeAssistantAPI {
 
     var createdEventPromise: Promise<CreatedEventInfo>!
     var createdEventSeal: Resolver<CreatedEventInfo>?
+    private(set) var createdEventTypes = [String]()
 
     override func CreateEvent(eventType: String, eventData: [String: Any]) -> Promise<Void> {
+        createdEventTypes.append(eventType)
         createdEventSeal?.fulfill((eventType: eventType, eventData: eventData))
         return .value(())
+    }
+
+    override func SubmitLocation(
+        updateType: LocationUpdateTrigger,
+        location: CLLocation?,
+        rawLocation: CLLocation? = nil,
+        zone: AppZone?
+    ) -> Promise<Void> {
+        .value(())
     }
 }
