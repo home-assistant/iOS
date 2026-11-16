@@ -118,6 +118,35 @@ struct RemindersSyncPlannerTests {
         #expect(operations == [.adoptLink(todoItemUid: "todo-1", reminderId: "reminder-1")])
     }
 
+    @Test func testUnlinkedItemsWhoseTitlesDifferOnlyInCaseAreAdopted() {
+        let operations = RemindersSyncPlanner.plan(
+            direction: .bothWays,
+            todoItems: ["todo-1": snapshot(title: "Almond milk")],
+            reminders: ["reminder-1": snapshot(title: "Almond Milk")],
+            links: []
+        )
+        #expect(operations == [
+            .adoptLink(todoItemUid: "todo-1", reminderId: "reminder-1"),
+            .updateReminder(todoItemUid: "todo-1", reminderId: "reminder-1"),
+        ])
+    }
+
+    @Test func testExactTitleIsAdoptedBeforeOneDifferingOnlyInCase() {
+        let operations = RemindersSyncPlanner.plan(
+            direction: .bothWays,
+            todoItems: ["todo-1": snapshot(title: "Almond milk")],
+            reminders: [
+                "reminder-1": snapshot(title: "ALMOND MILK"),
+                "reminder-2": snapshot(title: "Almond milk"),
+            ],
+            links: []
+        )
+        #expect(operations == [
+            .adoptLink(todoItemUid: "todo-1", reminderId: "reminder-2"),
+            .createTodoItem(reminderId: "reminder-1"),
+        ])
+    }
+
     @Test func testAdoptedPairWithDifferentContentIsAlignedPerDirection() {
         let todoItems = ["todo-1": snapshot(notes: "bring the tote bag")]
         let reminders = ["reminder-1": snapshot(notes: nil)]
@@ -211,6 +240,71 @@ struct RemindersSyncPlannerTests {
             links: [link(snapshot: original)]
         )
         #expect(toHomeAssistant == [.updateTodoItem(todoItemUid: "todo-1", reminderId: "reminder-1")])
+    }
+
+    @Test func testCompletingAReminderTheListReCasedIsNotUndoneWhenSyncingBothWays() {
+        let written = snapshot(title: "Almond Milk")
+        let operations = RemindersSyncPlanner.plan(
+            direction: .bothWays,
+            todoItems: ["todo-1": snapshot(title: "Almond milk")],
+            reminders: ["reminder-1": snapshot(title: "Almond Milk", isCompleted: true)],
+            links: [link(snapshot: written)]
+        )
+        #expect(operations == [.updateTodoItem(todoItemUid: "todo-1", reminderId: "reminder-1")])
+    }
+
+    @Test func testCaseOnlyTodoItemEditStillWinsAConflictingReminderRename() {
+        let original = snapshot(title: "Milk")
+        let operations = RemindersSyncPlanner.plan(
+            direction: .bothWays,
+            todoItems: ["todo-1": snapshot(title: "MILK")],
+            reminders: ["reminder-1": snapshot(title: "Bread")],
+            links: [link(snapshot: original)]
+        )
+        #expect(operations == [.updateReminder(todoItemUid: "todo-1", reminderId: "reminder-1")])
+    }
+
+    @Test func testCaseOnlyTodoItemEditStillPropagatesWhenSyncingBothWays() {
+        let original = snapshot(title: "Almond milk")
+        let operations = RemindersSyncPlanner.plan(
+            direction: .bothWays,
+            todoItems: ["todo-1": snapshot(title: "Almond Milk")],
+            reminders: ["reminder-1": original],
+            links: [link(snapshot: original)]
+        )
+        #expect(operations == [.updateReminder(todoItemUid: "todo-1", reminderId: "reminder-1")])
+    }
+
+    @Test func testSyncingToHomeAssistantAcceptsTheListReCasingTheWrittenTitle() {
+        let written = snapshot(title: "Almond Milk")
+        let operations = RemindersSyncPlanner.plan(
+            direction: .toHomeAssistant,
+            todoItems: ["todo-1": snapshot(title: "Almond milk")],
+            reminders: ["reminder-1": written],
+            links: [link(snapshot: written)]
+        )
+        #expect(operations.isEmpty)
+    }
+
+    @Test func testSyncingToHomeAssistantStillRestoresAReCasedItemCompletedInTheList() {
+        let written = snapshot(title: "Almond Milk")
+        let operations = RemindersSyncPlanner.plan(
+            direction: .toHomeAssistant,
+            todoItems: ["todo-1": snapshot(title: "Almond milk", isCompleted: true)],
+            reminders: ["reminder-1": written],
+            links: [link(snapshot: written)]
+        )
+        #expect(operations == [.updateTodoItem(todoItemUid: "todo-1", reminderId: "reminder-1")])
+    }
+
+    @Test func testSyncingToHomeAssistantStillPushesACaseOnlyReminderEdit() {
+        let operations = RemindersSyncPlanner.plan(
+            direction: .toHomeAssistant,
+            todoItems: ["todo-1": snapshot(title: "Almond milk")],
+            reminders: ["reminder-1": snapshot(title: "Almond Milk")],
+            links: [link(snapshot: snapshot(title: "Almond milk"))]
+        )
+        #expect(operations == [.updateTodoItem(todoItemUid: "todo-1", reminderId: "reminder-1")])
     }
 
     // MARK: - Completed items
