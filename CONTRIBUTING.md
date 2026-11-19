@@ -4,7 +4,7 @@
  - Fork the Home Assistant iOS [git repository](https://github.com/home-assistant/iOS).
  - Write the code.
  - Ensure tests work.
- - Create a Pull Request against the [**master**](https://github.com/home-assistant/iOS/tree/master) branch of Home Assistant iOS.
+ - Create a Pull Request against the [**main**](https://github.com/home-assistant/iOS/tree/main) branch of Home Assistant iOS.
 - **Translations** are handled by [lokalise.com](https://app.lokalise.com/public/834452985a05254348aee2.46389241/), we are always looking to add more translations and complete the ones we already have. If you would like to contribute to the translation of the app, please visit [lokalise.com](https://app.lokalise.com/public/834452985a05254348aee2.46389241/) and join the team.
 
 ## Learn Swift
