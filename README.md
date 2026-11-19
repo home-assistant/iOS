@@ -18,8 +18,8 @@ cd iOS
 # Swift Package Manager dependencies are resolved automatically by Xcode.
 
 ## install ruby via homebrew, use that
-brew install ruby@3.1
-$(brew --prefix)/opt/ruby@3.1/bin/bundle install
+brew install ruby@$(cut -d. -f1-2 .ruby-version)
+$(brew --prefix)/opt/ruby@$(cut -d. -f1-2 .ruby-version)/bin/bundle install
 
 ## install ruby via rbenv, use that
 brew install rbenv ruby-build
