@@ -198,6 +198,12 @@ struct WatchWidgetComplicationSnapshot: Codable {
     /// Whether the complication should render while the display is dimmed (default true).
     var showsWhenInactive: Bool { showWhenInactive ?? true }
 
+    /// What the face draws for this complication: the built-in placeholder (the Home Assistant logo)
+    /// while the display is dimmed and the complication is set not to show then, otherwise itself.
+    func displayed(isLuminanceReduced: Bool) -> Self {
+        isLuminanceReduced && !showsWhenInactive ? .placeholder : self
+    }
+
     // MARK: - Slot texts
 
     // The top-level fields predate slots and are confusingly inverted (`title` carries the value,
