@@ -43,6 +43,13 @@ extension WebViewController {
 
         NotificationCenter.default.addObserver(
             self,
+            selector: #selector(sceneSessionsWereDiscarded(_:)),
+            name: Self.didDiscardSceneSessionsNotification,
+            object: nil
+        )
+
+        NotificationCenter.default.addObserver(
+            self,
             selector: #selector(serverVersionDidChange(_:)),
             name: HomeAssistantAPI.serverVersionDidChangeNotification,
             object: nil

@@ -1,5 +1,6 @@
 import Foundation
 import Shared
+import UIKit
 
 // MARK: - Retirement
 
@@ -34,5 +35,38 @@ extension WebViewController {
 
         // Straight to the web view, since `load(request:)` refuses from here on.
         webView?.load(URLRequest(url: URL(string: Self.blankPageURLString)!))
+    }
+
+    /// Posted once the system has discarded scene sessions, with their persistent identifiers under
+    /// `discardedSceneSessionIdentifiersKey`.
+    static let didDiscardSceneSessionsNotification = Notification.Name("WebViewControllerDidDiscardSceneSessions")
+    static let discardedSceneSessionIdentifiersKey = "identifiers"
+
+    /// Tells every frontend alive which scene sessions are gone for good. What a frontend does with that
+    /// is in `sceneSessionsWereDiscarded(_:)`.
+    static func noteDiscardedSceneSessions(withIdentifiers identifiers: Set<String>) {
+        NotificationCenter.default.post(
+            name: didDiscardSceneSessionsNotification,
+            object: nil,
+            userInfo: [discardedSceneSessionIdentifiersKey: identifiers]
+        )
+    }
+
+    /// Called while the view is in a window, which is the only time the frontend can tell its scene.
+    func rememberFrontendSceneSession() {
+        guard let session = frontendWindowScene?.session else { return }
+        frontendSceneSessionIdentifier = session.persistentIdentifier
+    }
+
+    /// A closed Mac window discards its scene session, and a discarded session never reconnects: opening
+    /// the app again connects a new session with a controller of its own. SwiftUI does not dismantle the
+    /// closed window's controller, so without this its frontend would keep running with no window to
+    /// show it in. A scene that only disconnects keeps its session and is left alone.
+    @objc func sceneSessionsWereDiscarded(_ notification: Notification) {
+        guard let frontendSceneSessionIdentifier,
+              let identifiers = notification.userInfo?[Self.discardedSceneSessionIdentifiersKey] as? Set<String>,
+              identifiers.contains(frontendSceneSessionIdentifier) else { return }
+        Current.Log.info("The scene session of the frontend of \(server.identifier.rawValue) was discarded")
+        retireFrontend()
     }
 }

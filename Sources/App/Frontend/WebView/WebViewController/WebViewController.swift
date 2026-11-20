@@ -123,6 +123,11 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         return scene.activationState == .foregroundActive
     }
 
+    /// The session of the scene this frontend was last shown in. Remembered while the view is in a window:
+    /// by the time a session is discarded its scene may already have let go of its windows, and a
+    /// frontend that is in no window cannot say which session it belonged to.
+    var frontendSceneSessionIdentifier: String?
+
     /// Set when the disconnected empty state was asked for while the scene was not active. Nobody could
     /// see it, and the frontend gets its grace period again once the scene is; see `showEmptyState()`.
     var isEmptyStateDeferredUntilActive = false
@@ -436,6 +441,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        rememberFrontendSceneSession()
         updateDatabaseAndPanels()
         updateWindowSceneTitle()
     }
