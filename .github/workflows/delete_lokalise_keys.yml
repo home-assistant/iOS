@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
-      - uses: ruby/setup-ruby@b3aaceaef7e0ee231b499e7b5f49c03fc1d32199  # v1.338.0
+      - uses: ruby/setup-ruby@be3c7df29b3349ec6bcfc6b4792f1cf9f5237d18  # v1.343.0
         with:
           ruby-version: .ruby-version
           bundler-cache: true
@@ -85,7 +85,7 @@ jobs:
           git checkout -- .
           git clean -xfd
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1  # v8.1.1
+        uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1  # v8.1.3
         with:
           base: main
           branch: create-pull-request/delete_lokalise_keys
