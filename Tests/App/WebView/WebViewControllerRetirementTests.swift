@@ -194,6 +194,20 @@ final class WebViewControllerRetirementTests: XCTestCase {
         XCTAssertEqual(sut.frontendSceneSessionIdentifier, scene.session.persistentIdentifier)
     }
 
+    /// The system reports discarded scene sessions to the app delegate, and the frontends hear of them
+    /// from there.
+    func testTheAppDelegatePassesDiscardedSceneSessionsOnToTheFrontends() throws {
+        let appDelegate = try XCTUnwrap(AppDelegate.shared)
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.first as? UIWindowScene)
+        let sut = makeSUT()
+        sut.observeConnectionNotifications()
+        sut.frontendSceneSessionIdentifier = scene.session.persistentIdentifier
+
+        appDelegate.application(UIApplication.shared, didDiscardSceneSessions: [scene.session])
+
+        XCTAssertTrue(sut.isRetired)
+    }
+
     private func makeSUT() -> WebViewController {
         makeSUTWithRecordingWebView().controller
     }
