@@ -45,7 +45,7 @@
 "alerts.open_url_from_deep_link.message" = "Tryck på servern för att öppna (%@) djuplänks-URL?";
 "alerts.open_url_from_deep_link.select_server" = "Välj vilken server som ska öppna den här länken";
 "alerts.open_url_from_notification.message" = "Öppna URL (%@) från aviseringen?";
-"alerts.open_url_from_notification.select_server" = "Välj vilken server som ska öppna den här länken till meddelandet";
+"alerts.open_url_from_notification.select_server" = "Välj vilken server som ska öppna länken i aviseringen";
 "alerts.open_url_from_notification.title" = "Öppna URL?";
 "alerts.prompt.cancel" = "Avbryt";
 "alerts.prompt.ok" = "OK";
@@ -53,7 +53,7 @@
 "announcement.drop_support.button" = "Fortsätt";
 "announcement.drop_support.subtitle" = "Efter noggrant övervägande kommer vi att upphöra med stödet för iOS 12, 13 och 14 i våra kommande uppdateringar.";
 "announcement.drop_support.title" = "Viktig uppdatering";
-"app_intents.active_entities.description" = "Visar enheter av en viss typ som för närvarande är på eller öppna";
+"app_intents.active_entities.description" = "Visar entiteter av en viss typ som för närvarande är på eller öppna";
 "app_intents.active_entities.dialog.none_on" = "Inga %@ är på";
 "app_intents.active_entities.dialog.none_open" = "Inga %@ är öppna";
 "app_intents.active_entities.dialog.some_on" = "Dessa %1$@ är på: %2$@";
@@ -68,13 +68,13 @@
 "app_intents.active_entities.name_with_server" = "%1$@ på %2$@";
 "app_intents.active_entities.title" = "Se vad som är på";
 "app_intents.add_to.description" = "Lägger till en Home Assistant-entitet i Apple Watch, CarPlay-snabbtillgången eller verktygsfältet på Mac";
-"app_intents.add_to.destination.name" = "Destination";
+"app_intents.add_to.destination.name" = "Mål";
 "app_intents.add_to.dialog.added" = "%1$@ har lagts till i %2$@";
 "app_intents.add_to.dialog.already_added" = "%1$@ finns redan i %2$@";
 "app_intents.add_to.entity.name" = "Entitet";
 "app_intents.add_to.error.unavailable" = "%@ är inte tillgänglig på den här enheten";
 "app_intents.add_to.error.unsupported" = "%1$@ kan inte läggas till i %2$@";
-"app_intents.add_to.title" = "Lägg till entitet till";
+"app_intents.add_to.title" = "Lägg till entitet i";
 "app_intents.area_target.areas_section" = "%@ områden";
 "app_intents.area_target.blinds" = "%@ persienner";
 "app_intents.area_target.covers" = "%@ skydd";
@@ -98,7 +98,7 @@
 "app_intents.assist.preferred_pipeline.title" = "Föredragen";
 "app_intents.assist.refresh_warning.title" = "Hittar du inte din Assist-pipeline? Öppna Assist i appen för att uppdatera listan över pipelines.";
 "app_intents.assist_prompt.description" = "Skicka en textprompt till Assist";
-"app_intents.assist_prompt.pipeline.description" = "Lämna fältet tomt för att använda den pipeline som din första server föredrar";
+"app_intents.assist_prompt.pipeline.description" = "Lämna fältet tomt för att använda det föredragna röstflödet på din första server";
 "app_intents.assist_prompt.prompt.title" = "Prompt";
 "app_intents.assist_prompt.title" = "Assist prompt";
 "app_intents.automations.automation.title" = "Automatisering";
@@ -135,7 +135,7 @@
 "app_intents.calendar.error.delete_unsupported" = "%@ tillåter inte att man raderar händelser";
 "app_intents.calendar.error.event_not_deletable" = "%@ kan inte raderas eftersom Home Assistant inte har tilldelat den någon identifierare";
 "app_intents.calendar.error.event_not_editable" = "%@ kan inte redigeras eftersom Home Assistant inte har tilldelat den någon identifierare";
-"app_intents.calendar.error.event_not_in_calendar" = "%1$@ är inte ett evenemang på %2$@";
+"app_intents.calendar.error.event_not_in_calendar" = "%1$@ är inte en händelse i %2$@";
 "app_intents.calendar.error.invalid_duration" = "Slutet får inte vara före början";
 "app_intents.calendar.error.timeout" = "Home Assistant svarade inte i tid. Kontrollera din anslutning och försök igen.";
 "app_intents.calendar.error.unknown_calendar" = "Den kalendern är inte längre tillgänglig";
@@ -190,7 +190,7 @@
 "app_intents.entity_state.last_updated.title" = "Senast uppdaterad";
 "app_intents.entity_state.parameter.entity" = "Entitet";
 "app_intents.entity_state.state.title" = "Tillstånd";
-"app_intents.entity_state.title" = "Hämta enhetstillstånd";
+"app_intents.entity_state.title" = "Hämta entitetstillstånd";
 "app_intents.entity_state.unit.title" = "Måttenhet";
 "app_intents.error.failed_servers" = "Servrar som inte fungerar: %@";
 "app_intents.error.http_status" = "Home Assistant returnerade HTTP %li";
@@ -208,7 +208,7 @@
 "app_intents.fire_event.event_name.title" = "Händelsenamn";
 "app_intents.fire_event.response_success" = "Utlöst händelse %@";
 "app_intents.fire_event.title" = "Utlös händelse";
-"app_intents.focus_filter.description" = "Rapporterar det Fokusnamn du väljer till Home Assistant medan detta Fokus är aktiverat.";
+"app_intents.focus_filter.description" = "Rapporterar det fokusnamn du väljer till Home Assistant medan det här fokusläget är aktiverat.";
 "app_intents.focus_filter.display.none" = "Inget fokusnamn valt";
 "app_intents.focus_filter.entity.name" = "Fokusnamn";
 "app_intents.focus_filter.focus_name.title" = "Fokusnamn";
@@ -264,7 +264,7 @@
 "app_intents.reminders.create.which_list" = "Vilken lista?";
 "app_intents.reminders.error.list_hidden" = "Den att-göra-listan är inte längre tillgänglig för Siri";
 "app_intents.reminders.error.no_list" = "Det finns inga att-göra-listor där man kan lägga till detta";
-"app_intents.reminders.get_items.description" = "Hämta objekten från en att-göra-lista i Home Assistant";
+"app_intents.reminders.get_items.description" = "Hämta uppgifterna från en att-göra-lista i Home Assistant";
 "app_intents.reminders.get_items.include_completed.title" = "Inkludera slutförda";
 "app_intents.reminders.get_items.title" = "Hämta att-göra-uppgifter";
 "app_intents.reminders.list.name" = "Lista";
@@ -391,7 +391,7 @@
 "assist.settings.title" = "Assist-inställningar";
 "assist.settings.tts_mute.footer" = "När funktionen är aktiverad kommer Assist inte att spela upp ljudsvar, även om text-till-tal-funktionen är konfigurerad i pipelinen. Du kommer fortfarande att se textsvaren.";
 "assist.settings.tts_mute.toggle" = "Stäng av röstsvar";
-"assist.text_field.placeholder" = "Ange en begäran...";
+"assist.text_field.placeholder" = "Ange en begäran…";
 "assist.watch.audio_stream.not_received" = "Home Assistant fick aldrig inspelningen.";
 "assist.watch.audio_stream.server_not_found" = "Servern hittades inte på iPhone.";
 "assist.watch.audio_stream.unreadable" = "iPhonen kunde inte läsa inspelningen.";
@@ -423,7 +423,7 @@
 "camera_player.errors.unable_to_connect_to_server" = "Det går inte att ansluta till Home Assistant";
 "camera_player.errors.unknown" = "Okänt fel";
 "camera_player.notification.body" = "Tryck för att öppna kameran";
-"camera_player.talkback.connecting" = "Connecting microphone";
+"camera_player.talkback.connecting" = "Ansluter mikrofonen";
 "camera_player.talkback.start" = "Börja prata";
 "camera_player.talkback.stop" = "Sluta prata";
 "cameras.no_server_found" = "Ingen server hittades för kamera: %@";
@@ -643,7 +643,7 @@
 "component.light.set_white" = "Ställ in vitt ljus";
 "component.lock.lock" = "Lås";
 "component.lock.open_door" = "Öppna dörr";
-"component.lock.open_door_confirm" = "Är det verkligen öppet?";
+"component.lock.open_door_confirm" = "Vill du öppna dörren?";
 "component.lock.open_door_done" = "Dörr öppen";
 "component.lock.unlock" = "Lås upp";
 "component.media_control.mute" = "Stäng av ljudet";
@@ -657,7 +657,7 @@
 "component.media_control.repeat_one" = "En";
 "component.media_control.shuffle" = "Blanda";
 "component.media_control.stop" = "Stoppa";
-"component.media_control.track_position" = "Spåra position";
+"component.media_control.track_position" = "Position i spåret";
 "component.media_control.unmute" = "Aktivera ljud";
 "component.media_control.volume" = "Volym";
 "component.media_control.volume_down" = "Sänk volymen";
@@ -689,7 +689,7 @@
 "connection.active_url_type.toast.internal" = "Använda den interna URL:en.";
 "connection.active_url_type.toast.none" = "Det finns för närvarande ingen aktiv URL för denna server.";
 "connection.active_url_type.toast.remote_ui" = "Använder Cloud Remote UI-URL.";
-"connection.active_url_type.toast.remote_ui_link" = "Using %@ Remote UI URL.";
+"connection.active_url_type.toast.remote_ui_link" = "Använder URL:en för fjärrgränssnittet på %@.";
 "connection.active_url_type.toast.title" = "Anslutningstyp";
 "connection.error.details.button.clipboard" = "Kopiera till urklipp";
 "connection.error.details.button.discord" = "Fråga i Discord";
@@ -702,8 +702,8 @@
 "connection.error.details.title" = "Anslutningsfel";
 "connection.error.failed_connect.cloud.title" = "Kontrollera att din Home Assistant Cloud-prenumeration är aktiv och ansluten till din server, du kan verifiera det på [Nabu Casa](https://account.nabucasa.com)";
 "connection.error.failed_connect.cloud_inactive.title" = "Du har inaktiverat Home Assistant Cloud-användning i appen. Om du behöver det för fjärråtkomst, öppna inställningarna för Companion-appen och aktivera det.";
-"connection.error.failed_connect.cloud_inactive_link.title" = "You have disabled %@ use in the app, if you need it for remote access please open companion app settings and enable it.";
-"connection.error.failed_connect.cloud_link.title" = "Make sure your %@ subscription is active and connected to your server, you can verify that at [Nabu Casa](https://account.nabucasa.com)";
+"connection.error.failed_connect.cloud_inactive_link.title" = "Du har inaktiverat funktionen ” %@ ” i appen. Om du behöver den för fjärråtkomst ska du öppna inställningarna i den tillhörande appen och aktivera den.";
+"connection.error.failed_connect.cloud_link.title" = "Se till att din prenumeration på %@ är aktiv och ansluten till din server. Du kan kontrollera detta på [Nabu Casa](https://account.nabucasa.com)";
 "connection.error.failed_connect.subtitle" = "Kontrollera din anslutning och försök igen. Om du inte är hemma, se till att du har konfigurerat fjärråtkomst.";
 "connection.error.failed_connect.title" = "Vi kunde inte ansluta till Home Assistant";
 "connection.error.failed_connect.url" = "Appen ansluter för närvarande till";
@@ -768,7 +768,7 @@
 "entity_picker.filter.domain.all.title" = "Alla domäner";
 "entity_picker.filter.domain.title" = "Domän";
 "entity_picker.filter.group_by.area" = "Gruppera efter område";
-"entity_picker.filter.group_by.device" = "Grupper efter enhet";
+"entity_picker.filter.group_by.device" = "Gruppera efter enhet";
 "entity_picker.filter.group_by.domain" = "Gruppera efter domän";
 "entity_picker.filter.group_by.title" = "Gruppera efter";
 "entity_picker.filter.server.title" = "Servrar";
@@ -811,35 +811,35 @@
 "flight_greetings.empty_state.title" = "Ha en trevlig flygresa";
 "flight_greetings.greeting" = "Ha en trevlig flygresa!";
 "focus.how_it_works.filter.body" = "Öppna Inställningar &gt; Fokus på den här enheten, välj ett fokus, lägg till Home Assistant under Fokusfilter och välj motsvarande namn.";
-"focus.how_it_works.filter.title" = "Kombinera det med ett Fokus";
+"focus.how_it_works.filter.title" = "Koppla det till ett fokusläge";
 "focus.how_it_works.intro" = "iOS meddelar apparna att ett fokusläge är aktiverat, men aldrig vilket. Ett fokusfilter är den enda platsen där iOS låter dig förmedla den informationen till en app, så att du anger namnet en gång och appen sedan rapporterar det.";
-"focus.how_it_works.naming.body" = "Ange ett namn här för varje Fokus som du vill ska rapporteras. Namnet skickas exakt så som du skriver det, så det är det namnet som kommer att visas i Home Assistant.";
+"focus.how_it_works.naming.body" = "Skapa ett namn här för varje fokusläge du vill rapportera. Namnet skickas precis som du skriver det och visas så i Home Assistant.";
 "focus.how_it_works.naming.title" = "Namnge dina fokus";
-"focus.how_it_works.no_focus.body" = "Sensorn rapporterar ”Inte i fokus” så snart varje fokusering är avslutad. För detta krävs behörigheten ”Fokus”, som är den som meddelar appen att en fokusering pågår.";
+"focus.how_it_works.no_focus.body" = "Sensorn rapporterar ”Inte i fokus” när alla fokuslägen har avslutats. Det kräver fokusbehörigheten, som meddelar appen om ett fokusläge är aktivt.";
 "focus.how_it_works.no_focus.title" = "När inget fokus är aktiverat";
-"focus.how_it_works.privacy.body" = "Namnen tillhör dig, lagras på den här enheten och lämnar den endast i form av den sensorstatus du aktiverar. Appen läser aldrig av dina Fokus-inställningar.";
+"focus.how_it_works.privacy.body" = "Namnen lagras på den här enheten och skickas bara som tillstånd för den sensor du aktiverar. Appen läser aldrig dina fokusinställningar.";
 "focus.how_it_works.privacy.title" = "Din integritet";
-"focus.how_it_works.reporting.body" = "När du aktiverar den här funktionen körs filtret, och appen skickar namnet till Home Assistant som sensornamnet ”Fokus”.";
+"focus.how_it_works.reporting.body" = "När du aktiverar fokusläget körs filtret och appen skickar namnet till Home Assistant som värdet för sensorn för fokusnamn.";
 "focus.how_it_works.reporting.title" = "Det rapporterar av sig själv";
 "focus.how_it_works.title" = "Hur fungerar det?";
-"focus.how_it_works.unpaired.body" = "iOS kör endast filtret för den Fokusenhet som startas, så lägg till ett filter för varje Fokusenhet som du vill ska rapporteras. En Fokusenhet utan filter behåller det tidigare namnet tills en parkopplad Fokusenhet startas eller tills alla har avslutats.";
+"focus.how_it_works.unpaired.body" = "iOS kör bara filtret för det fokusläge som aktiveras. Lägg därför till ett filter för varje fokusläge som du vill rapportera. Ett fokusläge utan filter behåller det tidigare namnet tills ett kopplat fokusläge aktiveras eller alla fokuslägen avslutas.";
 "focus.how_it_works.unpaired.title" = "Fokus utan filter";
 "focus.names.active" = "Rapporterar nu";
 "focus.names.add" = "Lägg till fokusnamn";
-"focus.names.add_message" = "Ge detta Fokus ett namn som ska rapporteras till Home Assistant, till exempel namnet på själva Fokus.";
+"focus.names.add_message" = "Ange ett namn för fokusläget som ska rapporteras till Home Assistant, till exempel fokuslägets eget namn.";
 "focus.names.empty" = "Inga Fokusnamn ännu.";
 "focus.names.footer" = "Skapa ett namn för varje fokus som du vill ska rapporteras och välj det sedan under Inställningar &gt; Fokus &gt; Fokusfilter.";
 "focus.names.header" = "Fokusnamn";
 "focus.names.last_reported" = "Senast rapporterad";
 "focus.names.placeholder" = "Namn";
-"focus.permission_missing.body" = "Utan den kan appen inte avgöra när varje fokusperiod har avslutats, vilket gör att det senast rapporterade namnet fortsätter att skickas.";
+"focus.permission_missing.body" = "Utan behörigheten kan appen inte avgöra när alla fokuslägen har avslutats. Därför fortsätter det senast rapporterade namnet att skickas.";
 "focus.permission_missing.title" = "Fokusbehörigheten är inaktiverad";
 "focus.reported.current_name" = "Fokusnamn";
 "focus.reported.header" = "Rapporterat till Home Assistant";
 "focus.reported.none_yet" = "Inget har rapporterats ännu";
-"focus.sensor_disabled.body" = "Aktivera Focus-namnsensorn så att namnet skickas till Home Assistant.";
+"focus.sensor_disabled.body" = "Aktivera sensorn för fokusnamn så att namnet skickas till Home Assistant.";
 "focus.sensor_disabled.title" = "Sensorn för fokusnamn är avstängd";
-"focus.subtitle" = "Skicka information om vilket Focus-läge som är aktivt till Home Assistant genom att koppla ett namn som du skapar här till ett iOS Focus-filter.";
+"focus.subtitle" = "Rapportera vilket fokusläge som är aktivt till Home Assistant genom att koppla ett namn som du skapar här till ett fokusfilter i iOS.";
 "focus.title" = "Fokus";
 "force_close_warning.body" = "Om du tvingar appen att stängas avbryts uppdateringarna av position och sensordata. Öppna Home Assistant igen för att återuppta dem.";
 "force_close_warning.title" = "Home Assistant stängdes";
@@ -1003,9 +1003,9 @@
 "kiosk.footer.description" = "När den är aktiverad låses skärmen till instrumentpanelen. Använd Face ID, Touch ID eller enhetens lösenord för att avsluta.";
 "kiosk.hide_settings_entry.alert.confirm" = "Dölj knapp";
 "kiosk.hide_settings_entry.alert.message" = "Knappen kommer inte längre att visas på skärmen. Den går fortfarande att trycka på i det hörn du valde, så se till att du kommer ihåg vilket det är: det är det enda sättet att komma tillbaka till dessa inställningar.";
-"kiosk.hide_settings_entry.alert.title" = "Dölja inställningsposten?";
-"kiosk.hide_settings_entry.footer" = "När du döljer posten blir den osynlig, men den försvinner inte: om du trycker på det hörn du valde öppnas fortfarande dessa inställningar.";
-"kiosk.hide_settings_entry.title" = "Dölj inmatningsknapp";
+"kiosk.hide_settings_entry.alert.title" = "Dölja inställningsknappen?";
+"kiosk.hide_settings_entry.footer" = "Knappen blir osynlig när du döljer den. Du kan fortfarande öppna inställningarna genom att trycka på det hörn du har valt.";
+"kiosk.hide_settings_entry.title" = "Dölj inställningsknappen";
 "kiosk.hide_status_bar" = "Dölj statusfältet";
 "kiosk.keep_screen_on" = "Håll skärmen på";
 "kiosk.push_command.default_dashboard" = "Återgår till kontrollpanel";
@@ -1296,7 +1296,7 @@ Taggar fungerar på alla enheter med Home Assistant installerat och som har hår
 "nfc.tag_approval.tag_id.title" = "Identifiering av NFC-tagg";
 "nfc.tag_approval.title" = "Tillåt tagg?";
 "nfc.tag_read" = "NFC-tagg läst";
-"nfc.write.deeplink.start_message" = "Håll en NFC-tagg nära din %@ för att skapa en deeplink till denna enhet";
+"nfc.write.deeplink.start_message" = "Håll en NFC-tagg nära din %@ för att skapa en djuplänk till den här entiteten";
 "nfc.write.error.capacity" = "NFC-tagg har otillräcklig kapacitet: behöver %ld men har bara %ld";
 "nfc.write.error.invalid_format" = "NFC-tagg har inte NDEF-format";
 "nfc.write.error.invalid_url" = "Den här länken kan inte skrivas till en NFC-tagg";
@@ -1541,9 +1541,9 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "reminders_sync.settings.access_denied.body" = "Ge full åtkomst till ”Påminnelser” i appen ”Inställningar” för att synkronisera dina listor.";
 "reminders_sync.settings.access_denied.title" = "Åtkomst till Påminnelser krävs";
 "reminders_sync.settings.add_list" = "Lägg till";
-"reminders_sync.settings.completed.footer" = "Items that were already completed before syncing started normally stay where they are. Turn this on to copy them to the other list as completed, so checked-off items are known on both sides. A list with a long history can gain many completed items on the first sync.";
-"reminders_sync.settings.completed.header" = "Completed items";
-"reminders_sync.settings.completed.title" = "Include completed items";
+"reminders_sync.settings.completed.footer" = "Uppgifter som redan var slutförda innan synkroniseringen startade ligger normalt kvar där de är. Aktivera detta för att kopiera dem som slutförda till den andra listan, så att de avbockade uppgifterna finns på båda sidor. En lista med lång historik kan få många slutförda uppgifter vid den första synkroniseringen.";
+"reminders_sync.settings.completed.header" = "Slutförda uppgifter";
+"reminders_sync.settings.completed.title" = "Inkludera slutförda uppgifter";
 "reminders_sync.settings.conflicts.footer" = "Detta gäller endast vid tvåvägssynkronisering. Om samma objekt har redigerats i båda apparna sedan den senaste synkroniseringen behålls den version som kommer från den sida du väljer här.";
 "reminders_sync.settings.conflicts.header" = "Konflikter";
 "reminders_sync.settings.conflicts.title" = "Behåll ändringar från";
@@ -1563,12 +1563,12 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "reminders_sync.settings.synced_lists.header" = "Synkroniserade listor";
 "reminders_sync.settings.syncing" = "Synkroniserar…";
 "requires_version" = "Kräver %@ eller nyare.";
-"restored_registrations.choices" = "När man lägger till en ny enhet loggar den in på varje server på nytt och registrerar sig själv, medan den andra enheten förblir oförändrad. Om man byter ut den gamla enheten förblir allt som det är, tills den enheten inte längre används.";
+"restored_registrations.choices" = "Om du konfigurerar den här enheten som ny loggar du in på varje server igen och ger den en egen registrering. Den andra enheten förblir oförändrad. Om den gamla enheten inte längre används kan du i stället ersätta den och behålla allt som det är.";
 "restored_registrations.errors.client_certificate_required" = "%@ begär ett klientcertifikat. Autentisera det på nytt via serverinställningarna för att lägga till ett certifikat och försök sedan igen.";
 "restored_registrations.errors.no_device_identifier" = "Den här enheten går inte att skilja från andra förrän den har låsts upp. Lås upp den och försök igen.";
 "restored_registrations.errors.registered_by_another_device" = "Den här servern identifierar fortfarande den här enheten som en annan enhet. Öppna appen för att registrera den som en ny enhet eller behålla den befintliga registreringen.";
-"restored_registrations.explanation" = "Den här enheten har konfigurerats utifrån en säkerhetskopia av en annan enhet. Den loggar fortfarande in och rapporterar till Home Assistant som den enheten, vilket innebär att båda enheterna där delar samma enhet, med dess sensorer, plats och aviseringar.";
-"restored_registrations.held_back_notification.body" = "Den här enheten har konfigurerats utifrån en säkerhetskopia av en annan enhet, vilket innebär att dess position och sensorsdata inte skickas till %@. Öppna appen för att välja anslutningssätt.";
+"restored_registrations.explanation" = "Den här enheten har konfigurerats från en säkerhetskopia av en annan enhet. Den loggar fortfarande in och rapporterar till Home Assistant som den andra enheten. Båda skulle därför dela samma enhet där, med dess sensorer, position och aviseringar.";
+"restored_registrations.held_back_notification.body" = "Den här enheten har konfigurerats utifrån en säkerhetskopia av en annan enhet, vilket innebär att dess position och sensordata inte skickas till %@. Öppna appen för att välja anslutningssätt.";
 "restored_registrations.held_back_notification.title" = "Home Assistant får inga uppdateringar från den här enheten";
 "restored_registrations.login.progress" = "Server %li av %li";
 "restored_registrations.login.title" = "Logga in på %@";
@@ -1578,15 +1578,15 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "restored_registrations.next.title" = "Nästa: logga in på %@";
 "restored_registrations.progress" = "%li av %li konfigurerad";
 "restored_registrations.replace.confirm" = "Ersätt";
-"restored_registrations.replace.message" = "Om du fortfarande har den andra enheten, ta bort Home Assistant-appen från den. Annars fortsätter båda enheterna att rapportera till Home Assistant som en enda enhet.";
+"restored_registrations.replace.message" = "Om du fortfarande har den andra enheten tar du bort Home Assistant-appen från den. Annars fortsätter båda enheterna att rapportera till Home Assistant som en enda enhet.";
 "restored_registrations.replace.title" = "Ska den gamla enheten bytas ut?";
 "restored_registrations.replace_device" = "Byt ut den gamla enheten";
 "restored_registrations.setting_up" = "Konfigurerar…";
-"restored_registrations.status.done" = "Konfigurera som en ny enhet";
+"restored_registrations.status.done" = "Konfigurerad som en ny enhet";
 "restored_registrations.status.failed" = "Kunde inte registrera: %@";
 "restored_registrations.status.registering" = "Registrerar…";
 "restored_registrations.status.signing_in" = "Loggar in…";
-"restored_registrations.status.skipped" = "Är inte inställt än. Frågan ställs igen vid nästa start.";
+"restored_registrations.status.skipped" = "Inte konfigurerad ännu. Frågan ställs igen nästa gång appen startas.";
 "restored_registrations.status.waiting" = "Väntar";
 "restored_registrations.title" = "Har du återställt från en annan enhet?";
 "restored_registrations.try_again" = "Försök igen";
@@ -1632,7 +1632,7 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "settings.app_labs.ios_native_tab_bar.summary" = "Ersätter sidopanelen i Home Assistant med en inbyggd flikrad. De fyra första posterna i listan på fliken ”Mer” utgör flikarna; du kan ändra ordningen på dem eller dölja dem från fliken ”Mer”. Sidan laddas om när du ändrar den här inställningen.";
 "settings.app_labs.ios_native_tab_bar.title" = "Inbyggd flikrad";
 "settings.app_labs.mac_native_sidebar.footer" = "Ersätter Home Assistants sidofält med ett inbyggt macOS-sidofält. Sidan laddas om när du ändrar den här inställningen.";
-"settings.app_labs.mac_native_sidebar.title" = "Inbyggd sidofält";
+"settings.app_labs.mac_native_sidebar.title" = "Inbyggt sidofält";
 "settings.app_labs.settings_row.subtitle" = "Experiment som endast finns i TestFlight. Det finns inga planer på att släppa dem och de kan tas bort när som helst.";
 "settings.app_labs.testflight_only.body" = "App Labb är endast tillgängligt på TestFlight-versioner.";
 "settings.app_labs.title" = "App Labb";
@@ -1658,7 +1658,7 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "settings.connection_section.client_certificate.remove_confirmation.message" = "Certifikatet kommer att tas bort från enheten. Du måste importera det igen för att använda mTLS-autentisering.";
 "settings.connection_section.client_certificate.remove_confirmation.remove" = "Ta bort";
 "settings.connection_section.client_certificate.remove_confirmation.title" = "Ta bort certifikat?";
-"settings.connection_section.cloud_link_overrides_external" = "When connecting via %@, the External URL will not be used. You do not need to configure one unless you want to disable it.";
+"settings.connection_section.cloud_link_overrides_external" = "Vid anslutning via %@ används inte den externa URL:en. Du behöver bara konfigurera en extern URL om du vill inaktivera den anslutningen.";
 "settings.connection_section.cloud_overrides_external" = "Vid anslutning via Cloud används inte den externa URL:en. Du behöver inte konfigurera den så länge du inte vill inaktivera Cloud.";
 "settings.connection_section.cloudhook.check_reachability.reachable" = "Nåbar";
 "settings.connection_section.cloudhook.check_reachability.reachable_status_code" = "Nåbar (HTTP %li)";
@@ -1710,7 +1710,7 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "settings.connection_section.location_send_type.title" = "Plats skickad";
 "settings.connection_section.make_default" = "Ange som standard";
 "settings.connection_section.network_detection_permission.allow" = "Tillåt";
-"settings.connection_section.network_detection_permission.message" = "För att kunna upptäcka ditt hemnätverk måste appen läsa av dess Wi-Fi-namn, vilket iOS endast delar med appar som har åtkomst till platsinformation. Det är knappen ”Exakt plats” som gör att namnet överhuvudtaget kan läsas av, även när du använder appen. Alternativet ”Alltid” krävs dessutom för att namnet ska kunna läsas av även när appen körs i bakgrunden, för sensorer och aviseringar. Tryck här för att ändra dina inställningar.";
+"settings.connection_section.network_detection_permission.message" = "För att upptäcka ditt hemnätverk måste appen läsa av dess Wi-Fi-namn. iOS delar bara namnet med appar som har platsåtkomst. ”Exakt position” måste vara aktiverat för att namnet ska kunna läsas av, även när du använder appen. Dessutom krävs ”Alltid” för att läsa av namnet i bakgrunden för sensorer och aviseringar. Tryck här för att ändra inställningarna.";
 "settings.connection_section.network_detection_permission.title" = "Åtkomst till platsinformation krävs";
 "settings.connection_section.no_base_url.title" = "Ingen URL";
 "settings.connection_section.open_server" = "Öppna";
@@ -1722,7 +1722,7 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "settings.connection_section.refresh_server" = "Uppdatera serverinformation";
 "settings.connection_section.register_as_new_device.footer" = "Använd den här funktionen när en annan enhet som har återställts från en säkerhetskopia av den här enheten delar dess registrering, så att varje enhet får sina egna sensorer, sin egen plats och sina egna aviseringar.";
 "settings.connection_section.register_as_new_device.progress" = "Registrerar…";
-"settings.connection_section.register_as_new_device.restored_footer" = "Den här servern känner igen den här enheten som den som säkerhetskopian kom ifrån, så den får inte information om enhetens position och sensordata. Registrera den som en ny enhet, eller ersätt den gamla enheten om den här har tagit dess plats.";
+"settings.connection_section.register_as_new_device.restored_footer" = "Servern identifierar den här enheten som den enhet som säkerhetskopian kommer från och får därför inte dess position eller sensordata. Registrera den som en ny enhet eller ersätt den gamla om den här har tagit dess plats.";
 "settings.connection_section.register_as_new_device.sign_in_message" = "När du loggar in på den här servern igen får den här enheten en egen registrering. Den nuvarande registreringen finns kvar i Home Assistant för alla andra enheter som fortfarande använder den. Ta bort den där när ingen enhet längre använder den.";
 "settings.connection_section.register_as_new_device.title" = "Registrera som ny enhet";
 "settings.connection_section.remote_ui_url.title" = "Fjärrgränssnitts-URL";
@@ -1746,12 +1746,12 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "settings.connection_section.urls_how_it_works.active.header" = "Används just nu";
 "settings.connection_section.urls_how_it_works.active.none" = "Ingen URL kan användas med de nuvarande inställningarna";
 "settings.connection_section.urls_how_it_works.away.body" = "Om inget av de angivna nätverken stämmer överens används Home Assistant Cloud-URL:en om molntjänsten är aktiverad, och i övriga fall används den externa URL:en.";
-"settings.connection_section.urls_how_it_works.away.body_link" = "When no listed network matches, the %@ URL is used if it is turned on, and the external URL otherwise.";
+"settings.connection_section.urls_how_it_works.away.body_link" = "Om inget av de listade nätverken stämmer överens används URL:en %@ om den är aktiverad, annars används den externa URL:en.";
 "settings.connection_section.urls_how_it_works.away.title" = "Någon annanstans";
-"settings.connection_section.urls_how_it_works.background.body" = "Sensoruppdateringar, aviseringar och lokala push-meddelanden fortsätter att fungera även när appen är stängd. I bakgrunden delar iOS endast nätverksnamnet när platsåtkomst är inställd på ”Alltid” istället för ”När appen används”, så utan den känns ditt hemnätverk inte igen och anslutningarna sker på samma sätt som när du är borta.";
+"settings.connection_section.urls_how_it_works.background.body" = "Sensoruppdateringar, aviseringsåtgärder och lokal push fortsätter att fungera när appen är stängd. I bakgrunden delar iOS bara nätverksnamnet när platsåtkomsten är inställd på ”Alltid” i stället för ”När appen används”. Utan den behörigheten känns hemnätverket inte igen och anslutningarna sker på samma sätt som när du är borta.";
 "settings.connection_section.urls_how_it_works.background.title" = "När appen körs i bakgrunden";
 "settings.connection_section.urls_how_it_works.criteria.always_location" = "Platsåtkomst är inställd på Alltid";
-"settings.connection_section.urls_how_it_works.criteria.footer" = "Alternativet ”Exakt plats” måste vara aktiverat varje gång Wi-Fi-namnet läses in. Alternativet ”Alltid” lägger endast till bakgrunden, så utan det används den interna URL:en fortfarande så länge appen är öppen. När ditt nätverk inte kan matchas faller appen tillbaka enligt beskrivningen ovan.";
+"settings.connection_section.urls_how_it_works.criteria.footer" = "”Exakt position” måste vara aktiverat varje gång Wi-Fi-namnet läses av. Alternativet ”Alltid” behövs också för att läsa av namnet i bakgrunden. Utan det används den interna URL:en fortfarande när appen är öppen. Om nätverket inte kan matchas väljer appen en annan anslutning enligt beskrivningen ovan.";
 "settings.connection_section.urls_how_it_works.criteria.hardware_addresses" = "Minst en hårdvaruadress anges";
 "settings.connection_section.urls_how_it_works.criteria.header" = "På den här enheten";
 "settings.connection_section.urls_how_it_works.criteria.internal_url" = "Intern URL är inställd";
@@ -1759,8 +1759,8 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "settings.connection_section.urls_how_it_works.criteria.met" = "Uppfylls";
 "settings.connection_section.urls_how_it_works.criteria.not_met" = "Uppfylls inte";
 "settings.connection_section.urls_how_it_works.criteria.precise_location" = "Läget ”Exakt position” är aktiverat";
-"settings.connection_section.urls_how_it_works.criteria.ssids" = "Minst ett Wi-Fi-nätverk visas";
-"settings.connection_section.urls_how_it_works.foreground.body" = "Du kommer hem och öppnar appen. Wi-Fi-namnet läses av direkt, det stämmer överens med ett nätverk i listan, och instrumentpanelen laddas via den interna URL:en. För detta måste funktionen ”Exakt position” redan vara aktiverad: om den är avstängd anger iOS endast en ungefärlig position och aldrig nätverksnamnet, vilket gör att appen fortsätter att använda den externa URL:en även när du är hemma.";
+"settings.connection_section.urls_how_it_works.criteria.ssids" = "Minst ett Wi-Fi-nätverk har angetts";
+"settings.connection_section.urls_how_it_works.foreground.body" = "Du kommer hem och öppnar appen. Wi-Fi-namnet läses av direkt och stämmer överens med ett nätverk i listan. Kontrollpanelen läses då in via den interna URL:en. För detta måste ”Exakt position” redan vara aktiverat. Om det är avstängt lämnar iOS bara ut en ungefärlig position och aldrig nätverksnamnet. Då fortsätter appen att använda den externa URL:en även när du är hemma.";
 "settings.connection_section.urls_how_it_works.foreground.title" = "När du använder appen";
 "settings.connection_section.urls_how_it_works.home.body" = "När den här enheten är ansluten till ett av de Wi-Fi-nätverk som du har angett för denna Home Assistant används den interna URL:en. På Mac fungerar det på samma sätt med en angiven hårdvaruadress.";
 "settings.connection_section.urls_how_it_works.home.title" = "På ditt hemnätverk";
@@ -1774,7 +1774,7 @@ Home Assistant är öppen källkod, förespråkar integritet och körs lokalt i 
 "settings.connection_section.webhook.active.unavailable" = "Ingen URL tillgänglig";
 "settings.connection_section.webhook.endpoints.footer" = "Behandla dessa URL:er som känsliga. Den som har tillgång till dem kan skicka förfrågningar till den här mobilappens webhook.";
 "settings.connection_section.webhook.footer" = "Appen skickar uppdateringar om sensorer, position och annat till denna webhook. Home Assistant Cloud tillhandahåller en cloudhook som används när du är borta från hemmet. Utan den skapar appen istället webhook-URL:en utifrån den interna, fjärranslutna eller externa URL:en för denna server.";
-"settings.connection_section.webhook.footer_link" = "The app sends sensor, location and other updates to this webhook. %@ provides a cloudhook, which is used whenever you are away from home. Without it, the app builds the webhook URL from the internal, remote or external URL of this server instead.";
+"settings.connection_section.webhook.footer_link" = "Appen skickar sensor-, positions- och andra uppdateringar till denna webhook. %@ tillhandahåller en cloudhook som används när du befinner dig utanför hemmet. Utan den skapar appen istället webhook-URL:en utifrån den interna, fjärranslutna eller externa URL:en för denna server.";
 "settings.connection_section.webhook.in_use" = "Används";
 "settings.connection_section.webhook.title" = "Webhook";
 "settings.connection_section.websocket.status.authenticating" = "Autentiserar";
@@ -1953,18 +1953,18 @@ Importen ersätter alla kategorier som visas på den här skärmen, inklusive ap
 "settings.debugging.manage_storage.item.app_preferences.title" = "Appinställningar";
 "settings.debugging.manage_storage.item.cached_calendar_events.explanation" = "Kalenderhändelser som sparas så att widgetar kan visa något även när hämtningen misslyckas.";
 "settings.debugging.manage_storage.item.cached_calendar_events.title" = "Cachelagrade kalenderhändelser";
-"settings.debugging.manage_storage.item.cached_entities.explanation" = "Registerposter för entiteter och enheter som speglas från dina servrar. De hämtas igen vid nästa synkronisering.";
+"settings.debugging.manage_storage.item.cached_entities.explanation" = "Entitets-, enhets- och registerposter som speglas från dina servrar. De hämtas igen vid nästa synkronisering.";
 "settings.debugging.manage_storage.item.cached_entities.title" = "Cachelagrad entitetsdata";
 "settings.debugging.manage_storage.item.client_event_log.explanation" = "Händelserna som listas på skärmen för händelseloggen.";
 "settings.debugging.manage_storage.item.client_event_log.title" = "Klientens händelselogg";
 "settings.debugging.manage_storage.item.disk_cache.explanation" = "Profilbilder som har hämtats till ditt Home Assistant-konto. De hämtas på nytt vid behov.";
 "settings.debugging.manage_storage.item.disk_cache.title" = "Cache för profilbilder";
-"settings.debugging.manage_storage.item.downloads.explanation" = "Filer som laddats ner från frontend.";
+"settings.debugging.manage_storage.item.downloads.explanation" = "Filer som hämtats från gränssnittet.";
 "settings.debugging.manage_storage.item.downloads.title" = "Nedladdningar";
 "settings.debugging.manage_storage.item.frontend_asset_cache.explanation" = "Skript, stilmallar och bilder som webbvyn sparade för gränssnittet. De hämtas igen vid nästa inläsning.";
 "settings.debugging.manage_storage.item.frontend_asset_cache.title" = "Cache för gränssnittsresurser";
-"settings.debugging.manage_storage.item.legacy_realm_store.explanation" = "De gamla lagringszonerna, aviseringskategorierna och komplikationerna importeras från detta. Det behålls bara tills importen har körts.";
-"settings.debugging.manage_storage.item.legacy_realm_store.leftover_explanation" = "Kvarvarande data från en äldre version av appen. Den används inte längre.";
+"settings.debugging.manage_storage.item.legacy_realm_store.explanation" = "Den gamla databasen som zoner, aviseringskategorier och komplikationer importeras från. Den behålls bara tills importen har körts.";
+"settings.debugging.manage_storage.item.legacy_realm_store.leftover_explanation" = "Kvarvarande data från en äldre version av appen. Dessa data används inte längre.";
 "settings.debugging.manage_storage.item.legacy_realm_store.title" = "Äldre databas";
 "settings.debugging.manage_storage.item.location_history.explanation" = "Registrerade positionsuppdateringar och deras fel, som visas på skärmen för positionshistorik.";
 "settings.debugging.manage_storage.item.location_history.title" = "Platshistorik";
@@ -2025,10 +2025,10 @@ Importen ersätter alla kategorier som visas på den här skärmen, inklusive ap
 "settings.debugging.reset_app.toast.title" = "Radera appdata";
 "settings.debugging.shake_disclaimer.title" = "Nu när du skakar appen kan du komma åt felsökningsfunktioner.";
 "settings.debugging.shake_disclaimer_optional.title" = "Skaka appen för att öppna felsökning";
-"settings.debugging.simulate_restored_device.alert_title" = "Simulate a restore from another device?";
-"settings.debugging.simulate_restored_device.confirm_button" = "Simulate Restore";
-"settings.debugging.simulate_restored_device.message" = "Marks every server as registered by another device, as if this app's data had been restored from a backup of another phone. The next time the app comes to the foreground, it asks whether to keep those registrations or set this device up as a new one. Nothing is sent to your servers until you choose.";
-"settings.debugging.simulate_restored_device.title" = "Simulate restore from another device";
+"settings.debugging.simulate_restored_device.alert_title" = "Simulera återställning från en annan enhet?";
+"settings.debugging.simulate_restored_device.confirm_button" = "Simulera återställning";
+"settings.debugging.simulate_restored_device.message" = "Markerar varje server som registrerad av en annan enhet, som om appens data hade återställts från en säkerhetskopia av en annan telefon. Nästa gång appen visas frågar den om du vill behålla registreringarna eller konfigurera den här enheten som en ny. Ingenting skickas till dina servrar förrän du har gjort ditt val.";
+"settings.debugging.simulate_restored_device.title" = "Simulera återställning från en annan enhet";
 "settings.debugging.thread.footer" = "Kontrollera vilka Thread-autentiseringsuppgifter som finns i Apple Keychain. Du kan också importera i Home Assistant eller ta bort från Keychain.";
 "settings.debugging.title" = "Felsökning";
 "settings.debugging.web_view_empty_state_timeout.title" = "Tidsgräns för tomt tillstånd i webbvyn";
@@ -2147,12 +2147,12 @@ Importen ersätter alla kategorier som visas på den här skärmen, inklusive ap
 "settings.siri.configure.default_none" = "Ingen";
 "settings.siri.configure.default_title" = "Standard";
 "settings.siri.configure.lists.empty" = "Inga att-göra-listor sparade";
-"settings.siri.configure.lists.footer" = "Siri visar endast de påminnelselistor som är aktiverade. Påminnelser läggs till i standardlistan om du inte anger någon specifik lista.";
+"settings.siri.configure.lists.footer" = "Siri visar bara de att-göra-listor som är aktiverade. Påminnelser läggs till i standardlistan om du inte anger någon lista.";
 "settings.siri.configure.lists.header" = "Att-göra-listor";
 "settings.siri.configure.reload" = "Ladda om från Home Assistant";
 "settings.siri.servers.configure" = "Konfigurera";
 "settings.siri.servers.empty" = "Inga servrar ännu";
-"settings.siri.servers.footer" = "När du stänger av en server tas dess objekt bort från Siri, Spotlight-sökningen och appen Genvägar. Genvägar som du redan har skapat med dessa objekt kommer inte längre att kunna hitta dem. Widgets och kontroller påverkas inte.";
+"settings.siri.servers.footer" = "När du stänger av en server tas dess entiteter bort från Siri, Spotlight-sökningen och appen Genvägar. Genvägar som du redan har skapat med dessa entiteter kan då inte längre hitta dem. Widgetar och kontroller påverkas inte.";
 "settings.siri.servers.header" = "Servrar";
 "settings.siri.subtitle" = "Välj vilka servrar Siri får använda";
 "settings.siri.title" = "Siri";
@@ -2164,19 +2164,19 @@ Importen ersätter alla kategorier som visas på den här skärmen, inklusive ap
 "settings.template_edit.title" = "Redigera mall";
 "settings.test_flight_communication.title" = "Uppdateringar för betatestare";
 "settings.voice_tools_server.body" = "Home Assistant kan använda den här enheten för att omvandla tal till text och text till tal, så att ett röstflöde körs på maskinvara du redan äger.";
-"settings.voice_tools_server.enabled_footer" = "I Home Assistant lägger du till Wyoming-integrationen och kopplar den till den här enheten, eller godkänner den när den upptäcks i ditt nätverk.\
+"settings.voice_tools_server.enabled_footer" = "I Home Assistant lägger du till Wyoming-integrationen och kopplar den till den här enheten eller godkänner den när den upptäcks i ditt nätverk.\
 \
-Servern svarar endast så länge appen är öppen och slutar svara när du stänger den.";
+Servern svarar bara när appen är öppen och slutar svara när du lämnar appen.";
 "settings.voice_tools_server.footer" = "Taligenkänning och uppspelning sker på den här enheten. Endast texten och det färdiga ljudet överförs via ditt lokala nätverk.";
 "settings.voice_tools_server.languages.empty" = "Den här enheten har inga tillgängliga språk för röstigenkänning direkt på enheten.";
 "settings.voice_tools_server.languages.footer" = "Tal på dessa språk känns igen helt och hållet på den här enheten. Ett dikteringsspråk som läggs till i appen Inställningar visas här så snart det stöds för igenkänning direkt på enheten.";
 "settings.voice_tools_server.languages.title" = "Tal-till-text-språk";
-"settings.voice_tools_server.on_device.footer" = "Home Assistant kan välja vilken som helst av dessa för en röstpipeline som använder den här enheten.";
+"settings.voice_tools_server.on_device.footer" = "Home Assistant kan välja valfri av dessa för ett röstflöde som använder den här enheten.";
 "settings.voice_tools_server.on_device.header" = "Tillgänglig på den här enheten";
 "settings.voice_tools_server.port" = "Port";
 "settings.voice_tools_server.speech_permission" = "Behörighet för taligenkänning har inte beviljats, vilket innebär att den här enheten endast kan hantera begäranden om text-till-tal. Godkänn behörigheten i appen Inställningar för att även kunna använda tal-till-text.";
 "settings.voice_tools_server.status.running" = "Lyssnar på port %@";
-"settings.voice_tools_server.status.starting" = "Startar...";
+"settings.voice_tools_server.status.starting" = "Startar…";
 "settings.voice_tools_server.status.stopped" = "Stoppad";
 "settings.voice_tools_server.status_title" = "Status";
 "settings.voice_tools_server.title" = "Server för röstverktyg";
@@ -2248,7 +2248,7 @@ Servern svarar endast så länge appen är öppen och slutar svara när du stän
 "settings_details.general.edge_to_edge.enabled.title" = "Aktivera";
 "settings_details.general.edge_to_edge.footer" = "Visa Home Assistant-gränssnittet från kant till kant på enheter som stöder detta. Detta är en experimentell funktion som kan tas bort när som helst och som dessutom kan orsaka layoutproblem.";
 "settings_details.general.edge_to_edge.title" = "Kant-till-kant-skärm";
-"settings_details.general.enhanced_web_security.footer" = "iOS 27 renderar sidor som laddas via vanlig HTTP i ett säkrare, men betydligt långsammare läge, vilket gör att instrumentpanelerna hänger sig vid en lokal anslutning. Home Assistant stänger av den funktionen så att dina instrumentpaneler förblir snabba. Aktivera detta alternativ om du istället vill behålla Apples skydd, på bekostnad av prestandan. Genom att köra Home Assistant via HTTPS undviker du denna avvägning helt. Träder i kraft nästa gång appen startas.";
+"settings_details.general.enhanced_web_security.footer" = "iOS 27 visar sidor som laddas via vanlig HTTP i ett säkrare men betydligt långsammare läge. Det gör att kontrollpanelerna blir tröga vid lokal anslutning. Home Assistant stänger av funktionen för att hålla dem snabba. Aktivera alternativet om du vill behålla Apples skydd på bekostnad av prestandan. Genom att använda HTTPS för Home Assistant undviker du avvägningen helt. Ändringen träder i kraft nästa gång appen startas.";
 "settings_details.general.enhanced_web_security.title" = "Apple – Förbättrad webbsäkerhet";
 "settings_details.general.full_screen.title" = "Helskärm";
 "settings_details.general.launch_on_login.title" = "Starta appen när du loggar in";
@@ -2346,8 +2346,8 @@ Servern svarar endast så länge appen är öppen och slutar svara när du stän
 "settings_details.notifications.categories_synced.footer_no_categories" = "Kategorier kan också definieras i .yaml-konfigurationen.";
 "settings_details.notifications.categories_synced.header" = "Synkade kategorier";
 "settings_details.notifications.documentation" = "Dokumentation";
-"settings_details.notifications.force_close_warning.footer" = "Visar ett meddelande när appen stängs, eftersom stängningen avbryter plats- och sensoruppdateringarna tills du öppnar den igen. Kräver behörighet för meddelanden och att platsåtkomst är inställd på ”Alltid”.";
-"settings_details.notifications.force_close_warning.title" = "Varning om tvingande stängning";
+"settings_details.notifications.force_close_warning.footer" = "Visar en avisering när appen stängs eftersom positions- och sensoruppdateringar då avbryts tills du öppnar den igen. Kräver aviseringsbehörighet och att platsåtkomsten är inställd på ”Alltid”.";
+"settings_details.notifications.force_close_warning.title" = "Varning vid tvångsavslut";
 "settings_details.notifications.history.clear" = "Rensa";
 "settings_details.notifications.history.clear_confirm.message" = "Detta kan inte ångras.";
 "settings_details.notifications.history.clear_confirm.title" = "Är du säker på att du vill rensa aviseringshistoriken?";
@@ -2422,7 +2422,7 @@ Servern svarar endast så länge appen är öppen och slutar svara när du stän
 "settings_details.notifications.sounds.imported_alert.title" = "Ljud importerat";
 "settings_details.notifications.sounds.system" = "System";
 "settings_details.notifications.sounds.title" = "Ljud";
-"settings_details.notifications.tap_actions.footer" = "När du trycker på en notis frågar systemet vilken åtgärd som ska utföras, istället för att bara öppna appen. I övrigt visar iOS dessa åtgärder endast när du trycker och håller ned notisen. Notiser som redan utför en åtgärd när du trycker på dem, till exempel att öppna en URL eller en enhet, förblir oförändrade.";
+"settings_details.notifications.tap_actions.footer" = "När du trycker på en avisering får du välja vilken åtgärd som ska utföras i stället för att bara öppna appen. Annars visar iOS bara åtgärderna när du håller ned aviseringen. Aviseringar som redan utför en åtgärd vid tryckning, till exempel öppnar en URL eller en entitet, påverkas inte.";
 "settings_details.notifications.tap_actions.title" = "Visa åtgärder vid tryckning";
 "settings_details.notifications.title" = "Notiser";
 "settings_details.privacy.alerts.description" = "Tillåter kontroll av viktiga varningar som säkerhetssårbarheter.";
@@ -2537,7 +2537,7 @@ Servern svarar endast så länge appen är öppen och slutar svara när du stän
 "tab_bar.customize.available_section.header" = "Tillgänglig";
 "tab_bar.customize.dashboards_section.footer_four_tabs" = "De fyra första posterna är flikar, resten visas under ”Mer”. Dra för att ändra ordningen.";
 "tab_bar.customize.dashboards_section.header" = "Kontrollpaneler";
-"tab_bar.customize.hidden_section.footer" = "Dolda instrumentpaneler visas inte i flikfältet eller i \"Mer\".";
+"tab_bar.customize.hidden_section.footer" = "Dolda kontrollpaneler visas inte i flikfältet eller under ”Mer”.";
 "tab_bar.customize.hidden_section.header" = "Dold";
 "tab_bar.customize.hide" = "Dölj";
 "tab_bar.customize.remove" = "Ta bort";
@@ -3070,7 +3070,7 @@ Ingen URL anses vara säker, men data från den här servern synkroniseras inte 
 "watch.settings.client_events.title" = "Loggar";
 "watch.settings.complications.empty" = "Inga komplikationer konfigurerade än.";
 "watch.settings.complications.footer" = "Hämtar varje komplikations aktuella värde direkt från Home Assistant. Detta kräver en nåbar server-URL (i det lokala nätverket eller en fjärr-/moln-URL).";
-"watch.settings.complications.footer_link" = "Fetches each complication's current value directly from Home Assistant. This needs a reachable server URL (local network or a remote/%@ URL).";
+"watch.settings.complications.footer_link" = "Hämtar varje komplikations aktuella värde direkt från Home Assistant. Det kräver en åtkomlig serveradress, antingen på det lokala nätverket eller via en fjärradress eller en %@-adress.";
 "watch.settings.complications.last_attempt" = "Senaste försöket: %@";
 "watch.settings.complications.list_footer" = "Tryck på en komplikation för att se när den senast uppdaterades och för att försöka igen.";
 "watch.settings.complications.never" = "Har ännu inte uppdaterats";
@@ -3150,12 +3150,12 @@ Ingen URL anses vara säker, men data från den här servern synkroniseras inte 
 "web_view.add_to.option.Deeplink.title" = "Djuplänk";
 "web_view.add_to.option.MacToolbar.title" = "Mac-verktygsfältet";
 "web_view.add_to.option.NfcTag.title" = "NFC-tagg";
-"web_view.add_to.option.WatchComplication.title" = "Watch Complication";
+"web_view.add_to.option.WatchComplication.title" = "Klockkomplikation";
 "web_view.add_to.option.Widget.title" = "Widget";
 "web_view.empty_state.body" = "Kontrollera din anslutning eller försök igen senare. Om Home Assistant startas om kommer den att återanslutas efter uppstarten.";
 "web_view.empty_state.clean_cache_and_reload_button" = "Rensa cacheminnet och ladda om sidan";
 "web_view.empty_state.client_certificate.import_button" = "Importera certifikat";
-"web_view.empty_state.client_certificate.rejected.body" = "%@ Det klientcertifikat som är konfigurerat på den här enheten har avvisats. Det kan ha gått ut, återkallats eller ersatts på servern. Importera en giltig certifikatfil (.p12 eller .pfx) för att fortsätta.";
+"web_view.empty_state.client_certificate.rejected.body" = "%@ avvisade klientcertifikatet som är konfigurerat på den här enheten. Det kan ha gått ut, återkallats eller ersatts på servern. Importera en giltig certifikatfil (.p12 eller .pfx) för att fortsätta.";
 "web_view.empty_state.client_certificate.rejected.title" = "Certifikatet avvisades";
 "web_view.empty_state.client_certificate.required.body" = "%@ kräver ett klientcertifikat (mTLS), men inget sådant har konfigurerats för den här servern på den här enheten. Importera din certifikatfil (.p12 eller .pfx) för att fortsätta.";
 "web_view.empty_state.client_certificate.required.title" = "Certifikat krävs";
@@ -3177,22 +3177,22 @@ Ingen URL anses vara säker, men data från den här servern synkroniseras inte 
 "whats_new.app_support_update.item_body" = "Detta är den sista uppdateringen för iOS 15, watchOS 8 och macOS 11 samt tidigare versioner. Tryck här för att läsa mer.";
 "whats_new.app_support_update.item_title" = "Stöd för iOS 15, Watch OS 8 och macOS 11 upphör";
 "whats_new.app_support_update.title" = "Uppdatering av app-support";
-"whats_new.energy_widget.article_body" = "Den nya **Energi**-widgeten placerar din energikontrollpanel på startskärmen och låsskärmen.\
+"whats_new.energy_widget.article_body" = "Den nya **Energi**-widgeten visar din energikontrollpanel på startskärmen och låsskärmen.\
 \
 **Vad den visar**\
-Elnät, solenergi, batteri och gas för den period du väljer: idag, igår, den här veckan eller den här månaden. Välj vilken källa som ska visas först, eller låt widgeten bestämma själv. De små storlekarna och storlekarna för låsskärmen visar strömförbrukningen i realtid när du har strömsensorer konfigurerade, och de bredare storlekarna visar periodens totalsummor för varje källa.\
+Elnät, solenergi, batteri och gas för den period du väljer: i dag, i går, den här veckan eller den här månaden. Välj vilken källa som ska visas först eller låt widgeten bestämma själv. Den lilla widgeten och låsskärmswidgeten visar effekten i realtid när du har effektsensorer konfigurerade och de bredare storlekarna visar periodens totalsummor för varje källa.\
 \
 **Så här lägger du till den**\
-Håll ned på startskärmen, tryck på lägg till-knappen i det övre hörnet, sök efter Home Assistant och välj Energi. För låsskärmen håller du ned på den, trycker på Anpassa och lägger till widgeten där. Det krävs att en kontrollpanel för energi är konfigurerad i Home Assistant.";
+Håll ned på startskärmen, tryck på lägg till-knappen i det övre hörnet, sök efter Home Assistant och välj Energi. På låsskärmen håller du ned, trycker på Anpassa och lägger till widgeten där. En energikontrollpanel måste vara konfigurerad i Home Assistant.";
 "whats_new.energy_widget.item_body" = "Se med ett ögonkast på startskärmen och låsskärmen hur mycket energi ditt hem förbrukar, producerar och lagrar. Tryck för att läsa mer.";
 "whats_new.energy_widget.item_title" = "Energiwidget";
 "whats_new.energy_widget.mac.article_body" = "Den nya **Energi**-widgeten visar din energikontrollpanel direkt på skrivbordet.\
 \
 **Vad den visar**\
-Elnät, solenergi, batteri och gas för den period du väljer: idag, igår, den här veckan eller den här månaden. Välj vilken källa som ska visas först, eller låt widgeten bestämma själv. Den lilla storleken visar strömförbrukningen i realtid när du har strömsensorer installerade, och de bredare storlekarna visar periodens totalsiffror för varje källa.\
+Elnät, solenergi, batteri och gas för den period du väljer: i dag, i går, den här veckan eller den här månaden. Välj vilken källa som ska visas först eller låt widgeten bestämma själv. Den lilla storleken visar effekten i realtid när du har effektsensorer konfigurerade och de bredare storlekarna visar periodens totalsiffror för varje källa.\
 \
 **Så här lägger du till den**\
-Högerklicka på skrivbordet, välj Redigera widgetar, sök efter Home Assistant och välj Energi. Det krävs att en energidashboard är konfigurerad i Home Assistant.";
+Högerklicka på skrivbordet, välj Redigera widgetar, sök efter Home Assistant och välj Energi. En energikontrollpanel måste vara konfigurerad i Home Assistant.";
 "whats_new.energy_widget.mac.item_body" = "Se med ett ögonkast på din datorskärm hur mycket energi ditt hem förbrukar, producerar och lagrar. Tryck för att läsa mer.";
 "whats_new.item.opens_article_hint" = "Öppnar en artikel";
 "whats_new.item.opens_link_hint" = "Öppnar en länk";
@@ -3241,7 +3241,7 @@ Högerklicka på skrivbordet, välj Redigera widgetar, sök efter Home Assistant
 "widgets.automations.description" = "Kör automatisering";
 "widgets.button.reload_timeline" = "Ladda om alla widgets";
 "widgets.calendar.all_day" = "Hela dagen";
-"widgets.calendar.description" = "Se vad som händer i era kalendrar.";
+"widgets.calendar.description" = "Se vad som händer i dina kalendrar.";
 "widgets.calendar.no_events" = "Inga kommande händelser";
 "widgets.calendar.parameter.calendars" = "Kalendrar";
 "widgets.calendar.parameter.show_calendar_name" = "Visa kalendernamn";
@@ -3252,9 +3252,9 @@ Högerklicka på skrivbordet, välj Redigera widgetar, sök efter Home Assistant
 "widgets.calendar.tomorrow" = "I morgon";
 "widgets.commonly_used_entities.description" = "Visa dina vanligaste entiteter baserat på dina användningsmönster.";
 "widgets.commonly_used_entities.empty.description" = "Inga vanligt använda enheter hittades. Använd Home Assistant för att bygga upp din användningshistorik.";
-"widgets.commonly_used_entities.exclude_domains.param.description" = "Objekt inom de valda domänerna visas aldrig.";
+"widgets.commonly_used_entities.exclude_domains.param.description" = "Entiteter i de valda domänerna visas aldrig.";
 "widgets.commonly_used_entities.exclude_domains.param.title" = "Uteslut domäner";
-"widgets.commonly_used_entities.include_domains.param.description" = "När domäner väljs visas endast enheter som tillhör dessa domäner.";
+"widgets.commonly_used_entities.include_domains.param.description" = "När domäner väljs visas bara entiteter som tillhör dessa domäner.";
 "widgets.commonly_used_entities.include_domains.param.title" = "Inkludera domäner";
 "widgets.commonly_used_entities.title" = "Vanliga kontroller";
 "widgets.content_source.complication" = "Komplikation";
@@ -3428,7 +3428,7 @@ Högerklicka på skrivbordet, välj Redigera widgetar, sök efter Home Assistant
 "widgets.todo_list.due_date.in_format" = "I %@";
 "widgets.todo_list.due_date.now" = "Nu";
 "widgets.todo_list.due_date.today" = "Idag";
-"widgets.todo_list.load_failed" = "Couldn't update. Tap refresh.";
+"widgets.todo_list.load_failed" = "Det gick inte att uppdatera. Tryck på ”Uppdatera”.";
 "widgets.todo_list.parameter.item_id" = "Artikel-ID";
 "widgets.todo_list.parameter.list" = "Lista";
 "widgets.todo_list.parameter.list_id" = "List-ID";

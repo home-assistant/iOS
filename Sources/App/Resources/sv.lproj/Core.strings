@@ -21,7 +21,7 @@
 "component::alarm_control_panel::title" = "Larmkontrollpanel";
 "component::alert::entity_component::_::state::idle" = "Inaktiv";
 "component::alert::entity_component::_::state::on" = "Aktiv";
-"component::alert::title" = "Alert";
+"component::alert::title" = "Varning";
 "component::assist_satellite::title" = "Assist satellit";
 "component::automation::entity_component::_::state::off" = "Av";
 "component::automation::entity_component::_::state::on" = "På";
@@ -70,7 +70,7 @@
 "component::cover::entity_component::_::state::open" = "Öppen";
 "component::cover::title" = "Skydd";
 "component::date::title" = "Datum";
-"component::datetime::title" = "Datum/Tid";
+"component::datetime::title" = "Datum/tid";
 "component::deluge::entity::sensor::status::state::idle" = "Inaktiv";
 "component::demo::entity::climate::ubercool::state_attributes::swing_mode::state::off" = "Av";
 "component::demo::entity::sensor::thermostat_mode::state::away" = "Borta";
@@ -186,7 +186,7 @@ Besök {url} för att avsluta installationen.";
 "component::mqtt::selector::set_ca_cert::options::off" = "Av";
 "component::netatmo::device_automation::trigger_subtype::away" = "Borta";
 "component::notify::title" = "Aviseringar";
-"component::number::title" = "Nummer";
+"component::number::title" = "Tal";
 "component::overkiz::entity::climate::overkiz::state_attributes::fan_mode::state::away" = "Borta";
 "component::overkiz::entity::select::open_closed_partial::state::closed" = "Stängd";
 "component::overkiz::entity::select::open_closed_partial::state::open" = "Öppen";
