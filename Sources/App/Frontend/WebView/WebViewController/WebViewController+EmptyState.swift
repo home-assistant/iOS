@@ -100,7 +100,9 @@ extension WebViewController {
     }
 
     @objc func sceneDidActivate(_ notification: Notification) {
-        guard concernsFrontendScene(notification) else { return }
+        // A parked frontend is not back yet, whatever its scene says: `unparkFrontend()` does this once
+        // the web view is in its window again.
+        guard concernsFrontendScene(notification), !webViewParking.isParked else { return }
         handleSceneDidActivate()
     }
 

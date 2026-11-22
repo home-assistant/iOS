@@ -83,8 +83,10 @@ final class WebViewParking {
         delay: TimeInterval,
         action: @escaping @MainActor () -> Void
     ) -> () -> Void {
+        // On the main run loop, so the action runs as the timer fires: one that is queued instead could
+        // still run after its timer was cancelled.
         let timer = Timer.scheduledTimer(withTimeInterval: delay, repeats: false) { _ in
-            Task { @MainActor in
+            MainActor.assumeIsolated {
                 action()
             }
         }

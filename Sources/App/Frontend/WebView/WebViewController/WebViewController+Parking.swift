@@ -44,6 +44,13 @@ extension WebViewController {
         // What happens to the frontend from here on is what happens to one in the background: its
         // connection goes after five minutes, and nobody is there to see an empty state about that.
         handleSceneDidEnterBackground()
+        // An empty state that is already up keeps reconnecting, and a reconnect rebuilds the frontend in
+        // the window this one was parked for. It comes back through the grace period like any other.
+        if overlayState?.emptyState != nil, emptyStateStyle(for: connectionState) == .disconnected,
+           clientCertificateIssue == nil {
+            hideEmptyState()
+            isEmptyStateDeferredUntilActive = true
+        }
     }
 
     func unparkFrontend() {

@@ -137,6 +137,49 @@ final class WebViewControllerParkingTests: XCTestCase {
         XCTAssertNotNil(sut.emptyStateTimer)
     }
 
+    /// An empty state that is up goes on reconnecting, and every reconnect would rebuild the frontend in
+    /// the window nobody can see.
+    func testParkingTakesDownADisconnectedEmptyStateUntilAWindowIsBack() throws {
+        let sut = makeSUT()
+        let overlayState = WebFrontendOverlayState()
+        sut.overlayState = overlayState
+        sut.connectionState = .disconnected
+        sut.showEmptyState()
+        XCTAssertNotNil(overlayState.emptyState)
+
+        isWindowVisible = false
+        sut.updateFrontendParking()
+        try parkAfterTheDelay()
+
+        XCTAssertNil(overlayState.emptyState)
+        XCTAssertTrue(sut.isEmptyStateDeferredUntilActive)
+
+        isWindowVisible = true
+        sut.updateFrontendParking()
+        defer { sut.emptyStateTimer?.invalidate() }
+
+        XCTAssertFalse(sut.isEmptyStateDeferredUntilActive)
+        XCTAssertNotNil(sut.emptyStateTimer)
+    }
+
+    /// A scene can become active while its window is still covered. The grace period belongs to the
+    /// moment the web view is back.
+    func testASceneThatActivatesWhileTheFrontendIsParkedStartsNoGracePeriod() throws {
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.first)
+        let sut = makeSUT()
+        sut.overlayState = WebFrontendOverlayState()
+        isWindowVisible = false
+        sut.updateFrontendParking()
+        try parkAfterTheDelay()
+        sut.connectionState = .disconnected
+        sut.showEmptyState()
+
+        sut.sceneDidActivate(Notification(name: UIScene.didActivateNotification, object: scene))
+
+        XCTAssertTrue(sut.isEmptyStateDeferredUntilActive)
+        XCTAssertNil(sut.emptyStateTimer)
+    }
+
     /// Hiding the app parks the frontend as well, and there the scene reports its own return.
     func testASceneThatIsNotActiveYetIsLeftToReportItsOwnActivation() throws {
         let sut = makeSUT()
