@@ -28,16 +28,17 @@ extension WebViewController {
     /// Shows the disconnected/unauthenticated empty state as a SwiftUI overlay in `HomeAssistantView` (via
     /// `overlayState`) rather than an alpha-animated subview, so app-level sheets can float over it.
     ///
-    /// While the scene is not active the disconnected variant is held back instead: nobody can see it, and
-    /// the usual reason the frontend is disconnected is the backgrounding itself (its socket died, or the
-    /// web content process was reclaimed, while the scene was away), which a frontend that is on screen
-    /// again recovers from in a moment. `handleSceneDidActivate()` gives it the grace period for that, so
-    /// the user coming back sees the frontend or the loader rather than an error that is already out of
-    /// date. Authentication and certificate problems are shown regardless: time does not fix those, and
-    /// the frontend has nothing to retry.
+    /// While the scene is not active, or the web view is parked because no window is visible, the
+    /// disconnected variant is held back instead: nobody can see it, and the usual reason the frontend is
+    /// disconnected is the backgrounding itself (its socket died, the web content process was reclaimed,
+    /// or its page was hidden for so long that the frontend closed its connection), which a frontend that
+    /// is on screen again recovers from in a moment. `handleSceneDidActivate()` gives it the grace period
+    /// for that, so the user coming back sees the frontend or the loader rather than an error that is
+    /// already out of date. Authentication and certificate problems are shown regardless: time does not
+    /// fix those, and the frontend has nothing to retry.
     func showEmptyState() {
-        if !isSceneActive(frontendWindowScene), emptyStateStyle(for: connectionState) == .disconnected {
-            Current.Log.info("Deferring the disconnected empty state until the scene is active")
+        if !isFrontendOnScreen, emptyStateStyle(for: connectionState) == .disconnected {
+            Current.Log.info("Deferring the disconnected empty state until the frontend is on screen")
             isEmptyStateDeferredUntilActive = true
             return
         }

@@ -131,6 +131,20 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
     /// activation that follows a backgrounding is told apart from one that follows a system alert.
     var didEnterBackgroundSinceLastActivation = false
 
+    /// Whether at least part of one of the app's windows is on screen. Only a Mac window can leave the
+    /// screen while its scene stays active, so everywhere else the answer is yes. Replaceable in tests.
+    var isAnyAppWindowVisible: @MainActor () -> Bool = {
+        #if targetEnvironment(macCatalyst)
+        return Current.macBridge.hasVisibleWindow
+        #else
+        return true
+        #endif
+    }
+
+    /// Takes the web view out of its window while no window is visible, as `updateFrontendParking()`
+    /// decides. Replaceable in tests.
+    var webViewParking = WebViewParking()
+
     var blankFrontendRecoveryAttempts = 0
     var contentProcessTerminations = 0
 
@@ -328,6 +342,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         becomeFirstResponder()
 
         observeConnectionNotifications()
+        observeWindowVisibility()
         setupKioskModeObservation()
         #if !targetEnvironment(macCatalyst)
         setupHingeObservation()
@@ -438,6 +453,7 @@ final class WebViewController: UIViewController, WKNavigationDelegate, WKUIDeleg
         super.viewDidAppear(animated)
         updateDatabaseAndPanels()
         updateWindowSceneTitle()
+        updateFrontendParking()
     }
 
     override func didMove(toParent parent: UIViewController?) {

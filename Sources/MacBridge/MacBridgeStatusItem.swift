@@ -138,20 +138,13 @@ class MacBridgeStatusItemCallbackInfoImpl: MacBridgeStatusItemCallbackInfo {
     }
 
     var isActive: Bool {
-        normalAppWindows.contains { window in
+        NSApp.normalAppWindows.contains { window in
             window.isVisible && !window.isMiniaturized
         }
     }
 
     var hasWindows: Bool {
-        !normalAppWindows.isEmpty
-    }
-
-    private var normalAppWindows: [NSWindow] {
-        NSApp.windows.filter { window in
-            window.level == .normal &&
-                window.canBecomeKey
-        }
+        !NSApp.normalAppWindows.isEmpty
     }
 
     func activate() {
@@ -172,7 +165,7 @@ class MacBridgeStatusItemCallbackInfoImpl: MacBridgeStatusItemCallbackInfo {
     private func showAppWindows() {
         NSApp.unhide(sender)
 
-        for window in normalAppWindows {
+        for window in NSApp.normalAppWindows {
             if window.isMiniaturized {
                 window.deminiaturize(sender)
             }
