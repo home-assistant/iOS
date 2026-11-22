@@ -33,6 +33,10 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 
     var commandManager = NotificationCommandManager()
 
+    /// Rings `incoming_call` notifications through CallKit. Created on first use: until the user switches
+    /// incoming calls on, nothing touches CallKit.
+    lazy var incomingCallController = IncomingCallController()
+
     /// Offers a notification's own actions when a plain tap on it has nothing else to do.
     let tapActionPresenter = NotificationTapActionPresenter()
 
@@ -41,6 +45,14 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 
     override init() {
         super.init()
+        // Reached for local push delivered to the app itself (simulator); on devices the PushProvider extension
+        // receives local push and hands calls over through `NEAppPushDelegate`.
+        commandManager.register(
+            command: IncomingCallRequest.command,
+            handler: IncomingCallCommandHandler { [weak self] request, _ in
+                DispatchQueue.main.async { self?.incomingCallController.report(request) }
+            }
+        )
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(didBecomeActive),
@@ -51,7 +63,12 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
 
     func setupNotifications() {
         UNUserNotificationCenter.current().delegate = self
-        _ = localPushManager
+        IncomingCallFeature.enforceAvailability()
+        if let extensionInterface = localPushManager as? NotificationManagerLocalPushInterfaceExtension {
+            extensionInterface.incomingCallHandler = { [weak self] userInfo in
+                self?.reportIncomingCallFromExtension(userInfo: userInfo)
+            }
+        }
         if Manager.shared.callbackURLScheme == nil {
             Manager.shared.callbackURLScheme = Manager.urlSchemes?.first
         }
@@ -69,6 +86,26 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
             LiveActivityPendingStartObserver.drain()
         }
         #endif
+    }
+
+    /// The PushProvider extension launched the app with `NEAppPushProvider.reportIncomingCall(userInfo:)`, after
+    /// it routed the call to CallKit. iOS requires a call to be reported for such a launch, so one always is:
+    /// the payload is checked again here, and a payload that does not hold up is reported and ended at once.
+    private func reportIncomingCallFromExtension(userInfo: [AnyHashable: Any]) {
+        let hadict = userInfo as? [String: Any] ?? [:]
+        let server = (hadict["webhook_id"] as? String).flatMap { Current.servers.server(forWebhookID: $0) }
+
+        guard let server, IncomingCallFeature.isEnabled,
+              case let .success(request) = IncomingCallRequest.parse(
+                  homeassistant: hadict,
+                  serverURLs: IncomingCallRouting.serverURLs(for: server)
+              ) else {
+            Current.Log.error("incoming call from the push extension did not validate, ending it")
+            incomingCallController.reportInvalidCall()
+            return
+        }
+
+        incomingCallController.report(request, mustReport: true)
     }
 
     private func openCamera(from userInfo: [AnyHashable: Any]?) {
@@ -404,8 +441,11 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         // `live_update` Live Activity start delivered over local push is handled by the
         // PushProvider extension (which can't touch ActivityKit), so without this a tap would
         // never start the activity. Fire-and-forget: it's independent of the tap routing below.
+        // Except `incoming_call`: the notification is how that call reached the user, so tapping it or its
+        // Answer and Decline actions must not ring the phone again. Those actions send their events below.
         if let hadict = userInfo["homeassistant"] as? [String: Any],
-           (hadict["command"] as? String) != nil || (hadict["live_update"] as? Bool) == true {
+           (hadict["command"] as? String) != nil || (hadict["live_update"] as? Bool) == true,
+           !IncomingCallRequest.isIncomingCall(userInfo: userInfo) {
             commandManager.handle(userInfo).cauterize()
         }
 
@@ -457,6 +497,24 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         // but willPresent fires when the app is in the foreground. Without this,
         // notifications received while the app is open would never trigger the
         // Live Activity handler.
+        // A remote `incoming_call` received in the foreground rings through CallKit when the user switched that
+        // on, instead of showing the banner; otherwise it is shown like any notification.
+        if IncomingCallRequest.isIncomingCall(userInfo: notification.request.content.userInfo) {
+            // Only the server the call names may ring: no fallback to the first server.
+            let server = (notification.request.content.userInfo["webhook_id"] as? String)
+                .flatMap { Current.servers.server(forWebhookID: $0) }
+            if case let .callKit(request) = IncomingCallRouting.route(
+                userInfo: notification.request.content.userInfo,
+                server: server
+            ) {
+                incomingCallController.report(request)
+                completionHandler([])
+            } else {
+                completionHandler([.badge, .sound, .list, .banner])
+            }
+            return
+        }
+
         // If a command is recognized, suppress the notification banner so the user
         // sees only the Live Activity (not a duplicate standard notification).
         if let hadict = notification.request.content.userInfo["homeassistant"] as? [String: Any],

@@ -605,6 +605,93 @@ class LocalPushManagerTests: XCTestCase {
         XCTAssertEqual(ha["relevance_score"] as? Double, 0.7)
     }
 
+    func testIncomingCallLocalPushPromotesCallFields() throws {
+        let event = try LocalPushEvent(data: .dictionary([
+            "message": "incoming_call",
+            "title": "Toulouse",
+            "data": [
+                "tag": "visio",
+                "caller": "Papa",
+                "video": false,
+                "url": "/lovelace/visio",
+                "timeout": 30,
+                "action_data": ["room": "salon"],
+            ],
+        ]))
+
+        let content = event.contentWithoutServer
+        XCTAssertEqual(content.title, "Toulouse")
+        XCTAssertEqual(content.body, "Papa")
+        XCTAssertEqual(content.interruptionLevel, .timeSensitive)
+        let ha = try XCTUnwrap(content.userInfo["homeassistant"] as? [String: Any])
+        XCTAssertEqual(ha["command"] as? String, "incoming_call")
+        XCTAssertEqual(ha["tag"] as? String, "visio")
+        XCTAssertEqual(ha["caller"] as? String, "Papa")
+        XCTAssertEqual(ha["video"] as? Bool, false)
+        XCTAssertEqual(ha["url"] as? String, "/lovelace/visio")
+        XCTAssertEqual(ha["timeout"] as? Int, 30)
+        XCTAssertEqual(ha["room"] as? String, "salon")
+        let actions = try XCTUnwrap(content.userInfo["actions"] as? [[String: Any]])
+        XCTAssertEqual(actions.compactMap { $0["action"] as? String }, ["CALL_ANSWER", "CALL_DECLINE"])
+        XCTAssertEqual(actions.first?["uri"] as? String, "/lovelace/visio")
+    }
+
+    func testIncomingCallIsANotificationWhileTheFeatureIsOff() throws {
+        let previousTestFlight = Current.isTestFlight
+        defer { Current.isTestFlight = previousTestFlight }
+        Current.isTestFlight = false
+        setUpManager(webhookID: "webhook1")
+
+        let contentRequested = expectation(description: "contentRequestsChanged")
+        attachmentManager.contentRequestsChanged = {
+            contentRequested.fulfill()
+        }
+
+        let sub = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
+        sub.handler(sub.cancellable, .dictionary([
+            "message": "incoming_call",
+            "data": ["tag": "visio", "caller": "Papa"],
+        ]))
+
+        waitForExpectations(timeout: 10.0)
+
+        let request = try XCTUnwrap(attachmentManager.contentRequests.first)
+        let ha = try XCTUnwrap(request.0.userInfo["homeassistant"] as? [String: Any])
+        XCTAssertNil(ha["command"], "shown as a notification, not handled as a command")
+        XCTAssertEqual(ha["tag"] as? String, "visio")
+        XCTAssertEqual(request.0.title, "Papa")
+    }
+
+    func testIncomingCallIsACommandWhileTheFeatureIsOn() throws {
+        guard IncomingCallFeature.isSupportedOnThisDevice else {
+            throw XCTSkip("CallKit is not available with this device's region")
+        }
+        let previousTestFlight = Current.isTestFlight
+        let previousEnabled = Current.settingsStore.incomingCallsEnabled
+        defer {
+            Current.isTestFlight = previousTestFlight
+            Current.settingsStore.incomingCallsEnabled = previousEnabled
+            IncomingCallGuard().reset()
+        }
+        Current.isTestFlight = true
+        Current.settingsStore.incomingCallsEnabled = true
+        IncomingCallGuard().reset()
+        setUpManager(webhookID: "webhook1")
+
+        let sub = try XCTUnwrap(apiConnection.pendingSubscriptions.first)
+        sub.handler(sub.cancellable, .dictionary([
+            "message": "incoming_call",
+            "data": ["tag": "visio-command", "caller": "Papa"],
+        ]))
+
+        let runLoop = expectation(description: "run loop")
+        DispatchQueue.main.async(execute: runLoop.fulfill)
+        waitForExpectations(timeout: 10.0)
+
+        XCTAssertTrue(attachmentManager.contentRequests.isEmpty, "rings through CallKit instead of a banner")
+        XCTAssertTrue(added.isEmpty)
+    }
+
     func testNonLiveActivityCommandSuppressesBannerButConfirms() throws {
         setUpManager(webhookID: "webhook1")
 

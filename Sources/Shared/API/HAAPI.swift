@@ -973,6 +973,14 @@ public class HomeAssistantAPI {
             self.textInput = textInput
         }
 
+        /// Builds the info for an action that has no notification at all, such as answering a CallKit call.
+        public init(identifier: String, category: String? = nil, actionData: Any?, textInput: String? = nil) {
+            self.identifier = identifier
+            self.category = category
+            self.actionData = actionData
+            self.textInput = textInput
+        }
+
         public init(map: ObjectMapper.Map) throws {
             self.identifier = try map.value("identifier")
             self.category = try? map.value("category")

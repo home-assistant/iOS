@@ -115,6 +115,14 @@ private struct HandlerClearNotification: NotificationCommandHandler {
             UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: keys)
         }
 
+        // The same tag also stops a call still ringing through CallKit (the caller hung up, or it was answered
+        // elsewhere). Harmless when no call has this tag.
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        if let tag = payload["tag"] as? String {
+            IncomingCallPendingEnd.request(tag: tag)
+        }
+        #endif
+
         // ActivityKit works only in the app, not the PushProvider extension, so the extension
         // hands the end off via the App Group queue + a Darwin signal for the app to drain. The
         // confirm id, when present, lets the app report back so the extension can have the server

@@ -3321,6 +3321,19 @@ public enum L10n {
     }
   }
 
+  public enum IncomingCall {
+    /// Incoming call
+    public static var audio: String { return L10n.tr("Localizable", "incoming_call.audio") }
+    /// Incoming video call
+    public static var video: String { return L10n.tr("Localizable", "incoming_call.video") }
+    public enum Action {
+      /// Answer
+      public static var answer: String { return L10n.tr("Localizable", "incoming_call.action.answer") }
+      /// Decline
+      public static var decline: String { return L10n.tr("Localizable", "incoming_call.action.decline") }
+    }
+  }
+
   public enum Kiosk {
     /// Lock the app into a single dashboard for wall panels and shared devices.
     public static var body: String { return L10n.tr("Localizable", "kiosk.body") }
@@ -7727,6 +7740,12 @@ public enum L10n {
           /// Remote
           public static var remote: String { return L10n.tr("Localizable", "settings_details.notifications.history.kind.remote") }
         }
+      }
+      public enum IncomingCalls {
+        /// When Home Assistant sends an incoming_call notification, your phone rings like a phone call, on the lock screen too, and answering opens the page the call names. Calls are not added to your call history. When this is off, or while Focus is on, calls arrive as notifications.
+        public static var footer: String { return L10n.tr("Localizable", "settings_details.notifications.incoming_calls.footer") }
+        /// Ring incoming calls
+        public static var title: String { return L10n.tr("Localizable", "settings_details.notifications.incoming_calls.title") }
       }
       public enum LocalPush {
         /// Local Push

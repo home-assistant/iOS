@@ -713,6 +713,17 @@ public class SettingsStore {
         }
     }
 
+    /// Whether `incoming_call` notifications ring through CallKit. Opt-in: a call that takes over the lock screen
+    /// is something the user asks for. Kept in the App Group defaults, where the PushProvider extension reads it.
+    public var incomingCallsEnabled: Bool {
+        get {
+            prefs.bool(forKey: "incomingCallsEnabled")
+        }
+        set {
+            prefs.set(newValue, forKey: "incomingCallsEnabled")
+        }
+    }
+
     public var widgetAuthenticityToken: String {
         let key = "widgetAuthenticityToken"
 
