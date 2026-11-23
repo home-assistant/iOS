@@ -17,9 +17,7 @@ public enum IncomingCallFeature {
 
     /// Whether the switch is offered in Notification settings.
     public static var isOffered: Bool {
-        // Limited to TestFlight builds while it matures. Removing this line is the ungating change.
-        guard Current.isTestFlight else { return false }
-        return isSupportedOnThisDevice
+        isSupportedOnThisDevice
     }
 
     /// The device can run the feature at all.

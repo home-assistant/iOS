@@ -108,7 +108,7 @@ final class IncomingCallRoutingTests: XCTestCase {
         )
     }
 
-    func testFeatureIsOffUntilSwitchedOnAndOnlyOnTestFlight() {
+    func testFeatureIsOffUntilSwitchedOn() {
         let previousTestFlight = Current.isTestFlight
         let previousEnabled = Current.settingsStore.incomingCallsEnabled
         defer {
@@ -124,8 +124,8 @@ final class IncomingCallRoutingTests: XCTestCase {
         XCTAssertEqual(IncomingCallFeature.isEnabled, IncomingCallFeature.isSupportedOnThisDevice)
 
         Current.isTestFlight = false
-        XCTAssertFalse(IncomingCallFeature.isOffered)
-        XCTAssertFalse(IncomingCallFeature.isEnabled)
+        XCTAssertEqual(IncomingCallFeature.isOffered, IncomingCallFeature.isSupportedOnThisDevice)
+        XCTAssertEqual(IncomingCallFeature.isEnabled, IncomingCallFeature.isSupportedOnThisDevice)
     }
 
     func testExtensionTrustsTheStoredSwitch() {
@@ -143,7 +143,7 @@ final class IncomingCallRoutingTests: XCTestCase {
         XCTAssertEqual(IncomingCallFeature.isEnabled, IncomingCallFeature.isSupportedOnThisDevice)
     }
 
-    func testAppTurnsTheSwitchOffWhereItIsNotOffered() {
+    func testAppTurnsTheSwitchOffWhereCallKitIsUnavailable() {
         let previousTestFlight = Current.isTestFlight
         let previousEnabled = Current.settingsStore.incomingCallsEnabled
         defer {
@@ -160,7 +160,7 @@ final class IncomingCallRoutingTests: XCTestCase {
         Current.settingsStore.incomingCallsEnabled = true
         Current.isTestFlight = false
         IncomingCallFeature.enforceAvailability()
-        XCTAssertFalse(Current.settingsStore.incomingCallsEnabled)
+        XCTAssertEqual(Current.settingsStore.incomingCallsEnabled, IncomingCallFeature.isSupportedOnThisDevice)
     }
 
     func testUnsupportedRegion() {
