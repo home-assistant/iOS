@@ -108,6 +108,11 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
         // An HTML page from a proxy, WAF or captive portal has no OAuth error code.
         XCTAssertFalse(AuthError.serverError(statusCode: 403, errorCode: nil, error: "<html></html>")
             .shouldRequireReauthentication)
+        XCTAssertFalse(AuthError.serverError(statusCode: 400, errorCode: nil, error: "Bad Request")
+            .shouldRequireReauthentication)
+        // A bare 4xx with an empty body, e.g. Home Assistant's IP ban middleware, did not judge the token.
+        XCTAssertFalse(AuthError.serverError(statusCode: 403, errorCode: nil, error: "")
+            .shouldRequireReauthentication)
         XCTAssertFalse(AuthError.serverError(statusCode: 500, errorCode: "internal_error", error: nil)
             .shouldRequireReauthentication)
     }
