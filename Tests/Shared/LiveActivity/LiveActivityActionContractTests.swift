@@ -12,12 +12,15 @@ final class LiveActivityActionContractTests: XCTestCase {
                 "live_update": true,
                 "tag": "music",
                 "actions": [
-                    ["action": "PLAY", "title": "Play", "icon": "sfsymbols:play.fill", "show_title": false],
+                    [
+                        "action": "PLAY", "title": "Play", "icon": "sfsymbols:play.fill",
+                        "show_title": false, "authentication_required": false,
+                    ],
                     ["action": "REPLY", "title": "Reply"],
                     ["action": "OPEN", "title": "Link", "uri": "/lovelace"],
                     ["action": "TEXT", "title": "Text", "behavior": "textInput"],
                     ["action": "PLAY", "title": "Duplicate"],
-                    ["action": "PAUSE", "title": "Pause", "show_title": 0],
+                    ["action": "PAUSE", "title": "Pause", "show_title": 0, "authentication_required": 0],
                     ["action": "NEXT", "title": "Next"],
                     ["action": "EXTRA", "title": "Extra"],
                 ],
@@ -31,6 +34,7 @@ final class LiveActivityActionContractTests: XCTestCase {
         XCTAssertNil(state.actions[1].showTitle)
         XCTAssertNil(state.actions.last?.systemImage)
         XCTAssertNil(state.actions.last?.showTitle)
+        XCTAssertEqual(state.actions.map(\.authenticationRequired), [false, true, true])
 
         let encoded = try JSONEncoder().encode(state)
         let decoded = try JSONDecoder().decode(HALiveActivityAttributes.ContentState.self, from: encoded)
@@ -47,11 +51,11 @@ final class LiveActivityActionContractTests: XCTestCase {
             {"action":"OPEN","title":"Open","uri":"/lovelace"},
             {"action":"NO_URI","title":"Open","uri":null},
             {"action":"INPUT","title":"Reply","behavior":"textInput"},
-            {"action":"PLAY","title":"Play","show_title":false},
+            {"action":"PLAY","title":"Play","show_title":false,"authentication_required":false},
             {"action":"PLAY","title":"Duplicate"},
             {"action":"REPLY","title":"Reply"},
-            {"action":"NEXT","title":"Next","show_title":0,"icon":[]},
-            {"action":"STOP","title":"Stop","icon":"sfsymbols:"},
+            {"action":"NEXT","title":"Next","show_title":0,"icon":[],"authentication_required":"false"},
+            {"action":"STOP","title":"Stop","icon":"sfsymbols:","authentication_required":true},
             {"action":"EXTRA","title":"Extra"}
           ]
         }
@@ -62,6 +66,7 @@ final class LiveActivityActionContractTests: XCTestCase {
         XCTAssertNil(state.actions[1].showTitle)
         XCTAssertNil(state.actions[1].icon)
         XCTAssertNil(state.actions.last?.systemImage)
+        XCTAssertEqual(state.actions.map(\.authenticationRequired), [false, true, true])
     }
 
     func testByteLimitsPreserveValidButtonsAndDropOversizedIcons() {
@@ -80,13 +85,13 @@ final class LiveActivityActionContractTests: XCTestCase {
     func testLocalUpdateOnlyAddsButtonsFromTheActivityOwner() {
         let attributes = HALiveActivityAttributes(tag: "music", title: "Music", serverWebhookId: "owner")
         let state = HALiveActivityAttributes.ContentState(message: "Track", actions: [
-            .init(id: "PLAY", title: "Play"),
+            .init(id: "PLAY", title: "Play", authenticationRequired: false),
         ])
         for sender in ["owner", "other", "", nil] as [String?] {
             let update = LiveActivityRegistry.Update(state: state, relevanceScore: nil, serverWebhookId: sender)
             let result = update.content(after: nil, attributes: attributes).state
             XCTAssertEqual(result.message, "Track")
-            XCTAssertEqual(result.actions.map(\.id), sender == "owner" ? ["PLAY"] : [])
+            XCTAssertEqual(result.actions, sender == "owner" ? state.actions : [])
         }
     }
 

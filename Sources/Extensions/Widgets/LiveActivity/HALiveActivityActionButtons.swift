@@ -14,21 +14,34 @@ struct HALiveActivityActionButtons: View {
         HStack(spacing: DesignSystem.Spaces.one) {
             ForEach(actions) { action in
                 let symbol = action.systemImage.flatMap { UIImage(systemName: $0) == nil ? nil : $0 }
-                Button(intent: HALiveActivityActionIntent(activityID: activityID, actionID: action.id)) {
-                    HStack(spacing: DesignSystem.Spaces.half) {
-                        if let symbol {
-                            Image(systemSymbol: SFSymbol(rawValue: symbol))
-                                .accessibilityHidden(true)
+                let label = HStack(spacing: DesignSystem.Spaces.half) {
+                    if let symbol {
+                        Image(systemSymbol: SFSymbol(rawValue: symbol))
+                            .accessibilityHidden(true)
+                    }
+                    if action.showTitle != false || symbol == nil {
+                        Text(verbatim: action.title)
+                            .lineLimit(1)
+                    }
+                }
+                .font(.subheadline.weight(.semibold))
+                .frame(maxWidth: .infinity, minHeight: 44)
+                .background(.primary.opacity(0.12), in: Capsule())
+                .contentShape(Capsule())
+
+                Group {
+                    if action.authenticationRequired {
+                        Button(intent: HALiveActivityActionIntent(activityID: activityID, actionID: action.id)) {
+                            label
                         }
-                        if action.showTitle != false || symbol == nil {
-                            Text(verbatim: action.title)
-                                .lineLimit(1)
+                    } else {
+                        Button(intent: HALiveActivityUnauthenticatedActionIntent(
+                            activityID: activityID,
+                            actionID: action.id
+                        )) {
+                            label
                         }
                     }
-                    .font(.subheadline.weight(.semibold))
-                    .frame(maxWidth: .infinity, minHeight: 44)
-                    .background(.primary.opacity(0.12), in: Capsule())
-                    .contentShape(Capsule())
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(Text(verbatim: action.title))

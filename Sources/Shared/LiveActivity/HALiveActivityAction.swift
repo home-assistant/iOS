@@ -8,21 +8,30 @@ public struct HALiveActivityAction: Codable, Hashable, Identifiable, Sendable {
     public let title: String
     public let icon: String?
     public let showTitle: Bool?
+    public let authenticationRequired: Bool
 
     enum CodingKeys: String, CodingKey {
         case id = "action"
         case title
         case icon
         case showTitle = "show_title"
+        case authenticationRequired = "authentication_required"
         case uri
         case behavior
     }
 
-    public init(id: String, title: String, icon: String? = nil, showTitle: Bool? = nil) {
+    public init(
+        id: String,
+        title: String,
+        icon: String? = nil,
+        showTitle: Bool? = nil,
+        authenticationRequired: Bool = true
+    ) {
         self.id = id
         self.title = title
         self.icon = icon.flatMap { $0.utf8.count <= 96 ? $0 : nil }
         self.showTitle = showTitle
+        self.authenticationRequired = authenticationRequired
     }
 
     public init(from decoder: Decoder) throws {
@@ -39,7 +48,8 @@ public struct HALiveActivityAction: Codable, Hashable, Identifiable, Sendable {
             id: container.decode(String.self, forKey: .id),
             title: container.decode(String.self, forKey: .title),
             icon: try? container.decode(String.self, forKey: .icon),
-            showTitle: try? container.decode(Bool.self, forKey: .showTitle)
+            showTitle: try? container.decode(Bool.self, forKey: .showTitle),
+            authenticationRequired: (try? container.decode(Bool.self, forKey: .authenticationRequired)) ?? true
         )
     }
 
@@ -49,6 +59,9 @@ public struct HALiveActivityAction: Codable, Hashable, Identifiable, Sendable {
         try container.encode(title, forKey: .title)
         try container.encodeIfPresent(icon, forKey: .icon)
         try container.encodeIfPresent(showTitle, forKey: .showTitle)
+        if !authenticationRequired {
+            try container.encode(false, forKey: .authenticationRequired)
+        }
     }
 
     public var systemImage: String? {
@@ -91,11 +104,19 @@ public struct HALiveActivityAction: Codable, Hashable, Identifiable, Sendable {
                   let title = entry["title"] as? String,
                   entry["uri"] == nil,
                   (entry["behavior"] as? String)?.lowercased() != "textinput" else { return nil }
-            let showTitle = (entry["show_title"] as? NSNumber).flatMap {
-                CFGetTypeID($0) == CFBooleanGetTypeID() ? $0.boolValue : nil
-            }
-            return Self(id: id, title: title, icon: entry["icon"] as? String, showTitle: showTitle)
+            return Self(
+                id: id,
+                title: title,
+                icon: entry["icon"] as? String,
+                showTitle: notificationBoolean(entry["show_title"]),
+                authenticationRequired: notificationBoolean(entry["authentication_required"]) ?? true
+            )
         }
+    }
+
+    private static func notificationBoolean(_ value: Any?) -> Bool? {
+        guard let number = value as? NSNumber, CFGetTypeID(number) == CFBooleanGetTypeID() else { return nil }
+        return number.boolValue
     }
 }
 #endif

@@ -1,6 +1,7 @@
 #if os(iOS) && !targetEnvironment(macCatalyst)
 @testable import HomeAssistant
 
+import AppIntents
 import Foundation
 import os
 import PromiseKit
@@ -12,7 +13,8 @@ import Testing
 @Suite(.isolatedEnvironment)
 struct HALiveActivityActionIntentTests {
     @available(iOS 17.2, *)
-    @Test func aTapSendsItsActionAndTagToTheOwningServer() async throws {
+    @Test(arguments: [false, true])
+    func aTapSendsItsActionAndTagToTheOwningServer(withoutAuthentication: Bool) async throws {
         let servers = FakeServerManager()
         _ = servers.addFake()
         let owner = servers.addFake()
@@ -25,9 +27,15 @@ struct HALiveActivityActionIntentTests {
             title: "Music",
             serverWebhookId: owner.info.connection.webhookID
         )
-        let intent = HALiveActivityActionIntent(activityID: "live", actionID: "PAUSE")
-
-        try await intent.sendAction(attributes: attributes, state: state)
+        let state = HALiveActivityAttributes.ContentState(message: "Track", actions: [
+            .init(id: "PAUSE", title: "Pause", authenticationRequired: !withoutAuthentication),
+        ])
+        try await HALiveActivityActionIntent.sendAction(
+            actionID: "PAUSE",
+            attributes: attributes,
+            state: state,
+            withoutAuthentication: withoutAuthentication
+        )
 
         let sent = try #require(webhooks.sent.first)
         let data = try #require(sent.request.data as? [String: Any])
@@ -41,7 +49,8 @@ struct HALiveActivityActionIntentTests {
     }
 
     @available(iOS 17.2, *)
-    @Test func aRemovedButtonCannotDispatchAnEvent() async {
+    @Test(arguments: [false, true])
+    func aRemovedButtonCannotDispatchAnEvent(withoutAuthentication: Bool) async {
         let servers = FakeServerManager()
         let owner = servers.addFake()
         Current.servers = servers
@@ -52,26 +61,67 @@ struct HALiveActivityActionIntentTests {
             title: "Music",
             serverWebhookId: owner.info.connection.webhookID
         )
-        let intent = HALiveActivityActionIntent(activityID: "live", actionID: "PLAY")
-
         await #expect(throws: ShortcutAppIntentError.self) {
-            try await intent.sendAction(attributes: attributes, state: state)
+            try await HALiveActivityActionIntent.sendAction(
+                actionID: "PLAY",
+                attributes: attributes,
+                state: state,
+                withoutAuthentication: withoutAuthentication
+            )
         }
         #expect(webhooks.sent.isEmpty)
     }
 
     @available(iOS 17.2, *)
-    @Test func anUnknownOwnerDoesNotFallBackToAnotherServer() async {
+    @Test(arguments: [false, true])
+    func anUnknownOwnerDoesNotFallBackToAnotherServer(withoutAuthentication: Bool) async {
         Current.servers = FakeServerManager(initial: 1)
         let webhooks = RecordingWebhooks()
         Current.webhooks = webhooks
-        let intent = HALiveActivityActionIntent(activityID: "live", actionID: "PAUSE")
         let attributes = HALiveActivityAttributes(tag: "music", title: "Music", serverWebhookId: "missing-owner")
+        let state = HALiveActivityAttributes.ContentState(message: "Track", actions: [
+            .init(id: "PAUSE", title: "Pause", authenticationRequired: !withoutAuthentication),
+        ])
 
         await #expect(throws: ShortcutAppIntentError.self) {
-            try await intent.sendAction(attributes: attributes, state: state)
+            try await HALiveActivityActionIntent.sendAction(
+                actionID: "PAUSE",
+                attributes: attributes,
+                state: state,
+                withoutAuthentication: withoutAuthentication
+            )
         }
         #expect(webhooks.sent.isEmpty)
+    }
+
+    @available(iOS 17.2, *)
+    @Test func aTapWithoutAuthenticationIsRejectedWhenTheLatestStateRequiresIt() async {
+        let servers = FakeServerManager()
+        let owner = servers.addFake()
+        Current.servers = servers
+        let webhooks = RecordingWebhooks()
+        Current.webhooks = webhooks
+        let attributes = HALiveActivityAttributes(
+            tag: "music",
+            title: "Music",
+            serverWebhookId: owner.info.connection.webhookID
+        )
+
+        await #expect(throws: ShortcutAppIntentError.self) {
+            try await HALiveActivityActionIntent.sendAction(
+                actionID: "PAUSE",
+                attributes: attributes,
+                state: state,
+                withoutAuthentication: true
+            )
+        }
+        #expect(webhooks.sent.isEmpty)
+    }
+
+    @available(iOS 17.2, *)
+    @Test func intentsUseSeparateAuthenticationPolicies() {
+        #expect(HALiveActivityActionIntent.authenticationPolicy == .requiresAuthentication)
+        #expect(HALiveActivityUnauthenticatedActionIntent.authenticationPolicy == .alwaysAllowed)
     }
 
     @available(iOS 17.2, *)
@@ -79,8 +129,13 @@ struct HALiveActivityActionIntentTests {
         let webhooks = RecordingWebhooks()
         Current.webhooks = webhooks
         let intent = HALiveActivityActionIntent(activityID: UUID().uuidString, actionID: "PAUSE")
+        let unauthenticatedIntent = HALiveActivityUnauthenticatedActionIntent(
+            activityID: UUID().uuidString,
+            actionID: "PAUSE"
+        )
 
         await #expect(throws: ShortcutAppIntentError.self) { try await intent.perform() }
+        await #expect(throws: ShortcutAppIntentError.self) { try await unauthenticatedIntent.perform() }
         #expect(webhooks.sent.isEmpty)
     }
 

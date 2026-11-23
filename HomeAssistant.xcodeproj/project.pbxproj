@@ -943,6 +943,7 @@
 				Widgets/LiveActivity/HALiveActivityActionButtons.swift,
 				Widgets/LiveActivity/HALiveActivityActionIntent.swift,
 				Widgets/LiveActivity/HALiveActivityCompactView.swift,
+				Widgets/LiveActivity/HALiveActivityUnauthenticatedActionIntent.swift,
 				Widgets/LiveActivity/HALockScreenView.swift,
 				"Widgets/Lockscreen/Gauge/GaugeTypeAppEnum+DesignSystem.swift",
 				Widgets/Lockscreen/Gauge/WidgetGauge.swift,

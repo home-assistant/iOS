@@ -24,21 +24,34 @@ struct HALiveActivityActionIntent: LiveActivityIntent {
 
     @MainActor
     func perform() async throws -> some IntentResult {
+        try await Self.performAction(activityID: activityID, actionID: actionID, withoutAuthentication: false)
+        return .result()
+    }
+
+    @MainActor
+    static func performAction(activityID: String, actionID: String, withoutAuthentication: Bool) async throws {
         await Current.connectivity.refreshNetworkInformation()
         guard let activity = Activity<HALiveActivityAttributes>.activities.first(where: { $0.id == activityID }),
               [.active, .stale].contains(activity.activityState) else {
             throw ShortcutAppIntentError(L10n.Widgets.Custom.IntentPerformActionFailed.body)
         }
-        try await sendAction(attributes: activity.attributes, state: activity.content.state)
-        return .result()
+        try await sendAction(
+            actionID: actionID,
+            attributes: activity.attributes,
+            state: activity.content.state,
+            withoutAuthentication: withoutAuthentication
+        )
     }
 
     @MainActor
-    func sendAction(
+    static func sendAction(
+        actionID: String,
         attributes: HALiveActivityAttributes,
-        state: HALiveActivityAttributes.ContentState
+        state: HALiveActivityAttributes.ContentState,
+        withoutAuthentication: Bool
     ) async throws {
-        guard state.actions.contains(where: { $0.id == actionID }) else {
+        guard let action = state.actions.first(where: { $0.id == actionID }),
+              !withoutAuthentication || !action.authenticationRequired else {
             throw ShortcutAppIntentError(L10n.Widgets.Custom.IntentPerformActionFailed.body)
         }
         guard let webhookID = attributes.serverWebhookId,
