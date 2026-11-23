@@ -101,15 +101,22 @@ final class IncomingCallRequestTests: XCTestCase {
         XCTAssertNil(try request(["tag": "a", "url": 3]).url)
     }
 
-    func testAbsoluteURLToTheServerIsAccepted() throws {
+    func testAbsoluteURLToTheServerIsKeptAsAPath() throws {
         XCTAssertEqual(
-            try request(["tag": "a", "url": "http://HomeAssistant.local:8123/lovelace/0"]).url,
-            "http://HomeAssistant.local:8123/lovelace/0"
+            try request(["tag": "a", "url": "http://HomeAssistant.local:8123/lovelace/0?edit=1#visio"]).url,
+            "/lovelace/0?edit=1#visio"
         )
-        XCTAssertEqual(
-            try request(["tag": "a", "url": "https://example.ui.nabu.casa/visio"]).url,
-            "https://example.ui.nabu.casa/visio"
-        )
+        XCTAssertEqual(try request(["tag": "a", "url": "https://example.ui.nabu.casa/visio"]).url, "/visio")
+        XCTAssertEqual(try request(["tag": "a", "url": "https://example.ui.nabu.casa"]).url, "/")
+    }
+
+    func testSchemeAndEffectivePortMustMatch() throws {
+        // https://host is port 443: neither http://host (80) nor another port is the same server.
+        XCTAssertNil(try request(["tag": "a", "url": "http://example.ui.nabu.casa/visio"]).url)
+        XCTAssertNil(try request(["tag": "a", "url": "https://example.ui.nabu.casa:8443/visio"]).url)
+        XCTAssertNil(try request(["tag": "a", "url": "https://homeassistant.local:8123/visio"]).url)
+        // Spelling out the scheme's default port is the same address.
+        XCTAssertEqual(try request(["tag": "a", "url": "https://example.ui.nabu.casa:443/visio"]).url, "/visio")
     }
 
     func testAbsoluteURLIsDroppedWithoutServerURLs() throws {
@@ -132,6 +139,32 @@ final class IncomingCallRequestTests: XCTestCase {
         ])
         XCTAssertEqual(parsed.webhookID, "hook")
         XCTAssertEqual(parsed.actionData as NSDictionary, ["tag": "a", "room": "salon"] as NSDictionary)
+    }
+
+    func testDeliveryWebhookIDOverridesActionData() throws {
+        // `action_data` lands in `homeassistant`; it must not be able to name another server.
+        let parsed = try IncomingCallRequest.parse(userInfo: [
+            "webhook_id": "delivery",
+            "homeassistant": ["command": "incoming_call", "tag": "a", "webhook_id": "other-server"],
+        ]).get()
+        XCTAssertEqual(parsed.webhookID, "delivery")
+
+        let withoutDelivery = try IncomingCallRequest.parse(userInfo: [
+            "homeassistant": ["command": "incoming_call", "tag": "a", "webhook_id": "other-server"],
+        ]).get()
+        XCTAssertNil(withoutDelivery.webhookID)
+    }
+
+    func testNotificationMarkerIsAcceptedOnlyWhenAllowed() throws {
+        let userInfo: [AnyHashable: Any] = [
+            "homeassistant": ["tag": "a", IncomingCallRequest.notificationMarker: true],
+        ]
+        XCTAssertEqual(IncomingCallRequest.parse(userInfo: userInfo), .failure(.notIncomingCall))
+        XCTAssertEqual(try IncomingCallRequest.parse(userInfo: userInfo, allowNotification: true).get().tag, "a")
+        XCTAssertTrue(IncomingCallRequest.isIncomingCallNotification(userInfo: userInfo))
+        XCTAssertFalse(IncomingCallRequest.isIncomingCall(userInfo: userInfo))
+        XCTAssertNil(try IncomingCallRequest.parse(userInfo: userInfo, allowNotification: true).get()
+            .actionData[IncomingCallRequest.notificationMarker])
     }
 
     func testUserInfoWebhookIDIsUsed() throws {

@@ -1,4 +1,5 @@
 @testable import Shared
+import SharedTesting
 import XCTest
 
 final class IncomingCallRoutingTests: XCTestCase {
@@ -8,6 +9,9 @@ final class IncomingCallRoutingTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
+        // The feature tests flip the switch: keep it out of the App Group defaults other test processes read.
+        let privateSettings = PrivateSettingsStore()
+        addTeardownBlock { privateSettings.restore() }
         defaults = UserDefaults(suiteName: "IncomingCallRoutingTests")
         defaults.removePersistentDomain(forName: "IncomingCallRoutingTests")
         callGuard = IncomingCallGuard(defaults: defaults, now: Date.init)
@@ -85,6 +89,7 @@ final class IncomingCallRoutingTests: XCTestCase {
         let stripped = IncomingCallRouting.notificationOnly(userInfo(["caller": "Papa"]))
         let hadict = stripped["homeassistant"] as? [String: Any]
         XCTAssertNil(hadict?["command"])
+        XCTAssertEqual(hadict?[IncomingCallRequest.notificationMarker] as? Bool, true)
         XCTAssertEqual(hadict?["tag"] as? String, "visio")
         XCTAssertEqual(hadict?["caller"] as? String, "Papa")
         XCTAssertFalse(IncomingCallRequest.isIncomingCall(userInfo: stripped))

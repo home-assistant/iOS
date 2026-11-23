@@ -31,7 +31,8 @@ final class IncomingCallCommandHandlerTests: XCTestCase {
             "url": "http://homeassistant.local:8123/visio",
         ]).isFulfilled)
         XCTAssertEqual(rung.map(\.tag), ["visio"])
-        XCTAssertEqual(rung.first?.url, "http://homeassistant.local:8123/visio")
+        // An address of the server is kept as a path on it.
+        XCTAssertEqual(rung.first?.url, "/visio")
     }
 
     func testIgnoresUnknownServers() {

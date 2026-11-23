@@ -328,6 +328,10 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
     /// it still rings as a notification where CallKit is off, unsupported or not allowed. The `homeassistant`
     /// dictionary carries the `incoming_call` command for the app, which reports the call to CallKit instead
     /// when the user switched that on. The automation's own `title`, `actions`, `push` and `action_data` win.
+    ///
+    /// `url` is not set as the notification's or the Answer action's URL: this parser cannot check it against the
+    /// sending server (the relay runs it too), so it only travels in `homeassistant`, and the app opens it on
+    /// Answer or a tap once it has validated it, as it does for CallKit. Decline never opens anything.
     private func applyIncomingCall(input: [String: Any], data: [String: Any], payload: inout [String: Any]) {
         let caller = (data["caller"] as? String).flatMap { $0.isEmpty ? nil : $0 }
         let hasVideo = data["video"] as? Bool ?? true
@@ -352,15 +356,12 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
         }
 
         if payload["actions"] == nil {
-            var answer: [String: Any] = [
+            let answer: [String: Any] = [
                 "action": "CALL_ANSWER",
                 "title": "Answer",
                 "activationMode": "foreground",
                 "icon": "sfsymbols:phone.fill",
             ]
-            if let url = data["url"] as? String {
-                answer["uri"] = url
-            }
             payload["actions"] = [
                 answer,
                 [
@@ -371,6 +372,9 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
                 ],
             ]
         }
+
+        // See above: the app opens the validated `homeassistant.url` instead.
+        payload["url"] = nil
 
         var homeassistant = payload["homeassistant"] as? [String: Any] ?? [:]
         homeassistant["command"] = LegacyNotificationCommandType.incomingCall.rawValue

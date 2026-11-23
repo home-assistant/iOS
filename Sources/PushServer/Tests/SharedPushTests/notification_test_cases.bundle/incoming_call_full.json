@@ -34,14 +34,12 @@
             "category": "DYNAMIC",
             "mutable-content": true
         },
-        "url": "/lovelace/visio",
         "actions": [
             {
                 "action": "CALL_ANSWER",
                 "title": "Answer",
                 "activationMode": "foreground",
-                "icon": "sfsymbols:phone.fill",
-                "uri": "/lovelace/visio"
+                "icon": "sfsymbols:phone.fill"
             },
             {
                 "action": "CALL_DECLINE",

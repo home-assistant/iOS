@@ -7742,7 +7742,7 @@ public enum L10n {
         }
       }
       public enum IncomingCalls {
-        /// When Home Assistant sends an incoming_call notification, your phone rings like a phone call, on the lock screen too, and answering opens the page the call names. Calls are not added to your call history. When this is off, or while Focus is on, calls arrive as notifications.
+        /// When Home Assistant sends an incoming_call notification, your phone rings like a phone call, on the lock screen too, and answering opens the page the call names. It rings while local push is active or the app is open; otherwise the call arrives as a notification. Calls are not added to your call history. While Focus or Do Not Disturb is on, they don't ring and are reported as missed.
         public static var footer: String { return L10n.tr("Localizable", "settings_details.notifications.incoming_calls.footer") }
         /// Ring incoming calls
         public static var title: String { return L10n.tr("Localizable", "settings_details.notifications.incoming_calls.title") }

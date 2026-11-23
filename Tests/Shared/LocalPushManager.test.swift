@@ -2,6 +2,7 @@ import HAKit
 import HAKit_Mocks
 import PromiseKit
 @testable import Shared
+import SharedTesting
 import XCTest
 
 class LocalPushManagerTests: XCTestCase {
@@ -633,7 +634,9 @@ class LocalPushManagerTests: XCTestCase {
         XCTAssertEqual(ha["room"] as? String, "salon")
         let actions = try XCTUnwrap(content.userInfo["actions"] as? [[String: Any]])
         XCTAssertEqual(actions.compactMap { $0["action"] as? String }, ["CALL_ANSWER", "CALL_DECLINE"])
-        XCTAssertEqual(actions.first?["uri"] as? String, "/lovelace/visio")
+        // The page is opened by the app after it validates it, never as a raw notification or action URL.
+        XCTAssertNil(actions.first?["uri"])
+        XCTAssertNil(content.userInfo["url"])
     }
 
     func testIncomingCallIsANotificationWhileTheFeatureIsOff() throws {
@@ -666,16 +669,15 @@ class LocalPushManagerTests: XCTestCase {
         guard IncomingCallFeature.isSupportedOnThisDevice else {
             throw XCTSkip("CallKit is not available with this device's region")
         }
+        // The switch and the call history live in the App Group defaults other test processes share.
+        let privateSettings = PrivateSettingsStore()
         let previousTestFlight = Current.isTestFlight
-        let previousEnabled = Current.settingsStore.incomingCallsEnabled
         defer {
             Current.isTestFlight = previousTestFlight
-            Current.settingsStore.incomingCallsEnabled = previousEnabled
-            IncomingCallGuard().reset()
+            privateSettings.restore()
         }
         Current.isTestFlight = true
         Current.settingsStore.incomingCallsEnabled = true
-        IncomingCallGuard().reset()
         setUpManager(webhookID: "webhook1")
 
         let sub = try XCTUnwrap(apiConnection.pendingSubscriptions.first)

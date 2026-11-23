@@ -51,7 +51,8 @@ public enum IncomingCallRouting {
 
     /// The notification without its `incoming_call` command, so it is presented like any other notification
     /// instead of being handled as a command. The rest of the `homeassistant` dictionary, and so the tag the
-    /// Answer and Decline actions send back, is kept.
+    /// Answer and Decline actions send back, is kept, and `notificationMarker` lets the app recognize the call
+    /// when one of those actions is chosen.
     public static func notificationOnly(_ userInfo: [AnyHashable: Any]) -> [AnyHashable: Any] {
         guard var hadict = userInfo["homeassistant"] as? [String: Any],
               (hadict["command"] as? String) == IncomingCallRequest.command else {
@@ -59,6 +60,7 @@ public enum IncomingCallRouting {
         }
         var result = userInfo
         hadict["command"] = nil
+        hadict[IncomingCallRequest.notificationMarker] = true
         result["homeassistant"] = hadict
         return result
     }

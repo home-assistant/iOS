@@ -95,13 +95,21 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
         let hadict = userInfo as? [String: Any] ?? [:]
         let server = (hadict["webhook_id"] as? String).flatMap { Current.servers.server(forWebhookID: $0) }
 
-        guard let server, IncomingCallFeature.isEnabled,
-              case let .success(request) = IncomingCallRequest.parse(
-                  homeassistant: hadict,
-                  serverURLs: IncomingCallRouting.serverURLs(for: server)
-              ) else {
+        guard let server, case let .success(request) = IncomingCallRequest.parse(
+            homeassistant: hadict,
+            serverURLs: IncomingCallRouting.serverURLs(for: server)
+        ) else {
             Current.Log.error("incoming call from the push extension did not validate, ending it")
             incomingCallController.reportInvalidCall()
+            return
+        }
+
+        guard IncomingCallFeature.isEnabled else {
+            // The extension still had the switch on (for instance right after moving from TestFlight to the App
+            // Store build). It already suppressed the notification, so show it now.
+            Current.Log.info("incoming calls are off, showing \(request.tag) as a notification")
+            incomingCallController.reportInvalidCall()
+            IncomingCallController.defaultPostFallback(request)
             return
         }
 
@@ -260,7 +268,9 @@ class NotificationManager: NSObject, LocalPushManagerDelegate {
         Messaging.messaging().appDidReceiveMessage(userInfo)
 
         firstly {
-            handleRemoteNotification(userInfo: userInfo)
+            // A remote push never rings by itself here: only calls `IncomingCallRouting` admitted (local push, or
+            // `willPresent` in the foreground) reach CallKit.
+            handleRemoteNotification(userInfo: IncomingCallRouting.notificationOnly(userInfo))
         }.done(
             completionHandler
         )
@@ -400,6 +410,36 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         tapActionPresenter.present(for: content, server: server)
     }
 
+    /// Answer, or a tap, on an incoming call shown as a notification opens the call's page, after the same check
+    /// as on the CallKit path: only a page on the server that sent the call. Decline opens nothing. The event
+    /// for the action is sent by the caller, as for any notification.
+    func handleOpenedIncomingCall(content: UNNotificationContent, actionIdentifier: String, server: Server) {
+        guard actionIdentifier == IncomingCallAction.answer.rawValue
+            || actionIdentifier == UNNotificationDefaultActionIdentifier else {
+            return
+        }
+
+        var userInfo = content.userInfo
+        userInfo["webhook_id"] = server.info.connection.webhookID
+        let url: String?
+        switch IncomingCallRequest.parse(
+            userInfo: userInfo,
+            serverURLs: IncomingCallRouting.serverURLs(for: server),
+            allowNotification: true
+        ) {
+        case let .success(request): url = request.url
+        case .failure: url = nil
+        }
+
+        Current.sceneManager.appCoordinator.done { coordinator in
+            if let url {
+                coordinator.open(from: .notification, server: server, urlString: url, isComingFromAppIntent: false)
+            } else {
+                coordinator.open(server: server)
+            }
+        }
+    }
+
     public func userNotificationCenter(
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse,
@@ -445,7 +485,7 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         // Answer and Decline actions must not ring the phone again. Those actions send their events below.
         if let hadict = userInfo["homeassistant"] as? [String: Any],
            (hadict["command"] as? String) != nil || (hadict["live_update"] as? Bool) == true,
-           !IncomingCallRequest.isIncomingCall(userInfo: userInfo) {
+           !IncomingCallRequest.isIncomingCallNotification(userInfo: userInfo) {
             commandManager.handle(userInfo).cauterize()
         }
 
@@ -469,7 +509,11 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         }
 
         let content = response.notification.request.content
-        handleOpenedNotification(content: content, actionIdentifier: response.actionIdentifier, server: server)
+        if IncomingCallRequest.isIncomingCallNotification(userInfo: userInfo) {
+            handleOpenedIncomingCall(content: content, actionIdentifier: response.actionIdentifier, server: server)
+        } else {
+            handleOpenedNotification(content: content, actionIdentifier: response.actionIdentifier, server: server)
+        }
 
         if let info = HomeAssistantAPI.PushActionInfo(response: response) {
             Current.backgroundTask(withName: BackgroundTask.handlePushAction.rawValue) { _ in
@@ -499,7 +543,8 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
         // Live Activity handler.
         // A remote `incoming_call` received in the foreground rings through CallKit when the user switched that
         // on, instead of showing the banner; otherwise it is shown like any notification.
-        if IncomingCallRequest.isIncomingCall(userInfo: notification.request.content.userInfo) {
+        let isIncomingCall = IncomingCallRequest.isIncomingCall(userInfo: notification.request.content.userInfo)
+        if isIncomingCall {
             // Only the server the call names may ring: no fallback to the first server.
             let server = (notification.request.content.userInfo["webhook_id"] as? String)
                 .flatMap { Current.servers.server(forWebhookID: $0) }
@@ -507,17 +552,20 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
                 userInfo: notification.request.content.userInfo,
                 server: server
             ) {
-                incomingCallController.report(request)
+                // This delegate method is not guaranteed to run on the main queue; the controller is.
+                DispatchQueue.main.async { [self] in
+                    incomingCallController.report(request)
+                }
                 completionHandler([])
-            } else {
-                completionHandler([.badge, .sound, .list, .banner])
+                return
             }
-            return
+            // Otherwise it is presented below like any notification, `presentation_options` included, without
+            // running its command.
         }
 
         // If a command is recognized, suppress the notification banner so the user
         // sees only the Live Activity (not a duplicate standard notification).
-        if let hadict = notification.request.content.userInfo["homeassistant"] as? [String: Any],
+        if !isIncomingCall, let hadict = notification.request.content.userInfo["homeassistant"] as? [String: Any],
            (hadict["command"] as? String) != nil || (hadict["live_update"] as? Bool) == true {
             commandManager.handle(notification.request.content.userInfo).done {
                 // Play the chime if the notification has sound (non-silent live update),

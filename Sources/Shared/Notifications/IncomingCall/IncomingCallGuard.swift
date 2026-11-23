@@ -10,7 +10,8 @@ import Foundation
 ///
 /// A call that is turned away here is not lost: it is shown as an ordinary time-sensitive notification.
 ///
-/// The record lives in the App Group defaults, so the PushProvider extension and the app share it.
+/// The record lives in the App Group defaults, so the PushProvider extension and the app share it, and every
+/// check-and-record holds `IncomingCallFileLock`, so the two processes cannot both admit the same call.
 public struct IncomingCallGuard {
     public enum Decision: Equatable {
         case ring
@@ -23,7 +24,6 @@ public struct IncomingCallGuard {
     public static let maximumCalls = 3
 
     private static let storeKey = "incomingCallGuardHistory"
-    private static let lock = NSLock()
 
     private let defaults: UserDefaults
     private let now: () -> Date
@@ -41,9 +41,10 @@ public struct IncomingCallGuard {
     /// Checks a call and, when it may ring, records it in the same step so two pushes for the same call cannot
     /// both pass.
     public func admit(tag: String) -> Decision {
-        Self.lock.lock()
-        defer { Self.lock.unlock() }
+        IncomingCallFileLock.withLock { admitLocked(tag: tag) }
+    }
 
+    private func admitLocked(tag: String) -> Decision {
         let date = now()
         var history = load().filter { date.timeIntervalSince($0.value) < Self.duplicateWindow }
 
@@ -65,9 +66,9 @@ public struct IncomingCallGuard {
 
     /// Forgets everything, for example when the feature is turned off.
     public func reset() {
-        Self.lock.lock()
-        defer { Self.lock.unlock() }
-        defaults.removeObject(forKey: Self.storeKey)
+        IncomingCallFileLock.withLock {
+            defaults.removeObject(forKey: Self.storeKey)
+        }
     }
 
     private func load() -> [String: Date] {

@@ -11,33 +11,65 @@ final class IncomingCallControllerTests: XCTestCase {
     private var fallbacks: [IncomingCallRequest]!
     private var scheduled: [(TimeInterval, DispatchWorkItem)]!
     private var isAppActive: Bool!
+    private var date: Date!
+    private var queuedEnds: [IncomingCallEndRequest]!
     // Any provider will do as the delegate methods' argument; the controller only talks to `provider`.
-    private let cxProvider = CXProvider(configuration: CXProviderConfiguration())
+    private var cxProvider: CXProvider!
 
     override func setUp() {
         super.setUp()
         provider = FakeIncomingCallProvider()
+        cxProvider = CXProvider(configuration: CXProviderConfiguration())
         sent = []
         opened = []
         fallbacks = []
         scheduled = []
         isAppActive = false
+        date = Date(timeIntervalSince1970: 1_000_000)
+        queuedEnds = []
         controller = IncomingCallController(
             provider: provider,
             sendAction: { [unowned self] action, request in sent.append((action, request.tag)) },
             open: { [unowned self] in opened.append($0) },
             postFallback: { [unowned self] in fallbacks.append($0) },
             isAppActive: { [unowned self] in isAppActive },
-            schedule: { [unowned self] in scheduled.append(($0, $1)) }
+            schedule: { [unowned self] in scheduled.append(($0, $1)) },
+            now: { [unowned self] in date },
+            drainEndRequests: { [unowned self] in
+                defer { queuedEnds = [] }
+                return queuedEnds
+            }
         )
+    }
+
+    override func tearDown() {
+        // XCTest keeps test case instances alive: release the controller so its observers go with it.
+        controller = nil
+        provider = nil
+        cxProvider = nil
+        scheduled = nil
+        super.tearDown()
     }
 
     private func request(
         tag: String = "visio",
         caller: String? = "Papa",
-        hasVideo: Bool = true
+        hasVideo: Bool = true,
+        webhookID: String? = "server"
     ) -> IncomingCallRequest {
-        .init(tag: tag, caller: caller, hasVideo: hasVideo, url: "/visio", timeout: 30, webhookID: nil)
+        .init(
+            tag: tag,
+            caller: caller,
+            hasVideo: hasVideo,
+            url: "/visio",
+            timeout: 30,
+            webhookID: webhookID,
+            actionData: ["tag": tag, "room": "salon"]
+        )
+    }
+
+    private func end(_ tag: String = "visio", server: String? = "server") -> IncomingCallEndRequest {
+        .init(tag: tag, webhookID: server, date: date)
     }
 
     /// Reports run their completion on the main queue.
@@ -75,6 +107,7 @@ final class IncomingCallControllerTests: XCTestCase {
         XCTAssertTrue(configuration.supportsVideo)
         XCTAssertEqual(configuration.maximumCallGroups, 1)
         XCTAssertEqual(configuration.supportedHandleTypes, [.generic])
+        XCTAssertNotNil(configuration.iconTemplateImageData)
     }
 
     func testTimeoutIsMissed() throws {
@@ -119,6 +152,10 @@ final class IncomingCallControllerTests: XCTestCase {
         _ = ring(request())
         XCTAssertEqual(fallbacks.map(\.tag), ["visio"])
         XCTAssertTrue(sent.isEmpty)
+        // The failed call is forgotten: the next one rings.
+        provider.reportError = nil
+        _ = ring(request(tag: "next"))
+        XCTAssertEqual(scheduled.count, 1)
     }
 
     func testInvalidCallIsReportedAndEnded() {
@@ -126,6 +163,52 @@ final class IncomingCallControllerTests: XCTestCase {
         XCTAssertEqual(provider.reports.count, 1)
         XCTAssertEqual(provider.ends.map(\.reason), [.failed])
         XCTAssertTrue(sent.isEmpty)
+    }
+
+    // MARK: - While CallKit is still reporting
+
+    func testASecondDeliveryWhileReportingDoesNotRingTwice() {
+        provider.defersReports = true
+        controller.report(request())
+        controller.report(request())
+        controller.report(request(tag: "other"))
+        XCTAssertEqual(provider.reports.count, 1)
+        XCTAssertEqual(sentActions, [.busy])
+    }
+
+    func testAClearWhileReportingEndsTheCallOnceReported() throws {
+        provider.defersReports = true
+        controller.report(request())
+        let uuid = try XCTUnwrap(provider.reports.first?.uuid)
+
+        controller.end(end())
+        provider.completeReports()
+        settle()
+
+        XCTAssertEqual(provider.ends, [.init(uuid: uuid, reason: .remoteEnded)])
+        XCTAssertTrue(scheduled.isEmpty, "never rang, so no timeout")
+        XCTAssertTrue(sent.isEmpty)
+    }
+
+    func testAResetWhileReportingEndsTheCallOnceReported() throws {
+        provider.defersReports = true
+        controller.report(request())
+        let uuid = try XCTUnwrap(provider.reports.first?.uuid)
+
+        controller.providerDidReset(cxProvider)
+        provider.completeReports()
+        settle()
+
+        XCTAssertEqual(provider.ends, [.init(uuid: uuid, reason: .remoteEnded)])
+        XCTAssertTrue(scheduled.isEmpty)
+    }
+
+    func testAClearQueuedBeforeTheReportEndsTheCall() throws {
+        // Queued by the extension while iOS was still launching the app, before anything listened.
+        queuedEnds = [end()]
+        let uuid = try XCTUnwrap(ring(request()))
+        XCTAssertEqual(provider.ends, [.init(uuid: uuid, reason: .remoteEnded)])
+        XCTAssertTrue(scheduled[0].1.isCancelled)
     }
 
     // MARK: - User actions
@@ -160,6 +243,14 @@ final class IncomingCallControllerTests: XCTestCase {
         XCTAssertEqual(sentActions, [.answer], "no missed event for an answered call")
     }
 
+    func testAnsweringTwiceIsRefused() throws {
+        let uuid = try XCTUnwrap(ring(request()))
+        controller.provider(cxProvider, perform: CXAnswerCallAction(call: uuid))
+        controller.provider(cxProvider, perform: CXAnswerCallAction(call: uuid))
+        XCTAssertEqual(sentActions, [.answer])
+        XCTAssertEqual(opened.count, 1)
+    }
+
     func testDecline() throws {
         let uuid = try XCTUnwrap(ring(request()))
         controller.provider(cxProvider, perform: CXEndCallAction(call: uuid))
@@ -185,13 +276,27 @@ final class IncomingCallControllerTests: XCTestCase {
 
     func testClearNotificationEndsTheCall() throws {
         let uuid = try XCTUnwrap(ring(request()))
-        controller.end(tag: "other")
+        controller.end(end("other"))
         XCTAssertTrue(provider.ends.isEmpty)
 
-        NotificationCenter.default.post(name: IncomingCallPendingEnd.didRequestEnd, object: "visio")
+        NotificationCenter.default.post(name: IncomingCallPendingEnd.didRequestEnd, object: end())
         XCTAssertEqual(provider.ends, [.init(uuid: uuid, reason: .remoteEnded)])
         XCTAssertTrue(sent.isEmpty, "Home Assistant ended it: no event back")
         XCTAssertTrue(scheduled[0].1.isCancelled)
+    }
+
+    func testAClearFromAnotherServerDoesNotEndTheCall() throws {
+        _ = try XCTUnwrap(ring(request()))
+        controller.end(end(server: "another-server"))
+        XCTAssertTrue(provider.ends.isEmpty)
+    }
+
+    func testAnOlderClearDoesNotEndANewerCallWithTheSameTag() throws {
+        let olderClear = end()
+        date += 5
+        _ = try XCTUnwrap(ring(request()))
+        controller.end(olderClear)
+        XCTAssertTrue(provider.ends.isEmpty)
     }
 
     func testResetForgetsCalls() throws {
@@ -201,5 +306,44 @@ final class IncomingCallControllerTests: XCTestCase {
         // A new call with the same tag rings again.
         _ = ring(request())
         XCTAssertEqual(provider.reports.count, 2)
+    }
+
+    // MARK: - Default dependencies
+
+    func testActionInfoSendsTheCallsActionData() {
+        let info = IncomingCallController.actionInfo(.answer, for: request())
+        XCTAssertEqual(info.identifier, "CALL_ANSWER")
+        XCTAssertNil(info.category)
+        XCTAssertEqual(info.actionData as? NSDictionary, ["tag": "visio", "room": "salon"] as NSDictionary)
+    }
+
+    func testFallbackNotification() throws {
+        let fallback = IncomingCallController.fallbackRequest(for: request())
+        XCTAssertEqual(fallback.identifier, "visio", "identified by the tag, so clear_notification removes it")
+        XCTAssertNil(fallback.trigger)
+
+        let content = fallback.content
+        XCTAssertEqual(content.title, "Papa")
+        XCTAssertEqual(content.body, L10n.IncomingCall.video)
+        XCTAssertEqual(content.interruptionLevel, .timeSensitive)
+        XCTAssertEqual(content.categoryIdentifier, "DYNAMIC")
+        XCTAssertNotNil(content.sound)
+        XCTAssertEqual(content.userInfo["webhook_id"] as? String, "server")
+
+        let actions = try XCTUnwrap(content.userInfo["actions"] as? [[String: Any]])
+        XCTAssertEqual(actions.compactMap { $0["action"] as? String }, ["CALL_ANSWER", "CALL_DECLINE"])
+        XCTAssertTrue(actions.allSatisfy { $0["uri"] == nil }, "the app opens the validated page itself")
+
+        let homeassistant = try XCTUnwrap(content.userInfo["homeassistant"] as? [String: Any])
+        XCTAssertEqual(homeassistant[IncomingCallRequest.notificationMarker] as? Bool, true)
+        XCTAssertEqual(homeassistant["url"] as? String, "/visio")
+        XCTAssertEqual(homeassistant["room"] as? String, "salon")
+        XCTAssertTrue(IncomingCallRequest.isIncomingCallNotification(userInfo: content.userInfo))
+        XCTAssertFalse(IncomingCallRequest.isIncomingCall(userInfo: content.userInfo), "never rings again")
+    }
+
+    func testFallbackNotificationForAnAudioCall() {
+        let content = IncomingCallController.fallbackRequest(for: request(hasVideo: false)).content
+        XCTAssertEqual(content.body, L10n.IncomingCall.audio)
     }
 }

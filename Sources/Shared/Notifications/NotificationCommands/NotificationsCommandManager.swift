@@ -115,11 +115,11 @@ private struct HandlerClearNotification: NotificationCommandHandler {
             UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: keys)
         }
 
-        // The same tag also stops a call still ringing through CallKit (the caller hung up, or it was answered
-        // elsewhere). Harmless when no call has this tag.
+        // The same tag also stops a call from this server still ringing through CallKit (the caller hung up, or
+        // it was answered elsewhere). Harmless when no call has this tag.
         #if os(iOS) && !targetEnvironment(macCatalyst)
         if let tag = payload["tag"] as? String {
-            IncomingCallPendingEnd.request(tag: tag)
+            IncomingCallPendingEnd.request(tag: tag, webhookID: payload["webhook_id"] as? String)
         }
         #endif
 

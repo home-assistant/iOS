@@ -11,8 +11,11 @@ import Foundation
 /// - `caller` is what the lock screen shows. Control characters and line breaks are removed and it is cut to
 ///   `maximumCallerLength` characters; an empty caller falls back to the server name.
 /// - `url` is opened in the app when the call is answered. Only a path on the server that sent the call is
-///   accepted (`/lovelace/0#visio`), or an absolute `http(s)` URL to one of that server's own addresses.
-///   Anything else is dropped: answering then simply opens the app.
+///   accepted (`/lovelace/0#visio`), or an absolute `http(s)` URL to one of that server's own addresses (same
+///   scheme, host and effective port, no credentials), which is kept as its path so it opens in the app on the
+///   server's current address. Anything else is dropped: answering then simply opens the app.
+/// - The server is the one the notification was delivered for (its `webhook_id`); an `action_data.webhook_id`
+///   from the automation never overrides it.
 /// - `timeout` is how long the phone rings before the call counts as missed, clamped to `timeoutRange`.
 public struct IncomingCallRequest: Equatable {
     public static let command = "incoming_call"
@@ -20,8 +23,11 @@ public struct IncomingCallRequest: Equatable {
     public static let defaultTimeout: TimeInterval = 45
     public static let timeoutRange: ClosedRange<TimeInterval> = 10 ... 120
 
+    /// Marks an `incoming_call` shown as a notification after its command was removed (`IncomingCallRouting`).
+    public static let notificationMarker = "incoming_call_notification"
+
     /// Keys of the `homeassistant` dictionary that are not the automation's, and are never sent back in events.
-    static let internalKeys = ["command", "webhook_id", "hass_confirm_id"]
+    static let internalKeys = ["command", "webhook_id", "hass_confirm_id", notificationMarker]
 
     public enum ParseError: Error, Equatable {
         case notIncomingCall
@@ -56,12 +62,19 @@ public struct IncomingCallRequest: Equatable {
     }
 
     /// Parses the `homeassistant` dictionary of a notification. `serverURLs` are the addresses of the server the
-    /// notification came from, used to accept absolute URLs that point back to it.
+    /// notification came from, used to accept absolute URLs that point back to it. `webhook_id` must be the
+    /// delivery's, as `NotificationCommandManager` and `parse(userInfo:)` set it.
+    ///
+    /// `allowNotification` also accepts a call already shown as a notification (its command removed), to handle
+    /// the Answer and Decline actions of that notification.
     public static func parse(
         homeassistant hadict: [String: Any],
-        serverURLs: [URL] = []
+        serverURLs: [URL] = [],
+        allowNotification: Bool = false
     ) -> Result<IncomingCallRequest, ParseError> {
-        guard (hadict["command"] as? String) == command else {
+        let isCommand = (hadict["command"] as? String) == command
+        let isNotification = allowNotification && (hadict[notificationMarker] as? Bool) == true
+        guard isCommand || isNotification else {
             return .failure(.notIncomingCall)
         }
 
@@ -91,21 +104,28 @@ public struct IncomingCallRequest: Equatable {
     /// Parses a full notification `userInfo`, as delivered to the app or the push extension.
     public static func parse(
         userInfo: [AnyHashable: Any],
-        serverURLs: [URL] = []
+        serverURLs: [URL] = [],
+        allowNotification: Bool = false
     ) -> Result<IncomingCallRequest, ParseError> {
         guard var hadict = userInfo["homeassistant"] as? [String: Any] else {
             return .failure(.notIncomingCall)
         }
-        if hadict["webhook_id"] == nil, let webhookID = userInfo["webhook_id"] as? String {
-            hadict["webhook_id"] = webhookID
-        }
-        return parse(homeassistant: hadict, serverURLs: serverURLs)
+        // The server is the delivery's. `homeassistant` holds the automation's `action_data`, which must not be
+        // able to name another server.
+        hadict["webhook_id"] = userInfo["webhook_id"] as? String
+        return parse(homeassistant: hadict, serverURLs: serverURLs, allowNotification: allowNotification)
     }
 
-    /// Whether a notification is an incoming call at all, valid or not.
+    /// Whether a notification carries the `incoming_call` command, valid or not.
     public static func isIncomingCall(userInfo: [AnyHashable: Any]) -> Bool {
         guard let hadict = userInfo["homeassistant"] as? [String: Any] else { return false }
         return (hadict["command"] as? String) == command
+    }
+
+    /// Whether a notification is an incoming call, carrying the command or already shown as a notification.
+    public static func isIncomingCallNotification(userInfo: [AnyHashable: Any]) -> Bool {
+        guard let hadict = userInfo["homeassistant"] as? [String: Any] else { return false }
+        return (hadict["command"] as? String) == command || (hadict[notificationMarker] as? Bool) == true
     }
 
     /// The same rules as Live Activity tags: they are notification identifiers too.
@@ -140,7 +160,7 @@ public struct IncomingCallRequest: Equatable {
         return min(max(seconds, timeoutRange.lowerBound), timeoutRange.upperBound)
     }
 
-    /// Keeps a URL only when it stays on the server that sent the call.
+    /// Keeps a URL only when it stays on the server that sent the call, as a path on that server.
     static func allowedURL(_ value: Any?, serverURLs: [URL]) -> String? {
         guard let raw = (value as? String)?.trimmingCharacters(in: .whitespacesAndNewlines), !raw.isEmpty,
               raw.count <= 2048 else {
@@ -155,14 +175,39 @@ public struct IncomingCallRequest: Equatable {
         guard let url = URL(string: raw),
               let scheme = url.scheme?.lowercased(), ["http", "https"].contains(scheme),
               url.user == nil, url.password == nil,
-              let host = url.host?.lowercased() else {
+              let host = url.host?.lowercased(),
+              let port = effectivePort(of: url) else {
             return nil
         }
 
         let isServerAddress = serverURLs.contains { serverURL in
-            serverURL.host?.lowercased() == host && serverURL.port == url.port
+            serverURL.scheme?.lowercased() == scheme &&
+                serverURL.host?.lowercased() == host &&
+                effectivePort(of: serverURL) == port
         }
-        return isServerAddress ? raw : nil
+        guard isServerAddress else { return nil }
+
+        // Opened as a path on the server, so it loads in the app on whichever address is active right now.
+        var path = url.path.isEmpty ? "/" : url.path
+        if let query = url.query {
+            path += "?" + query
+        }
+        if let fragment = url.fragment {
+            path += "#" + fragment
+        }
+        return path
+    }
+
+    /// The port a URL connects to, spelled out or implied by its scheme.
+    static func effectivePort(of url: URL) -> Int? {
+        if let port = url.port {
+            return port
+        }
+        switch url.scheme?.lowercased() {
+        case "http": return 80
+        case "https": return 443
+        default: return nil
+        }
     }
 
     public static func == (lhs: IncomingCallRequest, rhs: IncomingCallRequest) -> Bool {
