@@ -20,8 +20,12 @@ public class AuthenticationAPI {
         }
 
         public var shouldRequireReauthentication: Bool {
-            if case let .serverError(statusCode, _, _) = self {
-                return (400 ... 403).contains(statusCode)
+            // Only a real OAuth error from Home Assistant (a JSON body with an `error` code, e.g.
+            // `invalid_grant` or `access_denied`) means the token was refused. A 4xx without one is
+            // an HTML page from a reverse proxy, WAF or captive portal that never reached Home
+            // Assistant, which is transient and must not log the user out.
+            if case let .serverError(statusCode, errorCode, _) = self {
+                return errorCode != nil && (400 ... 403).contains(statusCode)
             }
 
             return false

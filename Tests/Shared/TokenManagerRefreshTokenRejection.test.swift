@@ -97,6 +97,35 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
         XCTAssertEqual(recorder.reauthenticationCount, 0)
     }
 
+    /// Only a real OAuth error from Home Assistant (a JSON body with an `error` code) is a refusal.
+    func testAuthenticationErrorRequiresReauthenticationOnlyForOAuthErrors() {
+        typealias AuthError = AuthenticationAPI.AuthenticationError
+
+        XCTAssertTrue(AuthError.serverError(statusCode: 400, errorCode: "invalid_grant", error: nil)
+            .shouldRequireReauthentication)
+        XCTAssertTrue(AuthError.serverError(statusCode: 403, errorCode: "access_denied", error: "User is not active")
+            .shouldRequireReauthentication)
+        // An HTML page from a proxy, WAF or captive portal has no OAuth error code.
+        XCTAssertFalse(AuthError.serverError(statusCode: 403, errorCode: nil, error: "<html></html>")
+            .shouldRequireReauthentication)
+        XCTAssertFalse(AuthError.serverError(statusCode: 500, errorCode: "internal_error", error: nil)
+            .shouldRequireReauthentication)
+    }
+
+    /// A reverse proxy or WAF that answers the refresh with its own 4xx page never reached Home
+    /// Assistant, so the token was not refused: it must not log the user out.
+    func testNonOAuthClientErrorFromProxyIsNotARefusal() async {
+        stubRefreshToken(.proxyBlock)
+        let server = Self.serverWithExpiredToken()
+        let tokenManager = TokenManager(server: server)
+
+        _ = await settle(tokenManager.bearerToken)
+        _ = await settle(tokenManager.bearerToken)
+
+        XCTAssertEqual(recorder.requestCount, 2)
+        XCTAssertEqual(recorder.reauthenticationCount, 0)
+    }
+
     /// Logging back in stores a token minted from a fresh authorization code, which is what lifts the
     /// refusal — the manager outlives re-authentication, so nothing else would.
     func testLoggingInAgainLetsTheNewTokenThrough() async throws {
@@ -276,6 +305,8 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
         /// What Home Assistant answers for a refresh token it no longer has.
         case rejection
         case serverError
+        /// A reverse proxy or WAF answering in place of Home Assistant, with an HTML error page.
+        case proxyBlock
         case success
     }
 
@@ -300,6 +331,12 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
                     jsonObject: ["error": "internal_error"],
                     statusCode: 500,
                     headers: nil
+                )
+            case .proxyBlock:
+                response = HTTPStubsResponse(
+                    data: Data("<html><title>Attention Required!</title></html>".utf8),
+                    statusCode: 403,
+                    headers: ["Content-Type": "text/html"]
                 )
             case .success:
                 response = HTTPStubsResponse(
