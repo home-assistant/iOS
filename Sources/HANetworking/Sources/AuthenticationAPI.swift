@@ -19,13 +19,17 @@ public class AuthenticationAPI {
             }
         }
 
+        /// The `error` codes Home Assistant's token endpoint returns when it refuses a token
+        /// (`homeassistant/components/auth/__init__.py`).
+        private static let tokenRefusalErrorCodes: Set<String> = ["invalid_request", "invalid_grant", "access_denied"]
+
         public var shouldRequireReauthentication: Bool {
-            // Only a real OAuth error from Home Assistant (a JSON body with an `error` code, e.g.
-            // `invalid_grant` or `access_denied`) means the token was refused. A 4xx without one is
-            // an HTML page from a reverse proxy, WAF or captive portal that never reached Home
-            // Assistant, which is transient and must not log the user out.
-            if case let .serverError(statusCode, errorCode, _) = self {
-                return errorCode != nil && (400 ... 403).contains(statusCode)
+            // Only an OAuth error code that Home Assistant's token endpoint sends when it refuses a
+            // token means the token was refused. A 4xx without one (an HTML page or its own JSON from
+            // a reverse proxy, WAF or captive portal) never reached Home Assistant, which is
+            // transient and must not log the user out.
+            if case let .serverError(statusCode, errorCode?, _) = self {
+                return Self.tokenRefusalErrorCodes.contains(errorCode) && (400 ... 403).contains(statusCode)
             }
 
             return false

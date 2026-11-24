@@ -113,6 +113,13 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
         // A bare 4xx with an empty body, e.g. Home Assistant's IP ban middleware, did not judge the token.
         XCTAssertFalse(AuthError.serverError(statusCode: 403, errorCode: nil, error: "")
             .shouldRequireReauthentication)
+        XCTAssertTrue(AuthError.serverError(statusCode: 400, errorCode: "invalid_request", error: "Invalid client id")
+            .shouldRequireReauthentication)
+        // JSON from a proxy or WAF carries an error code Home Assistant never sends.
+        XCTAssertFalse(AuthError.serverError(statusCode: 403, errorCode: "blocked", error: nil)
+            .shouldRequireReauthentication)
+        XCTAssertFalse(AuthError.serverError(statusCode: 403, errorCode: "", error: nil)
+            .shouldRequireReauthentication)
         XCTAssertFalse(AuthError.serverError(statusCode: 500, errorCode: "internal_error", error: nil)
             .shouldRequireReauthentication)
     }
