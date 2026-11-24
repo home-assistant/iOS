@@ -277,8 +277,8 @@
         "package": "zipfoundation",
         "repositoryURL": "https://github.com/weichsel/ZIPFoundation.git",
         "state": {
-          "revision": "22787ffb59de99e5dc1fbfe80b19c97a904ad48d",
-          "version": "0.9.20"
+          "revision": "e7048f0569f0ba37df26f8357f560b9d25e9a284",
+          "version": "0.9.21"
         }
       }
     ]
