@@ -612,7 +612,7 @@ extension AssistViewModel: AssistServiceDelegate {
     }
 
     var playsTtsWhileStreaming: Bool {
-        !configuration.muteTTS
+        !configuration.muteTTS && AVAudioSession.sharedInstance().outputVolume > 0
     }
 
     func didReceiveTtsMediaUrl(_ mediaUrl: URL) {
