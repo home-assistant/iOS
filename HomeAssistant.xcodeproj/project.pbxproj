@@ -6299,7 +6299,7 @@
 			repositoryURL = "https://github.com/weichsel/ZIPFoundation.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.9.19;
+				minimumVersion = 0.9.21;
 			};
 		};
 		425E94862FFD4A8B0067FA73 /* XCRemoteSwiftPackageReference "ObjectMapper" */ = {
@@ -6363,7 +6363,7 @@
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 13.1.1;
+				minimumVersion = 13.2.0;
 			};
 		};
 		42B89EA62E05CC54000224A2 /* XCRemoteSwiftPackageReference "WebRTC" */ = {
@@ -6371,7 +6371,7 @@
 			repositoryURL = "https://github.com/stasel/WebRTC.git";
 			requirement = {
 				kind = exactVersion;
-				version = 157.0.0;
+				version = 158.0.0;
 			};
 		};
 		42E1C80E2FFE4B8C008DAEE5 /* XCRemoteSwiftPackageReference "XCGLogger" */ = {
