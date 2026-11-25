@@ -277,8 +277,16 @@ extension WebViewController {
               let relative = URLComponents(string: relativePath) else {
             return nil
         }
-        components.path = relative.path
-        components.query = relative.query
+        var path = relative.percentEncodedPath
+        var query = relative.percentEncodedQuery
+        // Earlier builds removed "?external_auth=1" as plain text, so a page with more query items was
+        // saved as "/config/dashboard&more-info-entity-id=…". Put the "?" back so it still opens.
+        if query == nil, let separator = path.firstIndex(of: "&") {
+            query = String(path[path.index(after: separator)...])
+            path = String(path[..<separator])
+        }
+        components.percentEncodedPath = path
+        components.percentEncodedQuery = query
         components.fragment = relative.fragment
         return components.url
     }

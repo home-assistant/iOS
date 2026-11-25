@@ -130,6 +130,37 @@ struct WebViewControllerNavigationTests {
         )
     }
 
+    @Test func aRestoredPathSavedWithoutItsQuerySeparatorIsRepaired() throws {
+        let base = try #require(URL(string: "http://127.0.0.1:9"))
+        #expect(
+            WebViewController.restoredURL(
+                base: base,
+                relativePath: "/config/dashboard&more-info-entity-id=update.core&more-info-view=info"
+            )?.absoluteString
+                == "http://127.0.0.1:9/config/dashboard?more-info-entity-id=update.core&more-info-view=info"
+        )
+        // An encoded "&" belongs to the path, so it stays where it is.
+        #expect(
+            WebViewController.restoredURL(base: base, relativePath: "/media-browser/a%26b")?.absoluteString
+                == "http://127.0.0.1:9/media-browser/a%26b"
+        )
+    }
+
+    @Test func externalAuthIsRemovedWithoutDroppingTheQuerySeparator() throws {
+        let withMoreItems = try #require(URL(
+            string: "http://127.0.0.1:9/config/dashboard?external_auth=1&more-info-entity-id=update.core"
+        ))
+        #expect(
+            WebViewController.urlWithoutExternalAuth(withMoreItems)?.absoluteString
+                == "http://127.0.0.1:9/config/dashboard?more-info-entity-id=update.core"
+        )
+        let onlyExternalAuth = try #require(URL(string: "http://127.0.0.1:9/lovelace/0?external_auth=1"))
+        #expect(
+            WebViewController.urlWithoutExternalAuth(onlyExternalAuth)?.absoluteString
+                == "http://127.0.0.1:9/lovelace/0"
+        )
+    }
+
     @Test func aServerVersionChangeClearsTheFrontendCacheAndReloads() async {
         let previousHandler = Current.websiteDataStoreHandler
         let handler = MockWebsiteDataStoreHandler()

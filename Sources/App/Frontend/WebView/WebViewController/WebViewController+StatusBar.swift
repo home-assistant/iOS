@@ -58,12 +58,20 @@ extension WebViewController {
     }
 
     var currentPageURL: URL? {
-        guard let url = webView.url,
-              var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+        guard let url = webView.url else { return nil }
+        return Self.urlWithoutExternalAuth(url)
+    }
+
+    /// `url` without the `external_auth` query item, which only makes sense to the frontend running inside
+    /// our webview. The other query items keep their `?` separator. Non-private for tests.
+    static func urlWithoutExternalAuth(_ url: URL) -> URL? {
+        guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
             return nil
         }
         urlComponents.queryItems = urlComponents.queryItems?.filter { $0.name != "external_auth" }
-        if urlComponents.queryItems?.isEmpty == true { urlComponents.queryItems = nil }
+        if urlComponents.queryItems?.isEmpty == true {
+            urlComponents.queryItems = nil
+        }
         return urlComponents.url
     }
 
