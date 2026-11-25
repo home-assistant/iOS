@@ -97,7 +97,6 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
         XCTAssertEqual(recorder.reauthenticationCount, 0)
     }
 
-    /// Only a real OAuth error from Home Assistant (a JSON body with an `error` code) is a refusal.
     func testAuthenticationErrorRequiresReauthenticationOnlyForOAuthErrors() {
         typealias AuthError = AuthenticationAPI.AuthenticationError
 
@@ -105,17 +104,17 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
             .shouldRequireReauthentication)
         XCTAssertTrue(AuthError.serverError(statusCode: 403, errorCode: "access_denied", error: "User is not active")
             .shouldRequireReauthentication)
-        // An HTML page from a proxy, WAF or captive portal has no OAuth error code.
+        // Proxy, WAF or captive portal page.
         XCTAssertFalse(AuthError.serverError(statusCode: 403, errorCode: nil, error: "<html></html>")
             .shouldRequireReauthentication)
         XCTAssertFalse(AuthError.serverError(statusCode: 400, errorCode: nil, error: "Bad Request")
             .shouldRequireReauthentication)
-        // A bare 4xx with an empty body, e.g. Home Assistant's IP ban middleware, did not judge the token.
+        // Empty body, e.g. Home Assistant's IP ban middleware.
         XCTAssertFalse(AuthError.serverError(statusCode: 403, errorCode: nil, error: "")
             .shouldRequireReauthentication)
         XCTAssertTrue(AuthError.serverError(statusCode: 400, errorCode: "invalid_request", error: "Invalid client id")
             .shouldRequireReauthentication)
-        // JSON from a proxy or WAF carries an error code Home Assistant never sends.
+        // Proxy JSON with a code Home Assistant never sends.
         XCTAssertFalse(AuthError.serverError(statusCode: 403, errorCode: "blocked", error: nil)
             .shouldRequireReauthentication)
         XCTAssertFalse(AuthError.serverError(statusCode: 403, errorCode: "", error: nil)
@@ -124,8 +123,6 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
             .shouldRequireReauthentication)
     }
 
-    /// A reverse proxy or WAF that answers the refresh with its own 4xx page never reached Home
-    /// Assistant, so the token was not refused: it must not log the user out.
     func testNonOAuthClientErrorFromProxyIsNotARefusal() async {
         stubRefreshToken(.proxyBlock)
         let server = Self.serverWithExpiredToken()
@@ -317,7 +314,7 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
         /// What Home Assistant answers for a refresh token it no longer has.
         case rejection
         case serverError
-        /// A reverse proxy or WAF answering in place of Home Assistant, with an HTML error page.
+        /// A reverse proxy or WAF answering with an HTML error page.
         case proxyBlock
         case success
     }
