@@ -1,0 +1,61 @@
+{
+    "input": {
+        "title": "Toulouse",
+        "message": "incoming_call",
+        "data": {
+            "tag": "visio_2",
+            "caller": "Papa",
+            "video": false,
+            "url": "/lovelace/visio",
+            "timeout": 30,
+            "action_data": {
+                "room": "salon"
+            }
+        },
+        "registration_info": {
+            "app_id": "io.robbie.HomeAssistant.dev",
+            "os_version": "17.0",
+            "app_version": "2026.11"
+        }
+    },
+    "rate_limit": true,
+    "headers": {
+        "apns-push-type": "alert",
+        "apns-collapse-id": "visio_2"
+    },
+    "payload": {
+        "aps": {
+            "alert": {
+                "title": "Toulouse",
+                "body": "Papa"
+            },
+            "sound": "default",
+            "interruption-level": "time-sensitive",
+            "category": "DYNAMIC",
+            "mutable-content": true
+        },
+        "actions": [
+            {
+                "action": "CALL_ANSWER",
+                "title": "Answer",
+                "activationMode": "foreground",
+                "icon": "sfsymbols:phone.fill"
+            },
+            {
+                "action": "CALL_DECLINE",
+                "title": "Decline",
+                "destructive": true,
+                "icon": "sfsymbols:phone.down.fill"
+            }
+        ],
+        "homeassistant": {
+            "room": "salon",
+            "command": "incoming_call",
+            "video": false,
+            "tag": "visio_2",
+            "caller": "Papa",
+            "url": "/lovelace/visio",
+            "timeout": 30
+        }
+    }
+}

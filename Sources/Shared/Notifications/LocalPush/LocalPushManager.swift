@@ -312,7 +312,16 @@ public class LocalPushManager {
 
         state.increment()
 
-        let baseContent = event.content(server: server)
+        var baseContent = event.content(server: server)
+        if IncomingCallRequest.isIncomingCall(userInfo: baseContent.userInfo),
+           IncomingCallRouting.route(userInfo: baseContent.userInfo, server: server) == .notification {
+            // Not ringing through CallKit (feature off, invalid, duplicate or too many calls): present it as an
+            // ordinary notification, with its Answer and Decline actions, instead of handling it as a command.
+            // swiftlint:disable:next force_cast
+            let content = baseContent.mutableCopy() as! UNMutableNotificationContent
+            content.userInfo = IncomingCallRouting.notificationOnly(content.userInfo)
+            baseContent = content
+        }
         var userInfo = baseContent.userInfo
         let isLiveActivity = Self.isLiveActivityCommand(userInfo)
         let liveActivityTag = isLiveActivity

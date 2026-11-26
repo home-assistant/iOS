@@ -19,6 +19,9 @@ struct NotificationSettingsView: View {
             )
             overviewSection
             historySnoozeSoundsSection
+            if IncomingCallFeature.isOffered {
+                incomingCallsSection
+            }
             tapActionsSection
             badgeSection
             if !Current.isCatalyst {
@@ -100,6 +103,17 @@ struct NotificationSettingsView: View {
         }
     }
 
+    private var incomingCallsSection: some View {
+        Section {
+            Toggle(
+                L10n.SettingsDetails.Notifications.IncomingCalls.title,
+                isOn: $viewModel.incomingCallsEnabled
+            )
+        } footer: {
+            Text(L10n.SettingsDetails.Notifications.IncomingCalls.footer)
+        }
+    }
+
     private var tapActionsSection: some View {
         Section {
             Toggle(
@@ -174,6 +188,14 @@ final class NotificationSettingsViewModel: ObservableObject {
         }
     }
 
+    @Published var incomingCallsEnabled: Bool = Current.settingsStore.incomingCallsEnabled {
+        didSet {
+            Current.settingsStore.incomingCallsEnabled = incomingCallsEnabled
+            // Start from a clean slate either way: calls that rang before do not count against the next ones.
+            IncomingCallGuard().reset()
+        }
+    }
+
     @Published var tapActionsEnabled: Bool = Current.settingsStore.notificationTapActionsEnabled {
         didSet {
             Current.settingsStore.notificationTapActionsEnabled = tapActionsEnabled
@@ -237,6 +259,9 @@ extension NotificationSettingsView: SettingsScreenSearchable {
             SettingsSearchEntry(L10n.SettingsDetails.Notifications.BadgeSection.Button.title),
             SettingsSearchEntry(L10n.SettingsDetails.Notifications.BadgeSection.AutomaticSetting.title),
         ]
+        if IncomingCallFeature.isOffered {
+            entries.append(SettingsSearchEntry(L10n.SettingsDetails.Notifications.IncomingCalls.title))
+        }
         if !Current.isCatalyst {
             entries.append(SettingsSearchEntry(L10n.SettingsDetails.Notifications.ForceCloseWarning.title))
         }

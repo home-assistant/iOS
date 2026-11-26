@@ -5,6 +5,9 @@ import PromiseKit
 import Shared
 
 final class NotificationManagerLocalPushInterfaceExtension: NSObject, NotificationManagerLocalPushInterface {
+    /// Reports a call the PushProvider extension handed over; set by `NotificationManager`.
+    var incomingCallHandler: (([AnyHashable: Any]) -> Void)?
+
     /// Delay in seconds before reloading managers after configuration changes.
     /// This allows the system to persist changes before attempting to reload them.
     private static let managerReloadDelay: TimeInterval = 0.5
@@ -594,6 +597,12 @@ extension NotificationManagerLocalPushInterfaceExtension: NEAppPushDelegate {
         _ manager: NEAppPushManager,
         didReceiveIncomingCallWithUserInfo userInfo: [AnyHashable: Any] = [:]
     ) {
-        // we do not have calls
+        // The PushProvider extension routed an `incoming_call` to CallKit (see `IncomingCallCommandHandler`).
+        // iOS launched the app for it and expects a call to be reported before this returns.
+        guard let incomingCallHandler else {
+            Current.Log.error("incoming call received before the notification manager was set up")
+            return
+        }
+        incomingCallHandler(userInfo)
     }
 }

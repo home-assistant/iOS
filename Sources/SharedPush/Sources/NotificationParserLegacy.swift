@@ -285,6 +285,10 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
             }
         }
 
+        if input["message"] as? String == LegacyNotificationCommandType.incomingCall.rawValue {
+            applyIncomingCall(input: input, data: data, payload: &payload)
+        }
+
         if registrationInfo["os_version"]?.starts(with: "10.15") == true {
             payload.mutateInside("aps") { aps in
                 if let sound = aps["sound"] as? String {
@@ -319,6 +323,69 @@ public struct LegacyNotificationParserImpl: LegacyNotificationParser {
 
         return .init(headers: headers, payload: payload)
     }
+
+    /// `message: incoming_call` is delivered as a regular, time-sensitive alert with Answer and Decline actions, so
+    /// it still rings as a notification where CallKit is off, unsupported or not allowed. The `homeassistant`
+    /// dictionary carries the `incoming_call` command for the app, which reports the call to CallKit instead
+    /// when the user switched that on. The automation's own `title`, `actions`, `push` and `action_data` win.
+    ///
+    /// `url` is not set as the notification's or the Answer action's URL: this parser cannot check it against the
+    /// sending server (the relay runs it too), so it only travels in `homeassistant`, and the app opens it on
+    /// Answer or a tap once it has validated it, as it does for CallKit. Decline never opens anything.
+    private func applyIncomingCall(input: [String: Any], data: [String: Any], payload: inout [String: Any]) {
+        let caller = (data["caller"] as? String).flatMap { $0.isEmpty ? nil : $0 }
+        let hasVideo = data["video"] as? Bool ?? true
+        let defaultBody = hasVideo ? "Incoming video call" : "Incoming call"
+
+        payload.mutateInside("aps") { aps in
+            aps.mutateInside("alert") { alert in
+                if input["title"] is String {
+                    alert["body"] = caller ?? defaultBody
+                } else {
+                    alert["title"] = caller ?? defaultBody
+                    alert["body"] = caller == nil ? nil : defaultBody
+                }
+            }
+            if aps["interruption-level"] == nil {
+                aps["interruption-level"] = "time-sensitive"
+            }
+            if aps["category"] == nil {
+                aps["category"] = "DYNAMIC"
+            }
+            aps["mutable-content"] = true
+        }
+
+        if payload["actions"] == nil {
+            let answer: [String: Any] = [
+                "action": "CALL_ANSWER",
+                "title": "Answer",
+                "activationMode": "foreground",
+                "icon": "sfsymbols:phone.fill",
+            ]
+            payload["actions"] = [
+                answer,
+                [
+                    "action": "CALL_DECLINE",
+                    "title": "Decline",
+                    "destructive": true,
+                    "icon": "sfsymbols:phone.down.fill",
+                ],
+            ]
+        }
+
+        // See above: the app opens the validated `homeassistant.url` instead.
+        payload["url"] = nil
+
+        var homeassistant = payload["homeassistant"] as? [String: Any] ?? [:]
+        homeassistant["command"] = LegacyNotificationCommandType.incomingCall.rawValue
+        homeassistant["video"] = hasVideo
+        for key in ["tag", "caller", "url", "timeout"] {
+            if let value = data[key] {
+                homeassistant[key] = value
+            }
+        }
+        payload["homeassistant"] = homeassistant
+    }
 }
 
 enum LegacyNotificationCommandType: String {
@@ -330,6 +397,8 @@ enum LegacyNotificationCommandType: String {
     case updateWidgets = "update_widgets"
     case showCamera = "show_camera"
     case hideCamera = "hide_camera"
+    /// Not a background command: see `applyIncomingCall`.
+    case incomingCall = "incoming_call"
 }
 
 public enum NotificationPayloadKey: String, CaseIterable {

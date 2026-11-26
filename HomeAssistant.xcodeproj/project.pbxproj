@@ -60,6 +60,11 @@
 		11B6B59429497C5800B8B552 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D891720E0A85200D4F28D /* Shared.framework */; };
 		11B7DC0E266C3EEB0090BD3B /* LocalPushEvent.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7DC0D266C3EEB0090BD3B /* LocalPushEvent.test.swift */; };
 		11B7DC1F266C5D3E0090BD3B /* LocalPushManager.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7DC1E266C5D3E0090BD3B /* LocalPushManager.test.swift */; };
+		A0DDD62830B3A3FE00267EE7 /* IncomingCallGuard.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0DDD62730B3A3FE00267EE7 /* IncomingCallGuard.test.swift */; };
+		A0DDD62A30B3A51800267EE7 /* IncomingCallPendingEnd.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0DDD62930B3A51800267EE7 /* IncomingCallPendingEnd.test.swift */; };
+		A0DDD62C30B3A51800267EE7 /* IncomingCallCommandHandler.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0DDD62B30B3A51800267EE7 /* IncomingCallCommandHandler.test.swift */; };
+		A0DDD62E30B3A51900267EE7 /* IncomingCallRequest.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0DDD62D30B3A51900267EE7 /* IncomingCallRequest.test.swift */; };
+		A0DDD63030B3A51900267EE7 /* IncomingCallRouting.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0DDD62F30B3A51900267EE7 /* IncomingCallRouting.test.swift */; };
 		11B7FD772493232400E60ED9 /* BackgroundTask.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B7FD762493232400E60ED9 /* BackgroundTask.test.swift */; };
 		11B9290B266F145000786588 /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11B9290A266F145000786588 /* NetworkExtension.framework */; };
 		11B92913266F145000786588 /* HomeAssistant-Extensions-PushProvider.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 11B92909266F145000786588 /* HomeAssistant-Extensions-PushProvider.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -622,6 +627,11 @@
 		11B6B57B2948F8E100B8B552 /* HomeAssistant-Extensions-Matter.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "HomeAssistant-Extensions-Matter.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		11B7DC0D266C3EEB0090BD3B /* LocalPushEvent.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalPushEvent.test.swift; sourceTree = "<group>"; };
 		11B7DC1E266C5D3E0090BD3B /* LocalPushManager.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalPushManager.test.swift; sourceTree = "<group>"; };
+		A0DDD62730B3A3FE00267EE7 /* IncomingCallGuard.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingCallGuard.test.swift; sourceTree = "<group>"; };
+		A0DDD62930B3A51800267EE7 /* IncomingCallPendingEnd.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingCallPendingEnd.test.swift; sourceTree = "<group>"; };
+		A0DDD62B30B3A51800267EE7 /* IncomingCallCommandHandler.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingCallCommandHandler.test.swift; sourceTree = "<group>"; };
+		A0DDD62D30B3A51900267EE7 /* IncomingCallRequest.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingCallRequest.test.swift; sourceTree = "<group>"; };
+		A0DDD62F30B3A51900267EE7 /* IncomingCallRouting.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingCallRouting.test.swift; sourceTree = "<group>"; };
 		11B7FD762493232400E60ED9 /* BackgroundTask.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTask.test.swift; sourceTree = "<group>"; };
 		11B92909266F145000786588 /* HomeAssistant-Extensions-PushProvider.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "HomeAssistant-Extensions-PushProvider.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		11B9290A266F145000786588 /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
@@ -3275,6 +3285,11 @@
 				B0B0B0B00000000000000032 /* UIColor+CSSColor.test.swift */,
 				11B7DC0D266C3EEB0090BD3B /* LocalPushEvent.test.swift */,
 				11B7DC1E266C5D3E0090BD3B /* LocalPushManager.test.swift */,
+				A0DDD62730B3A3FE00267EE7 /* IncomingCallGuard.test.swift */,
+				A0DDD62930B3A51800267EE7 /* IncomingCallPendingEnd.test.swift */,
+				A0DDD62B30B3A51800267EE7 /* IncomingCallCommandHandler.test.swift */,
+				A0DDD62D30B3A51900267EE7 /* IncomingCallRequest.test.swift */,
+				A0DDD62F30B3A51900267EE7 /* IncomingCallRouting.test.swift */,
 				11764A6B26817FC3007D47F3 /* UserDefaultsValueSync.test.swift */,
 				116570792702B9EB003906A7 /* DiskCache.test.swift */,
 				1165707F2702D325003906A7 /* URLComponents+WidgetAuthenticity.test.swift */,
@@ -4758,6 +4773,11 @@
 				BECCC152A4E3F69A8EF5A6F3 /* Database/TableSchemaTests.test.swift in Sources */,
 				11267D0925BBA9FE00F28E5C /* Updater.test.swift in Sources */,
 				11B7DC1F266C5D3E0090BD3B /* LocalPushManager.test.swift in Sources */,
+				A0DDD62830B3A3FE00267EE7 /* IncomingCallGuard.test.swift in Sources */,
+				A0DDD62A30B3A51800267EE7 /* IncomingCallPendingEnd.test.swift in Sources */,
+				A0DDD62C30B3A51800267EE7 /* IncomingCallCommandHandler.test.swift in Sources */,
+				A0DDD62E30B3A51900267EE7 /* IncomingCallRequest.test.swift in Sources */,
+				A0DDD63030B3A51900267EE7 /* IncomingCallRouting.test.swift in Sources */,
 				11CB98CD249E637300B05222 /* Version+HA.test.swift in Sources */,
 				D03D894D20E0BC2700D4F28D /* ClientEventTests.swift in Sources */,
 				B7104E0100000000000000C2 /* NotificationHistoryStore.test.swift in Sources */,

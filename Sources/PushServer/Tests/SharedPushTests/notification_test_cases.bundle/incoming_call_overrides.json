@@ -1,0 +1,52 @@
+{
+    "input": {
+        "message": "incoming_call",
+        "data": {
+            "tag": "visio_3",
+            "caller": "Salon",
+            "actions": [
+                {
+                    "action": "OPEN",
+                    "title": "Open"
+                }
+            ],
+            "push": {
+                "interruption-level": "active"
+            }
+        },
+        "registration_info": {
+            "app_id": "io.robbie.HomeAssistant.dev",
+            "os_version": "17.0",
+            "app_version": "2026.11"
+        }
+    },
+    "rate_limit": true,
+    "headers": {
+        "apns-push-type": "alert",
+        "apns-collapse-id": "visio_3"
+    },
+    "payload": {
+        "aps": {
+            "alert": {
+                "title": "Salon",
+                "body": "Incoming video call"
+            },
+            "sound": "default",
+            "interruption-level": "active",
+            "category": "DYNAMIC",
+            "mutable-content": true
+        },
+        "actions": [
+            {
+                "action": "OPEN",
+                "title": "Open"
+            }
+        ],
+        "homeassistant": {
+            "command": "incoming_call",
+            "video": true,
+            "tag": "visio_3",
+            "caller": "Salon"
+        }
+    }
+}
