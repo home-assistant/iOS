@@ -12,7 +12,9 @@ class ZoneManager {
     let regionFilter: ZoneManagerRegionFilter
     private(set) var zones: [AppZone]
 
+    private var synchronizedRegions = Set<CLRegion>()
     private var observationToken: AnyDatabaseCancellable?
+    private let isApplicationActive: () -> Bool
     private let syncExecutor: (@escaping () -> Void) -> Void
 
     private static let regionSyncQueue = DispatchQueue(label: "zone-manager-region-sync", qos: .utility)
@@ -22,6 +24,7 @@ class ZoneManager {
         collector: ZoneManagerCollector = ZoneManagerCollectorImpl(),
         processor: ZoneManagerProcessor = ZoneManagerProcessorImpl(),
         regionFilter: ZoneManagerRegionFilter = ZoneManagerRegionFilterImpl(),
+        isApplicationActive: @escaping () -> Bool = { UIApplication.shared.applicationState == .active },
         syncExecutor: @escaping (@escaping () -> Void) -> Void = { work in
             ZoneManager.regionSyncQueue.async(execute: work)
         }
@@ -30,6 +33,7 @@ class ZoneManager {
         self.collector = collector
         self.processor = processor
         self.regionFilter = regionFilter
+        self.isApplicationActive = isApplicationActive
         self.syncExecutor = syncExecutor
         self.zones = AppZone.trackedZones()
 
@@ -46,15 +50,53 @@ class ZoneManager {
             name: SettingsStore.locationRelatedSettingDidChange,
             object: nil
         )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(applicationDidBecomeActive),
+            name: UIApplication.didBecomeActiveNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(applicationWillResignActive),
+            name: UIApplication.willResignActiveNotification,
+            object: nil
+        )
     }
 
     deinit {
         observationToken?.cancel()
+        NotificationCenter.default.removeObserver(self)
         Current.Log.info("going away")
     }
 
     @objc private func locationSettingDidChange() {
         updateLocationManager(isInitial: false)
+    }
+
+    @objc func applicationDidBecomeActive() {
+        guard Current.settingsStore.locationSources.zone else {
+            collector.stopBackgroundBeaconMonitoring(manager: locationManager)
+            return
+        }
+
+        collector.startForegroundBeaconScanning(
+            in: synchronizedRegions,
+            manager: locationManager
+        )
+        collector.stopBackgroundBeaconMonitoring(manager: locationManager)
+    }
+
+    @objc func applicationWillResignActive() {
+        guard Current.settingsStore.locationSources.zone else {
+            collector.stopForegroundBeaconScanning(manager: locationManager)
+            return
+        }
+        collector.startBackgroundBeaconMonitoring(
+            in: synchronizedRegions,
+            manager: locationManager
+        )
+        collector.stopForegroundBeaconScanning(manager: locationManager)
     }
 
     private func updateLocationManager(isInitial: Bool) {
@@ -216,6 +258,19 @@ class ZoneManager {
         // is only ever touched from there; synchronously, so the next queued sync's reads observe
         // these mutations and can't re-add the same regions.
         Self.runOnMain { [self] in
+            let expectedRegions = Set(expected.map(\.region))
+            // Reconciliation is not a lifecycle wake: an unchanged definition must not
+            // re-arm a completed bounded scan after every successful location event.
+            let previousBeacons = Set(
+                synchronizedRegions.filter { $0 is CLBeaconRegion }
+                    .map(ZoneManagerEquatableRegion.init(region:))
+            )
+            let expectedBeacons = Set(
+                expectedRegions.filter { $0 is CLBeaconRegion }
+                    .map(ZoneManagerEquatableRegion.init(region:))
+            )
+            let beaconDefinitionsChanged = previousBeacons != expectedBeacons
+            synchronizedRegions = expectedRegions
             // process removals before additions
             // this is important because the system is focused on identifier
             for region in needsRemoval.map(\.region) {
@@ -241,6 +296,16 @@ class ZoneManager {
                 collector.ignoreNextState(for: region)
                 processor.resetExitReporting(for: region)
                 locationManager.startMonitoring(for: region)
+            }
+
+            if isApplicationActive() {
+                collector.startForegroundBeaconScanning(in: expectedRegions, manager: locationManager)
+                collector.stopBackgroundBeaconMonitoring(manager: locationManager)
+            } else {
+                if beaconDefinitionsChanged {
+                    collector.startBackgroundBeaconMonitoring(in: expectedRegions, manager: locationManager)
+                }
+                collector.stopForegroundBeaconScanning(manager: locationManager)
             }
         }
 

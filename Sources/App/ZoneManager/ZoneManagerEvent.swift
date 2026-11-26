@@ -29,13 +29,16 @@ struct ZoneManagerEvent: Equatable, CustomStringConvertible {
 
     var eventType: EventType
     var associatedZone: AppZone?
+    var beaconDiagnostic: BeaconDiagnostic?
 
     init(
         eventType: ZoneManagerEvent.EventType,
-        associatedZone: AppZone? = nil
+        associatedZone: AppZone? = nil,
+        beaconDiagnostic: BeaconDiagnostic? = nil
     ) {
         self.eventType = eventType
         self.associatedZone = associatedZone
+        self.beaconDiagnostic = beaconDiagnostic
     }
 
     static func == (lhs: ZoneManagerEvent, rhs: ZoneManagerEvent) -> Bool {
@@ -50,6 +53,11 @@ struct ZoneManagerEvent: Equatable, CustomStringConvertible {
 
         if let zone = associatedZone {
             attributes.append(zone.identifier)
+        }
+
+        if let beaconDiagnostic {
+            attributes.append("ranging proximity=\(beaconDiagnostic.proximity) rssi=\(beaconDiagnostic.rssi)")
+            attributes.append("appActive=\(beaconDiagnostic.isAppActive)")
         }
 
         return "ZoneManagerEvent(\(attributes.joined(separator: ", ")))"
