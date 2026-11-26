@@ -6,6 +6,7 @@ final class CameraMicrophoneBridge {
     typealias MakeSession = (_ server: Server, _ cameraEntityId: String) -> CameraMicrophoneSessionProtocol
 
     var onSessionEnded: ((_ sessionId: String) -> Void)?
+    var onSessionReport: ((_ sessionId: String, _ microphoneLevel: Double) -> Void)?
 
     var activeCameraEntityId: String? {
         session?.cameraEntityId
@@ -53,6 +54,10 @@ final class CameraMicrophoneBridge {
             if let sessionId = session.sessionId {
                 onSessionEnded?(sessionId)
             }
+        }
+        session.onMicrophoneLevel = { [weak self, weak session] level in
+            guard let self, let session, self.session === session, let sessionId = session.sessionId else { return }
+            onSessionReport?(sessionId, level)
         }
         session.start { [weak self, weak session] result in
             if case .failure = result, let self, let session, self.session === session {
