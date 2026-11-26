@@ -280,15 +280,45 @@ extension WebViewController {
         var path = relative.percentEncodedPath
         var query = relative.percentEncodedQuery
         // Earlier builds removed "?external_auth=1" as plain text, so a page with more query items was
-        // saved as "/config/dashboard&more-info-entity-id=…". Put the "?" back so it still opens.
+        // saved as "/config/dashboard&more-info-entity-id=…". Put the "?" back so it still opens, but only
+        // when everything after the "&" reads as query items, so a page name with "&" in it is left alone.
         if query == nil, let separator = path.firstIndex(of: "&") {
-            query = String(path[path.index(after: separator)...])
-            path = String(path[..<separator])
+            let rest = String(path[path.index(after: separator)...])
+            if looksLikeQueryItems(rest) {
+                query = rest
+                path = String(path[..<separator])
+            }
         }
         components.percentEncodedPath = path
         components.percentEncodedQuery = query
         components.fragment = relative.fragment
         return components.url
+    }
+
+    /// The relative reference (`path?query#fragment`) saved for "Remember Last Page". It keeps the percent
+    /// encoding, so an encoded "&" in a page name is not read back as a query separator by `restoredURL`.
+    /// Non-private for tests.
+    static func savedRelativePath(for components: URLComponents) -> String {
+        var relative = components.percentEncodedPath.isEmpty ? "/" : components.percentEncodedPath
+        if let query = components.percentEncodedQuery {
+            relative += "?\(query)"
+        }
+        if let fragment = components.percentEncodedFragment {
+            relative += "#\(fragment)"
+        }
+        return relative
+    }
+
+    /// Whether `string` is a list of `name=value` items joined by "&", with names made of letters, digits,
+    /// "_" and "-", like the query items the frontend uses.
+    private static func looksLikeQueryItems(_ string: String) -> Bool {
+        string.split(separator: "&", omittingEmptySubsequences: false).allSatisfy { item in
+            guard item.contains("=") else { return false }
+            let name = item.prefix { $0 != "=" }
+            return !name.isEmpty && name.allSatisfy { character in
+                character.isASCII && (character.isLetter || character.isNumber || character == "_" || character == "-")
+            }
+        }
     }
 
     /// The URL of the kiosk-configured dashboard for this server, or `nil` when kiosk mode is off, this

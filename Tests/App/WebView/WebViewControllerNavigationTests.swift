@@ -139,11 +139,38 @@ struct WebViewControllerNavigationTests {
             )?.absoluteString
                 == "http://127.0.0.1:9/config/dashboard?more-info-entity-id=update.core&more-info-view=info"
         )
-        // An encoded "&" belongs to the path, so it stays where it is.
+        // A page name with "&" in it, as earlier builds saved it, is not split.
         #expect(
-            WebViewController.restoredURL(base: base, relativePath: "/media-browser/a%26b")?.absoluteString
-                == "http://127.0.0.1:9/media-browser/a%26b"
+            WebViewController.restoredURL(base: base, relativePath: "/media-browser/browser/Tom & Jerry")?
+                .absoluteString == "http://127.0.0.1:9/media-browser/browser/Tom%20&%20Jerry"
         )
+        #expect(
+            WebViewController.restoredURL(base: base, relativePath: "/media-browser/a&b")?.absoluteString
+                == "http://127.0.0.1:9/media-browser/a&b"
+        )
+    }
+
+    @Test func aSavedPageReopensAtTheSameAddress() throws {
+        let base = try #require(URL(string: "http://127.0.0.1:9"))
+        let pages = [
+            (
+                "http://127.0.0.1:9/config/dashboard?external_auth=1&more-info-entity-id=update.core",
+                "http://127.0.0.1:9/config/dashboard?more-info-entity-id=update.core"
+            ),
+            (
+                "http://127.0.0.1:9/media-browser/browser/Tom%20%26%20Jerry",
+                "http://127.0.0.1:9/media-browser/browser/Tom%20%26%20Jerry"
+            ),
+            ("http://127.0.0.1:9/map?zoom=2#top", "http://127.0.0.1:9/map?zoom=2#top"),
+        ]
+        for (webViewAddress, reopened) in pages {
+            // The same steps as the URL observer, then what a cold launch does with the saved value.
+            let url = try #require(URL(string: webViewAddress))
+            let cleanURL = try #require(WebViewController.urlWithoutExternalAuth(url))
+            let components = try #require(URLComponents(url: cleanURL, resolvingAgainstBaseURL: false))
+            let saved = WebViewController.savedRelativePath(for: components)
+            #expect(WebViewController.restoredURL(base: base, relativePath: saved)?.absoluteString == reopened)
+        }
     }
 
     @Test func externalAuthIsRemovedWithoutDroppingTheQuerySeparator() throws {

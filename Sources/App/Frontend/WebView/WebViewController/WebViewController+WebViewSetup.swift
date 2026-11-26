@@ -85,14 +85,7 @@ extension WebViewController {
                 Task { @MainActor [weak overlayState] in
                     overlayState?.currentPath = path
                 }
-                var relative = path
-                if let query = components.query {
-                    relative += "?\(query)"
-                }
-                if let fragment = components.fragment {
-                    relative += "#\(fragment)"
-                }
-                Current.settingsStore.lastActiveURLPath = relative
+                Current.settingsStore.lastActiveURLPath = Self.savedRelativePath(for: components)
             }
         }
     }
