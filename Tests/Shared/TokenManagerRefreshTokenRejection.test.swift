@@ -97,6 +97,44 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
         XCTAssertEqual(recorder.reauthenticationCount, 0)
     }
 
+    func testAuthenticationErrorRequiresReauthenticationOnlyForOAuthErrors() {
+        typealias AuthError = AuthenticationAPI.AuthenticationError
+
+        XCTAssertTrue(AuthError.serverError(statusCode: 400, errorCode: "invalid_grant", error: nil)
+            .shouldRequireReauthentication)
+        XCTAssertTrue(AuthError.serverError(statusCode: 403, errorCode: "access_denied", error: "User is not active")
+            .shouldRequireReauthentication)
+        // Proxy, WAF or captive portal page.
+        XCTAssertFalse(AuthError.serverError(statusCode: 403, errorCode: nil, error: "<html></html>")
+            .shouldRequireReauthentication)
+        XCTAssertFalse(AuthError.serverError(statusCode: 400, errorCode: nil, error: "Bad Request")
+            .shouldRequireReauthentication)
+        // Empty body, e.g. Home Assistant's IP ban middleware.
+        XCTAssertFalse(AuthError.serverError(statusCode: 403, errorCode: nil, error: "")
+            .shouldRequireReauthentication)
+        XCTAssertTrue(AuthError.serverError(statusCode: 400, errorCode: "invalid_request", error: "Invalid client id")
+            .shouldRequireReauthentication)
+        // Proxy JSON with a code Home Assistant never sends.
+        XCTAssertFalse(AuthError.serverError(statusCode: 403, errorCode: "blocked", error: nil)
+            .shouldRequireReauthentication)
+        XCTAssertFalse(AuthError.serverError(statusCode: 403, errorCode: "", error: nil)
+            .shouldRequireReauthentication)
+        XCTAssertFalse(AuthError.serverError(statusCode: 500, errorCode: "internal_error", error: nil)
+            .shouldRequireReauthentication)
+    }
+
+    func testNonOAuthClientErrorFromProxyIsNotARefusal() async {
+        stubRefreshToken(.proxyBlock)
+        let server = Self.serverWithExpiredToken()
+        let tokenManager = TokenManager(server: server)
+
+        _ = await settle(tokenManager.bearerToken)
+        _ = await settle(tokenManager.bearerToken)
+
+        XCTAssertEqual(recorder.requestCount, 2)
+        XCTAssertEqual(recorder.reauthenticationCount, 0)
+    }
+
     /// Logging back in stores a token minted from a fresh authorization code, which is what lifts the
     /// refusal — the manager outlives re-authentication, so nothing else would.
     func testLoggingInAgainLetsTheNewTokenThrough() async throws {
@@ -276,6 +314,8 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
         /// What Home Assistant answers for a refresh token it no longer has.
         case rejection
         case serverError
+        /// A reverse proxy or WAF answering with an HTML error page.
+        case proxyBlock
         case success
     }
 
@@ -300,6 +340,12 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
                     jsonObject: ["error": "internal_error"],
                     statusCode: 500,
                     headers: nil
+                )
+            case .proxyBlock:
+                response = HTTPStubsResponse(
+                    data: Data("<html><title>Attention Required!</title></html>".utf8),
+                    statusCode: 403,
+                    headers: ["Content-Type": "text/html"]
                 )
             case .success:
                 response = HTTPStubsResponse(
