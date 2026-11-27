@@ -84,6 +84,58 @@ struct WidgetTileRenderingTests {
     }
 
     @available(iOS 17, *)
+    @Test func aLoneSplitTileOpensItsOnlyLinkThroughTheWidgetURL() throws {
+        let link = try #require(URL(string: "https://example.com/page"))
+        let moreInfo = try #require(AppConstants.openEntityDestinationURL(entityId: "lock.a", serverId: "s"))
+        let toggle = WidgetInteractionType.appIntent(.toggle(entityId: "lock.a", domain: "lock", serverId: "s"))
+        let split = Self.model(interaction: .widgetURL(moreInfo), icon: toggle)
+
+        for family in [WidgetFamily.systemSmall, .systemMedium, .systemLarge] {
+            #expect(
+                WidgetTileInteraction(type: .custom, family: family, tiles: [split]).widgetURL
+                    == moreInfo.withWidgetAuthenticity()
+            )
+        }
+        #expect(
+            WidgetTileInteraction(
+                type: .custom,
+                family: .systemSmall,
+                tiles: [Self.model(interaction: toggle, icon: .widgetURL(link))]
+            ).widgetURL == link
+        )
+        #expect(
+            WidgetTileInteraction(
+                type: .custom,
+                family: .systemSmall,
+                tiles: [Self.model(interaction: .widgetURL(moreInfo), icon: toggle, requiresConfirmation: true)]
+            ).widgetURL == moreInfo.withWidgetAuthenticity()
+        )
+    }
+
+    @available(iOS 17, *)
+    @Test func tilesThatKeepTheirOwnControlsLeaveTheWidgetURLEmpty() throws {
+        let link = try #require(URL(string: "https://example.com/page"))
+        let moreInfo = try #require(AppConstants.openEntityDestinationURL(entityId: "lock.a", serverId: "s"))
+        let toggle = WidgetInteractionType.appIntent(.toggle(entityId: "lock.a", domain: "lock", serverId: "s"))
+        let split = Self.model(interaction: .widgetURL(moreInfo), icon: toggle)
+        let widgets: [[WidgetBasicViewModel]] = [
+            [],
+            [split, split],
+            [Self.model(interaction: .widgetURL(moreInfo))],
+            [Self.model(interaction: toggle)],
+            [Self.model(interaction: .widgetURL(moreInfo), icon: .widgetURL(link))],
+            [Self.model(interaction: .widgetURL(moreInfo), icon: toggle, showConfirmation: true)],
+            [Self.model(interaction: .widgetURL(link), icon: toggle, requiresConfirmation: true)],
+        ]
+
+        for tiles in widgets {
+            #expect(WidgetTileInteraction(type: .custom, family: .systemSmall, tiles: tiles).widgetURL == nil)
+        }
+        #expect(WidgetTileInteraction(type: .custom, family: .accessoryRectangular, tiles: [split]).widgetURL == nil)
+        #expect(WidgetTileInteraction(type: .custom, family: .systemSmall).widgetURL == nil)
+    }
+
+    @available(iOS 17, *)
     @Test @MainActor func refreshControlsDrawWhileWaitingForTheirIntents() {
         let date = Date(timeIntervalSince1970: 0)
         render(WidgetCalendarRefreshButton(date: date))

@@ -15,6 +15,17 @@ import WidgetKit
 struct WidgetTileInteraction {
     let type: WidgetType
     let family: WidgetFamily
+    private let loneTileLink: URL?
+
+    init(type: WidgetType, family: WidgetFamily, tiles: [WidgetBasicViewModel] = []) {
+        self.type = type
+        self.family = family
+        self.loneTileLink = tiles.count == 1 ? Self.onlyLink(of: tiles[0], family: family) : nil
+    }
+
+    var widgetURL: URL? {
+        loneTileLink?.withWidgetAuthenticity()
+    }
 
     func content(model: WidgetBasicViewModel, sizeStyle: WidgetTileSizeStyle, tile: AnyView) -> AnyView {
         if #available(iOS 17, *) {
@@ -75,6 +86,21 @@ struct WidgetTileInteraction {
         model.iconInteractionType != nil
     }
 
+    private static func onlyLink(of model: WidgetBasicViewModel, family: WidgetFamily) -> URL? {
+        guard #available(iOS 17, *), !family.isLockScreenAccessory, !model.showConfirmation,
+              let iconInteractionType = model.iconInteractionType else {
+            return nil
+        }
+        let links = [iconInteractionType, model.interactionType].compactMap { interactionType -> URL? in
+            guard case let .widgetURL(url) = interactionType,
+                  !model.requiresConfirmation || interactionType.opensEntityInApp else {
+                return nil
+            }
+            return url
+        }
+        return links.count == 1 ? links[0] : nil
+    }
+
     /// The action a tap runs when the whole tile — or the confirmation standing in for it — is what
     /// was tapped. On a split tile that is the icon's action, unless the confirmation on screen was
     /// asked for by the rest of the tile, whose own behavior it then runs.
@@ -102,10 +128,14 @@ struct WidgetTileInteraction {
             }
             .buttonStyle(.plain)
         } else if case let .widgetURL(url) = interactionType {
-            // Without the token `IncomingURLHandler` drops the `server` parameter and opens server
-            // selection instead of the widget's server.
-            Link(destination: url.withWidgetAuthenticity()) {
+            if url == loneTileLink {
                 content
+            } else {
+                // Without the token `IncomingURLHandler` drops the `server` parameter and opens server
+                // selection instead of the widget's server.
+                Link(destination: url.withWidgetAuthenticity()) {
+                    content
+                }
             }
         } else if let toggle = model.optimisticToggle,
                   let intent = optimisticIntent(for: interactionType, model: model) {

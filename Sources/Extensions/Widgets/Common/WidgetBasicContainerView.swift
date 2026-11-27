@@ -253,7 +253,8 @@ struct WidgetBasicContainerWrapperView: View {
     }
 
     var body: some View {
-        let interaction = WidgetTileInteraction(type: type, family: family)
+        let tiles = Array(contents.prefix(WidgetFamilySizes.size(for: family, capacity: widgetKind.tileCapacity)))
+        let interaction = WidgetTileInteraction(type: type, family: family, tiles: tiles)
         WidgetTileContainerView(
             contents: contents,
             family: family,
@@ -265,6 +266,7 @@ struct WidgetBasicContainerWrapperView: View {
             tileContent: interaction.content,
             tileRegions: interaction.regions
         )
+        .widgetURL(interaction.widgetURL)
     }
 
     /// The last refresh time doubles as the reload control, matching the energy widget: tapping the
