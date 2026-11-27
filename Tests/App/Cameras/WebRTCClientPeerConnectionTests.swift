@@ -173,6 +173,13 @@ struct WebRTCClientPeerConnectionTests {
         client.peerConnection(peerConnection, didChange: RTCIceConnectionState.connected)
         client.peerConnection(peerConnection, didGenerate: candidate)
         client.peerConnection(peerConnection, didRemove: [candidate])
+        client.peerConnection(
+            peerConnection,
+            didChangeLocalCandidate: candidate,
+            remoteCandidate: candidate,
+            lastReceivedMs: 0,
+            changeReason: "candidate generated"
+        )
 
         #expect(delegate.states == [.connected])
         #expect(delegate.candidates.map(\.sdp) == [candidate.sdp])

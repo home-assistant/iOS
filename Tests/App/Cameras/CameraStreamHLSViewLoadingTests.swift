@@ -1,3 +1,4 @@
+import AVFoundation
 @testable import HomeAssistant
 import PromiseKit
 @testable import Shared
@@ -51,6 +52,7 @@ struct CameraStreamHLSViewLoadingTests {
 
     private final class Recorder {
         var fallbacks = 0
+        var started = 0
     }
 
     private func waitUntil(_ condition: () -> Bool) async -> Bool {
@@ -180,6 +182,53 @@ struct CameraStreamHLSViewLoadingTests {
             controller.view.setNeedsLayout()
             controller.view.layoutIfNeeded()
         }
+    }
+
+    @Test func aStreamReadyToPlayReportsItsPicture() {
+        let recorder = Recorder()
+        let view = CameraStreamHLSView(
+            server: server(reachable: true),
+            cameraEntityId: "camera.porch",
+            onHLSUnsupported: { recorder.fallbacks += 1 },
+            onVideoStarted: { recorder.started += 1 }
+        )
+
+        view.statusChanged(to: .unknown, of: AVPlayer())
+        #expect(recorder.started == 0)
+
+        view.statusChanged(to: .readyToPlay, of: AVPlayer())
+        #expect(recorder.started == 1)
+        #expect(recorder.fallbacks == 0)
+    }
+
+    @Test func aStreamThatFailsToPlayHandsOverToTheFallbackPlayer() {
+        let recorder = Recorder()
+        let view = CameraStreamHLSView(
+            server: server(reachable: true),
+            cameraEntityId: "camera.porch",
+            onHLSUnsupported: { recorder.fallbacks += 1 },
+            onVideoStarted: { recorder.started += 1 }
+        )
+
+        view.statusChanged(to: .failed, of: AVPlayer())
+
+        #expect(recorder.fallbacks == 1)
+        #expect(recorder.started == 0)
+    }
+
+    @Test(arguments: [true, false])
+    func thePlayerFollowsTheMuteItIsGiven(isMuted: Bool) {
+        let view = CameraStreamHLSView(
+            server: server(reachable: true),
+            cameraEntityId: "camera.porch",
+            isMuted: isMuted
+        )
+        let player = AVPlayer()
+        player.isMuted = !isMuted
+
+        view.applyMute(to: player)
+
+        #expect(player.isMuted == isMuted)
     }
 
     @Test func streamErrorsDescribeThemselves() {

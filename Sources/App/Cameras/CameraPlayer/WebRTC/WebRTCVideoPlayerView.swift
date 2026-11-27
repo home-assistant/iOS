@@ -28,6 +28,7 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
     private let cameraEntityId: String
     private let cameraName: String?
     private let onWebRTCUnsupported: (() -> Void)?
+    private let onVideoStarted: (() -> Void)?
 
     init(
         server: Server,
@@ -36,12 +37,14 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
         supportsTalkback: Bool = false,
         controlsVisible: Binding<Bool>,
         showLoader: Binding<Bool>,
-        onWebRTCUnsupported: (() -> Void)? = nil
+        onWebRTCUnsupported: (() -> Void)? = nil,
+        onVideoStarted: (() -> Void)? = nil
     ) {
         self.server = server
         self.cameraEntityId = cameraEntityId
         self.cameraName = cameraName
         self.onWebRTCUnsupported = onWebRTCUnsupported
+        self.onVideoStarted = onVideoStarted
         self.controlsVisible = controlsVisible
         self.showLoader = showLoader
         self._viewModel = .init(wrappedValue: WebRTCViewPlayerViewModel(
@@ -106,6 +109,7 @@ struct WebRTCVideoPlayerView: View, AppCameraView {
             .onChange(of: viewModel.showLoader) { showLoader in
                 self.showLoader.wrappedValue = showLoader
             }
+            .onChange(of: isVideoPlaying) { if $0 { onVideoStarted?() } }
             // The frontend player keeps a hidden stream alive briefly and starts a new one when the
             // page comes back; the peer connection here does not survive iOS suspending the app, so
             // returning to a dead stream restarts it rather than leaving a frozen frame on screen.

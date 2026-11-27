@@ -100,7 +100,7 @@ struct CameraPlayerView: View {
                 .padding(DesignSystem.Spaces.two)
                 // The WebRTC player puts its mute button in the trailing corner, at the same inset and
                 // size, so the clock and a long name stop short of it.
-                .padding(.trailing, playback.current == .webRTC ? controlSize + DesignSystem.Spaces.oneAndHalf : .zero)
+                .padding(.trailing, playback.visible == .webRTC ? controlSize + DesignSystem.Spaces.oneAndHalf : .zero)
                 .transition(.opacity)
             }
         }
@@ -197,13 +197,15 @@ struct CameraPlayerView: View {
     }
 
     private var content: some View {
-        Group {
-            if let playerType = playback.current {
+        ZStack {
+            // Waiting on `camera/capabilities` to say which player this camera needs; the
+            // loader in `body` covers this.
+            Color.black
+            ForEach(playback.mounted, id: \.self) { playerType in
                 player(playerType)
-            } else {
-                // Waiting on `camera/capabilities` to say which player this camera needs; the
-                // loader in `body` covers this.
-                Color.black
+                    .opacity(playback.visible == playerType ? 1 : 0)
+                    .allowsHitTesting(playback.visible == playerType)
+                    .accessibilityHidden(playback.visible != playerType)
             }
         }
         // Rebuild the whole player subtree when the camera changes so the previous stream is torn
@@ -225,7 +227,8 @@ struct CameraPlayerView: View {
                 showLoader: $showLoader,
                 onWebRTCUnsupported: {
                     advanceToNextPlayer(from: .webRTC)
-                }
+                },
+                onVideoStarted: { withAnimation { playback.videoStarted(on: .webRTC) } }
             )
         case .hls:
             CameraStreamHLSView(
@@ -233,9 +236,11 @@ struct CameraPlayerView: View {
                 cameraEntityId: cameraEntityId,
                 cameraName: name ?? cameraName,
                 controlsVisible: $controlsVisible,
+                isMuted: playback.isRacingHLS,
                 onHLSUnsupported: {
                     advanceToNextPlayer(from: .hls)
-                }
+                },
+                onVideoStarted: { withAnimation { playback.videoStarted(on: .hls) } }
             )
         case .mjpeg:
             CameraMJPEGPlayerView(

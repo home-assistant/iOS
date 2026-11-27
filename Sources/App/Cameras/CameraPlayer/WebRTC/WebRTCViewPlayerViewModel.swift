@@ -663,6 +663,7 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
 
     private func handleCandidate(_ data: HAData) {
         guard let candidate = WebRTCSignalingCandidate.remoteCandidate(from: data) else { return }
+        Current.Log.info("WebRTC remote candidate: \(candidate.sdp)")
         webRTCClient?.set(remoteCandidate: candidate) { error in
             if let error {
                 Current.Log.error("Failed to add remote candidate: \(error.localizedDescription)")
