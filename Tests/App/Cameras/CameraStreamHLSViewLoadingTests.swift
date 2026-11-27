@@ -55,8 +55,8 @@ struct CameraStreamHLSViewLoadingTests {
         var started = 0
     }
 
-    private func waitUntil(_ condition: () -> Bool) async -> Bool {
-        let deadline = Date().addingTimeInterval(10)
+    private func waitUntil(timeout: TimeInterval = 10, _ condition: () -> Bool) async -> Bool {
+        let deadline = Date().addingTimeInterval(timeout)
         while !condition(), Date() < deadline {
             try? await Task.sleep(for: .milliseconds(10))
         }
@@ -145,6 +145,22 @@ struct CameraStreamHLSViewLoadingTests {
             }
             controller.view.setNeedsLayout()
             controller.view.layoutIfNeeded()
+        }
+    }
+
+    /// Nothing answers on the playlist's port, so the player is set up and its item fails to load.
+    @Test func aPlaylistThatWillNotLoadHandsOverToTheFallbackPlayer() async {
+        await withWebhooks(.success(["hls_path": "/api/hls/token/master_playlist.m3u8"])) {
+            let recorder = Recorder()
+            let (_, window) = host(CameraStreamHLSView(
+                server: server(reachable: true),
+                cameraEntityId: "camera.porch",
+                onHLSUnsupported: { recorder.fallbacks += 1 }
+            ))
+            defer { tearDown(window) }
+
+            let fellBack = await waitUntil(timeout: 30) { recorder.fallbacks == 1 }
+            #expect(fellBack)
         }
     }
 
