@@ -32,11 +32,17 @@ struct HACompactTrailingView: View {
         if isLimitedInWidth {
             // A narrow island (iPhone Duo, landscape, or one shared with another activity) leaves
             // a 28pt circle, too small for any of the texts, so the timer and the progress become
-            // a ring, the timer first as in the full-width slot. Critical text has no graphic
-            // form, so it is scaled down into the circle: an empty slot would hide the value the
-            // server marked as the one to show.
+            // a ring, the timer first as in the full-width slot. The ring is the progress bar in
+            // another shape, so a timer that also carries a progress fills with the progress, as
+            // the bar does. Critical text has no graphic form, so it is scaled down into the
+            // circle: an empty slot would hide the value the server marked as the one to show.
             if state.chronometer == true, let end = state.countdownEnd {
-                if let interval = HAActivityTimerProgressBar.interval(
+                if let fraction = state.progressBarFillFraction {
+                    ProgressView(value: fraction)
+                        .progressViewStyle(.circular)
+                        .tint(ringColor)
+                        .frame(width: Self.limitedWidthRingSize, height: Self.limitedWidthRingSize)
+                } else if let interval = HAActivityTimerProgressBar.interval(
                     start: state.chronometerStart,
                     end: end,
                     direction: state.resolvedProgressBarDirection
