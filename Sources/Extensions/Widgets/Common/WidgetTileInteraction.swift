@@ -40,9 +40,11 @@ struct WidgetTileInteraction {
                         ))
                 )
             } else if let intent = intent(for: model, isConfirmationDone: false) {
+                // No `invalidatableContent()` on the label of a tile's intent button, here or below:
+                // with it a tap on the tile opens the app and the intent never runs (#6257).
                 return AnyView(
                     Button(intent: intent) {
-                        tile.invalidatableContent()
+                        tile
                     }
                     .buttonStyle(.plain)
                 )
@@ -98,7 +100,7 @@ struct WidgetTileInteraction {
     ) -> some View {
         if model.requiresConfirmation, !interactionType.opensEntityInApp {
             Button(intent: confirmationStateIntent(for: model, confirmsTapAction: !isIcon)) {
-                content.invalidatableContent()
+                content
             }
             .buttonStyle(.plain)
         } else if case let .widgetURL(url) = interactionType {
@@ -117,7 +119,7 @@ struct WidgetTileInteraction {
                 ))
         } else if let intent = intent(for: interactionType, model: model) {
             Button(intent: intent) {
-                content.invalidatableContent()
+                content
             }
             .buttonStyle(.plain)
         } else {
@@ -272,7 +274,7 @@ struct WidgetTileInteraction {
                     // `server` parameter and opens server selection instead of the widget's server.
                     return AnyView(Link(destination: confirmationURL.withWidgetAuthenticity()) { label })
                 } else if let confirmationIntent {
-                    return AnyView(Button(intent: confirmationIntent) { label.invalidatableContent() })
+                    return AnyView(Button(intent: confirmationIntent) { label })
                 } else {
                     return AnyView(EmptyView())
                 }
@@ -290,7 +292,6 @@ struct WidgetTileInteraction {
     ) -> some View {
         Button(intent: confirmationStateIntent(for: model)) {
             linkTile(model: model, sizeStyle: sizeStyle, tile: tile)
-                .invalidatableContent()
         }
         .buttonStyle(.plain)
     }
