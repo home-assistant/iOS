@@ -25,6 +25,15 @@ extension WebViewController {
         )
         userContentController.addUserScript(ClipboardWriteMessageHandler.userScript)
 
+        // Keep WebKit's wheel-style time picker from crashing the Mac idiom; show a native picker instead.
+        if CatalystTimeInputWorkaround.isNeeded {
+            userContentController.add(
+                CatalystTimeInputMessageHandler(webViewProvider: { [weak self] in self?.webView }),
+                name: CatalystTimeInputWorkaround.messageName
+            )
+            userContentController.addUserScript(CatalystTimeInputWorkaround.userScript)
+        }
+
         return userContentController
     }
 
