@@ -62,6 +62,26 @@ struct CarPlayEditItemFlowTests {
         }
     }
 
+    /// A flow CarPlay has no room to show is over before it starts, so its owner cleans up as after
+    /// any other finish.
+    @Test func startingOnAFullTemplateStackFinishesAtOnce() throws {
+        try withHarness { harness in
+            try harness.save(CarPlayConfig(quickAccessItems: [item("light.kitchen", .entity)]))
+            for index in 0 ..< FakeCarPlayNavigator.maximumTemplateDepth {
+                harness.navigator.pushTemplate(
+                    CPListTemplate(title: "\(index)", sections: []),
+                    animated: false,
+                    completion: nil
+                )
+            }
+            let flow = harness.makeFlow()
+            flow.start()
+
+            #expect(harness.finishCount == 1)
+            #expect(!harness.navigator.pushedTemplates.contains { $0 === flow.template })
+        }
+    }
+
     /// Items whose tap runs a guarded action offer the confirmation choice; the rest only delete.
     @Test func eachItemOffersTheActionsThatApplyToIt() throws {
         try withHarness { harness in

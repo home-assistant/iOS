@@ -6,7 +6,7 @@
 "about.easter_egg.title" = "あなたは私を見つけた！";
 "about.forums.title" = "フォーラム";
 "about.github.title" = "GitHub";
-"about.github_issue_tracker.title" = "GitHub IssueTracker";
+"about.github_issue_tracker.title" = "GitHub Issue Tracker";
 "about.help_localize.title" = "アプリのローカライズを手伝ってください！";
 "about.home_assistant_on_facebook.title" = "Home AssistantのFacebook";
 "about.home_assistant_on_twitter.title" = "Home AssistantのTwitter";
@@ -694,7 +694,7 @@
 "connection.error.details.button.clipboard" = "クリップボードにコピー";
 "connection.error.details.button.discord" = "Discordで質問する";
 "connection.error.details.button.doc" = "ドキュメントを読む";
-"connection.error.details.button.github" = "GitHubで問題を報告する";
+"connection.error.details.button.github" = "GitHubで問題を報告";
 "connection.error.details.button.search_github" = "GitHubで検索";
 "connection.error.details.label.code" = "コード";
 "connection.error.details.label.description" = "説明";
@@ -1173,7 +1173,7 @@
 "location_change_notification.push_notification.body" = "プッシュ通知で場位置情報が更新されました";
 "location_change_notification.region_enter.body" = "%@ が入力されました";
 "location_change_notification.region_exit.body" = "%@ が終了しました";
-"location_change_notification.signaled.body" = "更新信号（update signal）で位置情報を更新";
+"location_change_notification.signaled.body" = "更新シグナルにより位置情報が更新されました";
 "location_change_notification.significant_location_update.body" = "大幅な位置変更が検出されました";
 "location_change_notification.siri.body" = "Siriによってトリガーされる位置情報の更新";
 "location_change_notification.title" = "ロケーション変更";

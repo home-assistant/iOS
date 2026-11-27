@@ -1,0 +1,43 @@
+# mTLS reverse proxy in front of the E2E Home Assistant, rendered by proxy.sh: ${E2E_MTLS_DIR} is
+# the directory holding the certificates from generate-certs.sh, which also receives the pid file,
+# the logs and nginx's temporary files, so nothing touches the Homebrew prefix. ${E2E_MTLS_UPSTREAM}
+# is the host:port of Home Assistant.
+pid ${E2E_MTLS_DIR}/nginx.pid;
+error_log ${E2E_MTLS_DIR}/nginx-error.log;
+
+events {
+}
+
+http {
+    access_log ${E2E_MTLS_DIR}/nginx-access.log;
+    client_body_temp_path ${E2E_MTLS_DIR}/tmp/client_body;
+    proxy_temp_path ${E2E_MTLS_DIR}/tmp/proxy;
+    fastcgi_temp_path ${E2E_MTLS_DIR}/tmp/fastcgi;
+    uwsgi_temp_path ${E2E_MTLS_DIR}/tmp/uwsgi;
+    scgi_temp_path ${E2E_MTLS_DIR}/tmp/scgi;
+
+    server {
+        listen 8443 ssl;
+
+        ssl_certificate ${E2E_MTLS_DIR}/server.pem;
+        ssl_certificate_key ${E2E_MTLS_DIR}/server.key;
+
+        # "on" rather than "optional": every request, including the probe onboarding sends before
+        # anything else, must carry the client certificate. That is what makes the app ask for one.
+        ssl_client_certificate ${E2E_MTLS_DIR}/ca.pem;
+        ssl_verify_client on;
+
+        location / {
+            proxy_pass http://${E2E_MTLS_UPSTREAM};
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+            proxy_set_header Host $host;
+            # No X-Forwarded-* headers on purpose: Home Assistant rejects them unless trusted_proxies
+            # is configured, and the http YAML block that would do so is applied as a pending config
+            # that auto-reverts five minutes later. Without them Home Assistant simply sees the proxy
+            # as a local client, which is all this flow needs.
+            proxy_read_timeout 300s;
+        }
+    }
+}

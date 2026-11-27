@@ -21,8 +21,8 @@
         "package": "app-check",
         "repositoryURL": "https://github.com/google/app-check.git",
         "state": {
-          "revision": "c7eb17e5545f36e43dc50e70da09c2e999714e16",
-          "version": "12.0.0"
+          "revision": "b7c71458b70284cc0f5a87103f66f0b1d98b1873",
+          "version": "12.1.0"
         }
       },
       {
@@ -45,24 +45,24 @@
         "package": "firebase-ios-sdk",
         "repositoryURL": "https://github.com/firebase/firebase-ios-sdk.git",
         "state": {
-          "revision": "dc6dfd442b1f3ec215ed62b8beb2623ffab010d6",
-          "version": "13.1.1"
+          "revision": "efad2b784dfae43404dc1fcfdf272981b235e71f",
+          "version": "13.2.0"
         }
       },
       {
         "package": "google-ads-on-device-conversion-ios-sdk",
         "repositoryURL": "https://github.com/googleads/google-ads-on-device-conversion-ios-sdk",
         "state": {
-          "revision": "0208e2681ec81f8a9c81084696f60fcce26cb7ee",
-          "version": "3.7.0"
+          "revision": "665eb0eab22172138bf5b3ce6d75e62b82c2ab59",
+          "version": "3.8.0"
         }
       },
       {
         "package": "googleappmeasurement",
         "repositoryURL": "https://github.com/google/GoogleAppMeasurement.git",
         "state": {
-          "revision": "1a3546fb9189292e9d64db9e72add7a286c0f85a",
-          "version": "13.0.1"
+          "revision": "abc3a85c786aa7077d93ab7f6709dfc9e1b6d557",
+          "version": "13.2.0"
         }
       },
       {
@@ -109,8 +109,8 @@
         "package": "hakit",
         "repositoryURL": "https://github.com/home-assistant/HAKit.git",
         "state": {
-          "revision": "0535d4aabd0a50e2c18cdcaa2f4423ff057a546a",
-          "version": "0.4.19"
+          "revision": "c24be0c9d68bc4903f616b895aae9296ae80cdb8",
+          "version": "0.4.21"
         }
       },
       {
@@ -194,13 +194,6 @@
         }
       },
       {
-        "package": "starscream",
-        "repositoryURL": "https://github.com/bgoncal/starscream",
-        "state": {
-          "revision": "9f793f7396d0def800c18be36769deb6d1313238"
-        }
-      },
-      {
         "package": "swift-clocks",
         "repositoryURL": "https://github.com/pointfreeco/swift-clocks",
         "state": {
@@ -260,8 +253,8 @@
         "package": "webrtc",
         "repositoryURL": "https://github.com/stasel/WebRTC.git",
         "state": {
-          "revision": "3cc466ea040e5dcd1344697bf211dc4c079d1a0c",
-          "version": "156.0.0"
+          "revision": "3b7fca3bf68209386d7c9818235bd178281f90af",
+          "version": "158.0.0"
         }
       },
       {
@@ -284,8 +277,8 @@
         "package": "zipfoundation",
         "repositoryURL": "https://github.com/weichsel/ZIPFoundation.git",
         "state": {
-          "revision": "22787ffb59de99e5dc1fbfe80b19c97a904ad48d",
-          "version": "0.9.20"
+          "revision": "e7048f0569f0ba37df26f8357f560b9d25e9a284",
+          "version": "0.9.21"
         }
       }
     ]

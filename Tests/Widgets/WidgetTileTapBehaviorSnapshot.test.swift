@@ -9,8 +9,7 @@ import WidgetKit
 
 /// The tiles the custom and commonly-used-entities widgets draw once the icon became a control of
 /// its own: an entity the widget can act on keeps its icon background, and anything that only opens
-/// the app — a sensor, a lock, a script left on its default, an item told to navigate — draws its
-/// icon plain.
+/// the app — a sensor, an item told to navigate — draws its icon plain.
 struct WidgetTileTapBehaviorSnapshotTests {
     /// One of each shape a tile can take, in the order they appear on the widget.
     private static var items: [MagicItem] {
