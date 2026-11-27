@@ -202,6 +202,7 @@
 		42E2E0000000000000000009 /* E2EDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E2E0000000000000000007 /* E2EDriver.swift */; };
 		42E2E0000000000000000010 /* MigrationE2ETests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E2E0000000000000000008 /* MigrationE2ETests.swift */; };
 		42E2E000000000000000000D /* RestoredDeviceE2ETests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E2E000000000000000000C /* RestoredDeviceE2ETests.swift */; };
+		42E2E0000000000000000011 /* MTLSOnboardingE2ETests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E2E0000000000000000010 /* MTLSOnboardingE2ETests.swift */; };
 		42E2E000000000000000000F /* RestoredDeviceFlowsRecordingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E2E000000000000000000E /* RestoredDeviceFlowsRecordingTests.swift */; };
 		42E2E000000000000000000B /* E2EFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E2E000000000000000000A /* E2EFlow.swift */; };
 		42ED095B30033B750051FC9B /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = 42ED095A30033B750051FC9B /* Dependencies */; };
@@ -215,6 +216,7 @@
 		42EEEFE52E2792B20080E973 /* Service.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EEEFE42E2792B20080E973 /* Service.test.swift */; };
 		42F1C0013140B00011AABB01 /* HomeAssistantAPIIdentity.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1C0023140B00011AABB01 /* HomeAssistantAPIIdentity.test.swift */; };
 		42F1C0113140B00011AABB11 /* HAAPITokenFetchFailure.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1C0123140B00011AABB12 /* HAAPITokenFetchFailure.test.swift */; };
+		55D81B8D07F045D956419B41 /* HAAPIStuckWebSocketConnect.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F9C58CEC4C82748C961667F /* HAAPIStuckWebSocketConnect.test.swift */; };
 		42F1C0133140B00011AABB13 /* TokenManagerAccessTokenRejection.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1C0143140B00011AABB14 /* TokenManagerAccessTokenRejection.test.swift */; };
 		42F1C0153140B00011AABB15 /* TokenManagerRevocation.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1C0163140B00011AABB16 /* TokenManagerRevocation.test.swift */; };
 		42F1C0173140B00011AABB17 /* TokenManagerRefreshTokenRejection.test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1C0183140B00011AABB18 /* TokenManagerRefreshTokenRejection.test.swift */; };
@@ -683,6 +685,7 @@
 		42E2E0000000000000000007 /* E2EDriver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = E2EDriver.swift; sourceTree = "<group>"; };
 		42E2E0000000000000000008 /* MigrationE2ETests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MigrationE2ETests.swift; sourceTree = "<group>"; };
 		42E2E000000000000000000C /* RestoredDeviceE2ETests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestoredDeviceE2ETests.swift; sourceTree = "<group>"; };
+		42E2E0000000000000000010 /* MTLSOnboardingE2ETests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTLSOnboardingE2ETests.swift; sourceTree = "<group>"; };
 		42E2E000000000000000000E /* RestoredDeviceFlowsRecordingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestoredDeviceFlowsRecordingTests.swift; sourceTree = "<group>"; };
 		42E2E000000000000000000A /* E2EFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = E2EFlow.swift; sourceTree = "<group>"; };
 		42EDE940300315A50051FC9B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -693,6 +696,7 @@
 		42EEEFE42E2792B20080E973 /* Service.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.test.swift; sourceTree = "<group>"; };
 		42F1C0023140B00011AABB01 /* HomeAssistantAPIIdentity.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAssistantAPIIdentity.test.swift; sourceTree = "<group>"; };
 		42F1C0123140B00011AABB12 /* HAAPITokenFetchFailure.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAPITokenFetchFailure.test.swift; sourceTree = "<group>"; };
+		6F9C58CEC4C82748C961667F /* HAAPIStuckWebSocketConnect.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAAPIStuckWebSocketConnect.test.swift; sourceTree = "<group>"; };
 		42F1C0143140B00011AABB14 /* TokenManagerAccessTokenRejection.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenManagerAccessTokenRejection.test.swift; sourceTree = "<group>"; };
 		42F1C0163140B00011AABB16 /* TokenManagerRevocation.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenManagerRevocation.test.swift; sourceTree = "<group>"; };
 		42F1C0183140B00011AABB18 /* TokenManagerRefreshTokenRejection.test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenManagerRefreshTokenRejection.test.swift; sourceTree = "<group>"; };
@@ -3246,6 +3250,7 @@
 				42E2E0000000000000000007 /* E2EDriver.swift */,
 				42E2E0000000000000000008 /* MigrationE2ETests.swift */,
 				42E2E000000000000000000C /* RestoredDeviceE2ETests.swift */,
+				42E2E0000000000000000010 /* MTLSOnboardingE2ETests.swift */,
 				42E2E000000000000000000E /* RestoredDeviceFlowsRecordingTests.swift */,
 				42E2E000000000000000000A /* E2EFlow.swift */,
 				42EDBC3A3002FBD90051FC9B /* Resources */,
@@ -3358,6 +3363,7 @@
 				1130A5772751BDD900640E38 /* ServerManager.test.swift */,
 				42F1C0023140B00011AABB01 /* HomeAssistantAPIIdentity.test.swift */,
 				42F1C0123140B00011AABB12 /* HAAPITokenFetchFailure.test.swift */,
+				6F9C58CEC4C82748C961667F /* HAAPIStuckWebSocketConnect.test.swift */,
 				42F1C0143140B00011AABB14 /* TokenManagerAccessTokenRejection.test.swift */,
 				42F1C0163140B00011AABB16 /* TokenManagerRevocation.test.swift */,
 				42F1C0183140B00011AABB18 /* TokenManagerRefreshTokenRejection.test.swift */,
@@ -4286,7 +4292,6 @@
 				42E1C80E2FFE4B8C008DAEE5 /* XCRemoteSwiftPackageReference "XCGLogger" */,
 				426BD76C2FFE54B0001378A4 /* XCRemoteSwiftPackageReference "OHHTTPStubs" */,
 				42886D142FFE5B77004EB33B /* XCRemoteSwiftPackageReference "swift-sodium" */,
-				42886D282FFE8366004EB33B /* XCRemoteSwiftPackageReference "starscream" */,
 				42886D292FFE839A004EB33B /* XCRemoteSwiftPackageReference "PromiseKit" */,
 				42886D2A2FFE83C8004EB33B /* XCRemoteSwiftPackageReference "HAKit" */,
 				42ED095930033A7B0051FC9B /* XCRemoteSwiftPackageReference "swift-dependencies" */,
@@ -4746,6 +4751,7 @@
 				42E2E0000000000000000009 /* E2EDriver.swift in Sources */,
 				42E2E0000000000000000010 /* MigrationE2ETests.swift in Sources */,
 				42E2E000000000000000000D /* RestoredDeviceE2ETests.swift in Sources */,
+				42E2E0000000000000000011 /* MTLSOnboardingE2ETests.swift in Sources */,
 				42E2E000000000000000000F /* RestoredDeviceFlowsRecordingTests.swift in Sources */,
 				42E2E000000000000000000B /* E2EFlow.swift in Sources */,
 				B657A90C1CA646EB00121384 /* HomeAssistantUITests.swift in Sources */,
@@ -4876,6 +4882,7 @@
 				1130A5782751BDD900640E38 /* ServerManager.test.swift in Sources */,
 				42F1C0013140B00011AABB01 /* HomeAssistantAPIIdentity.test.swift in Sources */,
 				42F1C0113140B00011AABB11 /* HAAPITokenFetchFailure.test.swift in Sources */,
+				55D81B8D07F045D956419B41 /* HAAPIStuckWebSocketConnect.test.swift in Sources */,
 				424169A3303486F500672F1D /* WriteBehindServerManagerKeychain.test.swift in Sources */,
 				424169B3303486F500672F1D /* ServerManagerMirrorWriteSequencer.test.swift in Sources */,
 				426A2EFB30596E8B00006022 /* AppDatabaseSuspensionProtectedWork.test.swift in Sources */,
@@ -6366,7 +6373,7 @@
 			repositoryURL = "https://github.com/weichsel/ZIPFoundation.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.9.19;
+				minimumVersion = 0.9.21;
 			};
 		};
 		425E94862FFD4A8B0067FA73 /* XCRemoteSwiftPackageReference "ObjectMapper" */ = {
@@ -6393,14 +6400,6 @@
 				minimumVersion = 0.11.0;
 			};
 		};
-		42886D282FFE8366004EB33B /* XCRemoteSwiftPackageReference "starscream" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/bgoncal/starscream";
-			requirement = {
-				kind = revision;
-				revision = 9f793f7396d0def800c18be36769deb6d1313238;
-			};
-		};
 		42886D292FFE839A004EB33B /* XCRemoteSwiftPackageReference "PromiseKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/mxcl/PromiseKit/";
@@ -6414,7 +6413,7 @@
 			repositoryURL = "https://github.com/home-assistant/HAKit.git";
 			requirement = {
 				kind = exactVersion;
-				version = 0.4.19;
+				version = 0.4.21;
 			};
 		};
 		42991E5F2FF4474500C2C76B /* XCRemoteSwiftPackageReference "sdk-iOS" */ = {
@@ -6438,7 +6437,7 @@
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 13.1.1;
+				minimumVersion = 13.2.0;
 			};
 		};
 		42B89EA62E05CC54000224A2 /* XCRemoteSwiftPackageReference "WebRTC" */ = {
@@ -6446,7 +6445,7 @@
 			repositoryURL = "https://github.com/stasel/WebRTC.git";
 			requirement = {
 				kind = exactVersion;
-				version = 156.0.0;
+				version = 158.0.0;
 			};
 		};
 		42E1C80E2FFE4B8C008DAEE5 /* XCRemoteSwiftPackageReference "XCGLogger" */ = {

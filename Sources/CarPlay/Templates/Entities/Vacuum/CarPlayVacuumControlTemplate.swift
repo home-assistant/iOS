@@ -11,7 +11,9 @@ final class CarPlayVacuumControlTemplate: CarPlayTemplateProvider {
     weak var interfaceController: CPInterfaceController?
     /// Set only by tests, which cannot construct a `CPInterfaceController`.
     var navigatorOverride: CarPlayNavigationPresenting?
-    private var navigator: CarPlayNavigationPresenting? { navigatorOverride ?? interfaceController }
+    private var navigator: CarPlayNavigationPresenting? {
+        navigatorOverride ?? interfaceController
+    }
 
     private let viewModel: CarPlayVacuumControlViewModel
 
@@ -194,11 +196,13 @@ final class CarPlayVacuumControlTemplate: CarPlayTemplateProvider {
     /// segments, tapped in the order they should be cleaned (mirroring the frontend, which
     /// numbers the selection), with a start row that sends `vacuum.clean_area` and pops.
     private func presentAreaSelection() {
-        viewModel.clearAreaSelection()
         let selectionTemplate = CPListTemplate(title: L10n.Vacuum.Control.CleanAreas.title, sections: [])
         selectionTemplate.emptyViewSubtitleVariants = [L10n.CarPlay.State.Loading.title]
+        guard navigator?.pushTemplateWithinDepthLimit(selectionTemplate, animated: true, completion: nil) != false else {
+            return
+        }
+        viewModel.clearAreaSelection()
         areaSelectionTemplate = selectionTemplate
-        navigator?.pushTemplate(selectionTemplate, animated: true, completion: nil)
         viewModel.loadCleanableAreas { [weak self] in
             self?.refreshAreaSelection()
         }
@@ -273,6 +277,6 @@ final class CarPlayVacuumControlTemplate: CarPlayTemplateProvider {
             title: L10n.Vacuum.Control.FanSpeed.title,
             sections: [CPListSection(items: items)]
         )
-        navigator?.pushTemplate(selectionTemplate, animated: true, completion: nil)
+        navigator?.pushTemplateWithinDepthLimit(selectionTemplate, animated: true, completion: nil)
     }
 }

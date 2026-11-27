@@ -75,3 +75,24 @@ public class UserDefaultsValueSync<ValueType: Codable>: NSObject {
         }
     }
 }
+
+public extension UserDefaultsValueSync {
+    /// The sync kept in `storage`, built on first use.
+    ///
+    /// A locked stand-in for `lazy var`: two threads racing an unset `lazy var` each build an
+    /// instance, and one of them carries on writing through the instance the other replaced and
+    /// freed. Here the first instance wins and every caller gets it.
+    static func lazily(
+        in storage: HAProtected<UserDefaultsValueSync<ValueType>?>,
+        settingsKey: String
+    ) -> UserDefaultsValueSync<ValueType> {
+        storage.mutate { current in
+            if let current {
+                return current
+            }
+            let sync = UserDefaultsValueSync<ValueType>(settingsKey: settingsKey)
+            current = sync
+            return sync
+        }
+    }
+}

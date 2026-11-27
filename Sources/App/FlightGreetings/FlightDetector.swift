@@ -49,7 +49,7 @@ enum FlightDetector {
     }
 
     private static func hasInFlightMotion(timeout: TimeInterval) async -> Bool {
-        let authorizationStatus = CLLocationManager().authorizationStatus
+        let authorizationStatus = CLLocationManager.authorizationProbe.authorizationStatus
         guard authorizationStatus == .authorizedAlways || authorizationStatus == .authorizedWhenInUse else {
             return false
         }
