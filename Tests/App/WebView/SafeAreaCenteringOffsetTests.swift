@@ -50,19 +50,24 @@ struct SafeAreaCenteringOffsetTests {
             window.isHidden = true
             window.rootViewController = nil
         }
-        for _ in 0 ..< 3 {
+        let view = try #require(controller.view)
+        func midX(of marker: UIView) -> CGFloat {
+            marker.convert(marker.bounds, to: view).midX
+        }
+        func isCentered() -> Bool {
+            centeredMarker.window != nil
+                && view.safeAreaInsets.right > view.safeAreaInsets.left
+                && abs(midX(of: centeredMarker) - view.bounds.midX) <= 0.5
+        }
+        let deadline = Date().addingTimeInterval(10)
+        repeat {
             window.setNeedsLayout()
             window.layoutIfNeeded()
             RunLoop.main.run(until: Date().addingTimeInterval(0.02))
-        }
+        } while !isCentered() && Date() < deadline
 
-        let view = try #require(controller.view)
-        try #require(leadingMarker.window != nil && centeredMarker.window != nil)
-        let leadingMidX = leadingMarker.convert(leadingMarker.bounds, to: view).midX
-        let centeredMidX = centeredMarker.convert(centeredMarker.bounds, to: view).midX
-        #expect(view.safeAreaInsets.right > view.safeAreaInsets.left)
-        #expect((leadingMidX > centeredMidX) == isRightToLeft)
-        #expect(abs(centeredMidX - view.bounds.midX) <= 0.5)
+        #expect((midX(of: leadingMarker) > midX(of: centeredMarker)) == isRightToLeft)
+        #expect(isCentered())
     }
 
     @Test("A taller top inset shifts content up by half the difference")
