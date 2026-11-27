@@ -23,7 +23,9 @@ public struct TokenInfo: ImmutableMappable, Codable, Equatable {
     public init(map: Map) throws {
         self.accessToken = try map.value("access_token")
         if let context = map.context as? TokenInfoContext {
-            self.refreshToken = context.oldTokenInfo.refreshToken
+            // A refresh response may omit the refresh token, the current one then stays valid.
+            let refreshed = try? map.value("refresh_token") as String
+            self.refreshToken = refreshed ?? context.oldTokenInfo.refreshToken
         } else {
             self.refreshToken = try map.value("refresh_token")
         }

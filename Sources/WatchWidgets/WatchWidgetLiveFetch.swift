@@ -256,7 +256,8 @@ enum WatchWidgetLiveFetch {
             baseURL: credential.baseURL,
             token: accessToken,
             expiration: Date(timeIntervalSinceNow: ttl),
-            refreshToken: credential.refreshToken,
+            // A refresh response may omit the refresh token, the current one then stays valid.
+            refreshToken: (json["refresh_token"] as? String) ?? credential.refreshToken,
             clientID: credential.clientID,
             clientCertLabel: credential.clientCertLabel,
             trustExceptions: credential.trustExceptions
