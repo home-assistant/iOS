@@ -141,6 +141,12 @@ public class AppEnvironment {
            !vendorID.isEmpty {
             device.identifierForVendor = { vendorID }
         }
+
+        if isFastlaneSnapshot,
+           let path = UserDefaults(suiteName: AppConstants.AppGroupID)!.string(forKey: "E2E_CLIENT_CERTIFICATE_FILE"),
+           !path.isEmpty {
+            self.e2eClientCertificateFile = URL(fileURLWithPath: path)
+        }
     }
 
     func setup() {
@@ -628,6 +634,10 @@ public class AppEnvironment {
 
     private let isFastlaneSnapshot = UserDefaults(suiteName: AppConstants.AppGroupID)!.bool(forKey: "FASTLANE_SNAPSHOT")
 
+    /// A client certificate the end-to-end tests hand to onboarding in place of the file picker,
+    /// which a UI test cannot drive; only honored in their configuration.
+    public var e2eClientCertificateFile: URL?
+
     /// This can be used to add debug statements.
     public var isDebug: Bool {
         #if DEBUG
@@ -827,7 +837,7 @@ public class AppEnvironment {
         /// `authorizationStatus` performs synchronous XPC to locationd and can block for
         /// seconds; avoid calling this on the main thread.
         public var permissionStatus: () -> CLAuthorizationStatus = {
-            CLLocationManager().authorizationStatus
+            CLLocationManager.authorizationProbe.authorizationStatus
         }
     }
 

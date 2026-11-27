@@ -45,8 +45,13 @@ struct ToastOverlayTests {
     @Test func toastViewRendersExpandedCollapsedAndEmpty() {
         for inScene in [false, true] {
             for (toast, expanded) in [(Toast.example1, true), (Toast.example2, false), (nil, false)] {
-                let window = host(ToastView(toast: toast, isExpanded: expanded), inScene: inScene)
-                tearDown(window)
+                for direction in [LayoutDirection.leftToRight, .rightToLeft] {
+                    let window = host(
+                        ToastView(toast: toast, isExpanded: expanded).environment(\.layoutDirection, direction),
+                        inScene: inScene
+                    )
+                    tearDown(window)
+                }
             }
         }
         #expect(Toast.example1.title != Toast.example2.title)

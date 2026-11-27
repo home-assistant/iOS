@@ -8,6 +8,11 @@ import SwiftUI
 /// does, so the widget hands back the controls that wrap them — the same arrangement as
 /// ``WidgetTileGridView``'s `tileContent`, one level further in.
 ///
+/// The two never overlap. WidgetKit picks a tap's owner from the frames it archived for its links
+/// and intent controls, not from SwiftUI's view order, so a control laid over another would lose
+/// its taps to the one underneath. `body` may be applied more than once, to each part of the tile
+/// that is not the icon.
+///
 /// A tile whose icon and body would run the same thing has no reason to be split: leave the regions
 /// off and let the whole tile be one control.
 public struct WidgetTileRegions {
@@ -16,7 +21,7 @@ public struct WidgetTileRegions {
 
     /// Wraps the tile's icon.
     public let icon: Region
-    /// Wraps the whole tile behind the icon.
+    /// Wraps the rest of the tile: everything that is not the icon, in one or more pieces.
     public let body: Region
 
     public init(icon: @escaping Region, body: @escaping Region) {

@@ -142,53 +142,88 @@ public struct WidgetTileButtonView: View {
     @ViewBuilder
     private var tileView: some View {
         if let regions {
-            // Both halves are the same layout drawn twice — the card with its icon hidden, and the
-            // icon alone laid over it — so splitting the tile in two cannot move anything by a
-            // pixel. A hidden view takes no taps, which leaves each control exactly its own half.
-            regions.body(AnyView(card(iconHidden: true)))
-                .overlay {
-                    layout(icon: AnyView(regions.icon(AnyView(iconAsControl))), contentHidden: true)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                }
+            // The two controls sit side by side, never one over the other. WidgetKit does not hit
+            // test a widget the way SwiftUI does: it archives the frames of its links and intent
+            // controls and picks a tap's owner from those, and a `Link` spanning the whole card took
+            // every tap meant for the control drawn over its icon — so the icon opened the app. Each
+            // half now owns exactly its own frame, the way the todo list lays its checkbox beside
+            // its row link.
+            layout(
+                icon: AnyView(iconAsControl),
+                iconRegion: { icon in AnyView(regions.icon(icon)) },
+                bodyRegion: { body in AnyView(regions.body(body)) }
+            )
+            .widgetTileCardStyle(sizeStyle: sizeStyle, model: model, tinted: tinted)
         } else {
-            card(iconHidden: false)
+            layout(icon: AnyView(icon), iconRegion: { icon in icon }, bodyRegion: { body in body })
+                .widgetTileCardStyle(sizeStyle: sizeStyle, model: model, tinted: tinted)
         }
     }
 
-    private func card(iconHidden: Bool) -> some View {
-        layout(
-            icon: iconHidden ? AnyView(icon.hidden()) : AnyView(icon),
-            contentHidden: false
-        )
-        .widgetTileCardStyle(sizeStyle: sizeStyle, model: model, tinted: tinted)
-    }
-
-    /// The tile's arrangement, with either half able to drop out so the other can be drawn on its
-    /// own without the two copies ever disagreeing about where anything sits.
-    private func layout(icon iconView: AnyView, contentHidden: Bool) -> some View {
+    /// The tile's arrangement. `iconRegion` wraps the icon in the control that runs it and
+    /// `bodyRegion` wraps every other part of the tile in the control that opens it; both are the
+    /// identity for a tile that is one control. The card's padding and the gap between the icon and
+    /// the text are drawn inside the controls, so a tap on that whitespace still lands on the half
+    /// it belongs to, and the body is stretched to fill the room beside or below the icon.
+    private func layout(
+        icon iconView: AnyView,
+        iconRegion: (AnyView) -> AnyView,
+        bodyRegion: (AnyView) -> AnyView
+    ) -> some View {
         VStack(alignment: .leading) {
             Group {
                 switch sizeStyle {
                 case .regular, .compact, .dense, .compressed:
-                    HStack(alignment: .center, spacing: sizeStyle.horizontalPadding) {
-                        iconView
-                        content(hidden: contentHidden) {
+                    HStack(alignment: .center, spacing: 0) {
+                        iconRegion(AnyView(
+                            iconView
+                                .padding(.leading, sizeStyle.horizontalPadding)
+                                .frame(maxHeight: .infinity)
+                                .contentShape(Rectangle())
+                        ))
+                        bodyRegion(AnyView(
                             textStack
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                        }
+                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+                                .padding(.leading, sizeStyle.horizontalPadding)
+                                .padding(.trailing, sizeStyle.horizontalPadding)
+                                .contentShape(Rectangle())
+                        ))
                     }
-                    .padding([.leading, .trailing], sizeStyle.horizontalPadding)
                 case .single, .expanded:
                     VStack(alignment: .leading, spacing: 0) {
-                        iconView
-                        Spacer()
-                        content(hidden: contentHidden) {
-                            textStack
+                        // The row beside the icon is empty, but it is still part of the tile, so a
+                        // second body control covers it; pinned to the icon's height so it never
+                        // pushes the text down, and kept from VoiceOver, which already reaches the
+                        // same action through the text below.
+                        HStack(alignment: .top, spacing: 0) {
+                            iconRegion(AnyView(
+                                iconView
+                                    .padding(.leading)
+                                    .padding(.top)
+                                    .contentShape(Rectangle())
+                            ))
+                            bodyRegion(AnyView(
+                                Color.clear
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                    .padding(.trailing)
+                                    .padding(.top)
+                                    .contentShape(Rectangle())
+                            ))
+                            .accessibilityHidden(true)
                         }
+                        .fixedSize(horizontal: false, vertical: true)
+                        bodyRegion(AnyView(
+                            VStack(alignment: .leading, spacing: 0) {
+                                Spacer()
+                                textStack
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal)
+                            .padding(.bottom)
+                            .contentShape(Rectangle())
+                        ))
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal)
-                    .padding(.vertical, sizeStyle == .regular ? 10 : /* use default */ nil)
                 }
             }
             .modify { view in
@@ -198,15 +233,6 @@ public struct WidgetTileButtonView: View {
                     view
                 }
             }
-        }
-    }
-
-    @ViewBuilder
-    private func content(hidden: Bool, @ViewBuilder _ view: () -> some View) -> some View {
-        if hidden {
-            view().hidden()
-        } else {
-            view()
         }
     }
 }

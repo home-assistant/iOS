@@ -36,10 +36,16 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     weak var interfaceController: CPInterfaceController?
     /// Set only by tests, which cannot construct a `CPInterfaceController`.
     var alertPresenterOverride: CarPlayAlertPresenting?
-    var alertPresenter: CarPlayAlertPresenting? { alertPresenterOverride ?? interfaceController }
+    var alertPresenter: CarPlayAlertPresenting? {
+        alertPresenterOverride ?? interfaceController
+    }
+
     /// Set only by tests, which cannot construct a `CPInterfaceController`.
     var navigatorOverride: CarPlayNavigationPresenting?
-    private var navigator: CarPlayNavigationPresenting? { navigatorOverride ?? interfaceController }
+    private var navigator: CarPlayNavigationPresenting? {
+        navigatorOverride ?? interfaceController
+    }
+
     private var listItemsByKey: [String: CPListItem] = [:]
     /// Row caches for folder content lists pushed from the Quick Access list, keyed by folder id.
     /// Rows are reused in place — same reasoning as `listItemsByKey`.
@@ -114,8 +120,8 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     private lazy var addItemFooterRow: CPListItem = makeAddItemRow(destination: mainDestination)
     private lazy var editItemFooterRow: CPListItem = makeEditItemRow(destination: mainDestination)
 
-    // A tab's root template in a CPTabBarTemplate doesn't render nav-bar buttons, so the add affordance
-    // is a list row appended to the end of the Quick Access list instead.
+    /// A tab's root template in a CPTabBarTemplate doesn't render nav-bar buttons, so the add affordance
+    /// is a list row appended to the end of the Quick Access list instead.
     private func makeAddItemRow(destination: CarPlayAddItemViewModel.Destination) -> CPListItem {
         let item = CPListItem(
             text: L10n.CarPlay.QuickAccess.AddItem.button,
@@ -523,9 +529,10 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
     private func presentFolderContents(folder: MagicItem) {
         let folderInfo = info(for: folder)
         let listTemplate = CPListTemplate(title: folder.name(info: folderInfo), sections: [])
-        openFolderTemplates.append((folderId: folder.id, template: listTemplate))
         updateFolderContents(folder: folder, in: listTemplate)
-        navigator?.pushTemplate(listTemplate, animated: true, completion: nil)
+        if navigator?.pushTemplateWithinDepthLimit(listTemplate, animated: true, completion: nil) != false {
+            openFolderTemplates.append((folderId: folder.id, template: listTemplate))
+        }
     }
 
     private func updateFolderContents(folder: MagicItem, in template: CPListTemplate) {
@@ -784,8 +791,9 @@ final class CarPlayQuickAccessTemplate: CarPlayTemplateProvider {
         }
         guard var provider = CarPlayControlScreenFactory.template(entity: entity, server: server) else { return }
         provider.interfaceController = interfaceController
-        controlScreenTemplate = provider
-        navigator?.pushTemplate(provider.template, animated: true, completion: nil)
+        if navigator?.pushTemplateWithinDepthLimit(provider.template, animated: true, completion: nil) != false {
+            controlScreenTemplate = provider
+        }
     }
 
     private func executeMagicItem(
