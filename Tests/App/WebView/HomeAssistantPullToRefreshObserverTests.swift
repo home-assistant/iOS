@@ -102,8 +102,13 @@ struct HomeAssistantPullToRefreshObserverTests {
                 progress: progress,
                 isRefreshing: isRefreshing
             ))
-            controller.view.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
+            controller.additionalSafeAreaInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 84)
+            let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 844))
+            window.rootViewController = controller
+            window.isHidden = false
             controller.view.layoutIfNeeded()
+            window.isHidden = true
+            window.rootViewController = nil
         }
     }
 }
