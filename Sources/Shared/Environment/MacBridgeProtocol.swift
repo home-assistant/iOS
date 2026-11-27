@@ -35,6 +35,10 @@ import Foundation
 
     func setLoginItem(forBundleIdentifier: String, enabled: Bool) -> Bool
     func isLoginItemEnabled(forBundleIdentifier identifier: String) -> Bool
+
+    /// Relaunches the app after macOS replaces its bundle (TestFlight or App Store background update),
+    /// restoring whether a window was visible. Returns `false` when the watcher could not be started.
+    func startUpdateRelauncher() -> Bool
 }
 
 @objc(MacBridgeStatusItemCallbackInfo) public protocol MacBridgeStatusItemCallbackInfo {

@@ -88,7 +88,9 @@ import SystemConfiguration
                     case .prohibited: return .prohibited
                     }
                 }())
-                NSApplication.shared.activate(ignoringOtherApps: true)
+                if !MacBridgeUpdateRelauncher.shared.isKeepingAppInBackground {
+                    NSApplication.shared.activate(ignoringOtherApps: true)
+                }
             }
         }
     }
@@ -99,6 +101,10 @@ import SystemConfiguration
 
     func setReopenHandler(_ handler: @escaping () -> Bool) {
         MacBridgeAppDelegateHandler.reopenHandler = handler
+    }
+
+    func startUpdateRelauncher() -> Bool {
+        MacBridgeUpdateRelauncher.shared.start()
     }
 
     func configureStatusItem(using configuration: MacBridgeStatusItemConfiguration) {
