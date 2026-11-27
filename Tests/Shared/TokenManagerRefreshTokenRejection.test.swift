@@ -123,6 +123,26 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
         XCTAssertEqual(recorder.lastSentRefreshToken, "ReauthenticatedRefreshToken")
     }
 
+    /// A refresh response that names no refresh token leaves the stored one valid.
+    func testRefreshWithoutRefreshTokenKeepsTheStoredOne() async throws {
+        stubRefreshToken(.success)
+        let server = Self.serverWithExpiredToken()
+        let tokenManager = TokenManager(server: server)
+
+        _ = try await settle(tokenManager.bearerToken).get()
+        XCTAssertEqual(server.info.token.refreshToken, "FakeRefreshToken")
+    }
+
+    /// The server may answer a refresh with the refresh token to use next (RFC 6749 section 6).
+    func testRefreshTokenFromTheResponseIsStored() async throws {
+        stubRefreshToken(.successWithRefreshToken)
+        let server = Self.serverWithExpiredToken()
+        let tokenManager = TokenManager(server: server)
+
+        _ = try await settle(tokenManager.bearerToken).get()
+        XCTAssertEqual(server.info.token.refreshToken, "RefreshedRefreshToken")
+    }
+
     /// Re-authenticating while a refresh of the previous session is in flight stores a new session;
     /// the refresh answering afterwards must not put the previous one back.
     func testRefreshFinishingAfterReauthenticationKeepsTheNewSession() async {
@@ -277,6 +297,7 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
         case rejection
         case serverError
         case success
+        case successWithRefreshToken
     }
 
     private func stubRefreshToken(_ outcome: RefreshOutcome, delay: TimeInterval = 0) {
@@ -304,6 +325,16 @@ class TokenManagerRefreshTokenRejectionTests: XCTestCase {
             case .success:
                 response = HTTPStubsResponse(
                     jsonObject: ["access_token": "RefreshedAccessToken", "expires_in": 1800],
+                    statusCode: 200,
+                    headers: nil
+                )
+            case .successWithRefreshToken:
+                response = HTTPStubsResponse(
+                    jsonObject: [
+                        "access_token": "RefreshedAccessToken",
+                        "refresh_token": "RefreshedRefreshToken",
+                        "expires_in": 1800,
+                    ],
                     statusCode: 200,
                     headers: nil
                 )
