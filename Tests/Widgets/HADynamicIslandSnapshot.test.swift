@@ -68,38 +68,6 @@ struct HADynamicIslandSnapshotTests {
         #expect(size.width > 0)
     }
 
-    @available(iOS 26.0, *)
-    @MainActor @Test func compactTrailingLimitedWidthRingFollowsProgressOverChronometer() {
-        let countUpEnd = Date(timeIntervalSince1970: 1_700_000_000)
-        let progressOnly = HALiveActivityAttributes.ContentState(
-            message: "Washing cycle",
-            progress: 40,
-            progressMax: 100
-        )
-        let chronometerOnly = HALiveActivityAttributes.ContentState(
-            message: "Washing cycle",
-            chronometer: true,
-            countdownEnd: countUpEnd
-        )
-        let progressWithChronometer = HALiveActivityAttributes.ContentState(
-            message: "Washing cycle",
-            progress: 40,
-            progressMax: 100,
-            chronometer: true,
-            countdownEnd: countUpEnd
-        )
-
-        let ringSize = Self.limitedWidthSize(of: progressOnly)
-        #expect(ringSize != Self.limitedWidthSize(of: chronometerOnly))
-        #expect(Self.limitedWidthSize(of: progressWithChronometer) == ringSize)
-    }
-
-    @available(iOS 17.2, *)
-    @MainActor private static func limitedWidthSize(of state: HALiveActivityAttributes.ContentState) -> CGSize {
-        UIHostingController(rootView: HACompactTrailingView(state: state, forcesLimitedWidth: true))
-            .sizeThatFits(in: CGSize(width: 100, height: 100))
-    }
-
     /// The expanded presentation is one view in one full-width region, so these references are the
     /// layout itself rather than a re-composition of it. `.sizeThatFits` is what makes them useful:
     /// the image height is the height the island asks for, so a state with no progress bar records

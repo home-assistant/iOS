@@ -32,52 +32,42 @@ struct HACompactTrailingView: View {
         if isLimitedInWidth {
             // A narrow island (iPhone Duo, landscape, or one shared with another activity) leaves
             // a 28pt circle, too small for any of the texts, so the timer and the progress become
-            // a ring, the timer first as in the full-width slot. The ring is the progress bar in
-            // another shape, so a timer that also carries a progress fills with the progress, as
-            // the bar does. Critical text has no graphic form, so it is scaled down into the
-            // circle: an empty slot would hide the value the server marked as the one to show.
-            if state.chronometer == true, let end = state.countdownEnd {
-                if let fraction = state.progressBarFillFraction {
+            // a ring. Critical text has no graphic form, so it is scaled down into the circle: an
+            // empty slot would hide the value the server marked as the one to show.
+            if let content = HACompactTrailingLimitedWidthContent(state: state) {
+                switch content {
+                case let .progressRing(fraction):
                     ProgressView(value: fraction)
                         .progressViewStyle(.circular)
                         .tint(ringColor)
                         .frame(width: Self.limitedWidthRingSize, height: Self.limitedWidthRingSize)
-                } else if let interval = HAActivityTimerProgressBar.interval(
-                    start: state.chronometerStart,
-                    end: end,
-                    direction: state.resolvedProgressBarDirection
-                ) {
+                case let .timerRing(range, countsDown):
                     ProgressView(
-                        timerInterval: interval.range,
-                        countsDown: interval.countsDown,
+                        timerInterval: range,
+                        countsDown: countsDown,
                         label: { EmptyView() },
                         currentValueLabel: { EmptyView() }
                     )
                     .progressViewStyle(.circular)
                     .tint(ringColor)
                     .frame(width: Self.limitedWidthRingSize, height: Self.limitedWidthRingSize)
-                } else {
+                case let .elapsedTime(end, start):
                     // A count-up with no end has nothing to fill a ring with, so it keeps its
                     // elapsed time, scaled down to the circle.
-                    HAActivityChronometerText(end: end, start: state.chronometerStart)
+                    HAActivityChronometerText(end: end, start: start)
                         .font(.caption2.monospacedDigit().weight(.semibold))
                         .foregroundStyle(.white)
                         .lineLimit(1)
                         .minimumScaleFactor(Self.compactTrailingMinimumScaleFactor)
                         .frame(width: Self.limitedWidthSlotSize)
+                case let .criticalText(critical):
+                    Text(critical)
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(.white)
+                        .lineLimit(1)
+                        .minimumScaleFactor(Self.limitedWidthMinimumScaleFactor)
+                        .frame(width: Self.limitedWidthSlotSize)
                 }
-            } else if let critical = state.criticalText {
-                Text(critical)
-                    .font(.caption2.weight(.semibold))
-                    .foregroundStyle(.white)
-                    .lineLimit(1)
-                    .minimumScaleFactor(Self.limitedWidthMinimumScaleFactor)
-                    .frame(width: Self.limitedWidthSlotSize)
-            } else if let fraction = state.progressBarFillFraction {
-                ProgressView(value: fraction)
-                    .progressViewStyle(.circular)
-                    .tint(ringColor)
-                    .frame(width: Self.limitedWidthRingSize, height: Self.limitedWidthRingSize)
             }
         } else if state.chronometer == true, let end = state.countdownEnd {
             // A timer past an hour needs three fields, which don't fit at full size. Scaling the
