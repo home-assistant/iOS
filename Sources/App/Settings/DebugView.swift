@@ -350,6 +350,13 @@ struct DebugView: View {
         )
     }
 
+    static var holdPrivateWebRTCCandidatesBinding: Binding<Bool> {
+        .init(
+            get: { Current.settingsStore.holdPrivateWebRTCCandidates },
+            set: { Current.settingsStore.holdPrivateWebRTCCandidates = $0 }
+        )
+    }
+
     static let regionEnterMaximumFuzzDistanceOptions: [CLLocationDistance] = [50, 100, 250, 500, 1000, 2000]
 
     static var regionEnterMaximumFuzzDistanceBinding: Binding<CLLocationDistance> {
@@ -544,6 +551,10 @@ struct DebugView: View {
 
             Toggle(isOn: Self.notifyOnLocalPushStateChangesBinding) {
                 Text(L10n.Settings.Debugging.NotifyLocalPushStateChanges.title)
+            }
+
+            Toggle(isOn: Self.holdPrivateWebRTCCandidatesBinding) {
+                Text(L10n.Settings.Debugging.HoldPrivateWebrtcCandidates.title)
             }
 
             Picker(

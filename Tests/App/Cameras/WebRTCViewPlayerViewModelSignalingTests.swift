@@ -2,6 +2,7 @@ import HAKit
 import HAKit_Mocks
 @testable import HomeAssistant
 @testable import Shared
+import SharedTesting
 import XCTest
 
 /// Drives the view model through the whole signaling exchange with a fake peer connection client,
@@ -14,6 +15,7 @@ final class WebRTCViewPlayerViewModelSignalingTests: XCTestCase {
     private var connection: HAMockConnection!
     private var viewModel: WebRTCViewPlayerViewModel!
     private var clients: [WebRTCFakeStreamClient] = []
+    private var settings: PrivateSettingsStore?
 
     private let timing = WebRTCViewPlayerViewModel.Timing(
         connectionTimeout: 0.2,
@@ -28,7 +30,8 @@ final class WebRTCViewPlayerViewModelSignalingTests: XCTestCase {
         disconnectedGracePeriod: 60,
         signalingStallTimeout: 60,
         connectionWaitTimeout: 60,
-        backgroundTeardownDelay: 60
+        backgroundTeardownDelay: 60,
+        privateCandidateHoldDuration: 60
     )
 
     private let unsupportedMessage =
@@ -89,6 +92,8 @@ final class WebRTCViewPlayerViewModelSignalingTests: XCTestCase {
         api = nil
         connection = nil
         server = nil
+        settings?.restore()
+        settings = nil
         super.tearDown()
     }
 
@@ -208,6 +213,86 @@ final class WebRTCViewPlayerViewModelSignalingTests: XCTestCase {
         flushMainQueue()
 
         XCTAssertFalse(viewModel.didFail)
+    }
+
+    // MARK: - Holding back private candidates
+
+    func testPrivateHostCandidatesWaitForTheConnectionWhenTheServerIsReachedRemotely() throws {
+        holdPrivateCandidates()
+        let offer = try startAndOffer()
+        let client = try XCTUnwrap(clients.first)
+
+        deliver("candidate:1 1 udp 1 192.168.1.5 6000 typ host", through: offer)
+        deliver("candidate:2 1 udp 1 203.0.113.7 6001 typ srflx", through: offer)
+        deliver("candidate:3 1 udp 1 203.0.113.7 6001 typ srflx", through: offer)
+        flushMainQueue()
+        XCTAssertEqual(client.remoteCandidates.map(\.sdp), ["candidate:2 1 udp 1 203.0.113.7 6001 typ srflx"])
+
+        client.changeConnectionState(.connected)
+        flushMainQueue()
+        XCTAssertEqual(client.remoteCandidates.map(\.sdp), [
+            "candidate:2 1 udp 1 203.0.113.7 6001 typ srflx",
+            "candidate:1 1 udp 1 192.168.1.5 6000 typ host",
+        ])
+
+        deliver("candidate:4 1 udp 1 192.168.1.6 6002 typ host", through: offer)
+        flushMainQueue()
+        XCTAssertEqual(client.remoteCandidates.count, 3, "Nothing is held once the connection is up")
+    }
+
+    func testHeldCandidatesAreAddedOnceTheHoldRunsOut() throws {
+        holdPrivateCandidates()
+        var shortHold = patientTiming
+        shortHold.privateCandidateHoldDuration = 0.1
+        viewModel.stop()
+        viewModel = makeViewModel(timing: shortHold)
+        let offer = try startAndOffer()
+        let client = try XCTUnwrap(clients.first)
+
+        deliver("candidate:1 1 udp 1 192.168.1.5 6000 typ host", through: offer)
+        deliver("candidate:2 1 udp 1 10.0.0.9 6001 typ host", through: offer)
+        spinMain(until: { client.remoteCandidates.count == 2 })
+
+        XCTAssertEqual(client.remoteCandidates.map(\.sdp), [
+            "candidate:1 1 udp 1 192.168.1.5 6000 typ host",
+            "candidate:2 1 udp 1 10.0.0.9 6001 typ host",
+        ])
+    }
+
+    func testHeldCandidatesAreForgottenWhenTheConnectionIsRebuilt() throws {
+        holdPrivateCandidates()
+        let offer = try startAndOffer()
+        let firstClient = try XCTUnwrap(clients.first)
+
+        deliver("candidate:1 1 udp 1 192.168.1.5 6000 typ host", through: offer)
+        flushMainQueue()
+        firstClient.changeConnectionState(.failed)
+        flushMainQueue()
+        try answerClientConfig(at: 1)
+        let secondClient = try XCTUnwrap(clients.last)
+        XCTAssertFalse(secondClient === firstClient)
+        secondClient.changeConnectionState(.connected)
+        flushMainQueue()
+
+        XCTAssertTrue(firstClient.remoteCandidates.isEmpty)
+        XCTAssertTrue(secondClient.remoteCandidates.isEmpty)
+    }
+
+    func testNothingIsHeldOnTheInternalURL() throws {
+        holdPrivateCandidates()
+        server.update { info in
+            info.connection.set(address: URL(string: "http://homeassistant.local:8123"), for: .internal)
+            info.connection.overrideActiveURLType = .internal
+            _ = info.connection.evaluateActiveURL()
+        }
+        XCTAssertEqual(server.info.connection.activeURLType, .internal)
+        let offer = try startAndOffer()
+        let client = try XCTUnwrap(clients.first)
+
+        deliver("candidate:1 1 udp 1 192.168.1.5 6000 typ host", through: offer)
+        flushMainQueue()
+
+        XCTAssertEqual(client.remoteCandidates.map(\.sdp), ["candidate:1 1 udp 1 192.168.1.5 6000 typ host"])
     }
 
     // MARK: - Connection state
@@ -424,6 +509,15 @@ final class WebRTCViewPlayerViewModelSignalingTests: XCTestCase {
         viewModel.start()
         try answerClientConfig(at: 0)
         return try XCTUnwrap(connection.pendingSubscriptions.first)
+    }
+
+    private func holdPrivateCandidates() {
+        settings = PrivateSettingsStore()
+        Current.settingsStore.holdPrivateWebRTCCandidates = true
+    }
+
+    private func deliver(_ candidate: String, through offer: HAMockConnection.PendingSubscription) {
+        offer.handler(offer.cancellable, .init(value: ["type": "candidate", "candidate": ["candidate": candidate]]))
     }
 
     private func flushMainQueue() {

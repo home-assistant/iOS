@@ -1912,6 +1912,7 @@ Importing replaces every category listed on this screen, including app settings.
 "settings.debugging.delete_saved_credentials.title" = "Delete saved credentials";
 "settings.debugging.header.subtitle" = "Let's fix that 🐞";
 "settings.debugging.header.title" = "Debug";
+"settings.debugging.hold_private_webrtc_candidates.title" = "Hold back private WebRTC candidates when remote";
 "settings.debugging.keychain_explorer.access_group_label" = "Access group";
 "settings.debugging.keychain_explorer.accessibility_label" = "Accessibility";
 "settings.debugging.keychain_explorer.account_label" = "Account";

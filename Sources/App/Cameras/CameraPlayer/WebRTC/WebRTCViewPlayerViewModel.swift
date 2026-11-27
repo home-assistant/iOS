@@ -74,6 +74,8 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
     /// picks up at once instead of connecting the microphone from scratch.
     private static let microphoneHoldDuration: TimeInterval = 60
 
+    private static let privateCandidateHoldDuration: TimeInterval = 3
+
     struct Timing {
         var connectionTimeout: TimeInterval
         var disconnectedGracePeriod: TimeInterval
@@ -81,6 +83,7 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         var connectionWaitTimeout: TimeInterval
         var backgroundTeardownDelay: TimeInterval
         var microphoneHoldDuration: TimeInterval = WebRTCViewPlayerViewModel.microphoneHoldDuration
+        var privateCandidateHoldDuration: TimeInterval = WebRTCViewPlayerViewModel.privateCandidateHoldDuration
 
         static let production = Timing(
             connectionTimeout: WebRTCViewPlayerViewModel.connectionTimeout,
@@ -94,6 +97,9 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
     var webRTCClient: WebRTCStreamClient?
     private var sessionId: String?
     private var pendingCandidates: [RTCIceCandidate] = []
+    private var candidateStaging: WebRTCRemoteCandidateStaging?
+    private var heldCandidates: [RTCIceCandidate] = []
+    private var heldCandidatesWorkItem: DispatchWorkItem?
     private var offerSubscription: HACancellable?
     private var timeoutWorkItem: DispatchWorkItem?
     private var disconnectRecoveryWorkItem: DispatchWorkItem?
@@ -169,6 +175,7 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         signalingStallWorkItem?.cancel()
         connectionGate?.cancel()
         microphoneReleaseWorkItem?.cancel()
+        heldCandidatesWorkItem?.cancel()
         microphoneSession?.stop()
         webRTCClient?.closeConnection()
     }
@@ -300,6 +307,9 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         showLoader = true
         failureReason = nil
         didFail = false
+        if Current.settingsStore.holdPrivateWebRTCCandidates, server.info.connection.activeURLType != .internal {
+            candidateStaging = WebRTCRemoteCandidateStaging()
+        }
 
         guard let api = Current.api(for: server) else {
             assertionFailure("API for server is nil")
@@ -516,6 +526,10 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
         webRTCClient = nil
         sessionId = nil
         pendingCandidates.removeAll()
+        heldCandidatesWorkItem?.cancel()
+        heldCandidatesWorkItem = nil
+        heldCandidates.removeAll()
+        candidateStaging = nil
     }
 
     private func scheduleTimeout() {
@@ -664,11 +678,48 @@ final class WebRTCViewPlayerViewModel: ObservableObject {
     private func handleCandidate(_ data: HAData) {
         guard let candidate = WebRTCSignalingCandidate.remoteCandidate(from: data) else { return }
         Current.Log.info("WebRTC remote candidate: \(candidate.sdp)")
+        let decision = candidateStaging?.decision(
+            for: candidate.sdp,
+            sdpMid: candidate.sdpMid,
+            sdpMLineIndex: candidate.sdpMLineIndex
+        ) ?? .add
+        switch decision {
+        case .add:
+            addRemoteCandidate(candidate)
+        case .hold:
+            heldCandidates.append(candidate)
+            scheduleHeldCandidatesRelease()
+        case .drop:
+            break
+        }
+    }
+
+    private func addRemoteCandidate(_ candidate: RTCIceCandidate) {
         webRTCClient?.set(remoteCandidate: candidate) { error in
             if let error {
                 Current.Log.error("Failed to add remote candidate: \(error.localizedDescription)")
             }
         }
+    }
+
+    private func scheduleHeldCandidatesRelease() {
+        guard heldCandidatesWorkItem == nil else { return }
+        let workItem = DispatchWorkItem { [weak self] in
+            self?.releaseHeldCandidates()
+        }
+        heldCandidatesWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + timing.privateCandidateHoldDuration, execute: workItem)
+    }
+
+    private func releaseHeldCandidates() {
+        heldCandidatesWorkItem?.cancel()
+        heldCandidatesWorkItem = nil
+        candidateStaging?.holdsPrivateHosts = false
+        guard !heldCandidates.isEmpty else { return }
+        Current.Log.info("WebRTC adding \(heldCandidates.count) held private candidates for \(cameraEntityId)")
+        let candidates = heldCandidates
+        heldCandidates.removeAll()
+        candidates.forEach(addRemoteCandidate)
     }
 
     private func handleErrorEvent(_ data: HAData) {
@@ -731,6 +782,7 @@ extension WebRTCViewPlayerViewModel: WebRTCClientDelegate {
                 // later interruption in what may be a long watch.
                 cancelDisconnectRecovery()
                 connectionRetries = 0
+                releaseHeldCandidates()
             case .failed:
                 handleConnectionFailure()
             case .disconnected:
