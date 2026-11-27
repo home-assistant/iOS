@@ -131,7 +131,7 @@ Please finish the setup by following the [setup instructions]({url}).";
 "component::improv_ble::config::step::main_menu::description" = "Choose next step.";
 "component::improv_ble::config::step::main_menu::menu_options::identify" = "Identify device";
 "component::improv_ble::config::step::main_menu::menu_options::provision" = "Connect device to a Wi-Fi network";
-"component::improv_ble::config::step::provision::data::password" = "Password";
+"component::improv_ble::config::step::provision::data::password" = "Contraseña";
 "component::improv_ble::config::step::provision::data::ssid" = "SSID";
 "component::improv_ble::config::step::provision::description" = "Enter Wi-Fi credentials to connect the device to your network.";
 "component::improv_ble::config::step::user::data::address" = "Dispositivo";
