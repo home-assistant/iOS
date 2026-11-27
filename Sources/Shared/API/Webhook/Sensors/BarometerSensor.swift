@@ -139,7 +139,9 @@ public class BarometerSensor: SensorProvider {
         guard Current.barometer.isAuthorized() else {
             return .value([WebhookSensor(
                 awaitingPermissionNamed: "Pressure",
-                uniqueID: WebhookSensorId.pressure.rawValue
+                uniqueID: WebhookSensorId.pressure.rawValue,
+                deviceClass: .pressure,
+                unit: Self.pressureUnit
             )])
         }
 
@@ -159,7 +161,9 @@ public class BarometerSensor: SensorProvider {
             icon: "mdi:gauge",
             deviceClass: .pressure,
             state: round(pressureHpa * 100) / 100,
-            unit: "hPa"
+            unit: pressureUnit
         )
     }
+
+    private static let pressureUnit = "hPa"
 }

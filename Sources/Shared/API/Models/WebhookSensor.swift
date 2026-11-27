@@ -100,6 +100,11 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
         self.Name = sensor.Name
         self.UniqueID = sensor.UniqueID
         self.entityCategory = sensor.entityCategory
+        // Home Assistant keeps what a sensor was registered with, so a registration that leaves
+        // these out can't be told apart from one that means to remove them.
+        self.DeviceClass = sensor.DeviceClass
+        self.StateClass = sensor.StateClass
+        self.UnitOfMeasurement = sensor.UnitOfMeasurement
         self.State = "unavailable"
         self.Icon = "mdi:dots-square"
         self.Type = sensor.Type
@@ -118,8 +123,18 @@ public class WebhookSensor: Mappable, Equatable, Comparable {
     /// Reported rather than left out: sensors are opt-in, and switching one on is what asks for its
     /// permission, so a sensor that disappeared until the permission was granted would have no row
     /// left to switch on. Explicitly unavailable rather than a value it hasn't read.
-    convenience init(awaitingPermissionNamed name: String, uniqueID: String, type: String? = nil) {
+    convenience init(
+        awaitingPermissionNamed name: String,
+        uniqueID: String,
+        type: String? = nil,
+        deviceClass: DeviceClass? = nil,
+        unit: String? = nil,
+        stateClass: SensorStateClass? = nil
+    ) {
         self.init(name: name, uniqueID: uniqueID)
+        self.DeviceClass = deviceClass
+        self.UnitOfMeasurement = unit
+        self.StateClass = stateClass
         self.State = "unavailable"
         self.Icon = "mdi:dots-square"
         if let type {
