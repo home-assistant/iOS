@@ -56,10 +56,11 @@ extension WebViewController {
         urlObserver = webView.observe(\.url) { [weak self] webView, _ in
             guard let self else { return }
 
-            guard let currentURL = webView.url?.absoluteString.replacingOccurrences(of: "?external_auth=1", with: ""),
-                  let cleanURL = URL(string: currentURL), let scheme = cleanURL.scheme else {
+            guard let webViewURL = webView.url,
+                  let cleanURL = Self.urlWithoutExternalAuth(webViewURL), let scheme = cleanURL.scheme else {
                 return
             }
+            let currentURL = cleanURL.absoluteString
 
             guard ["http", "https"].contains(scheme) else {
                 Current.Log.warning("Was going to provide invalid URL to NSUserActivity! \(currentURL)")
@@ -84,14 +85,7 @@ extension WebViewController {
                 Task { @MainActor [weak overlayState] in
                     overlayState?.currentPath = path
                 }
-                var relative = path
-                if let query = components.query {
-                    relative += "?\(query)"
-                }
-                if let fragment = components.fragment {
-                    relative += "#\(fragment)"
-                }
-                Current.settingsStore.lastActiveURLPath = relative
+                Current.settingsStore.lastActiveURLPath = Self.savedRelativePath(for: components)
             }
         }
     }
