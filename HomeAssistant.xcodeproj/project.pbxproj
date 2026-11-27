@@ -200,7 +200,7 @@
 		42E1C8122FFE4DB2008DAEE5 /* XCGLogger in Frameworks */ = {isa = PBXBuildFile; productRef = 42E1C8112FFE4DB2008DAEE5 /* XCGLogger */; };
 		42E2E0000000000000000005 /* OnboardingE2ETests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E2E0000000000000000002 /* OnboardingE2ETests.swift */; };
 		42E2E0000000000000000009 /* E2EDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E2E0000000000000000007 /* E2EDriver.swift */; };
-		42E2E0000000000000000010 /* MigrationE2ETests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E2E0000000000000000008 /* MigrationE2ETests.swift */; };
+		42E2E0000000000000000012 /* MigrationE2ETests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E2E0000000000000000008 /* MigrationE2ETests.swift */; };
 		42E2E000000000000000000D /* RestoredDeviceE2ETests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E2E000000000000000000C /* RestoredDeviceE2ETests.swift */; };
 		42E2E0000000000000000011 /* MTLSOnboardingE2ETests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E2E0000000000000000010 /* MTLSOnboardingE2ETests.swift */; };
 		42E2E000000000000000000F /* RestoredDeviceFlowsRecordingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E2E000000000000000000E /* RestoredDeviceFlowsRecordingTests.swift */; };
@@ -4749,7 +4749,7 @@
 			files = (
 				42E2E0000000000000000005 /* OnboardingE2ETests.swift in Sources */,
 				42E2E0000000000000000009 /* E2EDriver.swift in Sources */,
-				42E2E0000000000000000010 /* MigrationE2ETests.swift in Sources */,
+				42E2E0000000000000000012 /* MigrationE2ETests.swift in Sources */,
 				42E2E000000000000000000D /* RestoredDeviceE2ETests.swift in Sources */,
 				42E2E0000000000000000011 /* MTLSOnboardingE2ETests.swift in Sources */,
 				42E2E000000000000000000F /* RestoredDeviceFlowsRecordingTests.swift in Sources */,
