@@ -184,7 +184,7 @@ struct CameraStreamHLSViewLoadingTests {
         }
     }
 
-    @Test func aStreamReadyToPlayReportsItsPicture() {
+    @Test func aStreamReportsItsPictureOnceItPlays() {
         let recorder = Recorder()
         let view = CameraStreamHLSView(
             server: server(reachable: true),
@@ -193,10 +193,14 @@ struct CameraStreamHLSViewLoadingTests {
             onVideoStarted: { recorder.started += 1 }
         )
 
-        view.statusChanged(to: .unknown, of: AVPlayer())
+        let player = AVPlayer()
+
+        view.handle(.item(.unknown), of: player)
+        view.handle(.item(.readyToPlay), of: player)
+        view.handle(.timeControl(.waitingToPlayAtSpecifiedRate), of: player)
         #expect(recorder.started == 0)
 
-        view.statusChanged(to: .readyToPlay, of: AVPlayer())
+        view.handle(.timeControl(.playing), of: player)
         #expect(recorder.started == 1)
         #expect(recorder.fallbacks == 0)
     }
@@ -210,7 +214,7 @@ struct CameraStreamHLSViewLoadingTests {
             onVideoStarted: { recorder.started += 1 }
         )
 
-        view.statusChanged(to: .failed, of: AVPlayer())
+        view.handle(.item(.failed), of: AVPlayer())
 
         #expect(recorder.fallbacks == 1)
         #expect(recorder.started == 0)

@@ -74,6 +74,7 @@ struct CameraStreamHLSView: View {
         .persistentSystemOverlays(.hidden)
         .task { await loadStream() }
         .onChange(of: isMuted) { _ in applyMute(to: player) }
+        .onChange(of: player) { applyMute(to: $0) }
         .onDisappear {
             player?.pause()
             player = nil
@@ -153,13 +154,17 @@ struct CameraStreamHLSView: View {
 
     /// Non-private for tests.
     @MainActor
-    func statusChanged(to status: AVPlayerItem.Status, of avPlayer: AVPlayer) {
-        if status == .readyToPlay {
+    func handle(_ event: PlaybackEvent, of avPlayer: AVPlayer) {
+        switch event {
+        case .item(.readyToPlay):
             isLoading = false
             avPlayer.play()
-            onVideoStarted?()
-        } else if status == .failed {
+        case .item(.failed):
             handleError(avPlayer.currentItem?.error?.localizedDescription ?? L10n.CameraPlayer.Errors.unknown)
+        case .timeControl(.playing):
+            onVideoStarted?()
+        default:
+            break
         }
     }
 
@@ -174,9 +179,17 @@ struct CameraStreamHLSView: View {
         applyMute(to: avPlayer)
         player = avPlayer
 
-        for await status in playerItem.publisher(for: \.status).values {
-            statusChanged(to: status, of: avPlayer)
+        let events = playerItem.publisher(for: \.status).map(PlaybackEvent.item)
+            .merge(with: avPlayer.publisher(for: \.timeControlStatus).map(PlaybackEvent.timeControl))
+            .buffer(size: 8, prefetch: .keepFull, whenFull: .dropOldest)
+        for await event in events.values {
+            handle(event, of: avPlayer)
         }
+    }
+
+    enum PlaybackEvent {
+        case item(AVPlayerItem.Status)
+        case timeControl(AVPlayer.TimeControlStatus)
     }
 
     enum StreamError: LocalizedError {
