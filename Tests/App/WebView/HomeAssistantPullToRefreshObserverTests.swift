@@ -95,6 +95,62 @@ struct HomeAssistantPullToRefreshObserverTests {
         #expect(recorder.refreshes == 0)
     }
 
+    private func horizontalCenterOfDrawnContent(in view: UIView) -> CGFloat? {
+        let width = Int(view.bounds.width)
+        let height = Int(view.bounds.height)
+        guard let context = CGContext(
+            data: nil,
+            width: width,
+            height: height,
+            bitsPerComponent: 8,
+            bytesPerRow: width * 4,
+            space: CGColorSpaceCreateDeviceRGB(),
+            bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+        ) else { return nil }
+        context.translateBy(x: 0, y: CGFloat(height))
+        context.scaleBy(x: 1, y: -1)
+        view.layer.render(in: context)
+        guard let data = context.data else { return nil }
+
+        let pixels = data.bindMemory(to: UInt8.self, capacity: width * height * 4)
+        let columns = (0 ..< width).filter { column in
+            (0 ..< height).contains { row in
+                let pixel = (row * width + column) * 4
+                return (0 ..< 3).contains { abs(Int(pixels[pixel + $0]) - Int(pixels[$0])) > 24 }
+            }
+        }
+        guard let first = columns.first, let last = columns.last else { return nil }
+        return CGFloat(first + last + 1) / 2
+    }
+
+    @Test(arguments: [LayoutDirection.leftToRight, .rightToLeft])
+    func theIndicatorIsCenteredOnTheWholeDisplay(layoutDirection: LayoutDirection) throws {
+        let controller = UIHostingController(
+            rootView: HomeAssistantPullToRefreshView(progress: 1, isRefreshing: false)
+                .environment(\.layoutDirection, layoutDirection)
+        )
+        controller.overrideUserInterfaceStyle = .light
+        controller.additionalSafeAreaInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 84)
+        let scene = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first
+        let window = scene.map { UIWindow(windowScene: $0) } ?? UIWindow()
+        window.frame = CGRect(x: 0, y: 0, width: 390, height: 844)
+        window.rootViewController = controller
+        window.isHidden = false
+        defer {
+            window.isHidden = true
+            window.rootViewController = nil
+        }
+        for _ in 0 ..< 3 {
+            window.setNeedsLayout()
+            window.layoutIfNeeded()
+            RunLoop.main.run(until: Date().addingTimeInterval(0.02))
+        }
+
+        #expect(controller.view.safeAreaInsets.right > controller.view.safeAreaInsets.left)
+        let indicatorCenter = try #require(horizontalCenterOfDrawnContent(in: controller.view))
+        #expect(abs(indicatorCenter - controller.view.bounds.midX) <= 1)
+    }
+
     @Test(arguments: [0.0, 0.4, 1.0])
     func rendersTheIndicator(progress: Double) {
         for isRefreshing in [false, true] {
@@ -102,13 +158,8 @@ struct HomeAssistantPullToRefreshObserverTests {
                 progress: progress,
                 isRefreshing: isRefreshing
             ))
-            controller.additionalSafeAreaInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 84)
-            let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 844))
-            window.rootViewController = controller
-            window.isHidden = false
+            controller.view.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
             controller.view.layoutIfNeeded()
-            window.isHidden = true
-            window.rootViewController = nil
         }
     }
 }
