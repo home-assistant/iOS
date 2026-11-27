@@ -73,6 +73,18 @@ struct DebugViewTests {
         #expect(!binding.wrappedValue)
     }
 
+    @Test func thePrivateWebRTCCandidatesToggleReadsAndWritesThePreference() {
+        let original = Current.settingsStore.holdPrivateWebRTCCandidates
+        defer { Current.settingsStore.holdPrivateWebRTCCandidates = original }
+
+        let binding = DebugView.holdPrivateWebRTCCandidatesBinding
+        binding.wrappedValue = true
+        #expect(Current.settingsStore.holdPrivateWebRTCCandidates)
+        #expect(binding.wrappedValue)
+        binding.wrappedValue = false
+        #expect(!binding.wrappedValue)
+    }
+
     @Test func theRegionEnterFuzzDistancePickerReadsAndWritesThePreference() {
         let original = Current.settingsStore.regionEnterMaximumFuzzDistance
         defer { Current.settingsStore.regionEnterMaximumFuzzDistance = original }

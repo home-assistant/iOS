@@ -6,9 +6,8 @@ import Foundation
 /// probing: no stream type means the MJPEG proxy, `hls` alone means the HLS player, and WebRTC is
 /// preferred whenever the camera offers it. This mirrors that choice.
 ///
-/// The app keeps a cascade after that first choice, where the browser instead mounts both players
-/// at once and hides the one that loses. The outcome is the same — a stream that negotiates but
-/// never delivers a frame gives way to the next one — but the app gets there one player at a time.
+/// The app keeps a cascade after that first choice. Like the browser, it mounts HLS next to WebRTC
+/// when a camera offers both and hides the one that loses; see `CameraPlayerPlayback`.
 enum CameraStreamPlan {
     /// The players to try, most preferred first. Always ends in `.mjpeg`, which needs no stream
     /// support at all and so is the last thing that can still show a picture.

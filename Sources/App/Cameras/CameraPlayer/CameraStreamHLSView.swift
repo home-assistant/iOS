@@ -10,7 +10,9 @@ struct CameraStreamHLSView: View {
     private let cameraEntityId: String
     private let cameraName: String?
     private let onHLSUnsupported: (() -> Void)?
+    private let onVideoStarted: (() -> Void)?
     private let controlsVisible: Binding<Bool>?
+    private let isMuted: Bool
 
     @State private var player: AVPlayer?
     /// The asset does not retain its resource loader delegate, so hold it for as long as the player
@@ -25,13 +27,17 @@ struct CameraStreamHLSView: View {
         cameraEntityId: String,
         cameraName: String? = nil,
         controlsVisible: Binding<Bool>? = nil,
-        onHLSUnsupported: (() -> Void)? = nil
+        isMuted: Bool = false,
+        onHLSUnsupported: (() -> Void)? = nil,
+        onVideoStarted: (() -> Void)? = nil
     ) {
         self.server = server
         self.cameraEntityId = cameraEntityId
         self.cameraName = cameraName
         self.controlsVisible = controlsVisible
+        self.isMuted = isMuted
         self.onHLSUnsupported = onHLSUnsupported
+        self.onVideoStarted = onVideoStarted
     }
 
     var body: some View {
@@ -66,9 +72,9 @@ struct CameraStreamHLSView: View {
         }
         .statusBarHidden(true)
         .persistentSystemOverlays(.hidden)
-        .onAppear {
-            loadStream()
-        }
+        .task { await loadStream() }
+        .onChange(of: isMuted) { _ in applyMute(to: player) }
+        .onChange(of: player) { applyMute(to: $0) }
         .onDisappear {
             player?.pause()
             player = nil
@@ -76,22 +82,21 @@ struct CameraStreamHLSView: View {
         }
     }
 
-    private func loadStream() {
+    @MainActor
+    private func loadStream() async {
         guard let api = Current.api(for: server) else {
             handleError(L10n.CameraPlayer.Errors.unableToConnectToServer)
             return
         }
 
-        Task {
-            do {
-                let streamURL = try await fetchStreamURL(api: api)
-                setupPlayer(with: streamURL, api: api)
-            } catch {
-                await MainActor.run {
-                    Current.Log.error("Failed to load HLS stream: \(error.localizedDescription)")
-                    handleError(error.localizedDescription)
-                }
-            }
+        do {
+            let streamURL = try await fetchStreamURL(api: api)
+            guard !Task.isCancelled else { return }
+            await playStream(at: streamURL, api: api)
+        } catch {
+            guard !Task.isCancelled else { return }
+            Current.Log.error("Failed to load HLS stream: \(error.localizedDescription)")
+            handleError(error.localizedDescription)
         }
     }
 
@@ -131,40 +136,60 @@ struct CameraStreamHLSView: View {
         return baseURL.appendingPathComponent(relativePath)
     }
 
+    /// Non-private for tests.
     @MainActor
-    private func setupPlayer(with url: URL, api: HomeAssistantAPI) {
+    func applyMute(to avPlayer: AVPlayer?) {
+        avPlayer?.isMuted = isMuted
         do {
-            try AVAudioSession.sharedInstance().setCategory(.playback)
+            let session = AVAudioSession.sharedInstance()
+            try session.setCategory(
+                .playback,
+                mode: isMuted ? .moviePlayback : .default,
+                options: isMuted ? .mixWithOthers : []
+            )
         } catch {
             Current.Log.error("Failed to set audio session category: \(error.localizedDescription)")
         }
+    }
 
+    /// Non-private for tests.
+    @MainActor
+    func handle(_ event: PlaybackEvent, of avPlayer: AVPlayer) {
+        switch event {
+        case .item(.readyToPlay):
+            isLoading = false
+            avPlayer.play()
+        case .item(.failed):
+            handleError(avPlayer.currentItem?.error?.localizedDescription ?? L10n.CameraPlayer.Errors.unknown)
+        case .timeControl(.playing):
+            onVideoStarted?()
+        default:
+            break
+        }
+    }
+
+    @MainActor
+    private func playStream(at url: URL, api: HomeAssistantAPI) async {
         // A server behind a client certificate, or reached with a security exception, needs its
         // requests to go through the app's own session; AVFoundation cannot present either itself.
         let (asset, loader) = CameraHLSAssetLoader.asset(for: url, api: api)
         assetLoader = loader
         let playerItem = AVPlayerItem(asset: asset)
         let avPlayer = AVPlayer(playerItem: playerItem)
-
-        // Observe player status
-        Task {
-            for await status in playerItem.publisher(for: \.status).values {
-                switch status {
-                case .readyToPlay:
-                    isLoading = false
-                    avPlayer.play()
-                case .failed:
-                    let errorMsg = playerItem.error?.localizedDescription ?? L10n.CameraPlayer.Errors.unknown
-                    handleError(errorMsg)
-                case .unknown:
-                    break
-                @unknown default:
-                    break
-                }
-            }
-        }
-
+        applyMute(to: avPlayer)
         player = avPlayer
+
+        let events = playerItem.publisher(for: \.status).map(PlaybackEvent.item)
+            .merge(with: avPlayer.publisher(for: \.timeControlStatus).map(PlaybackEvent.timeControl))
+            .buffer(size: 8, prefetch: .keepFull, whenFull: .dropOldest)
+        for await event in events.values {
+            handle(event, of: avPlayer)
+        }
+    }
+
+    enum PlaybackEvent {
+        case item(AVPlayerItem.Status)
+        case timeControl(AVPlayer.TimeControlStatus)
     }
 
     enum StreamError: LocalizedError {

@@ -1,3 +1,4 @@
+import AVFoundation
 @testable import HomeAssistant
 import PromiseKit
 @testable import Shared
@@ -51,10 +52,11 @@ struct CameraStreamHLSViewLoadingTests {
 
     private final class Recorder {
         var fallbacks = 0
+        var started = 0
     }
 
-    private func waitUntil(_ condition: () -> Bool) async -> Bool {
-        let deadline = Date().addingTimeInterval(10)
+    private func waitUntil(timeout: TimeInterval = 10, _ condition: () -> Bool) async -> Bool {
+        let deadline = Date().addingTimeInterval(timeout)
         while !condition(), Date() < deadline {
             try? await Task.sleep(for: .milliseconds(10))
         }
@@ -146,6 +148,22 @@ struct CameraStreamHLSViewLoadingTests {
         }
     }
 
+    /// Nothing answers on the playlist's port, so the player is set up and its item fails to load.
+    @Test func aPlaylistThatWillNotLoadHandsOverToTheFallbackPlayer() async {
+        await withWebhooks(.success(["hls_path": "/api/hls/token/master_playlist.m3u8"])) {
+            let recorder = Recorder()
+            let (_, window) = host(CameraStreamHLSView(
+                server: server(reachable: true),
+                cameraEntityId: "camera.porch",
+                onHLSUnsupported: { recorder.fallbacks += 1 }
+            ))
+            defer { tearDown(window) }
+
+            let fellBack = await waitUntil(timeout: 30) { recorder.fallbacks == 1 }
+            #expect(fellBack)
+        }
+    }
+
     @Test func aServerWithoutAnAddressFallsBackStraightAway() async {
         await withWebhooks(.success([:])) {
             let recorder = Recorder()
@@ -180,6 +198,57 @@ struct CameraStreamHLSViewLoadingTests {
             controller.view.setNeedsLayout()
             controller.view.layoutIfNeeded()
         }
+    }
+
+    @Test func aStreamReportsItsPictureOnceItPlays() {
+        let recorder = Recorder()
+        let view = CameraStreamHLSView(
+            server: server(reachable: true),
+            cameraEntityId: "camera.porch",
+            onHLSUnsupported: { recorder.fallbacks += 1 },
+            onVideoStarted: { recorder.started += 1 }
+        )
+
+        let player = AVPlayer()
+
+        view.handle(.item(.unknown), of: player)
+        view.handle(.item(.readyToPlay), of: player)
+        view.handle(.timeControl(.waitingToPlayAtSpecifiedRate), of: player)
+        #expect(recorder.started == 0)
+
+        view.handle(.timeControl(.playing), of: player)
+        #expect(recorder.started == 1)
+        #expect(recorder.fallbacks == 0)
+    }
+
+    @Test func aStreamThatFailsToPlayHandsOverToTheFallbackPlayer() {
+        let recorder = Recorder()
+        let view = CameraStreamHLSView(
+            server: server(reachable: true),
+            cameraEntityId: "camera.porch",
+            onHLSUnsupported: { recorder.fallbacks += 1 },
+            onVideoStarted: { recorder.started += 1 }
+        )
+
+        view.handle(.item(.failed), of: AVPlayer())
+
+        #expect(recorder.fallbacks == 1)
+        #expect(recorder.started == 0)
+    }
+
+    @Test(arguments: [true, false])
+    func thePlayerFollowsTheMuteItIsGiven(isMuted: Bool) {
+        let view = CameraStreamHLSView(
+            server: server(reachable: true),
+            cameraEntityId: "camera.porch",
+            isMuted: isMuted
+        )
+        let player = AVPlayer()
+        player.isMuted = !isMuted
+
+        view.applyMute(to: player)
+
+        #expect(player.isMuted == isMuted)
     }
 
     @Test func streamErrorsDescribeThemselves() {

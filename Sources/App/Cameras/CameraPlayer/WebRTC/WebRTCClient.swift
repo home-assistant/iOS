@@ -626,6 +626,16 @@ extension WebRTCClient: RTCPeerConnectionDelegate {
         Current.Log.info("peerConnection did remove candidate(s)")
     }
 
+    func peerConnection(
+        _ peerConnection: RTCPeerConnection,
+        didChangeLocalCandidate local: RTCIceCandidate,
+        remoteCandidate remote: RTCIceCandidate,
+        lastReceivedMs lastDataReceivedMs: Int32,
+        changeReason reason: String
+    ) {
+        Current.Log.info("peerConnection selected candidate pair (\(reason)): \(local.sdp) <-> \(remote.sdp)")
+    }
+
     func peerConnection(_ peerConnection: RTCPeerConnection, didOpen dataChannel: RTCDataChannel) {
         Current.Log.info("peerConnection did open data channel")
         dataChannel.delegate = self

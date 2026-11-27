@@ -2,6 +2,7 @@ import GRDB
 import HAKit
 import HAKit_Mocks
 @testable import HomeAssistant
+import PromiseKit
 @testable import Shared
 import SnapshotTesting
 import SwiftUI
@@ -14,6 +15,7 @@ final class CameraPlayerViewSnapshotTests: XCTestCase {
     private var previousServers: ServerManager!
     private var previousDatabase: (() -> DatabaseQueue)!
     private var previousDate: (() -> Date)!
+    private var previousWebhooks: WebhookManager!
     private var server: Server!
     private var connection: HAMockConnection!
 
@@ -22,6 +24,7 @@ final class CameraPlayerViewSnapshotTests: XCTestCase {
         previousServers = Current.servers
         previousDatabase = Current.database
         previousDate = Current.date
+        previousWebhooks = Current.webhooks
 
         let servers = FakeServerManager(initial: 0)
         server = servers.addFake()
@@ -52,6 +55,8 @@ final class CameraPlayerViewSnapshotTests: XCTestCase {
         Current.servers = previousServers
         Current.database = previousDatabase
         Current.date = previousDate
+        Current.webhooks = previousWebhooks
+        previousWebhooks = nil
         connection = nil
         server = nil
         super.tearDown()
@@ -98,7 +103,46 @@ final class CameraPlayerViewSnapshotTests: XCTestCase {
         _ = try waitForRequest("camera/webrtc/get_client_config")
     }
 
+    func testACameraOfferingBothLoadsHLSNextToWebRTC() throws {
+        Self.webhooks.requestTypes = []
+        Current.webhooks = Self.webhooks
+        let window = try XCTUnwrap(
+            UIApplication.shared.connectedScenes.compactMap { ($0 as? UIWindowScene)?.windows.first }.first
+        )
+        let previousRoot = window.rootViewController
+        defer { window.rootViewController = previousRoot }
+        window.rootViewController = UIHostingController(rootView: player(sizeClass: .regular))
+        window.makeKeyAndVisible()
+
+        let capabilities = try waitForRequest("camera/capabilities")
+        capabilities.completion(.success(.init(value: [
+            "frontend_stream_types": ["web_rtc", "hls"],
+        ])))
+
+        _ = try waitForRequest("camera/webrtc/get_client_config")
+        let deadline = Date().addingTimeInterval(30)
+        while !Self.webhooks.requestTypes.contains("stream_camera"), Date() < deadline {
+            RunLoop.main.run(until: Date().addingTimeInterval(0.05))
+        }
+        XCTAssertTrue(Self.webhooks.requestTypes.contains("stream_camera"))
+    }
+
     // MARK: - Helpers
+
+    private final class RefusingWebhookManager: WebhookManager {
+        var requestTypes: [String] = []
+
+        override func sendEphemeral<ResponseType>(
+            server: Server,
+            request: WebhookRequest,
+            overrideURL: URL? = nil
+        ) -> Promise<ResponseType> {
+            requestTypes.append(request.type)
+            return .init(error: RequestTimeout(command: request.type))
+        }
+    }
+
+    private static let webhooks = RefusingWebhookManager()
 
     private func player(sizeClass: UserInterfaceSizeClass) -> some View {
         CameraPlayerView(server: server, cameraEntityId: "camera.front_door")

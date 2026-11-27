@@ -6293,6 +6293,10 @@ public enum L10n {
         /// Debug
         public static var title: String { return L10n.tr("Localizable", "settings.debugging.header.title") }
       }
+      public enum HoldPrivateWebrtcCandidates {
+        /// Hold back private WebRTC candidates when remote
+        public static var title: String { return L10n.tr("Localizable", "settings.debugging.hold_private_webrtc_candidates.title") }
+      }
       public enum KeychainExplorer {
         /// Access group
         public static var accessGroupLabel: String { return L10n.tr("Localizable", "settings.debugging.keychain_explorer.access_group_label") }

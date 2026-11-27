@@ -768,6 +768,15 @@ public class SettingsStore {
         }
     }
 
+    public var holdPrivateWebRTCCandidates: Bool {
+        get {
+            prefs.bool(forKey: "holdPrivateWebRTCCandidates")
+        }
+        set {
+            prefs.set(newValue, forKey: "holdPrivateWebRTCCandidates")
+        }
+    }
+
     public static let defaultRegionEnterMaximumFuzzDistance: CLLocationDistance = 100
 
     /// The farthest outside a monitored region a one-shot fix may be and still have its accuracy widened

@@ -8,6 +8,8 @@ final class CameraPlayerPlaybackTests: XCTestCase {
         let playback = CameraPlayerPlayback()
 
         XCTAssertNil(playback.current)
+        XCTAssertNil(playback.visible)
+        XCTAssertEqual(playback.mounted, [])
         XCTAssertTrue(playback.isLoaderVisible(webRTCIsLoading: false))
     }
 
@@ -75,5 +77,92 @@ final class CameraPlayerPlaybackTests: XCTestCase {
         XCTAssertNil(playback.current)
         XCTAssertEqual(playback.index, 0)
         XCTAssertTrue(playback.isLoaderVisible(webRTCIsLoading: false))
+    }
+
+    // MARK: - HLS next to WebRTC
+
+    func testACameraOfferingBothLoadsHLSNextToWebRTC() {
+        var playback = CameraPlayerPlayback()
+
+        playback.start(with: [.webRTC, .hls, .mjpeg])
+
+        XCTAssertTrue(playback.isRacingHLS)
+        XCTAssertEqual(playback.mounted, [.hls, .webRTC])
+        XCTAssertEqual(playback.visible, .webRTC)
+        XCTAssertTrue(playback.isLoaderVisible(webRTCIsLoading: true))
+    }
+
+    func testHLSShowsAsSoonAsItHasAPicture() {
+        var playback = CameraPlayerPlayback()
+        playback.start(with: [.webRTC, .hls, .mjpeg])
+
+        playback.videoStarted(on: .hls)
+
+        XCTAssertEqual(playback.mounted, [.hls, .webRTC])
+        XCTAssertEqual(playback.visible, .hls)
+        XCTAssertFalse(playback.isLoaderVisible(webRTCIsLoading: true))
+    }
+
+    func testWebRTCTakesOverOnceItHasAPicture() {
+        var playback = CameraPlayerPlayback()
+        playback.start(with: [.webRTC, .hls, .mjpeg])
+        playback.videoStarted(on: .hls)
+
+        playback.videoStarted(on: .webRTC)
+
+        XCTAssertFalse(playback.isRacingHLS)
+        XCTAssertEqual(playback.mounted, [.webRTC])
+        XCTAssertEqual(playback.visible, .webRTC)
+    }
+
+    func testWebRTCFailingLeavesHLSOnScreen() {
+        var playback = CameraPlayerPlayback()
+        playback.start(with: [.webRTC, .hls, .mjpeg])
+        playback.videoStarted(on: .hls)
+
+        XCTAssertEqual(playback.advance(from: .webRTC), .hls)
+
+        XCTAssertFalse(playback.isRacingHLS)
+        XCTAssertEqual(playback.mounted, [.hls])
+        XCTAssertEqual(playback.visible, .hls)
+    }
+
+    func testHLSFailingNextToWebRTCLeavesWebRTCAndThenMJPEG() {
+        var playback = CameraPlayerPlayback()
+        playback.start(with: [.webRTC, .hls, .mjpeg])
+        playback.videoStarted(on: .hls)
+
+        XCTAssertEqual(playback.advance(from: .hls), .webRTC)
+
+        XCTAssertEqual(playback.players, [.webRTC, .mjpeg])
+        XCTAssertEqual(playback.mounted, [.webRTC])
+        XCTAssertEqual(playback.visible, .webRTC)
+        XCTAssertTrue(playback.isLoaderVisible(webRTCIsLoading: true))
+        XCTAssertEqual(playback.advance(from: .webRTC), .mjpeg)
+    }
+
+    func testACameraWithoutBothMountsOnePlayerAtATime() {
+        var playback = CameraPlayerPlayback()
+
+        playback.start(with: [.webRTC, .mjpeg])
+        XCTAssertFalse(playback.isRacingHLS)
+        XCTAssertEqual(playback.mounted, [.webRTC])
+
+        playback.start(with: [.hls, .mjpeg])
+        playback.videoStarted(on: .hls)
+        XCTAssertFalse(playback.isRacingHLS)
+        XCTAssertFalse(playback.hlsHasVideo)
+        XCTAssertEqual(playback.mounted, [.hls])
+        XCTAssertEqual(playback.visible, .hls)
+    }
+
+    func testClearingEndsTheRace() {
+        var playback = CameraPlayerPlayback()
+        playback.start(with: [.webRTC, .hls, .mjpeg])
+        playback.videoStarted(on: .hls)
+
+        playback.clear()
+
+        XCTAssertEqual(playback, CameraPlayerPlayback())
     }
 }
