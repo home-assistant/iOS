@@ -14,20 +14,22 @@ enum OnboardingDestination: Hashable {
     case clientCertificate(OnboardingClientCertificateRequest)
     /// The connection-error details. Only used on Mac Catalyst, for the same reason as above.
     case connectionError(OnboardingConnectionErrorContext)
+    /// The transfer from the previous Home Assistant app, offered while both apps are installed.
+    case migration
     /// The same-instance-ID question. Only used on Mac Catalyst; iOS presents it as a sheet.
     case serverIdentity(OnboardingServerIdentityRequest)
 
     /// Whether this page belongs to the auth flow (everything after the user picked a server).
     var isAuthFlowStep: Bool {
         switch self {
-        case .serversList, .connectionError: return false
+        case .serversList, .connectionError, .migration: return false
         case .login, .deviceName, .permissions, .clientCertificate, .serverIdentity: return true
         }
     }
 
     static func == (lhs: OnboardingDestination, rhs: OnboardingDestination) -> Bool {
         switch (lhs, rhs) {
-        case (.serversList, .serversList):
+        case (.serversList, .serversList), (.migration, .migration):
             return true
         case let (.login(lhsViewModel), .login(rhsViewModel)):
             return lhsViewModel === rhsViewModel
@@ -65,8 +67,10 @@ enum OnboardingDestination: Hashable {
         case let .connectionError(context):
             hasher.combine(5)
             hasher.combine(ObjectIdentifier(context))
-        case let .serverIdentity(request):
+        case .migration:
             hasher.combine(6)
+        case let .serverIdentity(request):
+            hasher.combine(7)
             hasher.combine(ObjectIdentifier(request))
         }
     }

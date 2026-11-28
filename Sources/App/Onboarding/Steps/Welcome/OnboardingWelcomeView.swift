@@ -15,6 +15,9 @@ struct OnboardingWelcomeView: View {
     /// Advances to the servers list; the onboarding container swaps content in place (no navigation
     /// push — tearing the container down with a pushed page leaks its hosting view).
     let continueAction: () -> Void
+    /// Offered only while the previous Home Assistant app is installed on this device, as a notice
+    /// under the welcome text rather than a button: the transfer is a stopgap, not a feature.
+    var transferAction: (() -> Void)?
 
     /// In a short window (closed iPhone Duo or any iPhone in landscape) the bottom buttons would
     /// cover most of the content, so the actions move into the navigation bar instead.
@@ -90,6 +93,17 @@ struct OnboardingWelcomeView: View {
             Text(verbatim: L10n.Onboarding.Welcome.Updated.body)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
+            if let transferAction {
+                HAAlertView(alertType: .warning, narrow: true) {
+                    Text(verbatim: L10n.Onboarding.Welcome.TransferNotice.movedBody)
+                } action: {
+                    Button(L10n.Onboarding.Welcome.TransferNotice.link, action: transferAction)
+                        .font(DesignSystem.Font.body.bold())
+                        .tint(Color.haPrimary)
+                        .accessibilityIdentifier(AccessibilityIdentifier.onboardingWelcomeTransfer.rawValue)
+                }
+                .padding(.top, DesignSystem.Spaces.one)
+            }
         }
         .padding()
     }
@@ -116,4 +130,8 @@ struct OnboardingWelcomeView: View {
     NavigationStack {
         OnboardingWelcomeView(continueAction: {})
     }
+}
+
+#Preview("Previous app installed") {
+    OnboardingWelcomeView(continueAction: {}, transferAction: {})
 }

@@ -13,7 +13,9 @@ enum SensorPermission: String, CaseIterable, Identifiable {
     case bluetooth
     case localNetwork
 
-    var id: String { rawValue }
+    var id: String {
+        rawValue
+    }
 
     /// The permission a sensor needs before it can report anything, requested when the user
     /// switches that sensor on. `nil` for the sensors that need none.
@@ -86,6 +88,21 @@ enum SensorPermission: String, CaseIterable, Identifiable {
             return L10n.SettingsSensors.Permissions.Bluetooth.usage
         case .localNetwork:
             return L10n.SettingsSensors.Permissions.LocalNetwork.usage
+        }
+    }
+
+    /// Where the Settings app changes this permission once it has been answered.
+    var settingsDestination: OpenSettingsDestination {
+        switch self {
+        case .location: .location
+        case .notification: .notification
+        case .motion: .motion
+        case .focus: .focus
+        case .camera: .camera
+        case .microphone: .microphone
+        case .speech: .speech
+        case .bluetooth: .bluetooth
+        case .localNetwork: .localNetwork
         }
     }
 
