@@ -222,6 +222,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
+    func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
+        WebViewController.noteDiscardedSceneSessions(
+            withIdentifiers: Set(sceneSessions.map(\.persistentIdentifier))
+        )
+    }
+
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         notificationManager.didFailToRegisterForRemoteNotifications(error: error)
     }

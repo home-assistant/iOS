@@ -146,6 +146,68 @@ final class WebViewControllerRetirementTests: XCTestCase {
         XCTAssertNil(sut.userActivity)
     }
 
+    /// Closing a Mac window discards its scene session. SwiftUI does not dismantle the controller of a
+    /// closed window, and opening the app again builds a new one in a new session.
+    func testDiscardingTheSceneSessionOfAFrontendRetiresIt() {
+        let sut = makeSUT()
+        sut.observeConnectionNotifications()
+        sut.frontendSceneSessionIdentifier = "closed-window"
+
+        WebViewController.noteDiscardedSceneSessions(withIdentifiers: ["some-other-window", "closed-window"])
+
+        XCTAssertTrue(sut.isRetired)
+    }
+
+    func testDiscardingAnotherSceneSessionLeavesAFrontendRunning() {
+        let sut = makeSUT()
+        sut.observeConnectionNotifications()
+        sut.frontendSceneSessionIdentifier = "open-window"
+
+        WebViewController.noteDiscardedSceneSessions(withIdentifiers: ["closed-window"])
+
+        XCTAssertFalse(sut.isRetired)
+    }
+
+    /// A frontend that was never in a window has no session to lose.
+    func testDiscardingSceneSessionsLeavesAFrontendThatWasNeverShownRunning() {
+        let sut = makeSUT()
+        sut.observeConnectionNotifications()
+
+        WebViewController.noteDiscardedSceneSessions(withIdentifiers: ["closed-window"])
+
+        XCTAssertNil(sut.frontendSceneSessionIdentifier)
+        XCTAssertFalse(sut.isRetired)
+    }
+
+    /// The session has to be remembered while the view is in a window: once the scene lets go of its
+    /// windows, the frontend can no longer tell which session it was shown in.
+    func testAFrontendRemembersTheSceneSessionItIsShownIn() throws {
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.first as? UIWindowScene)
+        let sut = makeSUT()
+        let window = UIWindow(windowScene: scene)
+        window.addSubview(sut.view)
+
+        sut.rememberFrontendSceneSession()
+        sut.view.removeFromSuperview()
+        sut.rememberFrontendSceneSession()
+
+        XCTAssertEqual(sut.frontendSceneSessionIdentifier, scene.session.persistentIdentifier)
+    }
+
+    /// The system reports discarded scene sessions to the app delegate, and the frontends hear of them
+    /// from there.
+    func testTheAppDelegatePassesDiscardedSceneSessionsOnToTheFrontends() throws {
+        let appDelegate = try XCTUnwrap(AppDelegate.shared)
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.first as? UIWindowScene)
+        let sut = makeSUT()
+        sut.observeConnectionNotifications()
+        sut.frontendSceneSessionIdentifier = scene.session.persistentIdentifier
+
+        appDelegate.application(UIApplication.shared, didDiscardSceneSessions: [scene.session])
+
+        XCTAssertTrue(sut.isRetired)
+    }
+
     private func makeSUT() -> WebViewController {
         makeSUTWithRecordingWebView().controller
     }
