@@ -36,6 +36,16 @@ import UserNotifications
     override init() {
         super.init()
         Current.Log.notify("initialized", log: .info)
+
+        // `LocalPushManager` only leaves the `incoming_call` command in place when it routed the call to CallKit.
+        // CallKit belongs to the app: this launches it with the call, and the app reports it.
+        commandManager.register(
+            command: IncomingCallRequest.command,
+            handler: IncomingCallCommandHandler { [weak self] request, payload in
+                Current.Log.notify("handing incoming call \(request.tag) to the app", log: .info)
+                self?.reportIncomingCall(userInfo: payload)
+            }
+        )
     }
 
     deinit {
