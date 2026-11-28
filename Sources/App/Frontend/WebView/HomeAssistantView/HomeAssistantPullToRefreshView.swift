@@ -29,6 +29,9 @@ struct HomeAssistantPullToRefreshView: View {
         .frame(width: 42, height: 42)
         .scaleEffect(isRefreshing ? 1 : 0.8 + (0.2 * progress))
         .opacity(isRefreshing ? 1 : progress)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .padding(.top, DesignSystem.Spaces.two)
+        .ignoresSafeArea(edges: .horizontal)
         .accessibilityHidden(true)
     }
 }
