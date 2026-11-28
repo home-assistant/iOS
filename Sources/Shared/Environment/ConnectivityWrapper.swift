@@ -19,6 +19,13 @@ public class ConnectivityWrapper {
     public var cellularNetworkType: () -> NetworkType
     public var networkAttributes: () -> [String: Any]
 
+    /// The IPv4 address the device has on its Wi-Fi interface, if any; replaceable in tests.
+    ///
+    /// Read from the interface directly rather than being part of `NetworkState`: `NetworkState` decides
+    /// whether the device is on a known network (`emptyNetworkStateGrace`, the connectivity-changed
+    /// notification), and an address that arrives or changes independently of the SSID must not take part.
+    public var wifiIPAddress: () -> String?
+
     /// Fetches up-to-date network information (SSID, BSSID, hardware address); replaceable in tests.
     ///
     /// The default implementation always performs a fresh fetch — coalescing onto an in-flight
@@ -198,6 +205,8 @@ public class ConnectivityWrapper {
             }
         }
         self.cellularNetworkType = { .unknown }
+        // macBridge only exposes the interface's display name, not the BSD name needed to look its address up.
+        self.wifiIPAddress = { nil }
         self.networkAttributes = {
             if let interface = Current.macBridge.networkConnectivity.interface {
                 return [
@@ -242,6 +251,7 @@ public class ConnectivityWrapper {
         self.simpleNetworkType = { reachability.getSimpleNetworkType() }
         self.cellularNetworkType = { reachability.getNetworkType() }
         self.networkAttributes = { [:] }
+        self.wifiIPAddress = { NetworkInterfaceAddress.ipv4(ofInterface: "en0") }
 
         observeConnectivityChanges()
     }
@@ -273,6 +283,7 @@ public class ConnectivityWrapper {
         self.simpleNetworkType = { .unknown }
         self.cellularNetworkType = { .unknown }
         self.networkAttributes = { [:] }
+        self.wifiIPAddress = { nil }
 
         observeConnectivityChanges()
         // Reachability observer is not available for watchOS

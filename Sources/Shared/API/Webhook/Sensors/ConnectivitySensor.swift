@@ -141,6 +141,11 @@ public class ConnectivitySensor: SensorProvider {
                         sensor.State = "Not Connected"
                         sensor.Icon = "mdi:wifi-off"
                     }
+
+                    // Omitted when the device has no address, so Home Assistant drops a stale one.
+                    if let ipAddress = Current.connectivity.wifiIPAddress() {
+                        sensor.Attributes = ["IP Address": ipAddress]
+                    }
                 },
                 with(WebhookSensor(name: "BSSID", uniqueID: WebhookSensorId.connectivityBSID.rawValue)) { sensor in
                     if let bssid = networkState.bssid {
