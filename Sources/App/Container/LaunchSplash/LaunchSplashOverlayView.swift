@@ -25,7 +25,6 @@ struct LaunchSplashOverlayView: View {
     }
 
     @ObservedObject var state: LaunchSplashOverlayState
-    @Environment(\.layoutDirection) private var layoutDirection
 
     var body: some View {
         if state.phase != .finished {
@@ -46,10 +45,7 @@ struct LaunchSplashOverlayView: View {
                 GeometryReader { proxy in
                     OHFBrandingFooter()
                         .padding(.bottom, OHFBrandingFooter.bottomPadding)
-                        .offset(x: SafeAreaCenteringOffset.horizontal(
-                            safeAreaInsets: proxy.safeAreaInsets,
-                            layoutDirection: layoutDirection
-                        ))
+                        .offset(x: SafeAreaCenteringOffset.horizontal(safeAreaInsets: proxy.safeAreaInsets))
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
                 }
             }
