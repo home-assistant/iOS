@@ -300,5 +300,11 @@ public struct HALiveActivityAttributes: ActivityAttributes {
         self.serverWebhookId = try container.decodeIfPresent(String.self, forKey: .serverWebhookId)
         self.startedAt = try container.decodeIfPresent(TimeInterval.self, forKey: .startedAt)
     }
+
+    // MARK: - Display
+
+    public func displayTitle(for state: ContentState) -> String {
+        state.title ?? title
+    }
 }
 #endif

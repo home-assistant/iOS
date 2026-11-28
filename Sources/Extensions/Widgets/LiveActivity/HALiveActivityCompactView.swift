@@ -17,7 +17,7 @@ struct HALiveActivityCompactView: View {
             HStack(alignment: .top, spacing: DesignSystem.Spaces.one) {
                 icon
                 VStack(alignment: .leading, spacing: .zero) {
-                    Text(state.title ?? attributes.title)
+                    Text(attributes.displayTitle(for: state))
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(primaryTextColor)
                         .lineLimit(1)
