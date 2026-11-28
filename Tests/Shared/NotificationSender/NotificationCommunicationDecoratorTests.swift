@@ -13,8 +13,9 @@ final class NotificationCommunicationDecoratorTests: XCTestCase {
     override func setUp() {
         super.setUp()
         cache = InMemoryIconCache()
+        let imageData = makeRedPNG()
         decorator = NotificationCommunicationDecoratorImpl(cache: cache) { _, _, _ in
-            INImage(imageData: Data([0]))
+            INImage(imageData: imageData)
         }
         api = FakeHomeAssistantAPI(server: .fake())
     }
@@ -24,9 +25,14 @@ final class NotificationCommunicationDecoratorTests: XCTestCase {
         super.tearDown()
     }
 
-    private func content(title: String = "Dishwasher", body: String = "Cycle complete.") -> UNNotificationContent {
+    private func content(
+        title: String = "Dishwasher",
+        subtitle: String = "",
+        body: String = "Cycle complete."
+    ) -> UNMutableNotificationContent {
         let c = UNMutableNotificationContent()
         c.title = title
+        c.subtitle = subtitle
         c.body = body
         return c
     }
@@ -115,6 +121,55 @@ final class NotificationCommunicationDecoratorTests: XCTestCase {
             result === original,
             "a notification without a title must still be decorated with the sender intent"
         )
+    }
+
+    func testDecorate_iconURL_preservesSubtitleWithAndWithoutAPI() async throws {
+        let url = try XCTUnwrap(URL(string: "https://example.com/avatar.png"))
+        let apis: [HomeAssistantAPI?] = [api, nil]
+        let imageData = makeRedPNG()
+        let stubDesc = HTTPStubs.stubRequests(passingTest: { $0.url == url }) { _ in
+            XCTFail("A cached notification icon must not be downloaded")
+            return HTTPStubsResponse(error: URLError(.resourceUnavailable))
+        }
+        defer { HTTPStubs.removeStub(stubDesc) }
+
+        for api in apis {
+            cache.setData(
+                imageData,
+                forKey: notificationIconCacheKey(for: url, serverID: api?.server.identifier.rawValue)
+            )
+            for subtitle in ["Kitchen", ""] {
+                let original = content(subtitle: subtitle)
+                original.userInfo = ["icon_url": url.absoluteString, "tag": "dishwasher"]
+                let sender = try XCTUnwrap(NotificationSenderParser.parse(from: original))
+
+                let result = await decorator.decorate(content: original, sender: sender, api: api)
+
+                XCTAssertFalse(result === original, "Decoration must succeed, not return the fallback content")
+                XCTAssertEqual(result.subtitle, subtitle)
+                XCTAssertEqual(result.title, original.title)
+                XCTAssertEqual(result.body, original.body)
+                XCTAssertEqual(result.userInfo as NSDictionary, original.userInfo as NSDictionary)
+                XCTAssertEqual(original.subtitle, subtitle)
+                XCTAssertEqual(original.title, "Dishwasher")
+                XCTAssertEqual(original.body, "Cycle complete.")
+            }
+        }
+    }
+
+    func testDecorate_mdi_preservesSubtitle() async throws {
+        let original = content(subtitle: "Kitchen")
+        original.userInfo = ["notification_icon": "mdi:dishwasher"]
+        let sender = try XCTUnwrap(NotificationSenderParser.parse(from: original))
+
+        let result = await decorator.decorate(content: original, sender: sender, api: api)
+
+        XCTAssertFalse(result === original, "Decoration must succeed, not return the fallback content")
+        XCTAssertEqual(result.subtitle, "Kitchen")
+        XCTAssertEqual(result.title, original.title)
+        XCTAssertEqual(result.body, original.body)
+        XCTAssertEqual(result.userInfo as NSDictionary, original.userInfo as NSDictionary)
+        XCTAssertEqual(original.subtitle, "Kitchen")
     }
 
     func testBuildIntent_iconURL_cacheHit_skipsDownload() async throws {
