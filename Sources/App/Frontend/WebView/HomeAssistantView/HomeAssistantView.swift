@@ -175,8 +175,6 @@ struct HomeAssistantView: View, WebFrontendView {
                 progress: viewModel.pullToRefreshProgress,
                 isRefreshing: viewModel.isPullToRefreshActive
             )
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-            .padding(.top, DesignSystem.Spaces.two)
             .allowsHitTesting(false)
             .transition(.opacity)
         }
