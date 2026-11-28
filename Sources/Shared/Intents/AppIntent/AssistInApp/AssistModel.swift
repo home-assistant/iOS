@@ -98,9 +98,11 @@ public struct AssistResponse: HADataDecodable {
 
         public struct TtsOutput: HADataDecodable {
             public let urlPath: String?
+            public let streamResponse: Bool
             public init(data: HAData) throws {
                 // Even though API name it 'url' it is just the path without the base url
                 self.urlPath = try? data.decode("url")
+                self.streamResponse = (try? data.decode("stream_response")) ?? false
             }
         }
 

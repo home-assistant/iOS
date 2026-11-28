@@ -26,10 +26,12 @@ public protocol AssistServiceDelegate: AnyObject {
     func didReceiveGreenLightForAudioInput()
     func didReceiveTtsMediaUrl(_ mediaUrl: URL)
     func didReceiveError(code: String, message: String)
+    var playsTtsWhileStreaming: Bool { get }
 }
 
 public extension AssistServiceDelegate {
     func didStartStreamResponseMessage() {}
+    var playsTtsWhileStreaming: Bool { false }
 }
 
 public enum AssistSource: Equatable {
@@ -65,6 +67,8 @@ public final class AssistService: AssistServiceProtocol {
 
     private var cancellable: HACancellable?
     private var sttBinaryHandlerId: UInt8?
+    private var ttsStreamUrlPath: String?
+    private var ttsStreamPlayed = false
     /// Bumped by every new or cancelled run, so a pipeline refresh only starts the run that asked for it.
     private var runGeneration = 0
 
@@ -292,6 +296,7 @@ public final class AssistService: AssistServiceProtocol {
         delegate?.didReceiveEvent(data.type)
         switch data.type {
         case .runStart:
+            ttsStreamStart(ttsOutput: data.data?.ttsOutput)
             runStart(sttBinaryHandlerId: data.data?.runnerData?.sttBinaryHandlerId)
         case .runEnd:
             runEnd(cancellable: cancellable)
@@ -305,11 +310,13 @@ public final class AssistService: AssistServiceProtocol {
             )
         case .ttsEnd:
             ttsEnd(mediaUrlPath: data.data?.ttsOutput?.urlPath)
+        case .intentStart:
+            intentStart()
         case .intentProgress:
             intentProgress(delta: data.data?.chatLogDelta)
         case .error:
             assistError(data: data, cancellable: cancellable)
-        case .wakeWordStart, .wakeWordEnd, .sttStart, .sttVadStart, .sttVadEnd, .intentStart, .ttsStart:
+        case .wakeWordStart, .wakeWordEnd, .sttStart, .sttVadStart, .sttVadEnd, .ttsStart:
             break
         case .unknown:
             Current.Log.verbose("Unmapped event received from Assist")
@@ -324,6 +331,22 @@ public final class AssistService: AssistServiceProtocol {
 // MARK: - Handling Assist events
 
 extension AssistService {
+    private func ttsStreamStart(ttsOutput: AssistResponse.AssistData.TtsOutput?) {
+        ttsStreamPlayed = false
+        ttsStreamUrlPath = ttsOutput?.streamResponse == true ? ttsOutput?.urlPath : nil
+    }
+
+    /// The playback starts after speech-to-text, because the audio session cannot record and play at the same time.
+    private func intentStart() {
+        guard let urlPath = ttsStreamUrlPath, delegate?.playsTtsWhileStreaming == true,
+              let mediaUrl = server.activeURLUsingLastKnownNetworkState()?.appendingPathComponent(urlPath) else {
+            return
+        }
+        ttsStreamUrlPath = nil
+        ttsStreamPlayed = true
+        delegate?.didReceiveTtsMediaUrl(mediaUrl)
+    }
+
     private func runStart(sttBinaryHandlerId: Int?) {
         guard let sttBinaryHandlerId else {
             Current.Log.error("No sttBinaryHandlerId on runStart")
@@ -350,6 +373,7 @@ extension AssistService {
     }
 
     private func ttsEnd(mediaUrlPath: String?) {
+        guard !ttsStreamPlayed else { return }
         // Evaluated against cached network information: this runs mid-pipeline over an active
         // WebSocket connection (so the cache is fresh), and delegates rely on receiving the TTS
         // URL synchronously, in order with the other pipeline events.

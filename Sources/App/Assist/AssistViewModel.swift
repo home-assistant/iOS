@@ -611,6 +611,10 @@ extension AssistViewModel: AssistServiceDelegate {
         canSendAudioData = true
     }
 
+    var playsTtsWhileStreaming: Bool {
+        !configuration.muteTTS && AVAudioSession.sharedInstance().outputVolume > 0
+    }
+
     func didReceiveTtsMediaUrl(_ mediaUrl: URL) {
         if configuration.muteTTS {
             Current.Log.info("TTS is muted by user setting, skipping audio playback")
