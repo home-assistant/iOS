@@ -18,6 +18,12 @@ import Foundation
     var screens: [MacBridgeScreen] { get }
     var screensWillChangeNotification: Notification.Name { get }
 
+    /// Whether at least part of one of the app's windows is on screen. A window that other windows cover
+    /// completely is not.
+    var hasVisibleWindow: Bool { get }
+    /// Posted to the default notification center when a window starts or stops being on screen.
+    var windowVisibilityDidChangeNotification: Notification.Name { get }
+
     var frontmostApplication: MacBridgeRunningApplication? { get }
     var frontmostApplicationDidChangeNotification: Notification.Name { get }
 

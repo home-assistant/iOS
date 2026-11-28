@@ -62,6 +62,14 @@ import SystemConfiguration
         NSApplication.didChangeScreenParametersNotification
     }
 
+    var hasVisibleWindow: Bool {
+        NSApplication.shared.normalAppWindows.contains { $0.occlusionState.contains(.visible) }
+    }
+
+    var windowVisibilityDidChangeNotification: Notification.Name {
+        NSWindow.didChangeOcclusionStateNotification
+    }
+
     var frontmostApplication: MacBridgeRunningApplication? {
         NSWorkspace.shared.frontmostApplication
     }
