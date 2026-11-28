@@ -9,6 +9,33 @@ import Testing
 
 struct HALiveActivitySnapshotTests {
     @available(iOS 26.0, *)
+    @MainActor @Test func actionButtonsSnapshots() {
+        MaterialDesignIcons.register()
+        let attributes = HALiveActivityAttributes(tag: "music", title: "Now Playing")
+        let state = HALiveActivityAttributes.ContentState(
+            message: "Song · Artist\nLiving Room",
+            progress: 38,
+            progressMax: 100,
+            icon: "music",
+            actions: [
+                .init(id: "PLAY", title: "Play", icon: "sfsymbols:play.fill"),
+                .init(id: "PAUSE", title: "Pause", icon: "sfsymbols:pause.fill"),
+                .init(id: "NEXT", title: "Next", icon: "sfsymbols:forward.end.fill"),
+            ]
+        )
+        assertLightDarkSnapshots(
+            of: HALockScreenView(attributes: attributes, state: state, activityID: "preview"),
+            layout: .fixed(width: 360, height: 160),
+            named: "lockScreen"
+        )
+        assertLightDarkSnapshots(
+            of: HAExpandedContentView(attributes: attributes, state: state, activityID: "preview").background(.black),
+            layout: .fixed(width: 350, height: 150),
+            named: "expandedIsland"
+        )
+    }
+
+    @available(iOS 26.0, *)
     @MainActor @Test func regularSizeSnapshots() {
         MaterialDesignIcons.register()
         let attributes = Self.attributes

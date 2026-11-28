@@ -1085,6 +1085,9 @@ This server requires a client certificate (mTLS) but the operation was cancelled
 "live_activity.end_all.confirm.title" = "End all Live Activities?";
 "live_activity.frequent_updates.footer" = "Allows Home Assistant to update Live Activities up to once per second. Enable in Settings \u203A %@ \u203A Live Activities.";
 "live_activity.frequent_updates.title" = "Frequent Updates";
+"live_activity.perform_action.action_id" = "Action ID";
+"live_activity.perform_action.activity_id" = "Live Activity ID";
+"live_activity.perform_action.title" = "Perform Live Activity Action";
 "live_activity.privacy.message" = "Live Activity content is visible on your Lock Screen and Dynamic Island without Face ID or Touch ID. Choose what you display carefully.";
 "live_activity.sample.alarm.note" = "Short 60-second countdown, no progress bar. Red communicates urgency — watch the timer count down in real time.";
 "live_activity.sample.alarm.summary" = "A red 60-second countdown that grabs attention.";

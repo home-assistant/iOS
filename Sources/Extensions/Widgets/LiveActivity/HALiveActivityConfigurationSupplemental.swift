@@ -8,10 +8,18 @@ import WidgetKit
 struct HALiveActivityConfigurationSupplemental: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: HALiveActivityAttributes.self) { context in
-            HALiveActivityLockScreenRouterView(attributes: context.attributes, state: context.state)
+            HALiveActivityLockScreenRouterView(
+                attributes: context.attributes,
+                state: context.state,
+                activityID: context.actionActivityID
+            )
         } dynamicIsland: { context in
-            makeHADynamicIsland(attributes: context.attributes, state: context.state)
-                .widgetURL(haLiveActivityTapURL(attributes: context.attributes, state: context.state))
+            makeHADynamicIsland(
+                attributes: context.attributes,
+                state: context.state,
+                activityID: context.actionActivityID
+            )
+            .widgetURL(haLiveActivityTapURL(attributes: context.attributes, state: context.state))
         }
         .supplementalActivityFamilies([.small])
     }
