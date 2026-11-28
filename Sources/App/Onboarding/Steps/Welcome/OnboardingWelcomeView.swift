@@ -11,7 +11,6 @@ struct OnboardingWelcomeView: View {
     }
 
     @Environment(\.verticalSizeClass) private var verticalSizeClass
-    @Environment(\.layoutDirection) private var layoutDirection
     @State private var showLearnMore = false
     /// Advances to the servers list; the onboarding container swaps content in place (no navigation
     /// push — tearing the container down with a pushed page leaks its hosting view).
@@ -44,10 +43,7 @@ struct OnboardingWelcomeView: View {
             })
             // Laid out inside the safe area, then shifted by half the horizontal inset asymmetry
             // (iPhone Duo camera or vertical bar) so it reads as centered on the whole display.
-            .offset(x: SafeAreaCenteringOffset.horizontal(
-                safeAreaInsets: proxy.safeAreaInsets,
-                layoutDirection: layoutDirection
-            ))
+            .offset(x: SafeAreaCenteringOffset.horizontal(safeAreaInsets: proxy.safeAreaInsets))
         }
         .toolbar {
             if showsActionsInToolbar {

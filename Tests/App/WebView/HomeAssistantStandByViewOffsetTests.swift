@@ -9,7 +9,6 @@ struct HomeAssistantStandByViewOffsetTests {
         let insets = EdgeInsets(top: 0, leading: 0, bottom: 34, trailing: 84)
         let offset = HomeAssistantStandByView.contentOffset(
             safeAreaInsets: insets,
-            layoutDirection: .leftToRight,
             showsEmptyState: false
         )
         #expect(offset.width == 42)
@@ -18,22 +17,10 @@ struct HomeAssistantStandByViewOffsetTests {
         let mirrored = EdgeInsets(top: 34, leading: 84, bottom: 0, trailing: 0)
         let mirroredOffset = HomeAssistantStandByView.contentOffset(
             safeAreaInsets: mirrored,
-            layoutDirection: .leftToRight,
             showsEmptyState: false
         )
         #expect(mirroredOffset.width == -42)
         #expect(mirroredOffset.height == -17 + LaunchSplashOverlayView.Constants.splashLogoCenterYOffset)
-    }
-
-    @Test("In a right-to-left layout the trailing inset sits on the left, so the shift flips")
-    func rightToLeftLayout() {
-        let insets = EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 84)
-        let offset = HomeAssistantStandByView.contentOffset(
-            safeAreaInsets: insets,
-            layoutDirection: .rightToLeft,
-            showsEmptyState: false
-        )
-        #expect(offset.width == -42)
     }
 
     @Test("The empty state is centred on the display width but stays inside the vertical safe area")
@@ -41,7 +28,6 @@ struct HomeAssistantStandByViewOffsetTests {
         let insets = EdgeInsets(top: 59, leading: 0, bottom: 34, trailing: 84)
         let offset = HomeAssistantStandByView.contentOffset(
             safeAreaInsets: insets,
-            layoutDirection: .leftToRight,
             showsEmptyState: true
         )
         #expect(offset == CGSize(width: 42, height: 0))
@@ -49,10 +35,9 @@ struct HomeAssistantStandByViewOffsetTests {
         let mirrored = EdgeInsets(top: 59, leading: 84, bottom: 34, trailing: 0)
         let mirroredOffset = HomeAssistantStandByView.contentOffset(
             safeAreaInsets: mirrored,
-            layoutDirection: .rightToLeft,
             showsEmptyState: true
         )
-        #expect(mirroredOffset == CGSize(width: 42, height: 0))
+        #expect(mirroredOffset == CGSize(width: -42, height: 0))
     }
 
     @Test("Without horizontal insets the empty state keeps its safe-area layout untouched")
@@ -60,7 +45,6 @@ struct HomeAssistantStandByViewOffsetTests {
         let insets = EdgeInsets(top: 59, leading: 0, bottom: 34, trailing: 0)
         let offset = HomeAssistantStandByView.contentOffset(
             safeAreaInsets: insets,
-            layoutDirection: .leftToRight,
             showsEmptyState: true
         )
         #expect(offset == .zero)

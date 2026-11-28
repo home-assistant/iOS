@@ -32,8 +32,6 @@ struct HomeAssistantStandByView: View {
 
     @Environment(\.appSettingsPresenter) private var appSettingsPresenter
 
-    @Environment(\.layoutDirection) private var layoutDirection
-
     @State private var logoDismissTapCount = 0
     @State private var showsEmptyStateContent = false
     @State private var showsDelayedSettingsButton = false
@@ -79,15 +77,11 @@ struct HomeAssistantStandByView: View {
 
     static func contentOffset(
         safeAreaInsets: EdgeInsets,
-        layoutDirection: LayoutDirection,
         showsEmptyState: Bool
     ) -> CGSize {
         // Widened by the horizontal inset asymmetry (iPhone Duo camera or vertical bar), then shifted by
         // half of it, so it is centered on the whole display and keeps its usual side margins.
-        let horizontal = SafeAreaCenteringOffset.horizontal(
-            safeAreaInsets: safeAreaInsets,
-            layoutDirection: layoutDirection
-        )
+        let horizontal = SafeAreaCenteringOffset.horizontal(safeAreaInsets: safeAreaInsets)
         // The empty state is anchored to the top of the vertical safe area, under its header, so it
         // only takes the horizontal correction.
         guard !showsEmptyState else { return CGSize(width: horizontal, height: 0) }
@@ -138,7 +132,6 @@ struct HomeAssistantStandByView: View {
                 ohfBrandingFooter
                     .offset(x: Self.contentOffset(
                         safeAreaInsets: proxy.safeAreaInsets,
-                        layoutDirection: layoutDirection,
                         showsEmptyState: showsEmptyState
                     ).width)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
@@ -176,7 +169,6 @@ struct HomeAssistantStandByView: View {
     private func content(safeAreaInsets: EdgeInsets) -> some View {
         let contentOffset = Self.contentOffset(
             safeAreaInsets: safeAreaInsets,
-            layoutDirection: layoutDirection,
             showsEmptyState: showsEmptyState
         )
         return VStack(spacing: DesignSystem.Spaces.three) {
