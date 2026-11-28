@@ -937,6 +937,7 @@
 				"Widgets/LiveActivity/EnvironmentValues+DynamicIslandLimitedWidth.swift",
 				Widgets/LiveActivity/HAActivityProgressBar.swift,
 				Widgets/LiveActivity/HAActivityTimerProgressBar.swift,
+				Widgets/LiveActivity/HACompactTrailingLimitedWidthContent.swift,
 				Widgets/LiveActivity/HACompactTrailingView.swift,
 				Widgets/LiveActivity/HADynamicIslandIconContainerView.swift,
 				Widgets/LiveActivity/HADynamicIslandIconView.swift,
