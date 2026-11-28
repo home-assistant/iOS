@@ -49,7 +49,8 @@ class ConnectivitySensorTests: XCTestCase {
         cellular: [String: CTCarrier]? = nil,
         radioTech: [String: String]? = nil,
         hasWiFi: Bool = true,
-        networkAttributes: [String: Any] = [:]
+        networkAttributes: [String: Any] = [:],
+        wifiIPAddress: String? = nil
     ) throws -> (ssid: WebhookSensor?, bssid: WebhookSensor?, connection: WebhookSensor?, sims: [WebhookSensor]) {
         Current.connectivity.hasWiFi = { hasWiFi }
         Current.connectivity.currentNetworkState = { NetworkState(ssid: ssid, bssid: bssid) }
@@ -58,6 +59,7 @@ class ConnectivitySensorTests: XCTestCase {
         Current.connectivity.telephonyCarriers = { cellular }
         Current.connectivity.telephonyRadioAccessTechnology = { radioTech }
         Current.connectivity.networkAttributes = { networkAttributes }
+        Current.connectivity.wifiIPAddress = { wifiIPAddress }
 
         let promise = ConnectivitySensor(request: .init(
             reason: .trigger("unit-test"),
@@ -186,6 +188,46 @@ class ConnectivitySensorTests: XCTestCase {
         XCTAssertEqual(s.connection?.Icon, "mdi:wifi")
 
         XCTAssertEqual(s.sims.count, 0)
+    }
+
+    func testWifiReportsIPAddress() throws {
+        let s = try setUp(
+            ssid: "Bob's Burgers Guest Wi-Fi",
+            bssid: "ff:ee:dd:cc:bb:aa",
+            networkType: .wifi,
+            cellularNetworkType: nil,
+            wifiIPAddress: "192.168.178.27"
+        )
+
+        XCTAssertEqual(s.ssid?.State as? String, "Bob's Burgers Guest Wi-Fi")
+        XCTAssertEqual(s.ssid?.Attributes?["IP Address"] as? String, "192.168.178.27")
+        XCTAssertNil(s.bssid?.Attributes)
+    }
+
+    func testWifiWithoutIPAddressHasNoAttributes() throws {
+        let s = try setUp(
+            ssid: "Bob's Burgers Guest Wi-Fi",
+            bssid: "ff:ee:dd:cc:bb:aa",
+            networkType: .wifi,
+            cellularNetworkType: nil,
+            wifiIPAddress: nil
+        )
+
+        XCTAssertEqual(s.ssid?.State as? String, "Bob's Burgers Guest Wi-Fi")
+        XCTAssertNil(s.ssid?.Attributes)
+    }
+
+    func testIPAddressIsReportedWhenSSIDIsUnreadable() throws {
+        let s = try setUp(
+            ssid: nil,
+            bssid: nil,
+            networkType: .wifi,
+            cellularNetworkType: nil,
+            wifiIPAddress: "192.168.178.27"
+        )
+
+        XCTAssertEqual(s.ssid?.State as? String, "Not Connected")
+        XCTAssertEqual(s.ssid?.Attributes?["IP Address"] as? String, "192.168.178.27")
     }
 
     func testBSSIDFormattingWithSingleDigitHex() throws {
